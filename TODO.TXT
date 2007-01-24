@@ -1,0 +1,95 @@
+TODO.TXT
+
+(c) 2001-2007 Guglielmo Nigri <guglielmonigri@yahoo.it>.
+Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are
+welcome to redistribute it under certain conditions; see LICENSE.TXT.
+
+
+TO DO:
+------
+
+Use Java 5 generics where possible (?)
+
+Eval/Apply on java.lang.Objects for full Java integration OR java-object wrapper
+
+A proposal for a Java FFI:
+	syntax for java types: 
+		$java.lang.Object = 
+		(java-quote java.lang.Object) = 
+		(quote java.lang.Object) + lookup in java-import environment
+	(java-new $java.lang.Object)
+	(java-import $java.lang.*)
+	(define obj (java-new $String "test"))
+	(java-call 'size obj) => 4
+	(. obj size) => 4
+	($size obj) => 4
+	(java-package 'gleam.ext)
+	(java-class myList ($List) ; myList extends java.util.List
+		(java-ctor ((i 'int)) (java-set-field length i))
+		(java-field (length 'int))
+		(java-method (get (i 'int)) ... )
+		(java-method (set (i 'int) (obj $Object)) ...) )
+
+Implement as many primitives as possible in Scheme
+	list
+	append
+	null?
+	pair? (?)
+	...
+
+A rewriting system for patterns (...)
+
+Check tail-call optimizations
+
+Explicit first-class environments, with primitives: 
+	make-environment
+	call-with-current-environment
+	with-environment
+	environment?
+	defined?
+	...
+
+rewriter? type function
+
+Macros for do and other syntax
+
+getArity() for Procedure and subclasses
+
+Arguments to functions as an array or an ArrayList?
+
+A better parser!
+
+GleamException
+	new "context" parameter to constructor,
+	subclasses?
+
+ListIterator
+	subclass: ArgumentIterator, with param. number checking
+
+A compiler!
+
+(UNSURE) refactor ArgumentList into two classes: EvaluatedArguments and 
+UnevaluatedArguments, so that special forms and rewriters use the latter (with a
+different implementation that does not have to convert args from Java lists to 
+Scheme lists)
+
+(UNSURE) refactor all continuations and the "return null" convention.
+E.g. gleam_and loops and that is not correct --> NPE in (and (func arg1 arg2) 1)
+because eval of (func...) puts func in continuation and returns null!
+
+
+--------------------------------------------------------------------------------
+
+DONE:
+-----
+
+toString for Entities (so that display() can use it)
+	[NOTE: the reverse is now true]
+
+Object has a new name: Entity
+
+For syntax-rewriter: introduce a new "Eval" action, make "rewrite" put a new 
+Expression action in the continuation, followed by an Eval action, so that
+after the execution of the rewriter the Eval action gets the resulting expanded
+expression, and evaluates it.
+

@@ -1,0 +1,28 @@
+BUILD.TXT
+
+(c) 2001-2007 Guglielmo Nigri <guglielmonigri@yahoo.it>.
+Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are
+welcome to redistribute it under certain conditions; see LICENSE.TXT.
+
+HOW TO BUILD GLEAM
+------------------
+
+Using ant 
+$ ant all
+
+-or-
+
+From the command line, if you don't have ant:
+$ mkdir classes
+$ javac -source 1.4 -target 1.4 -d classes gleam/Gleam.java gleam/*/*.java
+$ jar cvfm Gleam.jar manifest bootstrap.scm -C classes .
+
+In both cases you should get the Gleam.jar archive. To run it:
+
+$ java -jar Gleam.jar
+
+CREDITS
+-------
+
+build.xml file kindly provided by Jon Rafkind <workmin@ccs.neu.edu>
+Thank you Jon!
