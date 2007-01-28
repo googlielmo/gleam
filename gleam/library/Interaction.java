@@ -34,6 +34,7 @@ import gleam.lang.System;
 import gleam.lang.Void;
 
 import gleam.lang.*;
+import gleam.util.Report;
 
 /**
  * INTERACTION -- GLEAM-SPECIFIC
@@ -67,7 +68,7 @@ public final class Interaction {
 				throw new GleamException("help: too many arguments", args);
 			}
 
-			String pname = ((Symbol)obj).getValue();
+			String pname = ((Symbol)obj).toString();
 			String doc = System.getHelpDocumentation(pname);
 			if (doc != null) {
 				System.getCout().print(doc);
@@ -75,7 +76,7 @@ public final class Interaction {
 			}
 			else {
 				System.getCout().print("No documentation available for ");
-				System.getCout().print(((Symbol)obj).getValue());
+				System.getCout().print(((Symbol)obj).toString());
 				System.getCout().print(". Try (help).");
 				System.getCout().newline();
 			}
@@ -166,7 +167,7 @@ public final class Interaction {
 					throw new GleamException("save-session: file not found", obj);
 				}
 				catch (java.io.IOException e) {
-					e.printStackTrace();
+					Report.printStackTrace(e);
 					throw new GleamException("save-session: I/O error", obj);
 				}
 			}
@@ -204,7 +205,7 @@ public final class Interaction {
 					throw new GleamException("load-session: file not found", obj);
 				}
 				catch (java.io.IOException e) {
-					e.printStackTrace();
+					Report.printStackTrace(e);;
 					throw new GleamException("load-session: I/O error", obj);
 				}
 				catch (java.lang.ClassNotFoundException e) {

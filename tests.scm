@@ -165,3 +165,18 @@
 (con2 -7)
 ;>3.02.01.0
 ;(my-args 1.0 2.0 3.0 -7.0 4.0 5.0 6.0)
+
+
+;;;;;;;;
+
+(define d1 (new 'java.util.Date))
+(eqv? d2 d1)
+;#t
+(eq? d2 d1)
+;#t
+(define s1 (new 'java.lang.String 'test))
+(define s2 (new 'java.lang.String 'test))
+(eq? s2 s1)
+;#f
+(eqv? s2 s1)
+;#t

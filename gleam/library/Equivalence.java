@@ -64,7 +64,12 @@ public final class Equivalence {
 		if (it.hasNext()) {
 			throw new GleamException("eq?: too many arguments", args);
 		}
-		return Boolean.makeBoolean(obj1 == obj2);
+		// Java object are a special case, since we want to compare the 
+		// underlying objects to preserve common Java semantics
+		if (obj1 instanceof JavaObject && obj2 instanceof JavaObject)
+			return Boolean.makeBoolean(((JavaObject) obj1).eq_p((JavaObject) obj2));
+		else
+			return Boolean.makeBoolean(obj1 == obj2);
 	}
 
 	/**

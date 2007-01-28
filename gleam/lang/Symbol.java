@@ -100,7 +100,7 @@ public final class Symbol extends Entity
 	/**
 	 * Obtains the string representation of this symbol
 	 */
-	public String getValue() {
+	public String toString() {
 		return value;
 	}
 
@@ -116,10 +116,8 @@ public final class Symbol extends Entity
 	/**
 	 * Factory method to create and intern a symbol.
 	 */
-	public static Symbol makeSymbol(String js)
+	public static Symbol makeSymbol(String s)
 	{
-		String s = js.toLowerCase();
-
 		java.lang.Object o = symtable.get(s);
 		if (o == null) {
 			o = new Symbol(s);
@@ -131,9 +129,8 @@ public final class Symbol extends Entity
 	/**
 	 * Factory method to create an uninterned symbol.
 	 */
-	public static Symbol makeUninternedSymbol(String js)
+	public static Symbol makeUninternedSymbol(String s)
 	{
-		String s = js.toLowerCase();
 		return new Symbol(s, false);
 	}
 

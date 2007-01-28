@@ -439,6 +439,21 @@ public final class InitialEnvironments {
 					"generate-symbol",
 					"Symbols.gleam_generate_symbol",
 					"Makes a new symbol, e.g. (generate-symbol)"),
+//			// j-null
+//			new Binding(Binding.IDENTIFIER,
+//					"j-null",
+//					"JavaInterface.gleam_j_null",
+//					"Makes a new Java null object, e.g. (j-null)"),
+			// new
+			new Binding(Binding.IDENTIFIER,
+					"new",
+					"JavaInterface.gleam_new",
+					"Makes a new Java object, e.g. (new 'java.util.Date)"),
+			// call
+			new Binding(Binding.IDENTIFIER,
+					"call",
+					"JavaInterface.gleam_call",
+					"Calls a method on a Java object, e.g. (call 'length (new 'java.lang.String \"test\"))"),
 		};
 }
 

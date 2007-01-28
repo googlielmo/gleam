@@ -31,7 +31,7 @@ package gleam.lang;
  */
 public class OutputPort extends Port
 {
-	java.io.PrintWriter out;
+	private java.io.PrintWriter out;
 
 	/**
 	 * creates an output port to a file
@@ -111,10 +111,17 @@ public class OutputPort extends Port
 	}
 
 	/**
-	 * method useful for primitives
+	 * print method useful for primitives
 	 */
 	public void print(String s) {
 		out.print(s);
+	}
+
+	/**
+	 * returns the underlying PrintWriter
+	 */
+	public java.io.PrintWriter getPrintWriter() {
+		return out;
 	}
 
 	/**
@@ -124,6 +131,6 @@ public class OutputPort extends Port
 	{
 		out.print("#<output-port>");
 	}
-	
+
 }
 

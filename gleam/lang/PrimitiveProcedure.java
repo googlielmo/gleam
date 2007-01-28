@@ -26,6 +26,7 @@
 
 package gleam.lang;
 
+import gleam.util.Report;
 import java.lang.reflect.*;
 
 /**
@@ -105,7 +106,7 @@ public class PrimitiveProcedure extends Procedure
 				throw (GleamException)t;
 			}
 			else {
-				e.printStackTrace();
+				Report.printStackTrace(e);
 				throw new GleamException("apply: InvocationTargetException: " + e.getMessage(), this);
 			}
 		}

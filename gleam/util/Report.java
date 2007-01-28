@@ -40,7 +40,7 @@ public class Report
 	/**
 	 * Current level of verbosity
 	 * 5 = internal debugging information
-	 * 4 = information of interest to implementers
+	 * 4 = information of interest to implementers (Java stack traces)
 	 * 3 = unusual or remarkable activities
 	 * 2 = user warnings
 	 * 1 = user errors (default)
@@ -142,4 +142,9 @@ public class Report
 		verbosity = newVerbosity;
 	}
 
+	public static void printStackTrace(Exception ex) {
+		if (verbosity >= 4) {
+			ex.printStackTrace(gleam.lang.System.getCout().getPrintWriter());
+		}
+	}
 }

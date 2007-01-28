@@ -1,0 +1,51 @@
+2007-01-28
+	Added the gleam.lang.JavaObject class, holding arbitrary Java objects.
+	The primitives 'new' and 'call' are used to instantiate a Java object
+	and to call a method on an instance. 'null' is bound to Java null.
+	A first Scheme <-> Java type conversion mechanism is implemented.
+	A new 'bind' method in the Interpreter allows Java code to define new 
+	Scheme variables, holding Java objects, in the session environment.
+	Symbols are case-sensitive now, a deviation from R5RS needed to allow
+	the usage of symbols for Java class and method names. An effort will be 
+	made to return to R5RS compliance.
+	Added a new 'gleam.util.Report.printStackTrace()' method for debugging.
+
+Release 0.88
+2007-01-15
+
+	Added the gleam.lang.Interpreter class, encapsulating the evaluation of 
+	Scheme expressions. It is possible to have multiple independent 
+	instances of the Gleam interpreter.
+	A severe issue was fixed, where two continuations repeatedly calling 
+	each other could cause a Java stack overflow. The design flaw was to 
+	implement the execution of a continuation in the Continuation class 
+	itself. This is now delegated to the Interpreter.
+	Fixed 'save-session' and 'load-session': some environment reachable 
+	classes (notably Actions) were not marked as Serializable.
+
+Release 0.87
+2007-01-05
+
+	The second argument to 'eval' is now optional: if no environment is 
+	specified, the current environment is used, i.e. the environment in 
+	effect at the time of the call.
+	Improved and corrected 'gleam_eval' implementation, so to perform syntax
+	analysis on its argument, and to extend the current continuation with 
+	its evaluation in the required environment.
+	Implemented 'set-car!' and 'set-cdr!'.
+	Reworked 'write' so to show quotes and quasiquotes in their short form.
+	'car' and 'cdr' now throw exception on the empty list.
+	Implemented 'Entity.toString()' to give the same output as 'display'.
+	Added 'extend' method to Continuation, and 'append' method to Action, so
+	to make Java code simpler when linking new Actions to a Continuation.
+	Corrected problems in 'apply' and implemented CL-style 'list*'.
+	New 'define-macro' (to test).
+
+Release 0.86
+2006-12-20
+
+	Bootstrap implements quasiquotation, 'defmacro', 'cond', 'apply', etc.
+	C-style comments are no longer allowed.
+	Added EvalAction as support for macro expansion.
+	'Pair.eval()' now handles syntax-rewriters correctly.
+	SyntaxRewriter merged with SyntaxClosure.

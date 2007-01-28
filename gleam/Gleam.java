@@ -35,11 +35,19 @@ import gleam.lang.Symbol;
  */
 public class Gleam
 {
-	private static final String RELEASE="0.88";
+	// Gleam release number
+	private static final String RELEASE="0.89 pre-1";
 
+	// Dump env symbol (for debugging)
 	private static final Symbol cEnv = Symbol.makeSymbol("!e");
+
+	// Quit symbol 
 	private static final Symbol cQuit = Symbol.makeSymbol("!q");
 	
+	/**
+	 * Entry point for the Gleam interactive interpreter
+	 * @param args command line arguments
+	 */
 	public static void main(String[] args)
 	{
 		Interpreter intp = null;
