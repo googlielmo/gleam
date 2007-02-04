@@ -154,18 +154,13 @@ public final class Numbers {
 	 * =
 	 * Implements the equals operator.
 	 */
-	public static Entity gleam_e(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_e_$2_N(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		boolean retVal = true;
 		double prev, curr;
 		Entity obj;
 		ListIterator it = new ListIterator(args);
-
-		if (!it.hasNext()) {
-			throw new GleamException("=: too few arguments", args);
-		}
-
 		// get first argument as prev
 		obj = it.next();
 		if (obj instanceof Number) {
@@ -194,18 +189,13 @@ public final class Numbers {
 	 * &gt;= 
 	 * Implements the greater than or equals operator.
 	 */
-	public static Entity gleam_gte(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_gte_$2_N(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		boolean retVal = true;
 		double prev, curr;
 		Entity obj;
 		ListIterator it = new ListIterator(args);
-
-		if (!it.hasNext()) {
-			throw new GleamException(">=: too few arguments", args);
-		}
-
 		// get first argument as prev
 		obj = it.next();
 		if (obj instanceof Number) {
@@ -234,18 +224,13 @@ public final class Numbers {
 	 * &lt;=
 	 * Implements the less than or equals operator.
 	 */
-	public static Entity gleam_lte(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_lte_$2_N(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		boolean retVal = true;
 		double prev, curr;
 		Entity obj;
 		ListIterator it = new ListIterator(args);	
-
-		if (!it.hasNext()) {
-			throw new GleamException("<=: too few arguments", args);
-		}
-
 		// get first argument as prev
 		obj = it.next();
 		if (obj instanceof Number) {
@@ -274,18 +259,13 @@ public final class Numbers {
 	 * &gt;
 	 * Implements the greater than operator.
 	 */
-	public static Entity gleam_gt(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_gt_$2_N(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		boolean retVal = true;
 		double prev, curr;
 		Entity obj;
 		ListIterator it = new ListIterator(args);	
-
-		if (!it.hasNext()) {
-			throw new GleamException(">: too few arguments", args);
-		}
-
 		// get first argument as prev
 		obj = it.next();
 		if (obj instanceof Number) {
@@ -314,18 +294,13 @@ public final class Numbers {
 	 * &lt;
 	 * Implements the less than operator.
 	 */
-	public static Entity gleam_lt(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_lt_$2_N(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		boolean retVal = true;
 		double prev, curr;
 		Entity obj;
 		ListIterator it = new ListIterator(args);	
-
-		if (!it.hasNext()) {
-			throw new GleamException("<: too few arguments", args);
-		}
-
 		// get first argument as prev
 		obj = it.next();
 		if (obj instanceof Number) {
@@ -354,23 +329,9 @@ public final class Numbers {
 	 * number?
 	 * Tests if argument is a number
 	 */
-	public static Entity gleam_number_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_number_p_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);	
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("number?: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj instanceof Number);
-		}
-		else {
-			throw new GleamException("number?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(arg1 instanceof Number);
 	}
 }

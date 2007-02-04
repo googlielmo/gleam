@@ -47,44 +47,45 @@ public final class Syntax {
 	 * define
 	 * Defines a new binding in the environment.
 	 */
-	public static Entity gleam_define(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_define_$2_N(Pair args, Environment env, Continuation cont)
 	throws GleamException {
-		// TODO: check that args is not empty
-		Entity target;
 		try {
-			target = args.getCar();
-
+			ListIterator it = new ListIterator(args);
+			Entity target = it.next();
+			Entity value = it.next();
 			/* see if it is a variable definition
 			 * or a disguised lambda
 			 * note that target is NOT evaluated
 			 */
 			if (target instanceof Symbol) {
-				// TODO: check that target is not a keyword
-				Entity value = ((Pair)args.getCdr()).getCar();
-				if (((Pair)args.getCdr()).getCdr() != EmptyList.makeEmptyList()) {
+				if (it.hasNext()) {
 					throw new GleamException("define: too many arguments", args);
 				}
+				// TODO: check that target is not a keyword (?)
 				Symbol s = (Symbol) target;
 				// create binding
 				env.define(s, Undefined.makeUndefined());
 				// now it is equivalent to set!
-				cont.action = new AssignmentAction(s, env, cont.action);
-				return value.eval(env, cont);
+				cont.extend(
+					new ExpressionAction(value, env, null)).append(
+					new AssignmentAction(s, env, null));
+
+				return null;
 			}
 			else if (target instanceof Pair) {
 				Entity rtarget = ((Pair)target).getCar();
 				Entity params = ((Pair)target).getCdr();
-				Entity body = (Pair)args.getCdr();
+				Pair body = new Pair(value, it.rest());
 				if (rtarget instanceof Symbol) {
 					Symbol s = (Symbol) rtarget;
 					// create binding
 					env.define(s, Undefined.makeUndefined());
 					// equivalent to set!
-					cont.action = new AssignmentAction(s, env, cont.action);
-					return gleam_lambda(new Pair(params, body), env, cont);
+					cont.extend(new AssignmentAction(s, env, null));
+					return gleam_lambda_$2_N(new Pair(params, body), env, cont);
 				}
 				else {
-					throw new GleamException("define: invalid procedure name", args);
+					throw new GleamException("define: invalid procedure name", rtarget);
 				}
 			}
 			else {
@@ -100,7 +101,7 @@ public final class Syntax {
 	 * lambda
 	 * Creates a new procedure.
 	 */
-	public static Entity gleam_lambda(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_lambda_$2_N(Pair args, Environment env, Continuation cont)
 	throws GleamException {
 		try {
 			Entity lambdaParams = args.getCar();
@@ -116,77 +117,47 @@ public final class Syntax {
 	 * if
 	 * Conditional expression.
 	 */
-	public static Entity gleam_if(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_if_$2_3(Entity test, Entity consequent, Entity alternate, Environment env, Continuation cont)
 	throws GleamException {
-		try {
-			Entity test = args.getCar();
-			Pair xargs = ((Pair)args.getCdr());
-			Entity consequent = xargs.getCar();
-			Entity alternate = Void.makeVoid();
-			if (xargs.getCdr() != EmptyList.makeEmptyList()) {
-				alternate = ((Pair)xargs.getCdr()).getCar();
-			}
+		if (alternate == null)
+			alternate = Void.makeVoid();
 
-			cont.action = new IfAction(consequent, alternate, env, cont.action);
-			return test.eval(env, cont);
-		}
-		catch (ClassCastException e) {
-			throw new GleamException("if: invalid arguments", args);
-		}
-		catch (GleamException e) {
-			throw new GleamException("if: invalid arguments", args);
-		}
+		cont.extend(
+			new ExpressionAction(test, env, null)).append(
+			new IfAction(consequent, alternate, env, null));
+
+		return null;
+//		cont.action = new IfAction(consequent, alternate, env, cont.action);
+//		return test.eval(env, cont);
 	}
 
 	/**
 	 * quote
 	 * Returns its argument without evaluation.
 	 */
-	public static Entity gleam_quote(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_quote_$1(Entity datum, Environment env, Continuation cont)
 	throws GleamException {
-		// TODO: empty list
-		try {
-			Entity datum = args.getCar();
-			if (args.getCdr() == EmptyList.makeEmptyList()) {
-				return datum;
-			}
-			else {
-				throw new GleamException("quote: too many arguments", args);
-			}
-		}
-		catch (ClassCastException e) {
-			throw new GleamException("quote: invalid arguments", args);
-		}
+		return datum;
 	}
 
 	/**
 	 * set!
 	 * Assigns a value to a variable
 	 */
-	public static Entity gleam_set_m(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_set_m_$2(Entity arg1, Entity obj, Environment env, Continuation cont)
 	throws GleamException {
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-			try {
-				Symbol s = (Symbol) it.next();
-				if (it.hasNext()) {
-					Entity obj = it.next();
-					if (it.hasNext()) {
-						throw new GleamException("set!: too many arguments", args);
-					}
-					cont.action = new AssignmentAction(s, env, cont.action);
-					return obj.eval(env, cont);
-				}
-				else {
-					throw new GleamException("set!: too few arguments", args);
-				}
-			}
-			catch (ClassCastException e) {
-				throw new GleamException("set!: not a symbol", args);
-			}
+		try {
+			Symbol s = (Symbol) arg1;
+			cont.extend(
+				new ExpressionAction(obj, env, null)).append(
+				new AssignmentAction(s, env, null));
+
+			return null;
+//			cont.action = new AssignmentAction(s, env, cont.action);
+//			return obj.eval(env, cont);
 		}
-		else {
-			throw new GleamException("set!: too few arguments", args);
+		catch (ClassCastException e) {
+			throw new GleamException("set!: argument is not a symbol", arg1);
 		}
 	}
 
@@ -199,40 +170,26 @@ public final class Syntax {
 	throws GleamException {
 		// equivalent to the body of a procedure with no arguments
 		cont.action = gleam.lang.Closure.addCommandSequenceActions(args, env, cont.action);
-		return Void.makeVoid();
+		return null;
 	}
 
 
 	/**
 	 * make-rewriter
 	 */
-	public static Entity gleam_make_rewriter(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_make_rewriter_$1(Entity obj, Environment env, Continuation cont)
 	throws GleamException {
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-			obj = it.next();
-			if (!it.hasNext()) {
-				// evaluate argument: must be a function of exactly one argument
-				// obj = obj.eval(env, cont);
-				if (!(obj instanceof Closure)) {
-					throw new GleamException(
-						"make-rewriter: argument must be a function of one argument",
-						args);
-				}
-				else {
-					Closure closure = (Closure) obj;
-					// TODO: check closure arity == 1 // FIXME ?
-					return new SyntaxRewriter(closure);
-				}
-
-			}
-			else {
-				throw new GleamException("make-rewriter: too many arguments", args);
-			}
+		// evaluate argument: must be a function of exactly one argument
+		// obj = obj.eval(env, cont);
+		if (!(obj instanceof Closure)) {
+			throw new GleamException(
+				"make-rewriter: argument must be a function of one argument",
+				obj);
 		}
 		else {
-			throw new GleamException("make-rewriter: too few arguments", args);
+			Closure closure = (Closure) obj;
+			// TODO: check closure arity == 1 // FIXME ?
+			return new SyntaxRewriter(closure);
 		}
 	}
 
@@ -240,16 +197,13 @@ public final class Syntax {
 	/**
 	 * rewrite1
 	 */
-	public static Entity gleam_rewrite1(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_rewrite1_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException {
-		if (args instanceof EmptyList) {
-			throw new GleamException("rewrite1: too few arguments", args);
+		try {
+			return gleam.lang.System.rewrite1((Pair) arg1, env);
+		} catch (ClassCastException ex) {
+			throw new GleamException(
+				"rewrite1: argument is not a list", arg1);
 		}
-		
-		if (!(args.getCar() instanceof Pair && args.getCdr() instanceof EmptyList)) {
-			throw new GleamException("rewrite1: invalid arguments", args);
-		}
-			
-		return gleam.lang.System.rewrite1( (Pair) args.getCar(), env);
 	}
 }

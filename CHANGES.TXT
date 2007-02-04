@@ -1,3 +1,10 @@
+Release 0.89
+2007-02-04
+	Changed the convention for argument passing to primitive procedures
+	written in Java. Procedures with 0 - 3 arguments now have specific 
+	signatures. Checking of correct number of arguments was factored out of 
+	library procedures in gleam.library, and moved to PrimitiveProcedure.
+
 2007-01-28
 	Added the gleam.lang.JavaObject class, holding arbitrary Java objects.
 	The primitives 'new' and 'call' are used to instantiate a Java object

@@ -34,11 +34,19 @@ import java.lang.reflect.*;
  */
 public class PrimitiveProcedure extends Procedure
 {
-	protected static final Class[] param =
-		new Class[] { Pair.class, Environment.class, Continuation.class };
+	protected int minArgs, maxArgs;
+	
+	protected static final Class[][] param = new Class[][] {
+		new Class[] { Environment.class, Continuation.class },
+		new Class[] { Entity.class, Environment.class, Continuation.class },
+		new Class[] { Entity.class, Entity.class, Environment.class, Continuation.class },
+		new Class[] { Entity.class, Entity.class, Entity.class, Environment.class, Continuation.class },
+		new Class[] { Pair.class, Environment.class, Continuation.class },
+	};
+	
 	protected static final String LIBRARY = "gleam.library.";
 
-	protected String name;
+	protected String opName, shortName;
 	protected transient Method value;
 
 	/**
@@ -47,31 +55,34 @@ public class PrimitiveProcedure extends Procedure
 	protected PrimitiveProcedure() {
 	}
 
-	public PrimitiveProcedure(String shortname)
+	public PrimitiveProcedure(String opName, String shortName, int minArgs, int maxArgs)
 		throws GleamException
 	{
+		String fullName = null;
 		try {
-			name = LIBRARY + shortname;
-
-			String classname =
-				name.substring(0, name.lastIndexOf('.'));
-			String methodname =
-				name.substring(name.lastIndexOf('.')+1);
+			this.minArgs = minArgs;
+			this.maxArgs = maxArgs;
+			this.opName = opName;
+			this.shortName = shortName;
+			
+			fullName = LIBRARY + shortName + argSuffix();
+			String classname = fullName.substring(0, fullName.lastIndexOf('.'));
+			String methodname = fullName.substring(fullName.lastIndexOf('.')+1);
 			Class primitiveClass = Class.forName(classname);
-
-			value = primitiveClass.getMethod(methodname, param);
+			
+			this.value = primitiveClass.getMethod(methodname, getParam());
 		}
 		catch (java.lang.ClassNotFoundException e) {
 			throw new GleamException(
-				"CompiledProcedure c'tor ("
-				+ name
+				"PrimitiveProcedure.<init> ("
+				+ fullName
 				+ "): ClassNotFoundException: "
 				+ e.getMessage(), null);
 		}
 		catch (java.lang.NoSuchMethodException e) {
 			throw new GleamException(
-				"CompiledProcedure c'tor ("
-				+ name
+				"PrimitiveProcedure.<init> ("
+				+ fullName
 				+ "): NoSuchMethodException: "
 				+ e.getMessage(), null);
 		}
@@ -85,8 +96,7 @@ public class PrimitiveProcedure extends Procedure
 	{
 //		java.lang.System.out.println("readResolve() called! (PrimitiveProcedure)"); //DEBUG
 		try {
-			return new PrimitiveProcedure(
-				name.substring(LIBRARY.length()));
+			return new PrimitiveProcedure(opName, shortName, minArgs, maxArgs);
 		}
 		catch (gleam.lang.GleamException e) {
 			throw new java.io.InvalidObjectException("No such method");
@@ -97,8 +107,41 @@ public class PrimitiveProcedure extends Procedure
 		throws GleamException
 	{
 		try {
-			return (Entity) value.invoke(null,
-					new java.lang.Object[] {arg, env, cont} );
+			if (maxArgs < 0 || maxArgs > 3) {
+				if (minArgs >= 0 && maxArgs >= 0) {
+					checkNumArgs(arg);
+				}
+				return (Entity) value.invoke(null, new java.lang.Object[] {
+					arg, env, cont} );
+			}
+			// ok, 1 <= maxArgs <= 3 : special rules
+			assert 1 <= maxArgs && maxArgs <= 3; // DEBUG
+			Entity[] argArray = new Entity[] {null, null, null};
+			int countedArgs = 0;
+			ListIterator it = new ListIterator(arg);
+			while (it.hasNext()) {
+				argArray[countedArgs++] = it.next();
+				if (countedArgs > maxArgs) {
+					throw new GleamException(opName + ": too many arguments", arg);
+				}
+			}
+			if (countedArgs < minArgs) {
+				throw new GleamException(opName + ": too few arguments", arg);
+			}
+			switch (maxArgs) {
+				case 1:
+					return (Entity) value.invoke(null, new java.lang.Object[] {
+						argArray[0], env, cont} );
+				case 2:
+					return (Entity) value.invoke(null, new java.lang.Object[] {
+						argArray[0], argArray[1], env, cont} );
+				case 3:
+					return (Entity) value.invoke(null, new java.lang.Object[] {
+						argArray[0], argArray[1], argArray[2], env, cont} );
+				default: // DEBUG CANNOT HAPPEN
+					assert false;
+					return null;
+			}
 		}
 		catch (java.lang.reflect.InvocationTargetException e) {
 			Throwable t = e.getTargetException();
@@ -123,5 +166,40 @@ public class PrimitiveProcedure extends Procedure
 		out.write("#<primitive-procedure "+ value.getName() + ">");
 	}
 
-}
+	private String argSuffix() {
+		if (minArgs == maxArgs) 
+			return "_$" + minArgs;
+		else if (maxArgs == -1) {
+			if (minArgs == 0)
+				return "";
+			else
+				return "_$" + minArgs + "_N";
+		}
+		else
+			return "_$" + minArgs + "_" + maxArgs;
+	}
 
+	private Class[] getParam() {
+			if (maxArgs < 0 || maxArgs > 3)
+				return param[4];
+			else
+				return param[maxArgs];
+	}
+
+	private void checkNumArgs(Pair args) throws GleamException {
+		ListIterator it = new ListIterator(args);
+		int i;
+		for (i = 0; i < minArgs; ++i) {
+			if (!it.hasNext()) {
+				throw new GleamException(opName + ": too few arguments", args);
+			}
+		}
+		if (maxArgs > 0) {
+			while (it.hasNext()) {
+				if (++i > maxArgs)
+					throw new GleamException(opName + ": too many arguments", args);
+			}
+		}
+	}
+
+}

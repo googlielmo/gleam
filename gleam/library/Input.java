@@ -49,41 +49,23 @@ public final class Input {
 	 * eof-object?
 	 * Tests if argument is an EOF object
 	 */
-	public static Entity gleam_eof_object_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_eof_object_p_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-       			obj = it.next();
-		}
-		else {
-			throw new GleamException("eof-object?: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj instanceof Eof);
-		}
-		else {
-			throw new GleamException("eof-object?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(arg1 instanceof Eof);
 	}
 
 	/**
 	 * read
 	 * Reads an object
 	 */
-	public static Entity gleam_read(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_read_$0_1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		try {
 			InputPort iport;
-			ListIterator it = new ListIterator(args);
-			if (it.hasNext()) {
-				iport = (InputPort) it.next();
-				if (it.hasNext()) {
-					throw new  GleamException("read: too many arguments", args);
-				}
+			if (arg1 != null) {
+				iport = (InputPort) arg1;
 			}
 			else {
 				iport = gleam.lang.System.getCin();
@@ -92,11 +74,11 @@ public final class Input {
 				return iport.read();
 			}
 			else {
-				throw new  GleamException("read: closed input port", args);
+				throw new GleamException("read: closed input port", arg1);
 			}
 		}
 		catch (ClassCastException e) {
-			throw new  GleamException("read: not an input port", args);
+			throw new GleamException("read: not an input port", arg1);
 		}
 	}
 

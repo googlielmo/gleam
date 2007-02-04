@@ -72,10 +72,10 @@ public final class System
 
 	// static initializer, executed once after loading class
 	static {
+		bindIOPorts();
 		fillKeywordSet();
 		createInitialEnvironments();
 		fillHelpMaps();
-		bindIOPorts();
 	}
 
 	/**
@@ -101,13 +101,15 @@ public final class System
 			nullEnv = new SystemEnvironment(null, SystemEnvironment.NULL);
 			for (int i = 0; i < nullEnvBindings.length; ++i) {
 				if (nullEnvBindings[i].procedureName !=
-				    Binding.NOPROCEDURE) {
+				    Binding.NO_PROCEDURE) {
 					nullEnv.define(
 						Symbol.makeSymbol(
 						nullEnvBindings[i].name),
 						new SyntaxProcedure(
-						nullEnvBindings[i].
-						procedureName));
+							nullEnvBindings[i].name,
+							nullEnvBindings[i].procedureName, 
+							nullEnvBindings[i].minArgs, 
+							nullEnvBindings[i].maxArgs));
 				}
 			}
 
@@ -118,13 +120,14 @@ public final class System
 
 			for (int i = 0; i < r5rsEnvBindings.length; ++i) {
 				if (r5rsEnvBindings[i].procedureName !=
-				    Binding.NOPROCEDURE) {
+				    Binding.NO_PROCEDURE) {
 					r5rsEnv.define(
-						Symbol.makeSymbol(
-						r5rsEnvBindings[i].name),
+						Symbol.makeSymbol(r5rsEnvBindings[i].name),
 						new PrimitiveProcedure(
-						r5rsEnvBindings[i].
-						procedureName));
+							r5rsEnvBindings[i].name,
+							r5rsEnvBindings[i].procedureName, 
+							r5rsEnvBindings[i].minArgs, 
+							r5rsEnvBindings[i].maxArgs));
 				}
 			}
 
@@ -135,13 +138,15 @@ public final class System
 
 			for (int i = 0; i < intrEnvBindings.length; ++i) {
 				if (intrEnvBindings[i].procedureName !=
-				    Binding.NOPROCEDURE) {
+				    Binding.NO_PROCEDURE) {
 					intrEnv.define(
 						Symbol.makeSymbol(
 						intrEnvBindings[i].name),
 						new PrimitiveProcedure(
-						intrEnvBindings[i].
-						procedureName));
+							intrEnvBindings[i].name,
+							intrEnvBindings[i].procedureName, 
+							intrEnvBindings[i].minArgs, 
+							intrEnvBindings[i].maxArgs));
 				}
 			}
 

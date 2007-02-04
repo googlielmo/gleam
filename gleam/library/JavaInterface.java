@@ -61,28 +61,12 @@ public class JavaInterface {
 	}
 
 	/**
-	 * j-null
-	 */
-	public static Entity gleam_j_null(Pair args, Environment env, Continuation cont)
-		throws GleamException
-	{
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-			throw new GleamException("j-null: too many arguments", args);
-		}
-		return new JavaObject();
-	}	
-
-	/**
 	 * new
 	 */
-	public static Entity gleam_new(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_new_$1_N(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		ListIterator it = new ListIterator(args);
-		if (!it.hasNext()) {
-			throw new GleamException("new: too few arguments", args);
-		}
 		Entity className = it.next();
 		if (!(className instanceof Symbol)) {
 			throw new GleamException("new: wrong argument type, should be a symbol", className);
@@ -103,19 +87,13 @@ public class JavaInterface {
 	/**
 	 * call
 	 */
-	public static Entity gleam_call(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_call_$2_N(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		ListIterator it = new ListIterator(args);
-		if (!it.hasNext()) {
-			throw new GleamException("call: too few arguments", args);
-		}
 		Entity methodName = it.next();
 		if (!(methodName instanceof Symbol)) {
 			throw new GleamException("call: wrong argument type, should be a symbol", methodName);
-		}
-		if (!it.hasNext()) {
-			throw new GleamException("call: too few arguments", args);
 		}
 		Entity object = it.next();
 		if (!(object instanceof JavaObject)) {

@@ -51,30 +51,20 @@ public final class SystemInterface {
 	 * load
 	 * Loads and executes an external source file
 	 */
-	public static Entity gleam_load(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_load_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		try {
-			MutableString filename = null;
-			ListIterator it = new ListIterator(args);	
-			if (it.hasNext()) {
-				filename = (MutableString) it.next();
-				if (it.hasNext()) {
-					throw new GleamException("load: too many arguments", args);
-				}
-				InputPort iport = new InputPort(filename.toString());
-				env.getInterpreter().load(iport, env);
-				return Void.makeVoid();
-			}
-			else {
-				throw new GleamException("load: too few arguments", args);
-			}
+			MutableString filename = (MutableString) arg1;
+			InputPort iport = new InputPort(filename.toString());
+			env.getInterpreter().load(iport, env);
+			return Void.makeVoid();
 		}
 		catch (ClassCastException e) {
-			throw new GleamException("load: argument is not a string", args);
+			throw new GleamException("load: argument is not a string", arg1);
 		}
 		catch (java.io.FileNotFoundException e) {
-			throw new GleamException("load: file not found", args);
+			throw new GleamException("load: file not found", arg1);
 		}
 	}
 }

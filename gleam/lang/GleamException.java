@@ -48,7 +48,8 @@ public class GleamException extends java.lang.Exception
 		else {
 			errobj = Void.value;
 		}
-		System.getInteractionEnv().define(Symbol.ERROBJ, errobj);
+		if (System.getInteractionEnv() != null)
+			System.getInteractionEnv().define(Symbol.ERROBJ, errobj);
 		gleam.util.Report.println(5, "Generated exception: " + message);
 	}
 

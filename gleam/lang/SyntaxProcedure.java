@@ -51,10 +51,10 @@ public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject 
 	 * Creates a SyntaxProcedure with the same rules
 	 * as its parent class, PrimitiveProcedure.
 	 */
-	public SyntaxProcedure(String shortname)
+	public SyntaxProcedure(String opName, String shortname, int minArgs, int maxArgs)
 		throws GleamException
 	{
-		super(shortname);
+		super(opName, shortname, minArgs, maxArgs);
 	}
 
 	public void write(java.io.PrintWriter out) {

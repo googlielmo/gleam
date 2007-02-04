@@ -49,24 +49,10 @@ public final class Characters {
 	 * char?
 	 * Tests if argument is a character
 	 */
-	public static Entity gleam_char_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_char_p_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);	
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("char?: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj instanceof Character);
-		}
-		else {
-			throw new GleamException("char?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(arg1 instanceof Character);
 	}
 
 }

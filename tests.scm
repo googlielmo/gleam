@@ -170,9 +170,10 @@
 ;;;;;;;;
 
 (define d1 (new 'java.util.Date))
-(eqv? d2 d1)
-;#t
+(define d2 d1)
 (eq? d2 d1)
+;#t
+(eqv? d2 d1)
 ;#t
 (define s1 (new 'java.lang.String 'test))
 (define s2 (new 'java.lang.String 'test))

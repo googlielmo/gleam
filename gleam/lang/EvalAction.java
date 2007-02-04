@@ -33,8 +33,7 @@
 package gleam.lang;
 
 /**
- *
- * @author Guglielmo
+ * Eval action
  */
 public class EvalAction extends Action {
 	Environment env;

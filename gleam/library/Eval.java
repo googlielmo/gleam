@@ -50,65 +50,42 @@ public final class Eval {
 	 * eval
 	 * Evaluates an expression in an environment
 	 */
-	public static Entity gleam_eval(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_eval_$1_2(Entity arg1, Entity arg2, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity expr;
 		Environment eval_env;
-		ListIterator it = new ListIterator(args);	
-		if (it.hasNext()) {
-			expr = it.next();
-			if (it.hasNext()) {
-				try {
-					eval_env = (Environment) it.next();
-					if (it.hasNext()) {
-						throw new GleamException("eval: too many arguments", args);
-					}
-				}
-				catch (ClassCastException e) {
-					throw new GleamException("eval: not an environment", args);
-				}
-			}
-			else {
-				eval_env = env;
-			}
-			expr = expr.analyze().optimize(eval_env);
-			cont.extend(new ExpressionAction(expr, eval_env, null));
-			return null;
+		if (arg2 == null)
+			eval_env = env;
+		else try {
+			eval_env = (Environment) arg2;
 		}
-		else {
-			throw new GleamException("eval: too few arguments", args);
+		catch (ClassCastException e) {
+			throw new GleamException("eval: not an environment", arg2);
 		}
+		arg1 = arg1.analyze().optimize(eval_env);
+		cont.extend(new ExpressionAction(arg1, eval_env, null));
+		return null;
 	}
 
 	/**
 	 * null-environment
 	 * Returns the null environment
 	 */
-	public static Entity gleam_null_environment(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_null_environment_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		Number version;
-		ListIterator it = new ListIterator(args);	
-		if (it.hasNext()) {
-			try {
-				version = (Number) it.next();
-				if (it.hasNext()) {
-					throw new GleamException("null-environment: too many arguments", args);
-				}
-				if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
-					return gleam.lang.System.getNullEnv();
-				}
-				else {
-					throw new GleamException("null-environment: version not supported", version);
-				}
+		try {
+			version = (Number) arg1;
+			if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
+				return gleam.lang.System.getNullEnv();
 			}
-			catch (ClassCastException e) {
-				throw new GleamException("null-environment: not a version number", args);
+			else {
+				throw new GleamException("null-environment: version not supported", version);
 			}
 		}
-		else {
-			throw new GleamException("null-environment: too few arguments", args);
+		catch (ClassCastException e) {
+			throw new GleamException("null-environment: not a version number", arg1);
 		}
 	}
 
@@ -116,30 +93,21 @@ public final class Eval {
 	 * scheme-report-environment
 	 * Returns the scheme-report environment
 	 */
-	public static Entity gleam_scheme_report_environment(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_scheme_report_environment_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		Number version;
-		ListIterator it = new ListIterator(args);	
-		if (it.hasNext()) {
-			try {
-				version = (Number) it.next();
-				if (it.hasNext()) {
-					throw new GleamException("scheme-report-environment: too many arguments", args);
-				}
-				if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
-					return gleam.lang.System.getSchemeReportEnv();
-				}
-				else {
-					throw new GleamException("scheme-report-environment: version not supported", version);
-				}
+		try {
+			version = (Number) arg1;
+			if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
+				return gleam.lang.System.getSchemeReportEnv();
 			}
-			catch (ClassCastException e) {
-				throw new GleamException("scheme-report-environment: not a version number", args);
+			else {
+				throw new GleamException("scheme-report-environment: version not supported", version);
 			}
 		}
-		else {
-			throw new GleamException("scheme-report-environment: too few arguments", args);
+		catch (ClassCastException e) {
+			throw new GleamException("scheme-report-environment: not a version number", arg1);
 		}
 	}
 
@@ -147,13 +115,9 @@ public final class Eval {
 	 * interaction-environment
 	 * Returns the interaction environment
 	 */
-	public static Entity gleam_interaction_environment(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_interaction_environment_$0(Environment env, Continuation cont)
 		throws GleamException
 	{
-		if (args != EmptyList.makeEmptyList()) {
-			throw new GleamException("interaction-environment: too many arguments", args);
-		}
-
 		return gleam.lang.System.getInteractionEnv();
 	}
 

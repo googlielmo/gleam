@@ -49,59 +49,27 @@ public final class ControlFeatures {
 	 * procedure?
 	 * Tests if argument is a procedure
 	 */
-	public static Entity gleam_procedure_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_procedure_p_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("procedure?: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj instanceof Procedure);
-		}
-		else {
-			throw new GleamException("procedure?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(arg1 instanceof Procedure);
 	}
 
 	/**
 	 * call-with-current-continuation
 	 */
-	public static Entity gleam_callcc(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_callcc_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException, CloneNotSupportedException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-			obj = it.next();
+		if (arg1 instanceof Procedure) {
+			/* create a new procedure call with the continuation argument. */
+			ArgumentList arglist = new ArgumentList();
+			arglist.put(new Continuation(cont), 0); // copy-constructor: cont itself is going to change soon!
+			cont.action = new ProcedureCallAction(arglist, env, cont.action);
+			return arg1;
 		}
 		else {
-			throw new GleamException("call-with-current-continuation: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			if (obj instanceof Procedure) {
-				/* create a new procedure call
-				 * with the continuation argument.
-				 * note the copy-constructor: 
-				 * cont itself is going to change soon!
-				 */
-				ArgumentList arglist = new ArgumentList();
-				arglist.put(new Continuation(cont), 0);
-				cont.action = new ProcedureCallAction(arglist, env, cont.action);
-				return obj;
-			}
-			else {
-				throw new GleamException("call-with-current-continuation: wrong argument type, should be a procedure", args);
-			}
-		}
-		else {
-			throw new GleamException("call-with-current-continuation: too many arguments", args);
+			throw new GleamException("call-with-current-continuation: wrong argument type, should be a procedure", arg1);
 		}
 	}
 

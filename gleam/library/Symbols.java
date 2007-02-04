@@ -51,34 +51,20 @@ public final class Symbols {
 	 * symbol?
 	 * Tests if argument is a symbol
 	 */
-	public static Entity gleam_symbol_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_symbol_p_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("symbol?: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj instanceof Symbol);
-		}
-		else {
-			throw new GleamException("symbol?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(arg1 instanceof Symbol);
 	}
 
 	/**
 	 * symbol?
 	 * Tests if argument is a symbol
 	 */
-	public static Entity gleam_generate_symbol(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_generate_symbol_$0(Environment env, Continuation cont)
 		throws GleamException
 	{
-		return Symbol.makeUninternedSymbol("_S"+(gencount++));
+		return Symbol.makeUninternedSymbol("__S"+(gencount++));
 	}
 
 	private static int gencount = 0;

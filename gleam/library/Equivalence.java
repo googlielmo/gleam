@@ -32,6 +32,7 @@ import gleam.lang.Character;
 import gleam.lang.Void;
  
 import gleam.lang.*;
+import java.util.List;
 
 /**
  * Primitive operator and procedure implementation library.
@@ -48,50 +49,24 @@ public final class Equivalence {
 	 * eq?
 	 * Compares arguments by address.
 	 */
-	public static Entity gleam_eq_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_eq_p_$2(Entity arg1, Entity arg2, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj1, obj2;
-		ListIterator it = new ListIterator(args);	
-		if (!it.hasNext()) {
-			throw new GleamException("eq?: too few arguments", args);
-		}
-		obj1 = it.next();
-		if (!it.hasNext()) {
-			throw new GleamException("eq?: too few arguments", args);
-		}
-		obj2 = it.next();
-		if (it.hasNext()) {
-			throw new GleamException("eq?: too many arguments", args);
-		}
 		// Java object are a special case, since we want to compare the 
 		// underlying objects to preserve common Java semantics
-		if (obj1 instanceof JavaObject && obj2 instanceof JavaObject)
-			return Boolean.makeBoolean(((JavaObject) obj1).eq_p((JavaObject) obj2));
+		if (arg1 instanceof JavaObject && arg2 instanceof JavaObject)
+			return Boolean.makeBoolean(((JavaObject) arg1).eq_p((JavaObject) arg2));
 		else
-			return Boolean.makeBoolean(obj1 == obj2);
+			return Boolean.makeBoolean(arg1 == arg2);
 	}
 
 	/**
 	 * eqv?
 	 * Compares arguments by address or value.
 	 */
-	public static Entity gleam_eqv_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_eqv_p_$2(Entity arg1, Entity arg2, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj1, obj2;
-		ListIterator it = new ListIterator(args);	
-		if (!it.hasNext()) {
-			throw new GleamException("eqv?: too few arguments", args);
-		}
-		obj1 = it.next();
-		if (!it.hasNext()) {
-			throw new GleamException("eqv?: too few arguments", args);
-		}
-		obj2 = it.next();
-		if (it.hasNext()) {
-			throw new GleamException("eqv?: too many arguments", args);
-		}
-		return Boolean.makeBoolean(obj1.equals(obj2));
+		return Boolean.makeBoolean(arg1.equals(arg2));
 	}
 }

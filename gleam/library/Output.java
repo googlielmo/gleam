@@ -51,29 +51,18 @@ public final class Output {
 	 * display
 	 * Displays an object
 	 */
-	public static Entity gleam_display(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_display_$1_2(Entity obj, Entity obj2, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null, obj2;
-		ListIterator it = new ListIterator(args);
 		OutputPort out;
 
-		// get object to print
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("display: too few arguments", args);
-		}
-
 		// get output port, if present
-		if (it.hasNext()) {
-			obj2 = it.next();
+		if (obj2 != null) {
 			if (obj2 instanceof OutputPort) {
 				out = (OutputPort) obj2;
 			}
 			else {
-				throw new GleamException("display: not an output port", args);
+				throw new GleamException("display: not an output port", obj2);
 			}
 		}
 		else {
@@ -81,17 +70,12 @@ public final class Output {
 		}
 
 		// print object
-		if (!it.hasNext()) {
-			if (out.isOpen()) {
-				out.display(obj);
-				return Void.makeVoid();
-			}
-			else {
-				throw new  GleamException("display: closed output port", args);
-			}
+		if (out.isOpen()) {
+			out.display(obj);
+			return Void.makeVoid();
 		}
 		else {
-			throw new GleamException("display: too many arguments", args);
+			throw new  GleamException("display: closed output port", out);
 		}
 	}
 
@@ -99,29 +83,18 @@ public final class Output {
 	 * write
 	 * Writes an object
 	 */
-	public static Entity gleam_write(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_write_$1_2(Entity obj, Entity obj2, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null, obj2;
-		ListIterator it = new ListIterator(args);
 		OutputPort out;
 
-		// get object to print
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("write: too few arguments", args);
-		}
-
 		// get output port, if present
-		if (it.hasNext()) {
-			obj2 = it.next();
+		if (obj2 != null) {
 			if (obj2 instanceof OutputPort) {
 				out = (OutputPort) obj2;
 			}
 			else {
-				throw new GleamException("write: not an output port", args);
+				throw new GleamException("write: not an output port", obj2);
 			}
 		}
 		else {
@@ -129,17 +102,12 @@ public final class Output {
 		}
 
 		// print object
-		if (!it.hasNext()) {
-			if (out.isOpen()) {
-				out.write(obj);
-				return Void.makeVoid();
-			}
-			else {
-				throw new  GleamException("write: closed output port", args);
-			}
+		if (out.isOpen()) {
+			out.write(obj);
+			return Void.makeVoid();
 		}
 		else {
-			throw new GleamException("write: too many arguments", args);
+			throw new  GleamException("write: closed output port", out);
 		}
 	}
 
@@ -147,32 +115,28 @@ public final class Output {
 	 * newline
 	 * Writes an end of line
 	 */
-	public static Entity gleam_newline(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_newline_$0_1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		try {
-			OutputPort oport;
-			ListIterator it = new ListIterator(args);
-			if (it.hasNext()) {
-				oport = (OutputPort) it.next();
-				if (it.hasNext()) {
-					throw new  GleamException("newline: too many arguments", args);
-				}
+		OutputPort oport;
+		if (arg1 != null) {
+			if (arg1 instanceof OutputPort) {
+				oport = (OutputPort) arg1;
 			}
 			else {
-				oport = gleam.lang.System.getCout();
-			}
-
-			if (oport.isOpen()) {
-				oport.newline();
-				return Void.makeVoid();
-			}
-			else {
-				throw new  GleamException("newline: closed output port", args);
+				throw new GleamException("newline: not an output port", arg1);
 			}
 		}
-		catch (ClassCastException e) {
-			throw new  GleamException("newline: not an output port", args);
+		else {
+			oport = gleam.lang.System.getCout();
+		}
+
+		if (oport.isOpen()) {
+			oport.newline();
+			return Void.makeVoid();
+		}
+		else {
+			throw new  GleamException("newline: closed output port", oport);
 		}
 	}
 

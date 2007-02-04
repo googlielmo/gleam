@@ -106,5 +106,19 @@ public class ListIterator {
 			parentPair.car = newArg;
 		}
 	}
+	
+	/**
+	 * Remove operation currently not supported. 
+	 */
+	public void remove() {
+		throw new UnsupportedOperationException("Remove operation currently not supported");
+	}
+
+	/**
+	 * Returns the remaining portion of the list as a Pair.
+	 */
+	public Pair rest() {
+		return pair;
+	}
 }
 

@@ -47,43 +47,19 @@ public final class Booleans {
 	 * boolean?
 	 * Tests if argument is a boolean
 	 */
-	public static Entity gleam_boolean_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_boolean_p_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);	
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("boolean?: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj instanceof Boolean);
-		}
-		else {
-			throw new GleamException("boolean?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(arg1 instanceof Boolean);
 	}
 
 	/**
 	 * not
 	 * Logical Not operator
 	 */
-	public static Entity gleam_not_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_not_p_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);	
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj.equals(Boolean.falseValue));
-		}
-		else {
-			throw new GleamException("not?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(arg1.equals(Boolean.falseValue));
 	}
 }

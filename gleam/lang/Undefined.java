@@ -29,7 +29,6 @@ package gleam.lang;
 /**
  * The Scheme undefined value (a singleton).
  * Creation date: (07/nov/2001 23.40.59)
- * @author: Guglielmo Nigri
  */
 public final class Undefined extends Entity {
 

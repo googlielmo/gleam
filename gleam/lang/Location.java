@@ -24,13 +24,18 @@
  *
  */
 
+/*
+ * Location.java
+ *
+ * Creation date: 03/11/2001 11.16.18
+ */
+
 package gleam.lang;
 
 /**
  * A location object, which gives compiled (constant-time) read/write access to
  * a variable. Locations are used in compiled Scheme code to avoid interpreted
  * (non constant-time) lookup and set operations on variables.
- * Creation date: (03/11/01 11.16.18)
  */
 public final class Location extends Entity
 {
@@ -43,7 +48,7 @@ public final class Location extends Entity
 		this.value = value;
 	}
 
-	// Location evaluates to its content value
+	/** Location evaluates to its content value */
 	public Entity eval(Environment env, Continuation cont)
 		throws GleamException
 	{
@@ -51,8 +56,7 @@ public final class Location extends Entity
 	}
 
 	/**
-	 * Sets referred object's contents
-	 * Creation date: (03/11/01 11.16.36)
+	 * Sets current referred object
 	 */
 	public void set(Entity obj) {
 		this.value = obj;
@@ -66,7 +70,7 @@ public final class Location extends Entity
 	}
 
 	/**
-	 * write method comment.
+	 * Writes this location
 	 */
 	public void write(java.io.PrintWriter out) {
 		out.write("#<location of ");

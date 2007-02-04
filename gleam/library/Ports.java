@@ -51,102 +51,50 @@ public final class Ports {
 	 * port?
 	 * Tests if argument is a port
 	 */
-	public static Entity gleam_port_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_port_p_$1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);	
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("port?: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj instanceof Port);
-		}
-		else {
-			throw new GleamException("port?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(obj instanceof Port);
 	}
 
 	/**
 	 * input-port?
 	 * Tests if argument is an input port
 	 */
-	public static Entity gleam_input_port_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_input_port_p_$1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);	
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("input-port?: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj instanceof InputPort);
-		}
-		else {
-			throw new GleamException("input-port?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(obj instanceof InputPort);
 	}
 
 	/**
 	 * output-port?
 	 * Tests if argument is an output port
 	 */
-	public static Entity gleam_output_port_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_output_port_p_$1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);	
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("output-port?: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj instanceof OutputPort);
-		}
-		else {
-			throw new GleamException("port?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(obj instanceof OutputPort);
 	}
 
 	/**
 	 * current-input-port
 	 * Returns the current input port
 	 */
-	public static Entity gleam_current_input_port(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_current_input_port_$0(Environment env, Continuation cont)
 		throws GleamException
 	{
-		if (args == EmptyList.makeEmptyList()) {
-			return gleam.lang.System.getCin();
-		}
-		else {
-			throw new GleamException("current-input-port: too many arguments", args);
-		}
+		return gleam.lang.System.getCin();
 	}
 
 	/**
 	 * current-output-port
 	 * Returns the current output port
 	 */
-	public static Entity gleam_current_output_port(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_current_output_port_$0(Environment env, Continuation cont)
 		throws GleamException
 	{
-		if (args == EmptyList.makeEmptyList()) {
-			return gleam.lang.System.getCout();
-		}
-		else {
-			throw new GleamException("current-output-port: too many arguments", args);
-		}
+		return gleam.lang.System.getCout();
 	}
 
 }

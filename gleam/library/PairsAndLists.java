@@ -51,17 +51,14 @@ public final class PairsAndLists {
 	 * car
 	 * Takes the first element of a pair.
 	 */
-	public static Entity gleam_car(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_car_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		try {
-			if (!(args.getCdr() instanceof EmptyList)) {
-				throw new GleamException("car: too many arguments", args);
-			}
-			return ((Pair)args.getCar()).getCar();
+			return ((Pair) arg1).getCar();
 		}
 		catch (ClassCastException e) {
-			throw new GleamException("car: invalid arguments", args);
+			throw new GleamException("car: invalid argument", arg1);
 		}
 	}
 
@@ -69,17 +66,14 @@ public final class PairsAndLists {
 	 * cdr
 	 * Takes the second element of a pair.
 	 */
-	public static Entity gleam_cdr(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_cdr_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		try {
-			if (!(args.getCdr() instanceof EmptyList)) {
-				throw new GleamException("cdr: too many arguments", args);
-			}
-			return ((Pair)args.getCar()).getCdr();
+			return ((Pair) arg1).getCdr();
 		}
 		catch (ClassCastException e) {
-			throw new GleamException("cdr: argument is not a proper pair", args);
+			throw new GleamException("cdr: invalid argument", arg1);
 		}
 	}
 
@@ -87,29 +81,9 @@ public final class PairsAndLists {
 	 * cons
 	 * Creates a new pair.
 	 */
-	public static Entity gleam_cons(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_cons_$2(Entity first, Entity second, Environment env, Continuation cont)
 		throws GleamException
 	{
-		ListIterator it = new ListIterator(args);
-		Entity first, second;
-		if (it.hasNext()) {
-			first = it.next();
-		}
-		else {
-				throw new GleamException("cons: too few arguments", args);
-		}
-
-		if (it.hasNext()) {
-			second = it.next();
-		}
-		else {
-				throw new GleamException("cons: too few arguments", args);
-		}
-
-		if (it.hasNext()) {
-				throw new GleamException("cons: too many arguments", args);
-		}
-
 		return new Pair(first, second);
 	}
 
@@ -120,11 +94,11 @@ public final class PairsAndLists {
 	public static Entity gleam_append(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
+		Entity sbap = null; // should be a pair (used for error reporting)
 		try {
 			ListIterator it = new ListIterator(args);
-			if (!it.hasNext()) {
-				throw new GleamException("append: too few arguments", args);
-			}
+			if (!it.hasNext())
+				return EmptyList.makeEmptyList();
 
 			Entity last = it.next();
 			Pair ret = new Pair(EmptyList.makeEmptyList(), last);
@@ -138,13 +112,16 @@ public final class PairsAndLists {
 				}
 				else {
 					// shallow copy
-					last = new Pair( ((Pair)last).getCar(), ((Pair)last).getCdr());
+					sbap = last;
+					last = new Pair( ((Pair) sbap).getCar(), ((Pair) sbap).getCdr());
 					lastPair.setCdr(last);
 
 					// append
-					Pair p = (Pair)last;
+					sbap = last;
+					Pair p = (Pair) sbap;
 					while (p.getCdr() != EmptyList.makeEmptyList()) {
-						p = (Pair) p.getCdr();
+						sbap = p.getCdr();
+						p = (Pair) sbap;
 					}
 
 					// prepare next
@@ -156,7 +133,7 @@ public final class PairsAndLists {
 			return ret.getCdr();
 		}
 		catch (ClassCastException e) {
-			throw new GleamException("append: argument not a list", args);
+			throw new GleamException("append: argument is not a list", sbap);
 		}
 	}
 
@@ -185,84 +162,33 @@ public final class PairsAndLists {
 	 * pair?
 	 * Tests if argument is a pair
 	 */
-	public static Entity gleam_pair_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_pair_p_$1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("pair?: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(
-					(obj instanceof Pair)
-					&& !(obj instanceof EmptyList));
-		}
-		else {
-			throw new GleamException("pair?: too many arguments", args);
-		}
+		return Boolean.makeBoolean((obj instanceof Pair) && !(obj instanceof EmptyList));
 	}
 
 	/**
 	 * null?
 	 * Tests if argument is the empty list
 	 */
-	public static Entity gleam_null_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_null_p_$1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		else {
-			throw new GleamException("null?: too few arguments", args);
-		}
-
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj instanceof EmptyList);
-		}
-		else {
-			throw new GleamException("null?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(obj instanceof EmptyList);
 	}
 
 	/**
 	 * set-car!
 	 * store an object in the car field of a pair.
 	 */
-	public static Entity gleam_set_car_m(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_set_car_m_$2(Entity first, Entity second, Environment env, Continuation cont)
 		throws GleamException
 	{
-		ListIterator it = new ListIterator(args);
-		Entity first, second;
-		if (it.hasNext()) {
-			first = it.next();
-		}
-		else {
-				throw new GleamException("set-car!: too few arguments", args);
-		}
-
-		if (it.hasNext()) {
-			second = it.next();
-		}
-		else {
-				throw new GleamException("set-car!: too few arguments", args);
-		}
-
-		if (it.hasNext()) {
-				throw new GleamException("set-car!: too many arguments", args);
-		}
-
 		if (!(first instanceof Pair))
-			throw new GleamException("set-car!: invalid arguments", first);
-		
-		((Pair) first).setCar(second);
+			throw new GleamException("set-car!: invalid argument", first);
 
+		((Pair) first).setCar(second);
 		return Void.makeVoid();
 	}
 
@@ -270,34 +196,13 @@ public final class PairsAndLists {
 	 * set-cdr!
 	 * store an object in the cdr field of a pair.
 	 */
-	public static Entity gleam_set_cdr_m(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_set_cdr_m_$2(Entity first, Entity second, Environment env, Continuation cont)
 		throws GleamException
 	{
-		ListIterator it = new ListIterator(args);
-		Entity first, second;
-		if (it.hasNext()) {
-			first = it.next();
-		}
-		else {
-				throw new GleamException("set-cdr!: too few arguments", args);
-		}
-
-		if (it.hasNext()) {
-			second = it.next();
-		}
-		else {
-				throw new GleamException("set-cdr!: too few arguments", args);
-		}
-
-		if (it.hasNext()) {
-				throw new GleamException("set-cdr!: too many arguments", args);
-		}
-
 		if (!(first instanceof Pair))
 			throw new GleamException("set-cdr!: invalid arguments", first);
-		
-		((Pair) first).setCdr(second);
 
+		((Pair) first).setCdr(second);
 		return Void.makeVoid();
 	}
 

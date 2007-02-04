@@ -51,20 +51,10 @@ public final class Strings {
 	 * string?
 	 * Tests if argument is a string
 	 */
-	public static Entity gleam_string_p(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_string_p_$1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj = null;
-		ListIterator it = new ListIterator(args);	
-		if (it.hasNext()) {
-			obj = it.next();
-		}
-		if (!it.hasNext()) {
-			return Boolean.makeBoolean(obj instanceof MutableString);
-		}
-		else {
-			throw new GleamException("string?: too many arguments", args);
-		}
+		return Boolean.makeBoolean(obj instanceof MutableString);
 	}
 
 }

@@ -52,23 +52,17 @@ public final class Interaction {
 	 * Help
 	 * Gives help on primitives.
 	 */
-	public static Entity gleam_help(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_help_$0_1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj;
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
+		if (arg1 != null) {
 			// we have an explicit argument,
 			// so print full documentation
-			obj = it.next();
-			if (!(obj instanceof Symbol)) {
-				throw new GleamException("help: invalid argument", obj);
-			}
-			if (it.hasNext()) {
-				throw new GleamException("help: too many arguments", args);
+			if (!(arg1 instanceof Symbol)) {
+				throw new GleamException("help: invalid argument", arg1);
 			}
 
-			String pname = ((Symbol)obj).toString();
+			String pname = ((Symbol)arg1).toString();
 			String doc = System.getHelpDocumentation(pname);
 			if (doc != null) {
 				System.getCout().print(doc);
@@ -76,7 +70,7 @@ public final class Interaction {
 			}
 			else {
 				System.getCout().print("No documentation available for ");
-				System.getCout().print(((Symbol)obj).toString());
+				System.getCout().print(((Symbol)arg1).toString());
 				System.getCout().print(". Try (help).");
 				System.getCout().newline();
 			}
@@ -118,65 +112,46 @@ public final class Interaction {
 	 * Verbosity
 	 * Sets gleam runtime support verbosity (1..5)
 	 */
-	public static Entity gleam_verbosity(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_verbosity_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj;
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-			obj = it.next();
-			if (!(obj instanceof Number)) {
-				throw new GleamException("verbosity: invalid argument", obj);
-			}
-			if (it.hasNext()) {
-				throw new GleamException("verbosity: too many arguments", args);
-			}
-			double v = ((Number)obj).getDoubleValue();
-			if (v < 0.0 || v > 5.0) {
-				throw new GleamException("verbosity: invalid argument (should be between 0 and 5)", obj);
-			}
-			gleam.util.Report.setVerbosity((int)v);
-			return Void.makeVoid();
+		if (!(arg1 instanceof Number)) {
+			throw new GleamException("verbosity: invalid argument", arg1);
 		}
-		else {
-			throw new GleamException("verbosity: too few arguments", args);
+		double v = ((Number)arg1).getDoubleValue();
+		if (v < 0.0 || v > 5.0) {
+			throw new GleamException("verbosity: invalid argument (should be between 0 and 5)", arg1);
 		}
+		gleam.util.Report.setVerbosity((int) v);
+		return Void.makeVoid();
 	}
 
 	/**
 	 * Save-session
 	 * Saves the session environment.
 	 */
-	public static Entity gleam_save_session(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_save_session_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj; // default
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-			obj = it.next();
-			if (obj instanceof MutableString) {
-				try {
-					java.io.FileOutputStream
-						f = new java.io.FileOutputStream(((MutableString)obj).toString());
-					java.io.ObjectOutput
-						s = new java.io.ObjectOutputStream(f);
-					s.writeObject(env.getInterpreter().getSessionEnv());
-					return Void.makeVoid();
-				}
-				catch (java.io.FileNotFoundException e) {
-					throw new GleamException("save-session: file not found", obj);
-				}
-				catch (java.io.IOException e) {
-					Report.printStackTrace(e);
-					throw new GleamException("save-session: I/O error", obj);
-				}
+		if (arg1 instanceof MutableString) {
+			try {
+				java.io.FileOutputStream
+					f = new java.io.FileOutputStream(((MutableString)arg1).toString());
+				java.io.ObjectOutput
+					s = new java.io.ObjectOutputStream(f);
+				s.writeObject(env.getInterpreter().getSessionEnv());
+				return Void.makeVoid();
 			}
-			else {
-				throw new GleamException("save-session: invalid argument", obj);
+			catch (java.io.FileNotFoundException e) {
+				throw new GleamException("save-session: file not found", arg1);
+			}
+			catch (java.io.IOException e) {
+				Report.printStackTrace(e);
+				throw new GleamException("save-session: I/O error", arg1);
 			}
 		}
 		else {
-			throw new GleamException("save-session: too few arguments", args);
+			throw new GleamException("save-session: invalid argument", arg1);
 		}
 	}
 
@@ -184,43 +159,35 @@ public final class Interaction {
 	 * Load-session
 	 * Loads the session environment.
 	 */
-	public static Entity gleam_load_session(Pair args, Environment env, Continuation cont)
+	public static Entity gleam_load_session_$1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
-		Entity obj; // default
-		ListIterator it = new ListIterator(args);
-		if (it.hasNext()) {
-			obj = it.next();
-			if (obj instanceof MutableString) {
-				try {
-					java.io.FileInputStream
-						f = new java.io.FileInputStream(((MutableString)obj).toString());
-					java.io.ObjectInputStream
-						s = new java.io.ObjectInputStream(f);
-					Environment glob = (Environment) s.readObject();
-					env.getInterpreter().setSessionEnv(glob);
-					return Void.makeVoid();
-				}
-				catch (java.io.FileNotFoundException e) {
-					throw new GleamException("load-session: file not found", obj);
-				}
-				catch (java.io.IOException e) {
-					Report.printStackTrace(e);;
-					throw new GleamException("load-session: I/O error", obj);
-				}
-				catch (java.lang.ClassNotFoundException e) {
-					throw new GleamException("load-session: class not found", obj);
-				}
-				catch (java.lang.ClassCastException e) {
-					throw new GleamException("load-session: invalid class", obj);
-				}
+		if (arg1 instanceof MutableString) {
+			try {
+				java.io.FileInputStream
+					f = new java.io.FileInputStream(((MutableString)arg1).toString());
+				java.io.ObjectInputStream
+					s = new java.io.ObjectInputStream(f);
+				Environment glob = (Environment) s.readObject();
+				env.getInterpreter().setSessionEnv(glob);
+				return Void.makeVoid();
 			}
-			else {
-				throw new GleamException("load-session: invalid argument", obj);
+			catch (java.io.FileNotFoundException e) {
+				throw new GleamException("load-session: file not found", arg1);
+			}
+			catch (java.io.IOException e) {
+				Report.printStackTrace(e);;
+				throw new GleamException("load-session: I/O error", arg1);
+			}
+			catch (java.lang.ClassNotFoundException e) {
+				throw new GleamException("load-session: class not found", arg1);
+			}
+			catch (java.lang.ClassCastException e) {
+				throw new GleamException("load-session: invalid class", arg1);
 			}
 		}
 		else {
-			throw new GleamException("load-session: too few arguments", args);
+			throw new GleamException("load-session: invalid argument", arg1);
 		}
 	}
 

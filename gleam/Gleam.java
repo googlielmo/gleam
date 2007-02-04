@@ -36,7 +36,7 @@ import gleam.lang.Symbol;
 public class Gleam
 {
 	// Gleam release number
-	private static final String RELEASE="0.89 pre-1";
+	private static final String RELEASE="0.89";
 
 	// Dump env symbol (for debugging)
 	private static final Symbol cEnv = Symbol.makeSymbol("!e");
@@ -52,17 +52,17 @@ public class Gleam
 	{
 		Interpreter intp = null;
 
-		System.out.print("Welcome to Gleam, release " + RELEASE + ".\n");
-		System.out.print("(c) 2001-2007 Guglielmo Nigri <guglielmonigri@yahoo.it>.\n");
-		System.out.print("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are\n");
-		System.out.print("welcome to redistribute it under certain conditions; see LICENSE.TXT.\n");
+		System.out.println("Welcome to Gleam, release " + RELEASE);
+		System.out.println("(c) 2001-2007 Guglielmo Nigri <guglielmonigri@yahoo.it>.");
+		System.out.println("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are");
+		System.out.println("welcome to redistribute it under certain conditions; see LICENSE.TXT.");
 
 		try {
 			System.out.print("Bootstrapping... ");
 			intp = new Interpreter();
-			System.out.print("OK\n");
+			System.out.println("OK");
 		} catch (GleamException e) {
-			System.out.println("\n*** " + e.getMessage());
+			e.printStackTrace();
 			System.exit(1);
 		}
 		System.out.print("Type (help) for help, !q to quit.\n\n");
