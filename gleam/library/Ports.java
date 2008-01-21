@@ -26,13 +26,7 @@
 
 package gleam.library;
 
-import gleam.lang.Entity;
 import gleam.lang.Boolean;
-import gleam.lang.Character;
-import gleam.lang.Number;
-import gleam.lang.System;
-import gleam.lang.Void;
- 
 import gleam.lang.*;
 
 /**
@@ -48,53 +42,86 @@ public final class Ports {
 	}
 
 	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the three initial environments.
+	 */
+	public static Primitive[] primitives = {
+
+	/**
 	 * port?
 	 * Tests if argument is a port
 	 */
-	public static Entity gleam_port_p_$1(Entity obj, Environment env, Continuation cont)
+	new Primitive( "port?",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Returns true if argument is a port, false otherwise",
+		"E.g. (port? (current-input-port)) => #t" /* doc strings */ ) {
+	public Entity apply1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return Boolean.makeBoolean(obj instanceof Port);
-	}
+	}},
 
 	/**
 	 * input-port?
 	 * Tests if argument is an input port
 	 */
-	public static Entity gleam_input_port_p_$1(Entity obj, Environment env, Continuation cont)
+	new Primitive( "input-port?",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Returns true if argument is an input port, false otherwise",
+		"E.g. (input-port? (current-input-port)) => #t" /* doc strings */ ) {
+	public Entity apply1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return Boolean.makeBoolean(obj instanceof InputPort);
-	}
+	}},
 
 	/**
 	 * output-port?
 	 * Tests if argument is an output port
 	 */
-	public static Entity gleam_output_port_p_$1(Entity obj, Environment env, Continuation cont)
+	new Primitive( "output-port?",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Returns true if argument is an output port, false otherwise",
+		"E.g. (output-port? (current-input-port)) => #f" /* doc strings */ ) {
+	public Entity apply1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return Boolean.makeBoolean(obj instanceof OutputPort);
-	}
+	}},
 
 	/**
 	 * current-input-port
 	 * Returns the current input port
 	 */
-	public static Entity gleam_current_input_port_$0(Environment env, Continuation cont)
+	new Primitive( "current-input-port",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, 0, /* min, max no. of arguments */
+		"Returns the current input port",
+		null /* doc strings */ ) {
+	public Entity apply0(Environment env, Continuation cont)
 		throws GleamException
 	{
 		return gleam.lang.System.getCin();
-	}
+	}},
 
 	/**
 	 * current-output-port
 	 * Returns the current output port
 	 */
-	public static Entity gleam_current_output_port_$0(Environment env, Continuation cont)
+	new Primitive( "current-output-port",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, 0, /* min, max no. of arguments */
+		"Returns the current output port",
+		null /* doc strings */ ) {
+	public Entity apply0(Environment env, Continuation cont)
 		throws GleamException
 	{
 		return gleam.lang.System.getCout();
-	}
+	}},
 
+	};
 }

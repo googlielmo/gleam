@@ -26,15 +26,6 @@
 
 package gleam.library;
 
-import gleam.lang.Entity;
-import gleam.lang.Boolean;
-import gleam.lang.Character;
-import gleam.lang.Number;
-import gleam.lang.System;
-import gleam.lang.Void;
- 
-import gleam.lang.*;
-
 /**
  * VECTORS
  * Primitive operator and procedure implementation library.
@@ -46,5 +37,14 @@ public final class Vectors {
 	 */
 	private Vectors() {
 	}
+
+	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the three initial environments.
+	 */
+	public static Primitive[] primitives = {
+		
+	}; // primitives
 
 }

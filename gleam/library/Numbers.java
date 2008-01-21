@@ -26,13 +26,8 @@
 
 package gleam.library;
 
-import gleam.lang.Entity;
 import gleam.lang.Boolean;
-import gleam.lang.Character;
 import gleam.lang.Number;
-import gleam.lang.System;
-import gleam.lang.Void;
- 
 import gleam.lang.*;
 
 /**
@@ -47,10 +42,22 @@ public final class Numbers {
 	}
 
 	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the initial environments.
+	 */
+	public static Primitive[] primitives = {
+
+	/**
 	 * -
 	 * Implements the minus operator.
 	 */
-	public static Entity gleam_difference(Pair args, Environment env, Continuation cont)
+	new Primitive( "-",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Difference, e.g. (- 7 3); Also negation, e.g. (- x)",
+		null /* doc strings */ ) {
+	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		double result = 0.0;
@@ -63,7 +70,7 @@ public final class Numbers {
 				result -= ((Number) obj).getDoubleValue();
 			}
 			else {
-				throw new GleamException("-: argument is not a number", obj);
+				throw new GleamException(this, "argument is not a number", obj);
 			}
 		}
 		/* if it is a real difference make sign adjustment and
@@ -78,17 +85,22 @@ public final class Numbers {
 				result -= ((Number) obj).getDoubleValue();
 			}
 			else {
-				throw new GleamException("-: argument is not a number", obj);
+				throw new GleamException(this, "argument is not a number", obj);
 			}
 		}	
 		return new Real(result);
-	}
+	}},
 
 	/**
 	 * +
 	 * Implements the plus operator.
 	 */
-	public static Entity gleam_plus(Pair args, Environment env, Continuation cont)
+	new Primitive( "+",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Addition, e.g (+ 1 2)",
+		null /* doc strings */ ) {
+	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		double result = 0.0;
@@ -100,17 +112,22 @@ public final class Numbers {
 				result += ((Number) obj).getDoubleValue();
 			}
 			else {
-				throw new GleamException("+: argument is not a number", obj);
+				throw new GleamException(this, "argument is not a number", obj);
 			}
 		}	
 		return new Real(result);
-	}
+	}},
 
 	/**
 	 * /
-	 * Implements the divided by operator.
+	 * Implements the division operator.
 	 */
-	public static Entity gleam_quotient(Pair args, Environment env, Continuation cont)
+	new Primitive( "/",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Division, e.g. (/ 42 7)",
+		null /* doc strings */ ) {
+	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		double result = 1.0;
@@ -122,17 +139,22 @@ public final class Numbers {
 				result /= ((Number) obj).getDoubleValue();
 			}
 			else {
-				throw new GleamException("/: argument is not a number", obj);
+				throw new GleamException(this, "argument is not a number", obj);
 			}
 		}	
 		return new Real(result);
-	}
+	}},
 
 	/**
 	 * *
-	 * Implements the times operator.
+	 * Implements the multiplication operator.
 	 */
-	public static Entity gleam_times(Pair args, Environment env, Continuation cont)
+	new Primitive( "*",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Multiplication, e.g. (* 7 9)",
+		null /* doc strings */ ) {
+	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		double result = 1.0;
@@ -144,17 +166,22 @@ public final class Numbers {
 				result *= ((Number) obj).getDoubleValue();
 			}
 			else {
-				throw new GleamException("*: argument is not a number", obj);
+				throw new GleamException(this, "argument is not a number", obj);
 			}
 		}	
 		return new Real(result);
-	}
+	}},
 	
 	/**
 	 * =
 	 * Implements the equals operator.
 	 */
-	public static Entity gleam_e_$2_N(Pair args, Environment env, Continuation cont)
+	new Primitive( "=",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		2, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Equals comparison, e.g. (= 1 1)",
+		null /* doc strings */ ) {
+	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		boolean retVal = true;
@@ -167,7 +194,7 @@ public final class Numbers {
 			prev = ((Number) obj).getDoubleValue();
 		}
 		else {
-			throw new GleamException("=: argument is not a number", obj);
+			throw new GleamException(this, "argument is not a number", obj);
 		}
 		
 		// follow remaining arguments
@@ -179,17 +206,22 @@ public final class Numbers {
 				prev = curr;
 			}
 			else {
-				throw new GleamException("=: argument is not a number", obj);
+				throw new GleamException(this, "argument is not a number", obj);
 			}
 		}	
 		return Boolean.makeBoolean(retVal);
-	}
+	}},
 
 	/**
 	 * &gt;= 
 	 * Implements the greater than or equals operator.
 	 */
-	public static Entity gleam_gte_$2_N(Pair args, Environment env, Continuation cont)
+	new Primitive( ">=",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		2, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Greater-than-or-equals comparison, e.g. (>= 1 2)",
+		null /* doc strings */ ) {
+	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		boolean retVal = true;
@@ -202,7 +234,7 @@ public final class Numbers {
 			prev = ((Number) obj).getDoubleValue();
 		}
 		else {
-			throw new GleamException(">=: argument is not a number", obj);
+			throw new GleamException(this, "argument is not a number", obj);
 		}
 		
 		// follow remaining arguments
@@ -214,17 +246,22 @@ public final class Numbers {
 				prev = curr;
 			}
 			else {
-				throw new GleamException(">=: argument is not a number", obj);
+				throw new GleamException(this, "argument is not a number", obj);
 			}
 		}	
 		return Boolean.makeBoolean(retVal);
-	}
+	}},
 
 	/**
 	 * &lt;=
 	 * Implements the less than or equals operator.
 	 */
-	public static Entity gleam_lte_$2_N(Pair args, Environment env, Continuation cont)
+	new Primitive( "<=",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		2, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Less-than-or-equals comparison, e.g. (<= 1 2)",
+		null /* doc strings */ ) {
+	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		boolean retVal = true;
@@ -237,7 +274,7 @@ public final class Numbers {
 			prev = ((Number) obj).getDoubleValue();
 		}
 		else {
-			throw new GleamException("<=: argument is not a number", obj);
+			throw new GleamException(this, "argument is not a number", obj);
 		}
 		
 		// follow remaining arguments
@@ -249,17 +286,22 @@ public final class Numbers {
 				prev = curr;
 			}
 			else {
-				throw new GleamException("<=: argument is not a number", obj);
+				throw new GleamException(this, "argument is not a number", obj);
 			}
 		}	
 		return Boolean.makeBoolean(retVal);
-	}
+	}},
 
 	/**
 	 * &gt;
 	 * Implements the greater than operator.
 	 */
-	public static Entity gleam_gt_$2_N(Pair args, Environment env, Continuation cont)
+	new Primitive( ">",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		2, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Greater-than comparison, e.g. (> 1 2)",
+		null /* doc strings */ ) {
+	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		boolean retVal = true;
@@ -272,7 +314,7 @@ public final class Numbers {
 			prev = ((Number) obj).getDoubleValue();
 		}
 		else {
-			throw new GleamException(">: argument is not a number", obj);
+			throw new GleamException(this, "argument is not a number", obj);
 		}
 		
 		// follow remaining arguments
@@ -284,17 +326,22 @@ public final class Numbers {
 				prev = curr;
 			}
 			else {
-				throw new GleamException(">: argument is not a number", obj);
+				throw new GleamException(this, "argument is not a number", obj);
 			}
 		}	
 		return Boolean.makeBoolean(retVal);
-	}
+	}},
 
 	/**
 	 * &lt;
 	 * Implements the less than operator.
 	 */
-	public static Entity gleam_lt_$2_N(Pair args, Environment env, Continuation cont)
+	new Primitive( "<",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		2, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Less-than comparison, e.g. (< 1 2)",
+		null /* doc strings */ ) {
+	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		boolean retVal = true;
@@ -307,7 +354,7 @@ public final class Numbers {
 			prev = ((Number) obj).getDoubleValue();
 		}
 		else {
-			throw new GleamException("<: argument is not a number", obj);
+			throw new GleamException(this, "argument is not a number", obj);
 		}
 		
 		// follow remaining arguments
@@ -319,19 +366,26 @@ public final class Numbers {
 				prev = curr;
 			}
 			else {
-				throw new GleamException("<: argument is not a number", obj);
+				throw new GleamException(this, "argument is not a number", obj);
 			}
 		}	
 		return Boolean.makeBoolean(retVal);
-	}
+	}},
 
 	/**
 	 * number?
 	 * Tests if argument is a number
 	 */
-	public static Entity gleam_number_p_$1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "number?",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Returns true if argument is a number, false otherwise",
+		"E.g. (number? 3) => #t" /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return Boolean.makeBoolean(arg1 instanceof Number);
-	}
+	}},
+	
+	}; // primitives
 }

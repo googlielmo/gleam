@@ -26,10 +26,11 @@
 
 package gleam.lang;
 
-import gleam.util.Report;
+import gleam.library.Primitive;
 
 /**
  * Scheme runtime support.
+ * Creation date: 03/11/2001
  */
 public final class System
 {
@@ -62,20 +63,10 @@ public final class System
 	private static java.util.HashMap helpDocumentation
 		= new java.util.HashMap();
 
-	// links to real bindings
-	private static Binding[] nullEnvBindings =
-		InitialEnvironments.nullEnvBindings;
-	private static Binding[] r5rsEnvBindings =
-		InitialEnvironments.r5rsEnvBindings;
-	private static Binding[] intrEnvBindings =
-		InitialEnvironments.intrEnvBindings;
-
 	// static initializer, executed once after loading class
 	static {
 		bindIOPorts();
-		fillKeywordSet();
 		createInitialEnvironments();
-		fillHelpMaps();
 	}
 
 	/**
@@ -90,8 +81,45 @@ public final class System
 	}
 
 	/**
+	 *
+	 */
+	private static void importPrimitives(Primitive[] primitives) {
+		Environment instEnv;
+		for (int i = 0; i < primitives.length; ++i) {
+			switch (primitives[i].definitionEnv) {
+			case Primitive.NULL_ENV:
+				instEnv = nullEnv;
+				break;
+			case Primitive.R5RS_ENV:
+				instEnv = r5rsEnv;
+				break;
+			default:
+				instEnv = intrEnv;
+			}
+			installPrimitive(instEnv, primitives[i]);
+		}
+	}
+
+	/**
+	 *
+	 */
+	private static void installPrimitive(Environment env, Primitive primitive) {
+		Symbol name = Symbol.makeSymbol(primitive.getName());
+		Procedure proc = primitive.keyword ? new SyntaxProcedure(primitive) : new PrimitiveProcedure(primitive);
+		env.define(name, proc);
+
+		if (primitive.keyword)
+			kwSet.add(name);
+
+		if (primitive.comment != null)
+			helpComment.put(primitive.getName(), primitive.comment);
+
+		if (primitive.documentation != null)
+			helpDocumentation.put(primitive.getName(), primitive.documentation);
+	}
+
+	/**
 	 * Creates the three initial environments (null, r5rs, interaction).
-	 * Creation date: (03/11/01 10.00.30)
 	 */
 	private static void createInitialEnvironments() {
 		try {
@@ -99,56 +127,37 @@ public final class System
 			 * define null environment
 			 */
 			nullEnv = new SystemEnvironment(null, SystemEnvironment.NULL);
-			for (int i = 0; i < nullEnvBindings.length; ++i) {
-				if (nullEnvBindings[i].procedureName !=
-				    Binding.NO_PROCEDURE) {
-					nullEnv.define(
-						Symbol.makeSymbol(
-						nullEnvBindings[i].name),
-						new SyntaxProcedure(
-							nullEnvBindings[i].name,
-							nullEnvBindings[i].procedureName, 
-							nullEnvBindings[i].minArgs, 
-							nullEnvBindings[i].maxArgs));
-				}
-			}
 
 			/*
 			 * define scheme-report environment
 			 */
 			r5rsEnv = new SystemEnvironment(nullEnv, SystemEnvironment.R5RS);
 
-			for (int i = 0; i < r5rsEnvBindings.length; ++i) {
-				if (r5rsEnvBindings[i].procedureName !=
-				    Binding.NO_PROCEDURE) {
-					r5rsEnv.define(
-						Symbol.makeSymbol(r5rsEnvBindings[i].name),
-						new PrimitiveProcedure(
-							r5rsEnvBindings[i].name,
-							r5rsEnvBindings[i].procedureName, 
-							r5rsEnvBindings[i].minArgs, 
-							r5rsEnvBindings[i].maxArgs));
-				}
-			}
-
 			/*
 			 * define interaction environment
 			 */
 			intrEnv = new SystemEnvironment(r5rsEnv, SystemEnvironment.INTR);
 
-			for (int i = 0; i < intrEnvBindings.length; ++i) {
-				if (intrEnvBindings[i].procedureName !=
-				    Binding.NO_PROCEDURE) {
-					intrEnv.define(
-						Symbol.makeSymbol(
-						intrEnvBindings[i].name),
-						new PrimitiveProcedure(
-							intrEnvBindings[i].name,
-							intrEnvBindings[i].procedureName, 
-							intrEnvBindings[i].minArgs, 
-							intrEnvBindings[i].maxArgs));
-				}
-			}
+			/*
+			 * import primitives
+			 */
+			importPrimitives(gleam.library.Booleans.primitives);
+			importPrimitives(gleam.library.Characters.primitives);
+			importPrimitives(gleam.library.ControlFeatures.primitives);
+			importPrimitives(gleam.library.Equivalence.primitives);
+			importPrimitives(gleam.library.Eval.primitives);
+			importPrimitives(gleam.library.Input.primitives);
+			importPrimitives(gleam.library.Interaction.primitives);
+			importPrimitives(gleam.library.JavaInterface.primitives);
+			importPrimitives(gleam.library.Numbers.primitives);
+			importPrimitives(gleam.library.Output.primitives);
+			importPrimitives(gleam.library.PairsAndLists.primitives);
+			importPrimitives(gleam.library.Ports.primitives);
+			importPrimitives(gleam.library.Strings.primitives);
+			importPrimitives(gleam.library.Symbols.primitives);
+			importPrimitives(gleam.library.Syntax.primitives);
+			importPrimitives(gleam.library.SystemInterface.primitives);
+			importPrimitives(gleam.library.Vectors.primitives);
 
 			/*
 			 * add special symbols to interaction environment
@@ -156,73 +165,13 @@ public final class System
 			intrEnv.define(Symbol.ERROBJ, Void.value);
 			intrEnv.define(Symbol.CALL_CC, r5rsEnv.lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
 			intrEnv.define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
-		}
+
+                }
 		catch (GleamException e) {
 			// should never happen
-			gleam.util.Report.println(1,
+			gleam.util.Log.record(1,
 			  "Internal error during environment initialization: "
 			  + e.getMessage());
-		}
-	}
-
-	/**
-	 * Installs the Gleam language keyword set.
-	 * Creation date: (03/11/01 10.32.05)
-	 */
-	private static void fillKeywordSet() {
-		for (int i = 0; i < nullEnvBindings.length; ++i) {
-			if (nullEnvBindings[i].keyword) {
-				kwSet.add(Symbol.makeSymbol(nullEnvBindings[i].
-					name));
-			}
-		}
-		for (int i = 0; i < r5rsEnvBindings.length; ++i) {
-			if (r5rsEnvBindings[i].keyword) {
-				kwSet.add(Symbol.makeSymbol(r5rsEnvBindings[i].
-					name));
-			}
-		}
-		for (int i = 0; i < intrEnvBindings.length; ++i) {
-			if (intrEnvBindings[i].keyword) {
-				kwSet.add(Symbol.makeSymbol(intrEnvBindings[i].
-					name));
-			}
-		}
-	}
-
-	/**
-	 * Installs the help maps.
-	 */
-	static void fillHelpMaps() {
-		for (int i = 0; i < nullEnvBindings.length; ++i) {
-			if (nullEnvBindings[i].comment != null) {
-				helpComment.put(nullEnvBindings[i].name,
-						nullEnvBindings[i].comment);
-			}
-			if (nullEnvBindings[i].documentation != null) {
-				helpDocumentation.put(nullEnvBindings[i].name,
-					nullEnvBindings[i].documentation);
-			}
-		}
-		for (int i = 0; i < r5rsEnvBindings.length; ++i) {
-			if (r5rsEnvBindings[i].comment != null) {
-				helpComment.put(r5rsEnvBindings[i].name,
-						r5rsEnvBindings[i].comment);
-			}
-			if (r5rsEnvBindings[i].documentation != null) {
-				helpDocumentation.put(r5rsEnvBindings[i].name,
-					r5rsEnvBindings[i].documentation);
-			}
-		}
-		for (int i = 0; i < intrEnvBindings.length; ++i) {
-			if (intrEnvBindings[i].comment != null) {
-				helpComment.put(intrEnvBindings[i].name,
-						intrEnvBindings[i].comment);
-			}
-			if (intrEnvBindings[i].documentation != null) {
-				helpDocumentation.put(intrEnvBindings[i].name,
-					intrEnvBindings[i].documentation);
-			}
 		}
 	}
 
@@ -516,7 +465,7 @@ public final class System
 			}
 		}
 		else {
-			gleam.util.Report.println(4, "not a special form!");
+			gleam.util.Log.record(4, "not a special form!");
 		}
 	}
 
@@ -722,14 +671,14 @@ public final class System
 		else {
 			Environment retVal = new Environment(env);
 			// iterate on varList, binding each var to Undefined
-			gleam.util.Report.println(5, "Scanned out: ");
+			gleam.util.Log.record(5, "Scanned out: ");
 			ListIterator vit = new ListIterator(varList);
 			while (vit.hasNext()) {
 				Symbol var = (Symbol) vit.next();
 				retVal.define(var, Undefined.value);
-				gleam.util.Report.println(5, var);
+				gleam.util.Log.record(5, "variable", var);
 			}
-			gleam.util.Report.println(5, "...end of scan-out");
+			gleam.util.Log.record(5, "...end of scan-out");
 			return retVal;
 		}
 	}
@@ -769,46 +718,4 @@ public final class System
 		//
 		return retVal;
 	}
-
-	/**
-	 * the Gleam evaluator
-	 */
-	public static Entity eval(Entity expr, Environment env)
-		throws gleam.lang.GleamException {
-		expr = expr.analyze().optimize(env);
-		Action todo = new ExpressionAction(expr, env, null);
-		Continuation program = new Continuation(todo);
-		return program.apply(voidList, env, new Continuation());
-	}
-	
-	private static Pair voidList = new Pair(Void.value, EmptyList.value);
-
-	/**
-	 * Rewrites an expression once, if it is an use of a syntax rewriter.
-	 *
-	 * @param expr the expression to rewrite
-	 * @param env the environment
-	 * @return the rewritten expression, or expr itself if the expression
-	 *         was not an use of a syntax rewriter. The returned expression
-	 *         may be yet another use of a syntax rewriter.
-	 */
-	public static Entity rewrite1(Pair expr, Environment env) throws
-		GleamException {
-		Entity retVal = expr;
-		Entity rewriter = null;
-		if (expr.car instanceof Symbol) {
-			rewriter = env.lookup( (Symbol) expr.car);
-		}
-		else if (expr.car instanceof Location) {
-			rewriter = ( (Location) expr.car).get();
-		}
-
-		if (rewriter instanceof SyntaxRewriter) {
-			Pair closureapp = new Pair((SyntaxRewriter) rewriter, new Pair(expr, EmptyList.makeEmptyList()));
-			retVal = eval(closureapp, env);
-			Report.println(2, "Rewritten as: ", retVal);
-		}
-		return retVal;
-	}
-
 }

@@ -43,7 +43,7 @@ import gleam.lang.MutableString;
 import gleam.lang.Pair;
 import gleam.lang.Real;
 import gleam.lang.Symbol;
-import gleam.util.Report;
+import gleam.util.Log;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -61,15 +61,27 @@ public class JavaInterface {
 	}
 
 	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the initial environments.
+	 */
+	public static Primitive[] primitives = {
+
+	/**
 	 * new
 	 */
-	public static Entity gleam_new_$1_N(Pair args, Environment env, Continuation cont)
+	new Primitive( "new",
+		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Makes a new Java object, e.g. (new 'java.util.Date)",
+		null /* doc strings */ ) {
+	public  Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		ListIterator it = new ListIterator(args);
 		Entity className = it.next();
 		if (!(className instanceof Symbol)) {
-			throw new GleamException("new: wrong argument type, should be a symbol", className);
+			throw new GleamException(this, "wrong argument type, should be a symbol", className);
 		}
 		if (!it.hasNext()) {
 			return new JavaObject((Symbol) className);
@@ -82,12 +94,17 @@ public class JavaInterface {
 			argObjects.add(getJavaObject(arg));
 		}
 		return new JavaObject((Symbol) className, (Class[])argClasses.toArray(new Class[0]), argObjects.toArray());
-	}	
+	}},
 
 	/**
 	 * call
 	 */
-	public static Entity gleam_call_$2_N(Pair args, Environment env, Continuation cont)
+	new Primitive( "call",
+		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+		2, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Calls a method on a Java object, e.g. (call 'length (new 'java.lang.String \"test\"))",
+		null /* doc strings */ ) {
+	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		ListIterator it = new ListIterator(args);
@@ -107,7 +124,9 @@ public class JavaInterface {
 			argObjects.add(getJavaObject(arg));
 		}
 		return call((JavaObject) object, (Symbol) methodName, (Class[])argClasses.toArray(new Class[0]), argObjects.toArray());		
-	}
+	}},
+	
+	}; // primitives
 
 	private static Entity call(JavaObject object, Symbol methodName, Class[] parameterTypes, Object[] arguments) throws GleamException {
 		if (object.getObjectValue() == null) {
@@ -120,20 +139,20 @@ public class JavaInterface {
 			// TODO FIXME if method is void return Void.value;
 			return getEntityFromObject(retVal);
 		} catch (SecurityException ex) {
-			Report.printStackTrace(ex);
-			throw new GleamException("call: SecurityException: "+ex.getMessage(), methodName);
+			Log.record(ex);
+			throw new GleamException("call: SecurityException: " + ex.getMessage(), methodName);
 		} catch (IllegalArgumentException ex) {
-			Report.printStackTrace(ex);
-			throw new GleamException("call: IllegalArgumentException: "+ex.getMessage(), methodName);
+			Log.record(ex);
+			throw new GleamException("call: IllegalArgumentException: " + ex.getMessage(), methodName);
 		} catch (NoSuchMethodException ex) {
-			Report.printStackTrace(ex);
-			throw new GleamException("call: NoSuchMethodException: "+ex.getMessage(), methodName);
+			Log.record(ex);
+			throw new GleamException("call: NoSuchMethodException: " + ex.getMessage(), methodName);
 		} catch (IllegalAccessException ex) {
-			Report.printStackTrace(ex);
-			throw new GleamException("call: IllegalAccessException: "+ex.getMessage(), methodName);
+			Log.record(ex);
+			throw new GleamException("call: IllegalAccessException: " + ex.getMessage(), methodName);
 		} catch (InvocationTargetException ex) {
-			Report.printStackTrace(ex);
-			throw new GleamException("call: InvocationTargetException: "+ex.getMessage(), methodName);
+			Log.record(ex);
+			throw new GleamException("call: InvocationTargetException: " + ex.getMessage(), methodName);
 		}
 	}
 

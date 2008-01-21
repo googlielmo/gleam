@@ -28,11 +28,7 @@ package gleam.library;
 
 import gleam.lang.Entity;
 import gleam.lang.Boolean;
-import gleam.lang.Character;
-import gleam.lang.Void;
- 
 import gleam.lang.*;
-import java.util.List;
 
 /**
  * Primitive operator and procedure implementation library.
@@ -42,14 +38,25 @@ public final class Equivalence {
 	/**
 	 * Can't instantiate this class
 	 */
-	private Equivalence() {
-	}
+	private Equivalence() {}
+
+	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the three initial environments.
+	 */
+	public static Primitive[] primitives = {
 
 	/**
 	 * eq?
 	 * Compares arguments by address.
 	 */
-	public static Entity gleam_eq_p_$2(Entity arg1, Entity arg2, Environment env, Continuation cont)
+	new Primitive( "eq?", 
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		2, 2, /* min, max no. of arguments */
+		"True if two objects are the same in memory, false otherwise",
+		"E.g. (eq? 'a 'a) => #t, but (eq? (list 'a) (list 'a)) => #f" /* doc strings */ ) {
+	public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
 		throws GleamException
 	{
 		// Java object are a special case, since we want to compare the 
@@ -58,15 +65,22 @@ public final class Equivalence {
 			return Boolean.makeBoolean(((JavaObject) arg1).eq_p((JavaObject) arg2));
 		else
 			return Boolean.makeBoolean(arg1 == arg2);
-	}
+	}},
 
 	/**
 	 * eqv?
 	 * Compares arguments by address or value.
 	 */
-	public static Entity gleam_eqv_p_$2(Entity arg1, Entity arg2, Environment env, Continuation cont)
+	new Primitive( "eqv?", 
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		2, 2, /* min, max no. of arguments */
+		"True if two objects have equivalent values, false otherwise",
+		"E.g. (eqv? 10 10) => #t" /* doc strings */ ) {
+	public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return Boolean.makeBoolean(arg1.equals(arg2));
-	}
+	}},
+	
+	}; // primitives
 }

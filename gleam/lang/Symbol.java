@@ -27,7 +27,6 @@
 package gleam.lang;
 
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Collections;
 
 /**
@@ -35,6 +34,11 @@ import java.util.Collections;
  */
 public final class Symbol extends Entity
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * The unique symbol table
 	 */

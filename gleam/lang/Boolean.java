@@ -37,6 +37,11 @@ package gleam.lang;
  */
 public final class Boolean extends Entity
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** the truth value of this object */
 	protected boolean value;
 	

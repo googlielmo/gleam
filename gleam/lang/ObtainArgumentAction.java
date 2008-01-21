@@ -28,6 +28,11 @@ package gleam.lang;
 
 public class ObtainArgumentAction extends Action {
 
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private ArgumentList arglist;
 	private int argumentIndex;
 	
@@ -38,8 +43,8 @@ public class ObtainArgumentAction extends Action {
 	}
 
 	Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
-		// arg is already evaluated
 		cont.action = parent;
+		// arg is already evaluated
 		arglist.put(arg, argumentIndex);
 		return arg;
 	}

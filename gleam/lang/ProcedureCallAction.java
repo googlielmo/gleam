@@ -28,6 +28,11 @@ package gleam.lang;
 
 public class ProcedureCallAction extends Action {
 
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private ArgumentList arglist;
 	private Environment env;
 
@@ -37,20 +42,19 @@ public class ProcedureCallAction extends Action {
 		this.parent = parent;
 	}
 
+	// arg is the function, arglist contains the arguments
 	Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
-		// arg is the function, arglist contains the arguments
 		cont.action = parent;
 		// apply function to args, return result
-		Procedure operator = null;
+		Procedure operator;
 		try {
 			operator = (Procedure) arg;
 		}
 		catch (ClassCastException ex) {
 			throw new GleamException(
 				      "procedure call: operator is not a procedure",
-				      operator);
+				      arg);
 		}
-
 		return operator.apply(arglist.getArguments(), env, cont);
 	}
 

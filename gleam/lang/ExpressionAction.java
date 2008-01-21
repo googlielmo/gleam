@@ -33,24 +33,37 @@
 package gleam.lang;
 
 /**
- *
+ * An Action that evaluates an expression.
  */
 public class ExpressionAction extends Action {
-	Entity expr;
-	Environment env;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
 
-	/** Creates a new ExpressionAction */
+	/** the expression to evaluate */
+	private Entity expr;
+	
+	/** the environment in which to evaluate the expression */
+	private Environment env;
+
+	/** Creates a new instance of this action */
 	public ExpressionAction(Entity expr, Environment env, Action parent) {
 		this.expr = expr;
 		this.env = env;
 		this.parent = parent;
 	}
 
-	/** invocation  */
+	/** Invokes this action, causing the evaluation of the expression 
+	 * @param arg is ignored
+	 * @param cont the current Continuation
+	 * @return the result of the evaluation
+	 * @throws gleam.lang.GleamException in case of errors
+	*/
 	Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException
 	{
-		// note: ignore arg
 		cont.action = parent;
+		// note: ignore arg
 		return expr.eval(env, cont);
 	}
 }

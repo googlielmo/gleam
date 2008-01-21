@@ -29,8 +29,6 @@ package gleam.library;
 import gleam.lang.Entity;
 import gleam.lang.Boolean;
 import gleam.lang.Character;
-import gleam.lang.Void;
- 
 import gleam.lang.*;
 
 /**
@@ -46,13 +44,27 @@ public final class Characters {
 	}
 
 	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the three initial environments.
+	 */
+	public static Primitive[] primitives = {
+
+	/**
 	 * char?
 	 * Tests if argument is a character
 	 */
-	public static Entity gleam_char_p_$1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "char?",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Returns true if argument is a character, false otherwise",
+		"E.g. (char? #\\a) => #t" /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return Boolean.makeBoolean(arg1 instanceof Character);
-	}
+	}},
+	
+	}; // primitives
 
 }

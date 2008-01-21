@@ -31,6 +31,11 @@ package gleam.lang;
  */
 public class Real extends Number
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** the value */
 	private double value;
 
@@ -41,7 +46,7 @@ public class Real extends Number
 
 	public Real(int n)
 	{
-		value = n;
+		value = (double) n;
 	}
 
 	/**

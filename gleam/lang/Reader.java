@@ -27,7 +27,6 @@
 package gleam.lang;
 
 import java.io.StreamTokenizer;
-import java.util.Vector;
 
 /**
  * Scheme reader (lexical analyzer & parser).
@@ -79,7 +78,7 @@ class Reader {
 	{
 		try {
 			Entity o = null;
-			if (tkzr.nextToken() != tkzr.TT_EOF) {
+			if (tkzr.nextToken() != StreamTokenizer.TT_EOF) {
 				tkzr.pushBack();
 				o = readObject();
 			}
@@ -193,7 +192,7 @@ class Reader {
 		&& !t.equals("-")
 		&& !t.equals("...")) {
 			try {
-				gleam.util.Report.println(5, "readOthers: interpreting '" + t + "' as a number");
+				gleam.util.Log.record(5, "readOthers: interpreting '" + t + "' as a number");
 				return new Real(Double.parseDouble(t));
 			}
 			catch (java.lang.NumberFormatException e) {
@@ -214,7 +213,7 @@ class Reader {
 		}
 		else if (t.startsWith("\"")) {
 			// it is a string
-			gleam.util.Report.println(5,
+			gleam.util.Log.record(5,
 				"readOthers: interpreting '"
 				+ t + "' as a string");
 			return new MutableString(t.substring(1));
@@ -242,7 +241,7 @@ class Reader {
 		}
 		else {
 			// it is a symbol
-			gleam.util.Report.println(5,
+			gleam.util.Log.record(5,
 				"readOthers: interpreting '"
 				+ t + "' as a symbol");
 			return Symbol.makeSymbol(t);
@@ -281,7 +280,7 @@ class Reader {
 		}
 
 		if (retVal != null)
-			gleam.util.Report.println(5, "TOKEN="+retVal);
+			gleam.util.Log.record(5, "TOKEN="+retVal);
 
 		return retVal;
 	}

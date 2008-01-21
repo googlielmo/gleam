@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2008 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -24,48 +24,48 @@
  *
  */
 
+/*
+ * ExpressionInEnvironmentAction.java
+ *
+ * Created on January, 19 2008, 19.32
+ */
+
 package gleam.lang;
 
 /**
- * The Scheme void value (a singleton).
- * Creation date: (31/10/01 23.06.59)
+ * An Action that evaluates an expression in an arbitrary environment.
  */
-public final class Void extends Entity {
-
+public class ExpressionInEnvironmentAction extends Action {
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	/** the Void singleton */
-	static final Void value = new Void();
 
-	/** Can't instantiate this */
-	private Void() {
+	/** the expression to evaluate */
+	private Entity expr;
+
+	/** Creates a new instance of this action */
+	public ExpressionInEnvironmentAction(Entity expr, Action parent) {
+		this.expr = expr;
+		this.parent = parent;
 	}
 
 	/**
-	 * Factory method
+	 * Invokes this action, causing the evaluation of the expression in the
+	 * environment passed as argument.
+	 * @param arg the environment in which to evaluate the expression
+	 * @param cont the current Continuation
+	 * @return the result of the evaluation
+	 * @throws gleam.lang.GleamException in case of errors
 	 */
-	public static Void makeVoid() {
-		return value;
-	}
-
-	/**
-	 * Prevents the release of multiple instances upon deserialization.
-	 */
-	protected java.lang.Object readResolve()
-		throws java.io.ObjectStreamException
+	Entity invoke(Entity newEnv, Continuation cont) throws gleam.lang.GleamException
 	{
-//		java.lang.System.out.println("readResolve() called! (Void)"); //DEBUG
-		return value;
-	}
-
-	/**
-	 * Writes the void value.
-	 */
-	public void write(java.io.PrintWriter out) {
-		out.write("#<void>");
+		cont.action = parent;
+		if (!(newEnv instanceof Environment)) {
+			throw new GleamException("not an environment", newEnv);
+		}
+		Environment evalEnv = (Environment) newEnv;
+		expr = expr.analyze().optimize(evalEnv);
+		return expr.eval(evalEnv, cont);
 	}
 }
-

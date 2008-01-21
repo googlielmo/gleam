@@ -39,6 +39,10 @@ package gleam.lang;
  * procedure evaluation.
  */
 public final class EmptyList extends Pair {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/** the EmptyList singleton */
 	static final EmptyList value = new EmptyList();

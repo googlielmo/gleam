@@ -26,13 +26,8 @@
 
 package gleam.library;
 
-import gleam.lang.Entity;
-import gleam.lang.Boolean;
-import gleam.lang.Character;
-import gleam.lang.Number;
 import gleam.lang.System;
 import gleam.lang.Void;
- 
 import gleam.lang.*;
 
 /**
@@ -48,10 +43,22 @@ public final class Output {
 	}
 
 	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the initial environments.
+	 */
+	public static Primitive[] primitives = {
+
+	/**
 	 * display
 	 * Displays an object
 	 */
-	public static Entity gleam_display_$1_2(Entity obj, Entity obj2, Environment env, Continuation cont)
+	new Primitive( "display",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 2, /* min, max no. of arguments */
+		"Writes an object in human-readable form, e.g. (display \"hello\")",
+		null /* doc strings */ ) {
+	public Entity apply2(Entity obj, Entity obj2, Environment env, Continuation cont)
 		throws GleamException
 	{
 		OutputPort out;
@@ -62,7 +69,7 @@ public final class Output {
 				out = (OutputPort) obj2;
 			}
 			else {
-				throw new GleamException("display: not an output port", obj2);
+				throw new GleamException(this, "not an output port", obj2);
 			}
 		}
 		else {
@@ -75,15 +82,20 @@ public final class Output {
 			return Void.makeVoid();
 		}
 		else {
-			throw new  GleamException("display: closed output port", out);
+			throw new GleamException(this, "closed output port", out);
 		}
-	}
+	}},
 
 	/**
 	 * write
 	 * Writes an object
 	 */
-	public static Entity gleam_write_$1_2(Entity obj, Entity obj2, Environment env, Continuation cont)
+	new Primitive( "write",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 2, /* min, max no. of arguments */
+		"Writes an object in machine-readable form, e.g. (write \"hello\")",
+		null /* doc strings */ ) {
+	public Entity apply2(Entity obj, Entity obj2, Environment env, Continuation cont)
 		throws GleamException
 	{
 		OutputPort out;
@@ -94,7 +106,7 @@ public final class Output {
 				out = (OutputPort) obj2;
 			}
 			else {
-				throw new GleamException("write: not an output port", obj2);
+				throw new GleamException(this, "not an output port", obj2);
 			}
 		}
 		else {
@@ -107,15 +119,20 @@ public final class Output {
 			return Void.makeVoid();
 		}
 		else {
-			throw new  GleamException("write: closed output port", out);
+			throw new GleamException(this, "closed output port", out);
 		}
-	}
+	}},
 
 	/**
 	 * newline
 	 * Writes an end of line
 	 */
-	public static Entity gleam_newline_$0_1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "newline",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, 1, /* min, max no. of arguments */
+		"Writes an end of line to the current or specified output port",
+		null /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		OutputPort oport;
@@ -124,7 +141,7 @@ public final class Output {
 				oport = (OutputPort) arg1;
 			}
 			else {
-				throw new GleamException("newline: not an output port", arg1);
+				throw new GleamException(this, "not an output port", arg1);
 			}
 		}
 		else {
@@ -136,8 +153,10 @@ public final class Output {
 			return Void.makeVoid();
 		}
 		else {
-			throw new  GleamException("newline: closed output port", oport);
+			throw new GleamException(this, "closed output port", oport);
 		}
-	}
+	}},
+
+	}; // primitives
 
 }

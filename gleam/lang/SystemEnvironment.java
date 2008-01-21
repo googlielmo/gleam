@@ -31,6 +31,11 @@ package gleam.lang;
  */
 public final class SystemEnvironment extends Environment
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	static final int INTR = 2;
 	static final int R5RS = 1;
 	static final int NULL = 0;
@@ -44,7 +49,7 @@ public final class SystemEnvironment extends Environment
 	}
 
 	/** avoids to serialize data of system environments */
-	private Entity writeReplace()
+	protected Entity writeReplace()
 		throws java.io.ObjectStreamException
 	{
 		return new SystemEnvironment(null, kind);

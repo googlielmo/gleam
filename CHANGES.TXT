@@ -1,43 +1,59 @@
+2008-01-20
+
+	Changed the way primitive procedures are defined and invoked.
+	Reflection is not used any more, thus achieving 30x faster calls.
+	Primitives are defined as anonymous classes in arrays of primitives,
+	overriding one of the apply methods (a funny way to obtain anonymous
+	functions in Java :-))
+	Introduced a new syntax: 'in-environment' to evaluate an expression in
+	a given environment. This, along with the 'current-environment'
+	primitive should complete the treatment of environments as first-order 
+	values in Gleam.
+	Reworked the logging class, now called 'gleam.util.Log', in order to use
+	the 'java.util.logging' facility.
+
 Release 0.89
 2007-02-04
+
 	Changed the convention for argument passing to primitive procedures
-	written in Java. Procedures with 0 - 3 arguments now have specific 
-	signatures. Checking of correct number of arguments was factored out of 
+	written in Java. Procedures with 0..3 arguments now have specific
+	signatures. Checking of correct number of arguments was factored out of
 	library procedures in gleam.library, and moved to PrimitiveProcedure.
 
 2007-01-28
+
 	Added the gleam.lang.JavaObject class, holding arbitrary Java objects.
 	The primitives 'new' and 'call' are used to instantiate a Java object
 	and to call a method on an instance. 'null' is bound to Java null.
 	A first Scheme <-> Java type conversion mechanism is implemented.
-	A new 'bind' method in the Interpreter allows Java code to define new 
+	A new 'bind' method in the Interpreter allows Java code to define new
 	Scheme variables, holding Java objects, in the session environment.
 	Symbols are case-sensitive now, a deviation from R5RS needed to allow
-	the usage of symbols for Java class and method names. An effort will be 
+	the usage of symbols for Java class and method names. An effort will be
 	made to return to R5RS compliance.
 	Added a new 'gleam.util.Report.printStackTrace()' method for debugging.
 
 Release 0.88
 2007-01-15
 
-	Added the gleam.lang.Interpreter class, encapsulating the evaluation of 
-	Scheme expressions. It is possible to have multiple independent 
+	Added the gleam.lang.Interpreter class, encapsulating the evaluation of
+	Scheme expressions. It is possible to have multiple independent
 	instances of the Gleam interpreter.
-	A severe issue was fixed, where two continuations repeatedly calling 
-	each other could cause a Java stack overflow. The design flaw was to 
-	implement the execution of a continuation in the Continuation class 
+	A severe issue was fixed, where two continuations repeatedly calling
+	each other could cause a Java stack overflow. The design flaw was to
+	implement the execution of a continuation in the Continuation class
 	itself. This is now delegated to the Interpreter.
-	Fixed 'save-session' and 'load-session': some environment reachable 
+	Fixed 'save-session' and 'load-session': some environment reachable
 	classes (notably Actions) were not marked as Serializable.
 
 Release 0.87
 2007-01-05
 
-	The second argument to 'eval' is now optional: if no environment is 
-	specified, the current environment is used, i.e. the environment in 
+	The second argument to 'eval' is now optional: if no environment is
+	specified, the current environment is used, i.e. the environment in
 	effect at the time of the call.
 	Improved and corrected 'gleam_eval' implementation, so to perform syntax
-	analysis on its argument, and to extend the current continuation with 
+	analysis on its argument, and to extend the current continuation with
 	its evaluation in the required environment.
 	Implemented 'set-car!' and 'set-cdr!'.
 	Reworked 'write' so to show quotes and quasiquotes in their short form.

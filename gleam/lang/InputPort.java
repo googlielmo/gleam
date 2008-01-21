@@ -31,6 +31,11 @@ package gleam.lang;
  */
 public class InputPort extends Port
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	java.io.Reader value;
 	private transient Reader gleamReader;
 	

@@ -26,14 +26,8 @@
 
 package gleam.library;
 
-import gleam.lang.Entity;
-import gleam.lang.Boolean;
-import gleam.lang.Character;
-import gleam.lang.Number;
-import gleam.lang.System;
-import gleam.lang.Void;
- 
 import gleam.lang.*;
+import gleam.lang.Void;
 
 /**
  * SystemInterface
@@ -48,10 +42,22 @@ public final class SystemInterface {
 	}
 
 	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the three initial environments.
+	 */
+	public static Primitive[] primitives = {
+
+	/**
 	 * load
 	 * Loads and executes an external source file
 	 */
-	public static Entity gleam_load_$1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "load",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Loads and executes a source file",
+		null /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		try {
@@ -61,10 +67,12 @@ public final class SystemInterface {
 			return Void.makeVoid();
 		}
 		catch (ClassCastException e) {
-			throw new GleamException("load: argument is not a string", arg1);
+			throw new GleamException(this, "argument is not a string", arg1);
 		}
 		catch (java.io.FileNotFoundException e) {
-			throw new GleamException("load: file not found", arg1);
+			throw new GleamException(this, "file not found", arg1);
 		}
-	}
+	}},
+	
+	}; // primitives
 }

@@ -40,6 +40,11 @@ package gleam.lang;
  */
 public class Continuation extends Procedure
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public Action action;
 
 	/** Constructor */

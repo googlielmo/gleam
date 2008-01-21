@@ -33,7 +33,7 @@
 
 package gleam.lang;
 
-import gleam.util.Report;
+import gleam.util.Log;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
@@ -45,6 +45,11 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class JavaObject extends Entity {
 	
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected Object value;
 	
 	/** Creates a new instance of JavaObject */
@@ -62,25 +67,25 @@ public class JavaObject extends Entity {
 		try {
 			value = Class.forName(className).getConstructor(new Class[0]).newInstance(null);
 		} catch (SecurityException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
 		} catch (IllegalArgumentException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
 		} catch (NoSuchMethodException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
 		} catch (InvocationTargetException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
 		} catch (InstantiationException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
 		} catch (ClassNotFoundException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
 		} catch (IllegalAccessException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
 		}
 	}
@@ -91,25 +96,25 @@ public class JavaObject extends Entity {
 		try {
 			value = Class.forName(className).getConstructor(classes).newInstance(objects);
 		} catch (SecurityException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
 		} catch (IllegalArgumentException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
 		} catch (NoSuchMethodException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
 		} catch (InvocationTargetException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
 		} catch (InstantiationException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
 		} catch (ClassNotFoundException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
 		} catch (IllegalAccessException ex) {
-			Report.printStackTrace(ex);;
+			Log.record(ex);;
 			throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
 		}
 	}

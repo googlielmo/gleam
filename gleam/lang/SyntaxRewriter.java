@@ -36,6 +36,11 @@ import java.io.PrintWriter;
 public final class SyntaxRewriter extends Closure implements SyntaxObject 
 {
 
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public SyntaxRewriter(Closure rewriter) {
 		super(rewriter.param, rewriter.body, rewriter.definitionenv);
 	}

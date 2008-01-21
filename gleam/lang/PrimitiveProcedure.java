@@ -26,178 +26,82 @@
 
 package gleam.lang;
 
-import gleam.util.Report;
-import java.lang.reflect.*;
+import gleam.library.Primitive;
 
 /**
  * Scheme primitive library procedure.
  */
 public class PrimitiveProcedure extends Procedure
 {
-	protected int minArgs, maxArgs;
-	
-	protected static final Class[][] param = new Class[][] {
-		new Class[] { Environment.class, Continuation.class },
-		new Class[] { Entity.class, Environment.class, Continuation.class },
-		new Class[] { Entity.class, Entity.class, Environment.class, Continuation.class },
-		new Class[] { Entity.class, Entity.class, Entity.class, Environment.class, Continuation.class },
-		new Class[] { Pair.class, Environment.class, Continuation.class },
-	};
-	
-	protected static final String LIBRARY = "gleam.library.";
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
 
-	protected String opName, shortName;
-	protected transient Method value;
+	protected Primitive value;
 
 	/**
 	 * PrimitiveProcedure
 	 */
-	protected PrimitiveProcedure() {
-	}
-
-	public PrimitiveProcedure(String opName, String shortName, int minArgs, int maxArgs)
-		throws GleamException
-	{
-		String fullName = null;
-		try {
-			this.minArgs = minArgs;
-			this.maxArgs = maxArgs;
-			this.opName = opName;
-			this.shortName = shortName;
-			
-			fullName = LIBRARY + shortName + argSuffix();
-			String classname = fullName.substring(0, fullName.lastIndexOf('.'));
-			String methodname = fullName.substring(fullName.lastIndexOf('.')+1);
-			Class primitiveClass = Class.forName(classname);
-			
-			this.value = primitiveClass.getMethod(methodname, getParam());
-		}
-		catch (java.lang.ClassNotFoundException e) {
-			throw new GleamException(
-				"PrimitiveProcedure.<init> ("
-				+ fullName
-				+ "): ClassNotFoundException: "
-				+ e.getMessage(), null);
-		}
-		catch (java.lang.NoSuchMethodException e) {
-			throw new GleamException(
-				"PrimitiveProcedure.<init> ("
-				+ fullName
-				+ "): NoSuchMethodException: "
-				+ e.getMessage(), null);
-		}
-	}
-
-	/**
-	 * Prevents the release of incorrect instances upon deserialization.
-	 */
-	protected java.lang.Object readResolve()
-		throws java.io.ObjectStreamException
-	{
-//		java.lang.System.out.println("readResolve() called! (PrimitiveProcedure)"); //DEBUG
-		try {
-			return new PrimitiveProcedure(opName, shortName, minArgs, maxArgs);
-		}
-		catch (gleam.lang.GleamException e) {
-			throw new java.io.InvalidObjectException("No such method");
-		}
+	public PrimitiveProcedure(gleam.library.Primitive primitive) {
+		this.value = primitive;
 	}
 
 	public Entity apply(Pair arg, Environment env, Continuation cont)
 		throws GleamException
 	{
-		try {
-			if (maxArgs < 0 || maxArgs > 3) {
-				if (minArgs >= 0 && maxArgs >= 0) {
-					checkNumArgs(arg);
-				}
-				return (Entity) value.invoke(null, new java.lang.Object[] {
-					arg, env, cont} );
+		if (value.maxArgs < 0 || value.maxArgs > 3) {
+			if (value.minArgs >= 0 && value.maxArgs >= 0) {
+				checkNumArgs(arg);
 			}
-			// ok, 1 <= maxArgs <= 3 : special rules
-			assert 1 <= maxArgs && maxArgs <= 3; // DEBUG
-			Entity[] argArray = new Entity[] {null, null, null};
-			int countedArgs = 0;
-			ListIterator it = new ListIterator(arg);
-			while (it.hasNext()) {
-				argArray[countedArgs++] = it.next();
-				if (countedArgs > maxArgs) {
-					throw new GleamException(opName + ": too many arguments", arg);
-				}
-			}
-			if (countedArgs < minArgs) {
-				throw new GleamException(opName + ": too few arguments", arg);
-			}
-			switch (maxArgs) {
-				case 1:
-					return (Entity) value.invoke(null, new java.lang.Object[] {
-						argArray[0], env, cont} );
-				case 2:
-					return (Entity) value.invoke(null, new java.lang.Object[] {
-						argArray[0], argArray[1], env, cont} );
-				case 3:
-					return (Entity) value.invoke(null, new java.lang.Object[] {
-						argArray[0], argArray[1], argArray[2], env, cont} );
-				default: // DEBUG CANNOT HAPPEN
-					assert false;
-					return null;
+			return value.applyN(arg, env, cont);
+		}
+		// ok, 0 <= maxArgs <= 3 : special rules
+		assert 0 <= value.maxArgs && value.maxArgs <= 3; // DEBUG
+		Entity[] argArray = new Entity[] {null, null, null};
+		int countedArgs = 0;
+		ListIterator it = new ListIterator(arg);
+		while (it.hasNext()) {
+			argArray[countedArgs++] = it.next();
+			if (countedArgs > value.maxArgs) {
+				throw new GleamException(value, "too many arguments", arg);
 			}
 		}
-		catch (java.lang.reflect.InvocationTargetException e) {
-			Throwable t = e.getTargetException();
-			if (t instanceof GleamException) {
-				throw (GleamException)t;
-			}
-			else {
-				Report.printStackTrace(e);
-				throw new GleamException("apply: InvocationTargetException: " + e.getMessage(), this);
-			}
+		if (countedArgs < value.minArgs) {
+			throw new GleamException(value, "too few arguments", arg);
 		}
-		catch (java.lang.IllegalAccessException e) {
-			throw new GleamException("apply: IllegalAccessException: " + e.getMessage(), this);
-		}
-		catch (java.lang.ClassCastException e) {
-			throw new GleamException("apply: ClassCastException: " + e.getMessage(), this);
+		switch (value.maxArgs) {
+			case 0:
+				return value.apply0(env, cont);
+			case 1:
+				return value.apply1(argArray[0], env, cont);
+			case 2:
+				return value.apply2(argArray[0], argArray[1], env, cont);
+			case 3:
+				return value.apply3(argArray[0], argArray[1], argArray[2], env, cont);
+			default: // DEBUG CANNOT HAPPEN
+				assert false;
+				return null;
 		}
 	}
 
 	public void write(java.io.PrintWriter out)
 	{
-		out.write("#<primitive-procedure "+ value.getName() + ">");
-	}
-
-	private String argSuffix() {
-		if (minArgs == maxArgs) 
-			return "_$" + minArgs;
-		else if (maxArgs == -1) {
-			if (minArgs == 0)
-				return "";
-			else
-				return "_$" + minArgs + "_N";
-		}
-		else
-			return "_$" + minArgs + "_" + maxArgs;
-	}
-
-	private Class[] getParam() {
-			if (maxArgs < 0 || maxArgs > 3)
-				return param[4];
-			else
-				return param[maxArgs];
+		out.write("#<primitive-procedure "+ value.toString() + ">");
 	}
 
 	private void checkNumArgs(Pair args) throws GleamException {
 		ListIterator it = new ListIterator(args);
 		int i;
-		for (i = 0; i < minArgs; ++i) {
+		for (i = 0; i < value.minArgs; ++i) {
 			if (!it.hasNext()) {
-				throw new GleamException(opName + ": too few arguments", args);
+				throw new GleamException(value, "too few arguments", args);
 			}
 		}
-		if (maxArgs > 0) {
+		if (value.maxArgs > 0) {
 			while (it.hasNext()) {
-				if (++i > maxArgs)
-					throw new GleamException(opName + ": too many arguments", args);
+				if (++i > value.maxArgs)
+					throw new GleamException(value, "too many arguments", args);
 			}
 		}
 	}

@@ -34,6 +34,11 @@ package gleam.lang;
  */
 public class Pair extends Entity
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	Entity car, cdr;
 	boolean analyzed;
 
@@ -109,7 +114,7 @@ public class Pair extends Entity
 					 *
 					 * analyze cdr in place
 					 */
-					gleam.util.Report.println(3, "dotted pair in analyze... check for correctness");
+					gleam.util.Log.record(3, "dotted pair in analyze... check for correctness");
 					restParent.cdr = rest.analyze();
 					break;
 				}
@@ -140,9 +145,9 @@ public class Pair extends Entity
 				a = new ExpressionAction((SyntaxRewriter) e, env, a);
 				cont.action = a;
 				// don't evaluate arguments at all!
-				// gleam.util.Report.println(2, "THIS: ", this); // DEBUG
+				// gleam.util.Log.record(2, "THIS: ", this); // DEBUG
 				arglist.put(this, 0);
-				return Void.value;
+				return null;
 			}
 			else if (System.isKeyword( (Symbol) operator)) {
 				// special procedure call
@@ -151,7 +156,7 @@ public class Pair extends Entity
 				cont.action = a;
 				// don't evaluate arguments at all!
 				arglist.setArguments((Pair)this.cdr);
-				return Void.value;
+				return null;
 			}
 		}
 		else if (operator instanceof Location) { // TODO FIXME THIS IS UGLY
@@ -164,7 +169,7 @@ public class Pair extends Entity
 				cont.action = a;
 				// don't evaluate arguments at all!
 				arglist.put(this, 0);
-				return Void.value;
+				return null;
 			}
 		}
 		
@@ -180,7 +185,7 @@ public class Pair extends Entity
 		}
 		arglist.ensureSize(argidx);
 		cont.action = a;
-		return Void.value;
+		return null;
 	}
 
 	/**
@@ -249,7 +254,7 @@ public class Pair extends Entity
 				/* this is an improper list
 				 * (not necessarily an error: think lambda)
 				 */
-				gleam.util.Report.println(3, "dotted pair in optimize... check for correctness");
+				gleam.util.Log.record(3, "dotted pair in optimize... check for correctness");
 				restParent.cdr = rest.optimize(env);
 				break;
 			}

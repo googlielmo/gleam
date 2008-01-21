@@ -37,6 +37,11 @@ import java.util.*;
  */
 public class Environment extends Entity
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** Parent environment */
 	Environment parent;
 
@@ -141,7 +146,6 @@ public class Environment extends Entity
 	}
 
 	// DEBUG
-
 	public void dump() {
 		OutputPort out = System.getCout();
 		out.print("--------------- "+this.toString());

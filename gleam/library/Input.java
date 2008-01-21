@@ -26,11 +26,7 @@
 
 package gleam.library;
 
-import gleam.lang.Entity;
 import gleam.lang.Boolean;
-import gleam.lang.Character;
-import gleam.lang.Void;
- 
 import gleam.lang.*;
 
 /**
@@ -46,20 +42,37 @@ public final class Input {
 	}
 
 	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the three initial environments.
+	 */
+	public static Primitive[] primitives = {
+
+	/**
 	 * eof-object?
 	 * Tests if argument is an EOF object
 	 */
-	public static Entity gleam_eof_object_p_$1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "eof-object?",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Input.gleam_eof_object_p",
+		"Returns true if argument is the EOF object, false otherwise" /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return Boolean.makeBoolean(arg1 instanceof Eof);
-	}
+	}},
 
 	/**
 	 * read
 	 * Reads an object
 	 */
-	public static Entity gleam_read_$0_1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "read",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, 1, /* min, max no. of arguments */
+		"Reads an object from the current or specified input port",
+		null /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		try {
@@ -74,12 +87,14 @@ public final class Input {
 				return iport.read();
 			}
 			else {
-				throw new GleamException("read: closed input port", arg1);
+				throw new GleamException(this, "closed input port", arg1);
 			}
 		}
 		catch (ClassCastException e) {
-			throw new GleamException("read: not an input port", arg1);
+			throw new GleamException(this, "not an input port", arg1);
 		}
-	}
+	}},
+	
+	}; // primitives
 
 }

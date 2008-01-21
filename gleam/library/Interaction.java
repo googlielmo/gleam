@@ -26,15 +26,11 @@
 
 package gleam.library;
 
-import gleam.lang.Entity;
-import gleam.lang.Boolean;
-import gleam.lang.Character;
 import gleam.lang.Number;
 import gleam.lang.System;
 import gleam.lang.Void;
-
 import gleam.lang.*;
-import gleam.util.Report;
+import gleam.util.Log;
 
 /**
  * INTERACTION -- GLEAM-SPECIFIC
@@ -49,17 +45,29 @@ public final class Interaction {
 	}
 
 	/**
-	 * Help
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the initial environments.
+	 */
+	public static Primitive[] primitives = {
+
+	/**
+	 * help
 	 * Gives help on primitives.
 	 */
-	public static Entity gleam_help_$0_1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "help",
+		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, 1, /* min, max no. of arguments */
+		"Gives a short help on a primitive, e.g. (help 'if)",
+		null /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		if (arg1 != null) {
 			// we have an explicit argument,
 			// so print full documentation
 			if (!(arg1 instanceof Symbol)) {
-				throw new GleamException("help: invalid argument", arg1);
+				throw new GleamException(this, "invalid argument", arg1);
 			}
 
 			String pname = ((Symbol)arg1).toString();
@@ -98,7 +106,7 @@ public final class Interaction {
 			else {
 				System.getCout().print("No documentation available ");
 				System.getCout().print("(but it should be!). ");
-				System.getCout().print("Please report to Gleam team.");
+				System.getCout().print("Please report to Gleam developers.");
 				System.getCout().newline();
 			}
 		}
@@ -106,31 +114,54 @@ public final class Interaction {
 		System.getCout().print("Special variable __errobj contains last offending object after an error.");
 		System.getCout().newline();
 		return Void.makeVoid();
-	}
+	}},
 
 	/**
-	 * Verbosity
+	 * set-verbosity!
 	 * Sets gleam runtime support verbosity (1..5)
 	 */
-	public static Entity gleam_verbosity_$1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "set-verbosity!",
+		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Sets verbosity level: 0=off, 1=standard ... 5=pedantic, e.g. (set-verbosity! 2)", null /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		if (!(arg1 instanceof Number)) {
-			throw new GleamException("verbosity: invalid argument", arg1);
+			throw new GleamException(this, "invalid argument", arg1);
 		}
 		double v = ((Number)arg1).getDoubleValue();
 		if (v < 0.0 || v > 5.0) {
-			throw new GleamException("verbosity: invalid argument (should be between 0 and 5)", arg1);
+			throw new GleamException(this, "invalid argument (should be between 0 and 5)", arg1);
 		}
-		gleam.util.Report.setVerbosity((int) v);
+		gleam.util.Log.setVerbosity((int) v);
 		return Void.makeVoid();
-	}
+	}},
 
 	/**
-	 * Save-session
+	 * verbosity
+	 * Gets gleam runtime support verbosity (1..5)
+	 */
+	new Primitive( "verbosity",
+		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, 0, /* min, max no. of arguments */
+		"Returns current verbosity level", null /* doc strings */ ) {
+	public Entity apply0(Environment env, Continuation cont)
+		throws GleamException
+	{
+		return new Real(gleam.util.Log.getVerbosity());
+	}},
+
+	/**
+	 * save-session
 	 * Saves the session environment.
 	 */
-	public static Entity gleam_save_session_$1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "save-session",
+		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Saves current session environment, e.g. (save-session \"file\")",
+		null /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		if (arg1 instanceof MutableString) {
@@ -143,23 +174,28 @@ public final class Interaction {
 				return Void.makeVoid();
 			}
 			catch (java.io.FileNotFoundException e) {
-				throw new GleamException("save-session: file not found", arg1);
+				throw new GleamException(this, "file not found", arg1);
 			}
 			catch (java.io.IOException e) {
-				Report.printStackTrace(e);
-				throw new GleamException("save-session: I/O error", arg1);
+				Log.record(e);
+				throw new GleamException(this, "I/O error", arg1);
 			}
 		}
 		else {
-			throw new GleamException("save-session: invalid argument", arg1);
+			throw new GleamException(this, "invalid argument", arg1);
 		}
-	}
+	}},
 
 	/**
-	 * Load-session
+	 * load-session
 	 * Loads the session environment.
 	 */
-	public static Entity gleam_load_session_$1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "load-session",
+		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Loads a session environment, e.g. (load-session \"file\")",
+		null /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		if (arg1 instanceof MutableString) {
@@ -173,22 +209,27 @@ public final class Interaction {
 				return Void.makeVoid();
 			}
 			catch (java.io.FileNotFoundException e) {
-				throw new GleamException("load-session: file not found", arg1);
+				Log.record(e);
+				throw new GleamException(this, "file not found", arg1);
 			}
 			catch (java.io.IOException e) {
-				Report.printStackTrace(e);;
-				throw new GleamException("load-session: I/O error", arg1);
+				Log.record(e);
+				throw new GleamException(this, "I/O error", arg1);
 			}
 			catch (java.lang.ClassNotFoundException e) {
-				throw new GleamException("load-session: class not found", arg1);
+				Log.record(e);
+				throw new GleamException(this, "class not found", arg1);
 			}
 			catch (java.lang.ClassCastException e) {
-				throw new GleamException("load-session: invalid class", arg1);
+				Log.record(e);
+				throw new GleamException(this, "invalid class", arg1);
 			}
 		}
 		else {
-			throw new GleamException("load-session: invalid argument", arg1);
+			throw new GleamException(this, "invalid argument", arg1);
 		}
-	}
+	}},
+	
+	}; // primitives
 
 }

@@ -36,6 +36,11 @@ package gleam.lang;
  * If (conditional expression)
  */
 public class IfAction extends Action {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** consequent, alternate parts of the if command */
 	protected Entity consequent, alternate;
 
@@ -50,7 +55,15 @@ public class IfAction extends Action {
 		this.parent = parent;
 	}
 
-	/** invocation  */
+	/**
+	 * Evaluates the the consequent or the alternate, deciding upon the 
+	 * truth value of the argument. If it is any value except a boolean 
+	 * false, then the consequent is evaluated, otherwise the alternate is.
+ 	 * @param arg the value upon which the decision is taken
+	 * @param cont the current Continuation
+	 * @return the result of the evaluation
+	 * @throws gleam.lang.GleamException in case of errors
+	*/
 	Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
 		cont.action = parent;
 		if (arg != Boolean.falseValue)

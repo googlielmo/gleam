@@ -31,6 +31,11 @@ package gleam.lang;
  */
 public final class Character extends Entity
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected char value;
 
 	/**

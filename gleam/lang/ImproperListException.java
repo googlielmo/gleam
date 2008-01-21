@@ -33,6 +33,11 @@ package gleam.lang;
  */
 public class ImproperListException extends GleamException {
 	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * ImproperListException constructor.
 	 * 
 	 * @param aObject gleam.lang.Entity

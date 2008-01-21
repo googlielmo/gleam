@@ -31,6 +31,11 @@ package gleam.lang;
  */
 public class OutputPort extends Port
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private java.io.PrintWriter out;
 
 	/**

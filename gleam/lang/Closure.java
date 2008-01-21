@@ -34,6 +34,11 @@ import java.util.*;
  */
 public class Closure extends Procedure
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/* TODO: should implement scan-out of defines, as follows:
 	 * when a closure is created, a scanOut method should
 	 * retrieve a proper list of internally defined variables,
@@ -79,7 +84,7 @@ public class Closure extends Procedure
 		Entity currparam = param;
 		Pair prev = null;
 		boolean arglist = false;
-		gleam.util.Report.println(4, "apply: ARGS = ", args);
+		gleam.util.Log.record(4, "apply: ARGS = ", args);
 
 		/* bind actual arguments to formals (long)
 		 */
@@ -102,7 +107,7 @@ public class Closure extends Procedure
 							localenv.define((Symbol)p, obj);
 						}
 						else {
-							gleam.util.Report.println(5, "apply: param is not a symbol");
+							gleam.util.Log.record(5, "apply: param is not a symbol");
 						}
 						// next param, please
 						currparam = ((Pair)currparam).cdr;
@@ -147,7 +152,7 @@ public class Closure extends Procedure
 		 * through a new continuation
 		 */
 		cont.action = addCommandSequenceActions(body, localenv, cont.action);
-		return Void.value;
+		return null;
 	}
 
 	/**

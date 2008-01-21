@@ -29,6 +29,11 @@ package gleam.lang;
 import java.util.*;
 
 public class ArgumentList implements java.io.Serializable {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private ArrayList listArgs;
 	private Pair pairArgs;
 

@@ -1,6 +1,6 @@
 ;;;;; bootstrap.scm
 ;;;;;
-;;;;; (c) 2001-2007 Guglielmo Nigri <guglielmonigri@yahoo.it>.
+;;;;; (c) 2001-2008 Guglielmo Nigri <guglielmonigri@yahoo.it>.
 ;;;;; Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are
 ;;;;; welcome to redistribute it under certain conditions; see LICENSE.TXT.
 ;;;;;
@@ -24,9 +24,9 @@
 
 ;;;; LISTS
 
-(define (null? x) (eq? x '()))
+;(define (null? x) (eq? x '()))
 
-(define (list . elems) elems)
+;(define (list . elems) elems)
 
 (define (list-copy x)
 	(if (pair? x)
@@ -40,8 +40,19 @@
 			(last (cdr x)))
 		(error "last" x)))
 
+(define (append . args)
+  (define (_append2 lst1 lst2)
+    (if (null? lst1)
+        lst2
+        (cons (car lst1) (_append2 (cdr lst1) lst2))))
+  (if (not (pair? args))
+      args
+      (if (null? (cdr args))
+        (car args)
+        (_append2 (car args) (apply append (cdr args))))))
+
 ; nconc
-; append
+
 
 ;;;; Quasiquotation
 ;;;; Adapted from "Quasiquotation in Lisp" by Alan Bawden, Brandeis University
@@ -351,8 +362,6 @@
 		       (cond ,@(cdr form)))
 		)))))))
 
-;;; apply
-
 (define (set-last-cdr! list elem)
   (if (null? (cdr list))
       (set-cdr! list elem)
@@ -369,10 +378,12 @@
       (let ((acc (list first)))
         (_ls acc rest))))
 
-(_defmacro (apply _x)
-	(let ( (fun (car _x))
-		(args (cdr _x)))
-	(eval ``(,,fun ,@(list* ,@args)) )))
+;;; apply FIXME
+
+;(_defmacro (apply _x)
+;	(let ( (fun (car _x))
+;		(args (cdr _x)))
+;	(eval ``(,,fun ,@(list* ,@args)) )))
 
 ;;; define-macro
 

@@ -36,6 +36,11 @@ package gleam.lang;
  * Assignment action
  */
 public class AssignmentAction extends Action {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** environment */
 	protected Environment env;
 

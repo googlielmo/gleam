@@ -26,13 +26,8 @@
 
 package gleam.library;
 
-import gleam.lang.Entity;
 import gleam.lang.Boolean;
-import gleam.lang.Character;
-import gleam.lang.Number;
-import gleam.lang.System;
 import gleam.lang.Void;
-
 import gleam.lang.*;
 
 /**
@@ -44,14 +39,25 @@ public final class PairsAndLists {
 	/**
 	 * Can't instantiate this class
 	 */
-	private PairsAndLists() {
-	}
+	private PairsAndLists() {}
+
+	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the three initial environments.
+	 */
+	public static Primitive[] primitives = {
 
 	/**
 	 * car
 	 * Takes the first element of a pair.
 	 */
-	public static Entity gleam_car_$1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "car",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Gets first object in a pair, e.g. (car (list 1 2 3))",
+		null /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		try {
@@ -60,13 +66,18 @@ public final class PairsAndLists {
 		catch (ClassCastException e) {
 			throw new GleamException("car: invalid argument", arg1);
 		}
-	}
+	}},
 
 	/**
 	 * cdr
 	 * Takes the second element of a pair.
 	 */
-	public static Entity gleam_cdr_$1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "cdr",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Gets second object in a pair, e.g. (cdr (list 1 2 3))",
+		null /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		try {
@@ -75,75 +86,36 @@ public final class PairsAndLists {
 		catch (ClassCastException e) {
 			throw new GleamException("cdr: invalid argument", arg1);
 		}
-	}
+	}},
 
 	/**
 	 * cons
 	 * Creates a new pair.
 	 */
-	public static Entity gleam_cons_$2(Entity first, Entity second, Environment env, Continuation cont)
+	new Primitive( "cons",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		2, 2, /* min, max no. of arguments */
+		"Creates a new pair, e.g. (cons 1 (cons 2 '(3)))",
+		null /* doc strings */ ) {
+	public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return new Pair(first, second);
-	}
-
-	/**
-	 * append
-	 *
-	 */
-	public static Entity gleam_append(Pair args, Environment env, Continuation cont)
-		throws GleamException
-	{
-		Entity sbap = null; // should be a pair (used for error reporting)
-		try {
-			ListIterator it = new ListIterator(args);
-			if (!it.hasNext())
-				return EmptyList.makeEmptyList();
-
-			Entity last = it.next();
-			Pair ret = new Pair(EmptyList.makeEmptyList(), last);
-			Pair lastPair = ret;
-			while (it.hasNext()) {
-				// get next arg
-				Entity curr = it.next();
-
-				if (lastPair.getCdr() instanceof EmptyList) {
-					lastPair.setCdr(curr);
-				}
-				else {
-					// shallow copy
-					sbap = last;
-					last = new Pair( ((Pair) sbap).getCar(), ((Pair) sbap).getCdr());
-					lastPair.setCdr(last);
-
-					// append
-					sbap = last;
-					Pair p = (Pair) sbap;
-					while (p.getCdr() != EmptyList.makeEmptyList()) {
-						sbap = p.getCdr();
-						p = (Pair) sbap;
-					}
-
-					// prepare next
-					lastPair = p;
-					p.setCdr(curr);
-				}
-				last = curr;
-			}
-			return ret.getCdr();
-		}
-		catch (ClassCastException e) {
-			throw new GleamException("append: argument is not a list", sbap);
-		}
-	}
+	}},
 
 	/**
 	 * list
 	 * Creates a new list from its arguments.
 	 */
-	public static Entity gleam_list(Pair args, Environment env, Continuation cont)
+	new Primitive( "list",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+		"Creates a new list from its arguments, e.g. (list 1 2 3)",
+		null /* doc strings */ ) {
+	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
+		// TODO: investigate: could we simply return list?
 		ListIterator it = new ListIterator(args);
 		if (!it.hasNext()) {
 			return EmptyList.makeEmptyList();
@@ -156,54 +128,75 @@ public final class PairsAndLists {
 			ins = nextcons;
 		}
 		return l;
-	}
+	}},
 
 	/**
 	 * pair?
 	 * Tests if argument is a pair
 	 */
-	public static Entity gleam_pair_p_$1(Entity obj, Environment env, Continuation cont)
+	new Primitive( "pair?",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Returns true if argument is a pair, false otherwise",
+		"E.g. (pair? (cons 1 2)) => #t" /* doc strings */ ) {
+	public Entity apply1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return Boolean.makeBoolean((obj instanceof Pair) && !(obj instanceof EmptyList));
-	}
+	}},
 
 	/**
 	 * null?
 	 * Tests if argument is the empty list
 	 */
-	public static Entity gleam_null_p_$1(Entity obj, Environment env, Continuation cont)
+	new Primitive( "null?",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Returns true if argument is the empty list, false otherwise",
+		"E.g. (null? '()) => #t" /* doc strings */ ) {
+	public Entity apply1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return Boolean.makeBoolean(obj instanceof EmptyList);
-	}
+	}},
 
 	/**
 	 * set-car!
 	 * store an object in the car field of a pair.
 	 */
-	public static Entity gleam_set_car_m_$2(Entity first, Entity second, Environment env, Continuation cont)
+	new Primitive( "set-car!",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		2, 2, /* min, max no. of arguments */
+		"Sets car field in a pair, e.g. (set-car! my-pair 1)",
+		null /* doc strings */ ) {
+	public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
 		throws GleamException
 	{
 		if (!(first instanceof Pair))
-			throw new GleamException("set-car!: invalid argument", first);
+			throw new GleamException(this, "invalid argument", first);
 
 		((Pair) first).setCar(second);
 		return Void.makeVoid();
-	}
+	}},
 
 	/**
 	 * set-cdr!
 	 * store an object in the cdr field of a pair.
 	 */
-	public static Entity gleam_set_cdr_m_$2(Entity first, Entity second, Environment env, Continuation cont)
+	new Primitive( "set-cdr!",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		2, 2, /* min, max no. of arguments */
+		"Sets cdr field in a pair, e.g. (set-cdr! my-pair 2)",
+		null /* doc strings */ ) {
+	public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
 		throws GleamException
 	{
 		if (!(first instanceof Pair))
-			throw new GleamException("set-cdr!: invalid arguments", first);
+			throw new GleamException(this, "invalid argument", first);
 
 		((Pair) first).setCdr(second);
 		return Void.makeVoid();
-	}
+	}},
 
+	}; // primitives
 }

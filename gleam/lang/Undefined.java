@@ -32,6 +32,11 @@ package gleam.lang;
  */
 public final class Undefined extends Entity {
 
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/** the Undefined singleton */
 	protected static final Undefined value = new Undefined();
 

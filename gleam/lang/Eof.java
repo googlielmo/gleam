@@ -30,6 +30,10 @@ package gleam.lang;
  * The EOF value (a singleton).
  */
 public final class Eof extends Entity {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/** the Eof singleton */
 	protected static final Eof value = new Eof();

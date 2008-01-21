@@ -39,6 +39,11 @@ package gleam.lang;
  */
 public final class Location extends Entity
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Entity value;
 
 	/**

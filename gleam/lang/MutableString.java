@@ -31,6 +31,11 @@ package gleam.lang;
  * Creation date: (28/10/2001 12.22.48)
  */
 public class MutableString extends Entity {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** The current string value. */
 	StringBuffer value;
 

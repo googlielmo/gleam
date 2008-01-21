@@ -36,14 +36,26 @@ package gleam.lang;
  * Eval action
  */
 public class EvalAction extends Action {
-	Environment env;
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 1L;
 
-	/** Creates a new instance of EvalAction */
+	private Environment env;
+
+	/** Creates a new instance of this action */
 	public EvalAction(Environment env, Action parent) {
 		this.env = env;
 		this.parent = parent;
 	}
 
+	/**
+	 * Invokes this action, causing the evaluation of its argument
+	 * @param arg the Entity to evaluate
+	 * @param cont the current Continuation
+	 * @return the result of the evaluation
+	 * @throws gleam.lang.GleamException in case of errors
+	 */
 	Entity invoke(Entity arg, Continuation cont) throws GleamException {
 		cont.action = parent;
 		return arg.eval(env, cont);

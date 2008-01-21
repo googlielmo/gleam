@@ -28,11 +28,6 @@ package gleam.library;
 
 import gleam.lang.Entity;
 import gleam.lang.Boolean;
-import gleam.lang.Character;
-import gleam.lang.Number;
-import gleam.lang.System;
-import gleam.lang.Void;
-
 import gleam.lang.*;
 
 /**
@@ -47,25 +42,46 @@ public final class Symbols {
 	private Symbols() {
 	}
 
+	private static int gencount = 0;
+	
+	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the three initial environments.
+	 */
+	public static Primitive[] primitives = {
+
 	/**
 	 * symbol?
 	 * Tests if argument is a symbol
 	 */
-	public static Entity gleam_symbol_p_$1(Entity arg1, Environment env, Continuation cont)
+	new Primitive( "symbol?",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Returns true if argument is a symbol, false otherwise",
+		"E.g. (symbol? 'sym) => #t" /* doc strings */ ) {
+	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return Boolean.makeBoolean(arg1 instanceof Symbol);
-	}
+	}},
 
 	/**
-	 * symbol?
-	 * Tests if argument is a symbol
+	 * generate-symbol
+	 * Generates a fresh uninterned symbol
 	 */
-	public static Entity gleam_generate_symbol_$0(Environment env, Continuation cont)
+	new Primitive( "generate-symbol",
+		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, 0, /* min, max no. of arguments */
+		"Makes a new symbol, e.g. (generate-symbol)",
+		null /* doc strings */ ) {
+	public Entity apply0(Environment env, Continuation cont)
 		throws GleamException
 	{
+		// FIXME make this synchronized for multithreaded apps
 		return Symbol.makeUninternedSymbol("__S"+(gencount++));
-	}
+	}},
+		
+	}; // primitives
 
-	private static int gencount = 0;
 }

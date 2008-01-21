@@ -42,19 +42,15 @@ package gleam.lang;
 public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject {
 
 	/**
-	 * SyntaxProcedure
+	 * serialVersionUID
 	 */
-	protected SyntaxProcedure() {
-	}
+	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Creates a SyntaxProcedure with the same rules
-	 * as its parent class, PrimitiveProcedure.
+	 * SyntaxProcedure
 	 */
-	public SyntaxProcedure(String opName, String shortname, int minArgs, int maxArgs)
-		throws GleamException
-	{
-		super(opName, shortname, minArgs, maxArgs);
+	public SyntaxProcedure(gleam.library.Primitive p) {
+		super(p);
 	}
 
 	public void write(java.io.PrintWriter out) {

@@ -28,11 +28,6 @@ package gleam.library;
 
 import gleam.lang.Entity;
 import gleam.lang.Boolean;
-import gleam.lang.Character;
-import gleam.lang.Number;
-import gleam.lang.System;
-import gleam.lang.Void;
- 
 import gleam.lang.*;
 
 /**
@@ -48,13 +43,27 @@ public final class Strings {
 	}
 
 	/**
+	 * This array contains definitions of primitives.
+	 * It is used by static initializers in gleam.lang.System to populate
+	 * the three initial environments.
+	 */
+	public static Primitive[] primitives = {
+
+	/**
 	 * string?
 	 * Tests if argument is a string
 	 */
-	public static Entity gleam_string_p_$1(Entity obj, Environment env, Continuation cont)
+	new Primitive( "string?",
+		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Returns true if argument is a string, false otherwise",
+		"E.g. (string? \"hello\") => #t" /* doc strings */ ) {
+	public Entity apply1(Entity obj, Environment env, Continuation cont)
 		throws GleamException
 	{
 		return Boolean.makeBoolean(obj instanceof MutableString);
-	}
+	}},
+	
+	}; // primitives
 
 }

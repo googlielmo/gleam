@@ -153,11 +153,9 @@ public class Interpreter {
 		Entity obj, val;
 		while ((obj = reader.read()) != Eof.makeEof()) {
 			// eval
-			gleam.util.Report.println(4, "load: read object");
-			gleam.util.Report.println(4, obj);
+			gleam.util.Log.record(4, "load: read object", obj);
 			val = eval(obj, env);
-			gleam.util.Report.println(4, "load: result is");
-			gleam.util.Report.println(4, val);
+			gleam.util.Log.record(4, "load: result is", val);
 		}
 	}
 
