@@ -52,7 +52,7 @@ public class Environment extends Entity
 	private Map assoc;
 
 	/** Constructor */
-	Environment(Environment p)
+	public Environment(Environment p)
 	{
 		parent = p;
 		if (p != null) intp = p.intp;

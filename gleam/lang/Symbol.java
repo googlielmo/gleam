@@ -45,9 +45,9 @@ public final class Symbol extends Entity
 	static Map symtable =
 		Collections.synchronizedMap(new java.util.HashMap(512));
 
-	/**
+	/*
 	 * common symbols (some are keywords, some are not)
-	 * defined here as constants for convenience
+	 * defined here as constants just for convenience
 	 */
 	public final static Symbol QUOTE = makeSymbol("quote");
 	public final static Symbol LAMBDA = makeSymbol("lambda");
@@ -75,6 +75,7 @@ public final class Symbol extends Entity
 	public final static Symbol ERROBJ = makeSymbol("__errobj");
 	public final static Symbol CALL_WITH_CURRENT_CONTINUATION = makeSymbol("call-with-current-continuation");
 	public final static Symbol CALL_CC = makeSymbol("call/cc");
+	public final static Symbol HELP = makeSymbol("help");
 
 	/**
 	 * String representation

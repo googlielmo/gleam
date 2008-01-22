@@ -165,7 +165,6 @@ public final class Eval {
 	/**
 	 * in-environment
 	 * Returns the current environment
-	 * FIXME check this function!
 	 */
 	new Primitive( "in-environment",
 		Primitive.INTR_ENV, Primitive.KEYWORD, /* environment, type */
@@ -179,6 +178,36 @@ public final class Eval {
 			new ExpressionAction(argEnv, env, null)).append( // 1) evaluate environment expr
 			new ExpressionInEnvironmentAction(argExpr, null)); // 2) evaluate expr in that env
 		return null;
+	}},
+
+	/**
+	 * make-environment
+	 * Returns a new environment
+	 */
+	new Primitive( "make-environment",
+		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+		0, 0, /* min, max no. of arguments */
+		"Creates a new environment",
+		"E.g. (in-environment (make-environment) (begin (define a 7) a)) => 7" /* doc strings */ ) {
+	public Entity apply0(Environment env, Continuation cont)
+		throws GleamException
+	{
+		return new Environment(env);
+	}},
+
+	/**
+	 * environment?
+	 * Returns a new environment
+	 */
+	new Primitive( "environment?",
+		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+		1, 1, /* min, max no. of arguments */
+		"Returns true if argument is an environment, false otherwise",
+		"E.g. (environment? (scheme-report-environment 5)) => #t" /* doc strings */ ) {
+	public Entity apply1(Entity arg, Environment env, Continuation cont)
+		throws GleamException
+	{
+		return gleam.lang.Boolean.makeBoolean(arg instanceof Environment);
 	}},
 
 	}; // primitives

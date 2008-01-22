@@ -102,19 +102,19 @@ public class JavaInterface {
 	new Primitive( "call",
 		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
 		2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		"Calls a method on a Java object, e.g. (call 'length (new 'java.lang.String \"test\"))",
-		null /* doc strings */ ) {
+		"Calls a method on a Java object", 
+		"E.g. (call 'length (new 'java.lang.String \"test\")) => 4" /* doc strings */ ) {
 	public Entity applyN(Pair args, Environment env, Continuation cont)
 		throws GleamException
 	{
 		ListIterator it = new ListIterator(args);
 		Entity methodName = it.next();
 		if (!(methodName instanceof Symbol)) {
-			throw new GleamException("call: wrong argument type, should be a symbol", methodName);
+			throw new GleamException(this, "wrong argument type, should be a symbol", methodName);
 		}
 		Entity object = it.next();
 		if (!(object instanceof JavaObject)) {
-			throw new GleamException("call: wrong argument type, should be a Java object", object);
+			throw new GleamException(this, "wrong argument type, should be a Java object", object);
 		}
 		List argClasses = new ArrayList();
 		List argObjects = new ArrayList();
@@ -163,11 +163,11 @@ public class JavaInterface {
 		}
 		else if (arg instanceof MutableString)
 		{
-			return "".getClass();
+			return String.class;
 		}
 		else if (arg instanceof Symbol)
 		{
-			return "".getClass();
+			return String.class;
 		}
 		else if (arg instanceof Real)
 		{

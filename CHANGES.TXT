@@ -1,3 +1,10 @@
+2008-01-22
+	Added 'make-environment' and 'environment?' primitives, the former to
+	create a new environment and the latter to test if a value is an 
+	environment.
+	The 'help' primitive is now syntax, so now one can do '(help if)' without
+	using 'quote'.
+
 2008-01-20
 
 	Changed the way primitive procedures are defined and invoked.

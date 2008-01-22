@@ -56,10 +56,11 @@ public final class Interaction {
 	 * Gives help on primitives.
 	 */
 	new Primitive( "help",
-		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+		Primitive.INTR_ENV, Primitive.KEYWORD, /* environment, type */
 		0, 1, /* min, max no. of arguments */
-		"Gives a short help on a primitive, e.g. (help 'if)",
+		"Gives a short help on a primitive, e.g. (help if)",
 		null /* doc strings */ ) {
+	private static final int helpColumnWidth = 15;
 	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{
@@ -85,20 +86,24 @@ public final class Interaction {
 			return Void.makeVoid();
 		}
 
-		// no args: print short comments on all primitives
+		// no args: print short comments on all primitives		
+		// prepare filler for first column
+		char chars[] = new char[helpColumnWidth];
+		java.util.Arrays.fill(chars, ' ');
+		StringBuffer spc = new StringBuffer();
+		spc.append(chars);
+		
 		System.getCout().print("Available primitives:\n\n");
 		java.util.Set nameset = System.getHelpNames();
 		java.util.Iterator nameit = nameset.iterator();
 		while (nameit.hasNext()) {
-			String pname = (String) nameit.next();
-			String doc = System.getHelpComment(pname);
+			StringBuffer pname = new StringBuffer((String) nameit.next());
+			String doc = System.getHelpComment(pname.toString());
 			if (doc != null) {
-				if (pname.length() < 16) {
-					pname = (pname
-						+ "                ") // 16 spaces
-						.substring(0,15);
+				if (pname.length() < helpColumnWidth ) {
+					pname.append(spc.subSequence(0, helpColumnWidth - pname.length()));
 				}
-				System.getCout().print(pname);
+				System.getCout().print(pname.toString());
 				System.getCout().print(" ");
 				System.getCout().print(doc);
 				System.getCout().newline();
@@ -123,7 +128,8 @@ public final class Interaction {
 	new Primitive( "set-verbosity!",
 		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
 		1, 1, /* min, max no. of arguments */
-		"Sets verbosity level: 0=off, 1=standard ... 5=pedantic, e.g. (set-verbosity! 2)", null /* doc strings */ ) {
+		"Sets verbosity level: 0=off, 1=standard ... 5=pedantic",
+		"E.g. (set-verbosity! 2)" /* doc strings */ ) {
 	public Entity apply1(Entity arg1, Environment env, Continuation cont)
 		throws GleamException
 	{

@@ -81,7 +81,7 @@ public final class System
 	}
 
 	/**
-	 *
+	 * Imports primitives
 	 */
 	private static void importPrimitives(Primitive[] primitives) {
 		Environment instEnv;
@@ -101,7 +101,9 @@ public final class System
 	}
 
 	/**
-	 *
+	 * Installs a primitive in an environment
+	 * @param env the environment
+	 * @param primitive the primitive
 	 */
 	private static void installPrimitive(Environment env, Primitive primitive) {
 		Symbol name = Symbol.makeSymbol(primitive.getName());
@@ -263,7 +265,7 @@ public final class System
 		Entity arg;
 
 		// These may take no arguments
-		if (op == Symbol.AND || op == Symbol.OR) {
+		if (op == Symbol.AND || op == Symbol.OR || op == Symbol.HELP) {
 			// analyze arguments
 			while (it.hasNext()) {
 				it.replace(it.next().analyze());

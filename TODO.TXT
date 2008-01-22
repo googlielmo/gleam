@@ -10,26 +10,6 @@ TO DO:
 
 Use Java 5 generics where possible (?)
 
-Eval/Apply on java.lang.Objects for full Java integration OR java-object wrapper
-
-A proposal for a Java FFI:
-	syntax for java types: 
-		$java.lang.Object = 
-		(java-quote java.lang.Object) = 
-		(quote java.lang.Object) + lookup in java-import environment
-	(java-new $java.lang.Object)
-	(java-import $java.lang.*)
-	(define obj (java-new $String "test"))
-	(java-call 'size obj) => 4
-	(. obj size) => 4
-	($size obj) => 4
-	(java-package 'gleam.ext)
-	(java-class myList ($List) ; myList extends java.util.List
-		(java-ctor ((i 'int)) (java-set-field length i))
-		(java-field (length 'int))
-		(java-method (get (i 'int)) ... )
-		(java-method (set (i 'int) (obj $Object)) ...) )
-
 Implement as many primitives as possible in Scheme
 	list
 	append
@@ -40,14 +20,6 @@ Implement as many primitives as possible in Scheme
 A rewriting system for patterns (...)
 
 Check tail-call optimizations
-
-Explicit first-class environments, with primitives: 
-	make-environment
-	call-with-current-environment
-	with-environment
-	environment?
-	defined?
-	...
 
 rewriter? type function
 
@@ -76,6 +48,42 @@ Scheme lists)
 (UNSURE) refactor all continuations and the "return null" convention.
 E.g. gleam_and loops and that is not correct --> NPE in (and (func arg1 arg2) 1)
 because eval of (func...) puts func in continuation and returns null!
+
+
+--------------------------------------------------------------------------------
+
+PARTLY DONE:
+-------------
+
+Eval/Apply on java.lang.Objects for full Java integration OR java-object wrapper
+
+A proposal for a Java FFI:
+	syntax for java types: 
+		$java.lang.Object = 
+		(java-quote java.lang.Object) = 
+		(quote java.lang.Object) + lookup in java-import environment
+	(java-new $java.lang.Object) [done, it's called 'new']
+	(java-import $java.lang.*)
+	(define obj (java-new $String "test"))
+	(java-call 'size obj) => 4 [done, it's called 'call']
+	(. obj size) => 4
+	($size obj) => 4
+	(java-package 'gleam.ext)
+	(java-class myList ($List) ; myList extends java.util.List
+		(java-ctor ((i 'int)) (java-set-field! length i))
+		(java-field (length 'int))
+		(java-method (get (i 'int)) ... )
+		(java-method (set! (i 'int) (obj $Object)) ...) )
+
+
+Explicit first-class environments, with primitives: 
+	make-environment [done]
+	call-with-current-environment [?]
+	current-environment [done]
+	in-environment [done]
+	environment? [done]
+	defined?
+	...
 
 
 --------------------------------------------------------------------------------
