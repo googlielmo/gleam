@@ -1,18 +1,22 @@
 <project name="gleam" default="all">
 
-	<target name="all">
-		<mkdir dir="classes" />
-		<javac srcdir="gleam"
-		       destdir="classes"
-		       fork="true" 
-		       target="1.4"
-		       source="1.4"/>
+	<target name="jar">
 		<jar destfile="Gleam.jar" manifest="manifest">
 			<fileset dir="classes" />
 			<fileset dir=".">
 				<include name="bootstrap.scm" />
 			</fileset>
 		</jar>
+	</target>
+
+	<target name="all">
+		<mkdir dir="classes" />
+		<javac srcdir="gleam" 
+		       destdir="classes"
+		       fork="true" 
+		       target="1.4"
+		       source="1.4"/>
+		<antcall target="jar"></antcall>
 	</target>
 
 </project>
