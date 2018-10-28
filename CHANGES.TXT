@@ -1,4 +1,9 @@
+2018-10-28
+
+	Switched to Maven.
+
 2008-01-22
+
 	Added 'make-environment' and 'environment?' primitives, the former to
 	create a new environment and the latter to test if a value is an 
 	environment.

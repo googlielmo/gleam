@@ -1,0 +1,8 @@
+# JetBrains
+.idea/
+
+# jenv
+.java-version
+
+# Maven
+target/
