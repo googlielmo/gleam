@@ -36,28 +36,28 @@ package gleam.lang;
  * Assignment action
  */
 public class AssignmentAction extends Action {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	/** environment */
-	protected Environment env;
+    /** environment */
+    protected Environment env;
 
-	/** the symbol to assign to */
-	protected Symbol symbol;
+    /** the symbol to assign to */
+    protected Symbol symbol;
 
-	/** Creates a new AssignmentAction */
-	public AssignmentAction(Symbol symbol, Environment env, Action parent) {
-		this.symbol = symbol;
-		this.env = env;
-		this.parent = parent;
-	}
+    /** Creates a new AssignmentAction */
+    public AssignmentAction(Symbol symbol, Environment env, Action parent) {
+        this.symbol = symbol;
+        this.env = env;
+        this.parent = parent;
+    }
 
-	/** invocation  */
-	Entity invoke(Entity arg, Continuation cont) throws GleamException {
-		cont.action = parent;
-		env.getLocation(symbol).set(arg);
-		return Void.value;
-	}
+    /** invocation  */
+    Entity invoke(Entity arg, Continuation cont) throws GleamException {
+        cont.action = parent;
+        env.getLocation(symbol).set(arg);
+        return Void.value;
+    }
 }

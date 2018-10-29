@@ -36,39 +36,39 @@ package gleam.lang;
  * If (conditional expression)
  */
 public class IfAction extends Action {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	/** consequent, alternate parts of the if command */
-	protected Entity consequent, alternate;
+    /** consequent, alternate parts of the if command */
+    protected Entity consequent, alternate;
 
-	/** environment */
-	protected Environment env;
+    /** environment */
+    protected Environment env;
 
-	/** Creates a new IfAction */
-	public IfAction(Entity consequent, Entity alternate, Environment env, Action parent) {
-		this.consequent = consequent;
-		this.alternate = alternate;
-		this.env = env;
-		this.parent = parent;
-	}
+    /** Creates a new IfAction */
+    public IfAction(Entity consequent, Entity alternate, Environment env, Action parent) {
+        this.consequent = consequent;
+        this.alternate = alternate;
+        this.env = env;
+        this.parent = parent;
+    }
 
-	/**
-	 * Evaluates the the consequent or the alternate, deciding upon the 
-	 * truth value of the argument. If it is any value except a boolean 
-	 * false, then the consequent is evaluated, otherwise the alternate is.
- 	 * @param arg the value upon which the decision is taken
-	 * @param cont the current Continuation
-	 * @return the result of the evaluation
-	 * @throws gleam.lang.GleamException in case of errors
-	*/
-	Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
-		cont.action = parent;
-		if (arg != Boolean.falseValue)
-			return consequent.eval(env, cont);
-		else
-			return alternate.eval(env, cont);
-	}
+    /**
+     * Evaluates the the consequent or the alternate, deciding upon the 
+     * truth value of the argument. If it is any value except a boolean 
+     * false, then the consequent is evaluated, otherwise the alternate is.
+     * @param arg the value upon which the decision is taken
+     * @param cont the current Continuation
+     * @return the result of the evaluation
+     * @throws gleam.lang.GleamException in case of errors
+    */
+    Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
+        cont.action = parent;
+        if (arg != Boolean.falseValue)
+            return consequent.eval(env, cont);
+        else
+            return alternate.eval(env, cont);
+    }
 }

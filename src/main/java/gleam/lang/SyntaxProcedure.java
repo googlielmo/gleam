@@ -41,20 +41,20 @@ package gleam.lang;
  */
 public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject {
 
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * SyntaxProcedure
-	 */
-	public SyntaxProcedure(gleam.library.Primitive p) {
-		super(p);
-	}
+    /**
+     * SyntaxProcedure
+     */
+    public SyntaxProcedure(gleam.library.Primitive p) {
+        super(p);
+    }
 
-	public void write(java.io.PrintWriter out) {
-		out.write("#<syntax-procedure "+ value.getName() + ">");
-	}
+    public void write(java.io.PrintWriter out) {
+        out.write("#<syntax-procedure "+ value.getName() + ">");
+    }
 
 }

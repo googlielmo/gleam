@@ -32,19 +32,19 @@ package gleam.library;
  */
 public final class Vectors {
 
-	/**
-	 * Can't instantiate this class
-	 */
-	private Vectors() {
-	}
+    /**
+     * Can't instantiate this class
+     */
+    private Vectors() {
+    }
 
-	/**
-	 * This array contains definitions of primitives.
-	 * It is used by static initializers in gleam.lang.System to populate
-	 * the three initial environments.
-	 */
-	public static Primitive[] primitives = {
-		
-	}; // primitives
+    /**
+     * This array contains definitions of primitives.
+     * It is used by static initializers in gleam.lang.System to populate
+     * the three initial environments.
+     */
+    public static Primitive[] primitives = {
+        
+    }; // primitives
 
 }

@@ -31,46 +31,46 @@ package gleam.lang;
  */
 public final class SystemEnvironment extends Environment
 {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	static final int INTR = 2;
-	static final int R5RS = 1;
-	static final int NULL = 0;
+    static final int INTR = 2;
+    static final int R5RS = 1;
+    static final int NULL = 0;
 
-	int kind;
-	/** Constructor */
-	SystemEnvironment(Environment p, int kind)
-	{
-		super(p);
-		this.kind = kind;
-	}
+    int kind;
+    /** Constructor */
+    SystemEnvironment(Environment p, int kind)
+    {
+        super(p);
+        this.kind = kind;
+    }
 
-	/** avoids to serialize data of system environments */
-	protected Entity writeReplace()
-		throws java.io.ObjectStreamException
-	{
-		return new SystemEnvironment(null, kind);
-	}
+    /** avoids to serialize data of system environments */
+    protected Entity writeReplace()
+        throws java.io.ObjectStreamException
+    {
+        return new SystemEnvironment(null, kind);
+    }
 
 
-	/** resolve environment as correct system environment on deserialization */
-	protected java.lang.Object readResolve()
-		throws java.io.ObjectStreamException
-	{
-//		java.lang.System.out.println("readResolve() called! (SystemEnvironment)"); //DEBUG
-		switch (kind) {
-			case INTR:
-				return System.getInteractionEnv();
-			case R5RS:
-				return System.getSchemeReportEnv();
-			case NULL:
-				return System.getNullEnv();
-			default:
-				throw new java.io.InvalidObjectException("Unknown kind of SystemEnvironment");
-		}
-	}
+    /** resolve environment as correct system environment on deserialization */
+    protected java.lang.Object readResolve()
+        throws java.io.ObjectStreamException
+    {
+//      java.lang.System.out.println("readResolve() called! (SystemEnvironment)"); //DEBUG
+        switch (kind) {
+            case INTR:
+                return System.getInteractionEnv();
+            case R5RS:
+                return System.getSchemeReportEnv();
+            case NULL:
+                return System.getNullEnv();
+            default:
+                throw new java.io.InvalidObjectException("Unknown kind of SystemEnvironment");
+        }
+    }
 
 }

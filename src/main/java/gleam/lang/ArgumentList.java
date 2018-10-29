@@ -29,57 +29,57 @@ package gleam.lang;
 import java.util.*;
 
 public class ArgumentList implements java.io.Serializable {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	private ArrayList listArgs;
-	private Pair pairArgs;
+    private ArrayList listArgs;
+    private Pair pairArgs;
 
-	public ArgumentList() {
-		this.listArgs = new ArrayList();
-		this.pairArgs = null;
-	}
+    public ArgumentList() {
+        this.listArgs = new ArrayList();
+        this.pairArgs = null;
+    }
 
-	public void setArguments(Pair args) {
-		this.listArgs = null;
-		this.pairArgs = args;
-	}
+    public void setArguments(Pair args) {
+        this.listArgs = null;
+        this.pairArgs = args;
+    }
 
-	public void put(Entity obj, int index) {
-		ensureSize(index+1);
-		listArgs.set(index, obj);
-	}
+    public void put(Entity obj, int index) {
+        ensureSize(index+1);
+        listArgs.set(index, obj);
+    }
 
-	public void ensureSize(int size) {
-		int missing = size - listArgs.size();
-		listArgs.ensureCapacity(size);
-		for (int i = 0 ; i < missing; ++i) {
-			listArgs.add(Undefined.value);
-		}
-	}
+    public void ensureSize(int size) {
+        int missing = size - listArgs.size();
+        listArgs.ensureCapacity(size);
+        for (int i = 0 ; i < missing; ++i) {
+            listArgs.add(Undefined.value);
+        }
+    }
 
-	/**
-	 * getArguments
-	 *
-	 * @return Pair
-	 */
-	public Pair getArguments() {
-		if (pairArgs != null) 
-			return pairArgs;
-		else
-			return j2g(listArgs);
-	}
-	
-	private Pair j2g(List lst) {
-		if (lst.size() == 0)
-			return EmptyList.value;
-		
-		Pair p = EmptyList.value;
-		for (int i = lst.size() - 1; i >= 0; --i) {
-			p = new Pair((Entity)lst.get(i), p);
-		}
-		return p;
-	}
+    /**
+     * getArguments
+     *
+     * @return Pair
+     */
+    public Pair getArguments() {
+        if (pairArgs != null) 
+            return pairArgs;
+        else
+            return j2g(listArgs);
+    }
+    
+    private Pair j2g(List lst) {
+        if (lst.size() == 0)
+            return EmptyList.value;
+        
+        Pair p = EmptyList.value;
+        for (int i = lst.size() - 1; i >= 0; --i) {
+            p = new Pair((Entity)lst.get(i), p);
+        }
+        return p;
+    }
 }

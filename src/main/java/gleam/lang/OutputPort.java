@@ -31,111 +31,111 @@ package gleam.lang;
  */
 public class OutputPort extends Port
 {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	private java.io.PrintWriter out;
+    private java.io.PrintWriter out;
 
-	/**
-	 * creates an output port to a file
-	 */
-	public OutputPort(String name)
-		throws java.io.IOException
-	{
-		this.out = new java.io.PrintWriter(
-				new java.io.BufferedWriter(
-					new java.io.FileWriter(name)));
-	}
+    /**
+     * creates an output port to a file
+     */
+    public OutputPort(String name)
+        throws java.io.IOException
+    {
+        this.out = new java.io.PrintWriter(
+                new java.io.BufferedWriter(
+                    new java.io.FileWriter(name)));
+    }
 
-	/**
-	 * creates an output port to a java.io.PrintWriter object
-	 */
-	public OutputPort(java.io.PrintWriter out)
-	{
-		this.out = out;
-	}
+    /**
+     * creates an output port to a java.io.PrintWriter object
+     */
+    public OutputPort(java.io.PrintWriter out)
+    {
+        this.out = out;
+    }
 
-	/**
-	 * closes this port
-	 */
-	public void close()
-		throws java.io.IOException
-	{
-		if (out != null) {
-			out.close();
-		}
-		out = null;
-	}
+    /**
+     * closes this port
+     */
+    public void close()
+        throws java.io.IOException
+    {
+        if (out != null) {
+            out.close();
+        }
+        out = null;
+    }
 
-	/**
-	 * tests whether port is open
-	 */
-	public boolean isOpen() {
-		return null != out;
-	}
+    /**
+     * tests whether port is open
+     */
+    public boolean isOpen() {
+        return null != out;
+    }
 
-	/**
-	 * prints object in machine-readable form
-	 */
-	public void write(Entity obj) {
-		obj.write(out);
-	}
+    /**
+     * prints object in machine-readable form
+     */
+    public void write(Entity obj) {
+        obj.write(out);
+    }
 
-	/**
-	 * prints object in human-readable form
-	 */
-	public void display(Entity obj) {
-		if (obj == EmptyList.value) {
-			out.print("()");
-		}
-		else if (obj instanceof Pair) {
-			out.print("(");
-			obj.display(out);
-			out.print(")");
-		}
-		else {
-			obj.display(out);
-		}
-	}
+    /**
+     * prints object in human-readable form
+     */
+    public void display(Entity obj) {
+        if (obj == EmptyList.value) {
+            out.print("()");
+        }
+        else if (obj instanceof Pair) {
+            out.print("(");
+            obj.display(out);
+            out.print(")");
+        }
+        else {
+            obj.display(out);
+        }
+    }
 
-	/**
-	 * prints a newline and flushes buffer
-	 */
-	public void newline() {
-		out.println();
-		out.flush();
-	}
+    /**
+     * prints a newline and flushes buffer
+     */
+    public void newline() {
+        out.println();
+        out.flush();
+    }
 
-	/**
-	 * flushes buffer
-	 */
-	public void flush() {
-		out.flush();
-	}
+    /**
+     * flushes buffer
+     */
+    public void flush() {
+        out.flush();
+    }
 
-	/**
-	 * print method useful for primitives
-	 */
-	public void print(String s) {
-		out.print(s);
-	}
+    /**
+     * print method useful for primitives
+     */
+    public void print(String s) {
+        out.print(s);
+    }
 
-	/**
-	 * returns the underlying PrintWriter
-	 */
-	public java.io.PrintWriter getPrintWriter() {
-		return out;
-	}
+    /**
+     * returns the underlying PrintWriter
+     */
+    public java.io.PrintWriter getPrintWriter() {
+        return out;
+    }
 
-	/**
-	 * Writes this port
-	 */
-	public void write(java.io.PrintWriter out)
-	{
-		out.print("#<output-port>");
-	}
+    /**
+     * Writes this port
+     */
+    public void write(java.io.PrintWriter out)
+    {
+        out.print("#<output-port>");
+    }
 
 }
 

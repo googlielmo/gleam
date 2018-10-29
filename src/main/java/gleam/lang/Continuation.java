@@ -40,74 +40,74 @@ package gleam.lang;
  */
 public class Continuation extends Procedure
 {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	public Action action;
+    public Action action;
 
-	/** Constructor */
-	Continuation() {
-		this.action = null;
-	}
+    /** Constructor */
+    Continuation() {
+        this.action = null;
+    }
 
-	Continuation(Action what) {
-		this.action = what;
-	}
+    Continuation(Action what) {
+        this.action = what;
+    }
 
-	public Continuation(Continuation other)
-	{
-		this.action = other.action;
-	}
+    public Continuation(Continuation other)
+    {
+        this.action = other.action;
+    }
 
-	/**
-	 * 
-	 * @param action 
-	 * @return 
-	 */
-	public Action extend(Action action) {
-		action.parent = this.action;
-		this.action = action;
-		return action;
-	}
+    /**
+     * 
+     * @param action 
+     * @return 
+     */
+    public Action extend(Action action) {
+        action.parent = this.action;
+        this.action = action;
+        return action;
+    }
 
-	/**
-	 * Applies this continuation.
-	 * Replaces the continuation in the current interpreter with this one.
-	 * Gets one argument, and returns it to the current interpreter as the
-	 * argument that this continuation will receive when executed, i. e.
-	 * immediately after the action of returning.
-	 *
-	 * @param args Pair
-	 * @param env Environment
-	 * @param cont Continuation
-	 * @throws gleam.lang.GleamException 
-	 * @return Entity
-	 */
-	public Entity apply(Pair args, Environment env, Continuation cont)
-		throws GleamException
-	{
-		if (args != EmptyList.value) {
-			if (args.cdr == EmptyList.value) {
-				// replace continuation
-				env.getInterpreter().replaceContinuation(this);
-				// return argument (it's already evaluated)
-				return args.car;
-			}
-			else {
-				throw new GleamException("continuation: too many arguments", args);
-			}
-		}
-		else {
-			throw new GleamException("continuation: too few arguments", args);
-		}
-	}
+    /**
+     * Applies this continuation.
+     * Replaces the continuation in the current interpreter with this one.
+     * Gets one argument, and returns it to the current interpreter as the
+     * argument that this continuation will receive when executed, i. e.
+     * immediately after the action of returning.
+     *
+     * @param args Pair
+     * @param env Environment
+     * @param cont Continuation
+     * @throws gleam.lang.GleamException 
+     * @return Entity
+     */
+    public Entity apply(Pair args, Environment env, Continuation cont)
+        throws GleamException
+    {
+        if (args != EmptyList.value) {
+            if (args.cdr == EmptyList.value) {
+                // replace continuation
+                env.getInterpreter().replaceContinuation(this);
+                // return argument (it's already evaluated)
+                return args.car;
+            }
+            else {
+                throw new GleamException("continuation: too many arguments", args);
+            }
+        }
+        else {
+            throw new GleamException("continuation: too few arguments", args);
+        }
+    }
 
-	/**
-	 * Writes this continuation.
-	 */
-	public void write(java.io.PrintWriter out) {
-		out.write("#<continuation>");
-	}
+    /**
+     * Writes this continuation.
+     */
+    public void write(java.io.PrintWriter out) {
+        out.write("#<continuation>");
+    }
 }

@@ -155,9 +155,9 @@
 (con2 -2)
 ;(my-args 1 2 3 -2 4 5 6)
 
-(write-my-args	(arg 1) (arg 2) (arg 3) 
-		(call-with-current-continuation (lambda (x) (set! con2 x) ) ) 
-		(arg 4) (arg 5) (arg 6) )
+(write-my-args (arg 1) (arg 2) (arg 3)
+    (call-with-current-continuation (lambda (x) (set! con2 x) ) )
+    (arg 4) (arg 5) (arg 6) )
 
 ;6.05.04.03.02.01.0
 ;(my-args 1.0 2.0 3.0 #<void> 4.0 5.0 6.0)

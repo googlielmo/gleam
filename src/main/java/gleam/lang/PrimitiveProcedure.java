@@ -33,77 +33,77 @@ import gleam.library.Primitive;
  */
 public class PrimitiveProcedure extends Procedure
 {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	protected Primitive value;
+    protected Primitive value;
 
-	/**
-	 * PrimitiveProcedure
-	 */
-	public PrimitiveProcedure(gleam.library.Primitive primitive) {
-		this.value = primitive;
-	}
+    /**
+     * PrimitiveProcedure
+     */
+    public PrimitiveProcedure(gleam.library.Primitive primitive) {
+        this.value = primitive;
+    }
 
-	public Entity apply(Pair arg, Environment env, Continuation cont)
-		throws GleamException
-	{
-		if (value.maxArgs < 0 || value.maxArgs > 3) {
-			if (value.minArgs >= 0 && value.maxArgs >= 0) {
-				checkNumArgs(arg);
-			}
-			return value.applyN(arg, env, cont);
-		}
-		// ok, 0 <= maxArgs <= 3 : special rules
-		assert 0 <= value.maxArgs && value.maxArgs <= 3; // DEBUG
-		Entity[] argArray = new Entity[] {null, null, null};
-		int countedArgs = 0;
-		ListIterator it = new ListIterator(arg);
-		while (it.hasNext()) {
-			argArray[countedArgs++] = it.next();
-			if (countedArgs > value.maxArgs) {
-				throw new GleamException(value, "too many arguments", arg);
-			}
-		}
-		if (countedArgs < value.minArgs) {
-			throw new GleamException(value, "too few arguments", arg);
-		}
-		switch (value.maxArgs) {
-			case 0:
-				return value.apply0(env, cont);
-			case 1:
-				return value.apply1(argArray[0], env, cont);
-			case 2:
-				return value.apply2(argArray[0], argArray[1], env, cont);
-			case 3:
-				return value.apply3(argArray[0], argArray[1], argArray[2], env, cont);
-			default: // DEBUG CANNOT HAPPEN
-				assert false;
-				return null;
-		}
-	}
+    public Entity apply(Pair arg, Environment env, Continuation cont)
+        throws GleamException
+    {
+        if (value.maxArgs < 0 || value.maxArgs > 3) {
+            if (value.minArgs >= 0 && value.maxArgs >= 0) {
+                checkNumArgs(arg);
+            }
+            return value.applyN(arg, env, cont);
+        }
+        // ok, 0 <= maxArgs <= 3 : special rules
+        assert 0 <= value.maxArgs && value.maxArgs <= 3; // DEBUG
+        Entity[] argArray = new Entity[] {null, null, null};
+        int countedArgs = 0;
+        ListIterator it = new ListIterator(arg);
+        while (it.hasNext()) {
+            argArray[countedArgs++] = it.next();
+            if (countedArgs > value.maxArgs) {
+                throw new GleamException(value, "too many arguments", arg);
+            }
+        }
+        if (countedArgs < value.minArgs) {
+            throw new GleamException(value, "too few arguments", arg);
+        }
+        switch (value.maxArgs) {
+            case 0:
+                return value.apply0(env, cont);
+            case 1:
+                return value.apply1(argArray[0], env, cont);
+            case 2:
+                return value.apply2(argArray[0], argArray[1], env, cont);
+            case 3:
+                return value.apply3(argArray[0], argArray[1], argArray[2], env, cont);
+            default: // DEBUG CANNOT HAPPEN
+                assert false;
+                return null;
+        }
+    }
 
-	public void write(java.io.PrintWriter out)
-	{
-		out.write("#<primitive-procedure "+ value.toString() + ">");
-	}
+    public void write(java.io.PrintWriter out)
+    {
+        out.write("#<primitive-procedure "+ value.toString() + ">");
+    }
 
-	private void checkNumArgs(Pair args) throws GleamException {
-		ListIterator it = new ListIterator(args);
-		int i;
-		for (i = 0; i < value.minArgs; ++i) {
-			if (!it.hasNext()) {
-				throw new GleamException(value, "too few arguments", args);
-			}
-		}
-		if (value.maxArgs > 0) {
-			while (it.hasNext()) {
-				if (++i > value.maxArgs)
-					throw new GleamException(value, "too many arguments", args);
-			}
-		}
-	}
+    private void checkNumArgs(Pair args) throws GleamException {
+        ListIterator it = new ListIterator(args);
+        int i;
+        for (i = 0; i < value.minArgs; ++i) {
+            if (!it.hasNext()) {
+                throw new GleamException(value, "too few arguments", args);
+            }
+        }
+        if (value.maxArgs > 0) {
+            while (it.hasNext()) {
+                if (++i > value.maxArgs)
+                    throw new GleamException(value, "too many arguments", args);
+            }
+        }
+    }
 
 }

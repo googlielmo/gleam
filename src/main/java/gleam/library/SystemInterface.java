@@ -35,44 +35,44 @@ import gleam.lang.Void;
  */
 public final class SystemInterface {
 
-	/**
-	 * Can't instantiate this class
-	 */
-	private SystemInterface() {
-	}
+    /**
+     * Can't instantiate this class
+     */
+    private SystemInterface() {
+    }
 
-	/**
-	 * This array contains definitions of primitives.
-	 * It is used by static initializers in gleam.lang.System to populate
-	 * the three initial environments.
-	 */
-	public static Primitive[] primitives = {
+    /**
+     * This array contains definitions of primitives.
+     * It is used by static initializers in gleam.lang.System to populate
+     * the three initial environments.
+     */
+    public static Primitive[] primitives = {
 
-	/**
-	 * load
-	 * Loads and executes an external source file
-	 */
-	new Primitive( "load",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Loads and executes a source file",
-		null /* doc strings */ ) {
-	public Entity apply1(Entity arg1, Environment env, Continuation cont)
-		throws GleamException
-	{
-		try {
-			MutableString filename = (MutableString) arg1;
-			InputPort iport = new InputPort(filename.toString());
-			env.getInterpreter().load(iport, env);
-			return Void.makeVoid();
-		}
-		catch (ClassCastException e) {
-			throw new GleamException(this, "argument is not a string", arg1);
-		}
-		catch (java.io.FileNotFoundException e) {
-			throw new GleamException(this, "file not found", arg1);
-		}
-	}},
-	
-	}; // primitives
+    /**
+     * load
+     * Loads and executes an external source file
+     */
+    new Primitive( "load",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Loads and executes a source file",
+        null /* doc strings */ ) {
+    public Entity apply1(Entity arg1, Environment env, Continuation cont)
+        throws GleamException
+    {
+        try {
+            MutableString filename = (MutableString) arg1;
+            InputPort iport = new InputPort(filename.toString());
+            env.getInterpreter().load(iport, env);
+            return Void.makeVoid();
+        }
+        catch (ClassCastException e) {
+            throw new GleamException(this, "argument is not a string", arg1);
+        }
+        catch (java.io.FileNotFoundException e) {
+            throw new GleamException(this, "file not found", arg1);
+        }
+    }},
+    
+    }; // primitives
 }

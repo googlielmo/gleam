@@ -30,40 +30,40 @@ package gleam.lang;
  * The EOF value (a singleton).
  */
 public final class Eof extends Entity {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	/** the Eof singleton */
-	protected static final Eof value = new Eof();
+    /** the Eof singleton */
+    protected static final Eof value = new Eof();
 
-	/** Can't instantiate this class */
-	private Eof() {
-	}
+    /** Can't instantiate this class */
+    private Eof() {
+    }
 
-	/**
-	 * Factory method
-	 */
-	public static Eof makeEof() {
-		return value;
-	}
+    /**
+     * Factory method
+     */
+    public static Eof makeEof() {
+        return value;
+    }
 
-	/**
-	 * Prevents the release of multiple instances upon deserialization.
-	 */
-	protected java.lang.Object readResolve()
-		throws java.io.ObjectStreamException
-	{
-//		java.lang.System.out.println("readResolve() called! (Eof)"); //DEBUG
-		return value;
-	}
+    /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    protected java.lang.Object readResolve()
+        throws java.io.ObjectStreamException
+    {
+//      java.lang.System.out.println("readResolve() called! (Eof)"); //DEBUG
+        return value;
+    }
 
-	/**
-	 * Writes the Eof value (nothing).
-	 */
-	public void write(java.io.PrintWriter out) {
-		//out.write("#<eof>");
-	}
+    /**
+     * Writes the Eof value (nothing).
+     */
+    public void write(java.io.PrintWriter out) {
+        //out.write("#<eof>");
+    }
 }
 

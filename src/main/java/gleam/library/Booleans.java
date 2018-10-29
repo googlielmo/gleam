@@ -37,48 +37,48 @@ import gleam.lang.*;
  */
 public final class Booleans {
 
-	/**
-	 * Can't instantiate this class
-	 */
-	private Booleans() {
-	}
+    /**
+     * Can't instantiate this class
+     */
+    private Booleans() {
+    }
 
-	/**
-	 * This array contains definitions of primitives.
-	 * It is used by static initializers in gleam.lang.System to populate
-	 * the three initial environments.
-	 */
-	public static Primitive[] primitives = {
+    /**
+     * This array contains definitions of primitives.
+     * It is used by static initializers in gleam.lang.System to populate
+     * the three initial environments.
+     */
+    public static Primitive[] primitives = {
 
-	/**
-	 * boolean?
-	 * Tests if argument is a boolean
-	 */
-	new Primitive( "boolean?",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Returns true if argument is a boolean, false otherwise",
-		"E.g. (boolean? #f) => #t" /* doc strings */ ) {
-	public Entity apply1(Entity arg1, Environment env, Continuation cont)
-		throws GleamException
-	{
-		return Boolean.makeBoolean(arg1 instanceof Boolean);
-	}},
+    /**
+     * boolean?
+     * Tests if argument is a boolean
+     */
+    new Primitive( "boolean?",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Returns true if argument is a boolean, false otherwise",
+        "E.g. (boolean? #f) => #t" /* doc strings */ ) {
+    public Entity apply1(Entity arg1, Environment env, Continuation cont)
+        throws GleamException
+    {
+        return Boolean.makeBoolean(arg1 instanceof Boolean);
+    }},
 
-	/**
-	 * not
-	 * Logical Not operator
-	 */
-	new Primitive( "not",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Returns true if argument is false, false otherwise",
-		"E.g. (not #f) => #t" /* doc strings */ ) {
-	public Entity apply1(Entity arg1, Environment env, Continuation cont)
-		throws GleamException
-	{
-		return Boolean.makeBoolean(arg1.equals(Boolean.falseValue));
-	}},
+    /**
+     * not
+     * Logical Not operator
+     */
+    new Primitive( "not",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Returns true if argument is false, false otherwise",
+        "E.g. (not #f) => #t" /* doc strings */ ) {
+    public Entity apply1(Entity arg1, Environment env, Continuation cont)
+        throws GleamException
+    {
+        return Boolean.makeBoolean(arg1.equals(Boolean.falseValue));
+    }},
 
-	}; // primitives
+    }; // primitives
 }

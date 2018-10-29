@@ -43,35 +43,35 @@ package gleam.lang;
  * the proper tree-shape may appear.
  */
 public abstract class Action implements java.io.Serializable {
-	/** the next action to execute, this creates a tree structure */
-	Action parent;
-	
-	/**
-	 * Appends a new action after this one, so that the other action be 
-	 * executed after this one.
-	 * @param action the Action to append
-	 * @return the argument
-	 */
-	public Action append(Action action) {
-		action.parent = this.parent;
-		this.parent = action;
-		return action;
-	}
+    /** the next action to execute, this creates a tree structure */
+    Action parent;
+    
+    /**
+     * Appends a new action after this one, so that the other action be 
+     * executed after this one.
+     * @param action the Action to append
+     * @return the argument
+     */
+    public Action append(Action action) {
+        action.parent = this.parent;
+        this.parent = action;
+        return action;
+    }
 
-	/**
-	 * Invokes this action with an argument and a continuation,  returning a
-	 * value, and advancing the continuation to the next action.
-	 * Subclasses that implement this abstract method must update the 
-	 * continuation's action with the next action to execute (e.g. 
-	 * <CODE>cont.action = this.parent</CODE>), so to go forward in program 
-	 * execution
-	 * @param arg the Entity argument to this step of execution
-	 * @param cont the current Continuation
-	 * @return an Entity, or null to signal that only the continuation has
-	 *	been changed
-	 * @throws gleam.lang.GleamException in case of errors
-	 */
-	abstract Entity invoke(Entity arg, Continuation cont)
-		throws gleam.lang.GleamException;
+    /**
+     * Invokes this action with an argument and a continuation,  returning a
+     * value, and advancing the continuation to the next action.
+     * Subclasses that implement this abstract method must update the 
+     * continuation's action with the next action to execute (e.g. 
+     * <CODE>cont.action = this.parent</CODE>), so to go forward in program 
+     * execution
+     * @param arg the Entity argument to this step of execution
+     * @param cont the current Continuation
+     * @return an Entity, or null to signal that only the continuation has
+     *  been changed
+     * @throws gleam.lang.GleamException in case of errors
+     */
+    abstract Entity invoke(Entity arg, Continuation cont)
+        throws gleam.lang.GleamException;
 
 }

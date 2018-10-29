@@ -35,60 +35,60 @@ import java.io.StringWriter;
  */
 public abstract class Entity implements java.io.Serializable
 {
-	/**
-	 * Performs syntax analysis on this entity.
-	 */
-	public Entity analyze()
-		throws GleamException
-	{
-		// default: analyzing an entity yields same entity
-		return this;
-	}
+    /**
+     * Performs syntax analysis on this entity.
+     */
+    public Entity analyze()
+        throws GleamException
+    {
+        // default: analyzing an entity yields same entity
+        return this;
+    }
 
-	/**
-	 * Evaluates this entity in the given environment,
-	 * with the given continuation.
-	 */
-	public Entity eval(Environment env, Continuation cont)
-		throws GleamException
-	{
-		// default: evaluating an entity yelds same entity
-		return this;
-	}
+    /**
+     * Evaluates this entity in the given environment,
+     * with the given continuation.
+     */
+    public Entity eval(Environment env, Continuation cont)
+        throws GleamException
+    {
+        // default: evaluating an entity yelds same entity
+        return this;
+    }
 
-	/**
-	 * Performs environment optimization on this entity.
-	 */
-	public Entity optimize(Environment env)
-		throws GleamException
-	{
-		// default: optimizing an entity yields same entity
-		return this;
-	}
+    /**
+     * Performs environment optimization on this entity.
+     */
+    public Entity optimize(Environment env)
+        throws GleamException
+    {
+        // default: optimizing an entity yields same entity
+        return this;
+    }
 
-	/**
-	 * Writes this entity in machine-readable form
-	 */
-	abstract public void write(java.io.PrintWriter out);
+    /**
+     * Writes this entity in machine-readable form
+     */
+    abstract public void write(java.io.PrintWriter out);
 
-	/**
-	 * Writes this entity in human-readable form
-	 */
-	public void display(java.io.PrintWriter out)
-	{
-		// default: use write method
-		write(out);
-	}
+    /**
+     * Writes this entity in human-readable form
+     */
+    public void display(java.io.PrintWriter out)
+    {
+        // default: use write method
+        write(out);
+    }
 
-	/**
-	 * Returns a string representation of this entity, the same as 'display' 
-	 * produces.
-	 * 
-	 * @return a string representation of the entity.
-	 */
-	public String toString() {
-		StringWriter sw;
-		display(new PrintWriter(sw = new StringWriter()));
-		return sw.toString();
-	}
+    /**
+     * Returns a string representation of this entity, the same as 'display' 
+     * produces.
+     * 
+     * @return a string representation of the entity.
+     */
+    public String toString() {
+        StringWriter sw;
+        display(new PrintWriter(sw = new StringWriter()));
+        return sw.toString();
+    }
 }

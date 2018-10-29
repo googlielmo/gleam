@@ -31,64 +31,64 @@ package gleam.lang;
  * Creation date: (28/10/2001 12.22.48)
  */
 public class MutableString extends Entity {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	/** The current string value. */
-	StringBuffer value;
+    /** The current string value. */
+    StringBuffer value;
 
-	/**
-	 * Creates a new Scheme string.
-	 * Creation date: (28/10/01 12.24.51)
-	 * @param s java.lang.String
-	 */
-	public MutableString(String s) {
-		value = new StringBuffer(s);
-	}
+    /**
+     * Creates a new Scheme string.
+     * Creation date: (28/10/01 12.24.51)
+     * @param s java.lang.String
+     */
+    public MutableString(String s) {
+        value = new StringBuffer(s);
+    }
 
-	/**
-	 * Obtains the current string value as a java.lang.String.
-	 */
-	public String toString() {
-		return value.toString();
-	}
+    /**
+     * Obtains the current string value as a java.lang.String.
+     */
+    public String toString() {
+        return value.toString();
+    }
 
-	/**
-	 * Writes a Scheme string.
-	 */
-	public void write(java.io.PrintWriter out) {
-		out.print("\"");
-		for (int i = 0; i < value.length(); ++i) {
-			switch (value.charAt(i)) {
-				case '\t':
-					out.print("\\t");
-					break;
-				case '\r':
-					out.print("\\r");
-					break;
-				case '\n':
-					out.print("\\n");
-					break;
-				case '\\':
-					out.print("\\\\");
-					break;
-				case '"':
-					out.print("\\\"");
-					break;
-				default:
-					out.print(value.charAt(i));
-			}
-		}
-		out.print("\"");
-	}
+    /**
+     * Writes a Scheme string.
+     */
+    public void write(java.io.PrintWriter out) {
+        out.print("\"");
+        for (int i = 0; i < value.length(); ++i) {
+            switch (value.charAt(i)) {
+                case '\t':
+                    out.print("\\t");
+                    break;
+                case '\r':
+                    out.print("\\r");
+                    break;
+                case '\n':
+                    out.print("\\n");
+                    break;
+                case '\\':
+                    out.print("\\\\");
+                    break;
+                case '"':
+                    out.print("\\\"");
+                    break;
+                default:
+                    out.print(value.charAt(i));
+            }
+        }
+        out.print("\"");
+    }
 
-	/**
-	 * Displays a Scheme string.
-	 */
-	public void display(java.io.PrintWriter out) {
-		out.print(value);
-	}
+    /**
+     * Displays a Scheme string.
+     */
+    public void display(java.io.PrintWriter out) {
+        out.print(value);
+    }
 }
 

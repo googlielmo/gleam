@@ -37,47 +37,47 @@ package gleam.lang;
  */
 public final class Boolean extends Entity
 {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	/** the truth value of this object */
-	protected boolean value;
-	
-	/** the one and only #t */
-	static public final Boolean trueValue = new Boolean(true);
-	
-	/** the one and only #f */
-	static public final Boolean falseValue = new Boolean(false);
+    /** the truth value of this object */
+    protected boolean value;
+    
+    /** the one and only #t */
+    static public final Boolean trueValue = new Boolean(true);
+    
+    /** the one and only #f */
+    static public final Boolean falseValue = new Boolean(false);
 
-	/** private constructor */
-	private Boolean(boolean v)
-	{
-		value = v;
-	}
+    /** private constructor */
+    private Boolean(boolean v)
+    {
+        value = v;
+    }
 
-	/**
-	 * Static factory.
-	 */
-	public static Boolean makeBoolean(boolean b)
-	{
-		if (b)
-			return trueValue;
-		else
-			return falseValue;
-	}
+    /**
+     * Static factory.
+     */
+    public static Boolean makeBoolean(boolean b)
+    {
+        if (b)
+            return trueValue;
+        else
+            return falseValue;
+    }
 
-	/**
-	 * Writes a boolean.
-	 */
-	public void write(java.io.PrintWriter out)
-	{
-		if (value) {
-			out.print("#t");
-		}
-		else {
-			out.print("#f");
-		}	
-	}
+    /**
+     * Writes a boolean.
+     */
+    public void write(java.io.PrintWriter out)
+    {
+        if (value) {
+            out.print("#t");
+        }
+        else {
+            out.print("#f");
+        }   
+    }
 }

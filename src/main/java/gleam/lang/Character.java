@@ -31,39 +31,39 @@ package gleam.lang;
  */
 public final class Character extends Entity
 {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	protected char value;
+    protected char value;
 
-	/**
-	 * Constructor
-	 */
-	public Character(char v)
-	{
-		value = v;
-	}
+    /**
+     * Constructor
+     */
+    public Character(char v)
+    {
+        value = v;
+    }
 
-	/** Writes this character */
-	public void write(java.io.PrintWriter out)
-	{
-		if (value == '\n') {
-			out.print("#\\newline");
-		}
-		else if (value == ' ') {
-			out.print("#\\space");
-		}
-		else {
-			out.print("#\\" + value);
-		}
-	}
+    /** Writes this character */
+    public void write(java.io.PrintWriter out)
+    {
+        if (value == '\n') {
+            out.print("#\\newline");
+        }
+        else if (value == ' ') {
+            out.print("#\\space");
+        }
+        else {
+            out.print("#\\" + value);
+        }
+    }
 
-	/** Displays this character */
-	public void display(java.io.PrintWriter out)
-	{
-		out.print(value);
-	}
+    /** Displays this character */
+    public void display(java.io.PrintWriter out)
+    {
+        out.print(value);
+    }
 }
 

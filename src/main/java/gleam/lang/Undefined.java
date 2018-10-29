@@ -32,48 +32,48 @@ package gleam.lang;
  */
 public final class Undefined extends Entity {
 
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	/** the Undefined singleton */
-	protected static final Undefined value = new Undefined();
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
+    
+    /** the Undefined singleton */
+    protected static final Undefined value = new Undefined();
 
-	/** Can't instantiate this */
-	private Undefined() {
-	}
+    /** Can't instantiate this */
+    private Undefined() {
+    }
 
-	/**
-	 * Factory method
-	 */
-	public static Undefined makeUndefined() {
-		return value;
-	}
+    /**
+     * Factory method
+     */
+    public static Undefined makeUndefined() {
+        return value;
+    }
 
-	/**
-	 * Evaluates this object in the given environment.
-	 */
-	public Entity eval(Environment env, Continuation cont)
-		throws GleamException
-	{
-		throw new GleamException("Evaluation of undefined value", this);
-	}
+    /**
+     * Evaluates this object in the given environment.
+     */
+    public Entity eval(Environment env, Continuation cont)
+        throws GleamException
+    {
+        throw new GleamException("Evaluation of undefined value", this);
+    }
 
-	/**
-	 * Prevents the release of multiple instances upon deserialization.
-	 */
-	protected java.lang.Object readResolve()
-		throws java.io.ObjectStreamException
-	{
-//		java.lang.System.out.println("readResolve() called! (Undefined)"); //DEBUG
-		return value;
-	}
+    /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    protected java.lang.Object readResolve()
+        throws java.io.ObjectStreamException
+    {
+//      java.lang.System.out.println("readResolve() called! (Undefined)"); //DEBUG
+        return value;
+    }
 
-	/**
-	 * Writes the undefined value
-	 */
-	public void write(java.io.PrintWriter out) {
-		out.write("#<?>");
-	}
+    /**
+     * Writes the undefined value
+     */
+    public void write(java.io.PrintWriter out) {
+        out.write("#<?>");
+    }
 }

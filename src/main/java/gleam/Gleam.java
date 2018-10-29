@@ -37,82 +37,82 @@ import gleam.util.Log;
  */
 public class Gleam
 {
-	// Gleam release number
-	private static final String RELEASE="0.90 pre-2";
+    // Gleam release number
+    private static final String RELEASE="0.90 pre-2";
 
-	// Dump env symbol (for debugging)
-	private static final Symbol cEnv = Symbol.makeSymbol("!e");
+    // Dump env symbol (for debugging)
+    private static final Symbol cEnv = Symbol.makeSymbol("!e");
 
-	// Quit symbol 
-	private static final Symbol cQuit = Symbol.makeSymbol("!q");
-		
-	/**
-	 * Entry point for the Gleam interactive interpreter
-	 * @param args command line arguments
-	 */
-	public static void main(String[] args)
-	{
-		Interpreter intp = null;
+    // Quit symbol 
+    private static final Symbol cQuit = Symbol.makeSymbol("!q");
+        
+    /**
+     * Entry point for the Gleam interactive interpreter
+     * @param args command line arguments
+     */
+    public static void main(String[] args)
+    {
+        Interpreter intp = null;
 
-		System.out.println("Welcome to Gleam, release " + RELEASE);
-		System.out.println("(c) 2001-2008 Guglielmo Nigri <guglielmonigri@yahoo.it>.");
-		System.out.println("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are");
-		System.out.println("welcome to redistribute it under certain conditions; see LICENSE.TXT.");
+        System.out.println("Welcome to Gleam, release " + RELEASE);
+        System.out.println("(c) 2001-2008 Guglielmo Nigri <guglielmonigri@yahoo.it>.");
+        System.out.println("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are");
+        System.out.println("welcome to redistribute it under certain conditions; see LICENSE.TXT.");
 
-		try {
-			System.out.print("Bootstrapping... ");
-			intp = new Interpreter();
-			System.out.println("OK");
-		} catch (GleamException e) {
-			Log.record(e);
-			System.exit(1);
-		}
-		System.out.print("Type (help) for help, !q to quit.\n\n");
+        try {
+            System.out.print("Bootstrapping... ");
+            intp = new Interpreter();
+            System.out.println("OK");
+        } catch (GleamException e) {
+            Log.record(e);
+            System.exit(1);
+        }
+        System.out.print("Type (help) for help, !q to quit.\n\n");
 
-		gleam.lang.Environment session;
+        gleam.lang.Environment session;
 
-		gleam.lang.InputPort r = gleam.lang.System.getCin();
-		gleam.lang.OutputPort w = gleam.lang.System.getCout();
+        gleam.lang.InputPort r = gleam.lang.System.getCin();
+        gleam.lang.OutputPort w = gleam.lang.System.getCout();
 
-		gleam.lang.Entity prompt = new gleam.lang.MutableString("> ");
-		gleam.lang.Entity result;
-		
-		for(;;)
-		{
-			try {
-				// get session environment for execution
-				session = intp.getSessionEnv();
+        gleam.lang.Entity prompt = new gleam.lang.MutableString("> ");
+        gleam.lang.Entity result;
+        
+        for(;;)
+        {
+            try {
+                // get session environment for execution
+                session = intp.getSessionEnv();
 
-				// read
-				w.display(prompt);
-				w.flush();
+                // read
+                w.display(prompt);
+                w.flush();
 
-				gleam.lang.Entity obj = r.read();
-				if (obj == gleam.lang.Eof.makeEof() || obj == cQuit) {
-					System.out.println("Bye.");
-					break;
-				}
+                gleam.lang.Entity obj = r.read();
+                if (obj == gleam.lang.Eof.makeEof() || obj == cQuit) {
+                    System.out.println("Bye.");
+                    break;
+                }
 
-				if (obj == cEnv) {
-					session.dump();
-				}
-				else {
-					// eval
-					result = intp.eval(obj, session);
+                if (obj == cEnv) {
+                    session.dump();
+                }
+                else {
+                    // eval
+                    result = intp.eval(obj, session);
 
-					// print
-					if (result != gleam.lang.Void.makeVoid())
-						w.write(result);
-					w.newline();
-				}
-			}
-			catch (gleam.lang.GleamException e) {
-				System.out.println("*** " + e.getMessage());
-			}
-			catch (Exception e){
-				System.out.println("*** Uncaught Exception: " + e.getMessage());
-				gleam.util.Log.record(e);
-			}
-		}
-	}
+                    // print
+                    if (result != gleam.lang.Void.makeVoid())
+                        w.write(result);
+                    w.newline();
+                }
+            }
+            catch (gleam.lang.GleamException e) {
+                System.out.println("*** " + e.getMessage());
+            }
+            catch (Exception e){
+                System.out.println("*** Uncaught Exception: " + e.getMessage());
+                gleam.util.Log.record(e);
+            }
+        }
+    }
 }

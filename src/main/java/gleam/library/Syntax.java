@@ -34,303 +34,303 @@ import gleam.lang.Void;
  */
 public final class Syntax {
 
-	/**
-	 * Can't instantiate this class
-	 */
-	private Syntax() {
-	}
+    /**
+     * Can't instantiate this class
+     */
+    private Syntax() {
+    }
 
-	/**
-	 * This array contains definitions of primitives.
-	 * It is used by static initializers in gleam.lang.System to populate
-	 * the three initial environments.
-	 */
-	public static Primitive[] primitives = {
+    /**
+     * This array contains definitions of primitives.
+     * It is used by static initializers in gleam.lang.System to populate
+     * the three initial environments.
+     */
+    public static Primitive[] primitives = {
 
-//	/**
-//	 * 
-//	 */
-//	new Primitive( "", 
-//		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-//		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-//		null, null /* doc strings */ ) {
-//	},
+//  /**
+//   * 
+//   */
+//  new Primitive( "", 
+//      Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+//      0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+//      null, null /* doc strings */ ) {
+//  },
 
-	/** 
-	 * quote 
-	 * Returns its argument without evaluation.
-	 */
-	new Primitive( "quote", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Gives its argument unevaluated, e.g. (quote x); 'x",
-		null /* doc strings */ ) {
-	public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException {
-		return arg1;
-	}},
+    /** 
+     * quote 
+     * Returns its argument without evaluation.
+     */
+    new Primitive( "quote", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Gives its argument unevaluated, e.g. (quote x); 'x",
+        null /* doc strings */ ) {
+    public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException {
+        return arg1;
+    }},
 
-	/**
-	 * define
-	 * Defines a new binding in the environment.
-	 */
-	new Primitive( "define", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		"Variable or procedure definition, e.g. (define (inc x) (+ x 1))",
-		"Can be used at top-level to create a new global variable, "
-		+"e.g. (define x 1); or at the beginning of a procedure body "
-		+"to create a new local variable." /* doc strings */ ) {
-	public Entity applyN(Pair args, Environment env, Continuation cont) throws GleamException {
-		try {
-			ListIterator it = new ListIterator(args);
-			Entity target = it.next();
-			Entity value = it.next();
-			/* see if it is a variable definition
-			 * or a disguised lambda
-			 * note that target is NOT evaluated
-			 */
-			if (target instanceof Symbol) {
-				if (it.hasNext()) {
-					throw new GleamException(this, "too many arguments", args);
-				}
-				// TODO: check that target is not a keyword (?)
-				Symbol s = (Symbol) target;
-				// create binding
-				env.define(s, Undefined.makeUndefined());
-				// now it is equivalent to set!
-				cont.extend(
-					new ExpressionAction(value, env, null)).append(
-					new AssignmentAction(s, env, null));
+    /**
+     * define
+     * Defines a new binding in the environment.
+     */
+    new Primitive( "define", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        2, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        "Variable or procedure definition, e.g. (define (inc x) (+ x 1))",
+        "Can be used at top-level to create a new global variable, "
+        +"e.g. (define x 1); or at the beginning of a procedure body "
+        +"to create a new local variable." /* doc strings */ ) {
+    public Entity applyN(Pair args, Environment env, Continuation cont) throws GleamException {
+        try {
+            ListIterator it = new ListIterator(args);
+            Entity target = it.next();
+            Entity value = it.next();
+            /* see if it is a variable definition
+             * or a disguised lambda
+             * note that target is NOT evaluated
+             */
+            if (target instanceof Symbol) {
+                if (it.hasNext()) {
+                    throw new GleamException(this, "too many arguments", args);
+                }
+                // TODO: check that target is not a keyword (?)
+                Symbol s = (Symbol) target;
+                // create binding
+                env.define(s, Undefined.makeUndefined());
+                // now it is equivalent to set!
+                cont.extend(
+                    new ExpressionAction(value, env, null)).append(
+                    new AssignmentAction(s, env, null));
 
-				return null;
-			}
-			else if (target instanceof Pair) {
-				Entity rtarget = ((Pair)target).getCar();
-				Entity params = ((Pair)target).getCdr();
-				Pair body = new Pair(value, it.rest());
-				if (rtarget instanceof Symbol) {
-					Symbol s = (Symbol) rtarget;
-					// create binding
-					env.define(s, Undefined.makeUndefined());
-					// equivalent to set!
-					cont.extend(new AssignmentAction(s, env, null));
-					return new Closure(params, body, env);
-				}
-				else {
-					throw new GleamException(this, "invalid procedure name", rtarget);
-				}
-			}
-			else {
-				throw new GleamException(this, "invalid form", args);
-			}
-		}
-		catch (ClassCastException e) {
-			throw new GleamException(this, "invalid arguments", args);
-		}
-	}},
+                return null;
+            }
+            else if (target instanceof Pair) {
+                Entity rtarget = ((Pair)target).getCar();
+                Entity params = ((Pair)target).getCdr();
+                Pair body = new Pair(value, it.rest());
+                if (rtarget instanceof Symbol) {
+                    Symbol s = (Symbol) rtarget;
+                    // create binding
+                    env.define(s, Undefined.makeUndefined());
+                    // equivalent to set!
+                    cont.extend(new AssignmentAction(s, env, null));
+                    return new Closure(params, body, env);
+                }
+                else {
+                    throw new GleamException(this, "invalid procedure name", rtarget);
+                }
+            }
+            else {
+                throw new GleamException(this, "invalid form", args);
+            }
+        }
+        catch (ClassCastException e) {
+            throw new GleamException(this, "invalid arguments", args);
+        }
+    }},
 
-	/**
-	 * lambda
-	 * Creates a new procedure.
-	 */
-	new Primitive( "lambda", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		"Creates a procedure, e.g. (lambda (x) (+ x 1))",
-		null /* doc strings */ ) {
-	public Entity applyN(Pair args, Environment env, Continuation cont) throws GleamException {
-		try {
-			Entity lambdaParams = args.getCar();
-			Pair lambdaBody = (Pair)args.getCdr();
-			return new Closure(lambdaParams, lambdaBody, env);
-		}
-		catch (ClassCastException e) {
-			throw new GleamException(this, "invalid procedure definition", args);
-		}
-	}},
+    /**
+     * lambda
+     * Creates a new procedure.
+     */
+    new Primitive( "lambda", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        2, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        "Creates a procedure, e.g. (lambda (x) (+ x 1))",
+        null /* doc strings */ ) {
+    public Entity applyN(Pair args, Environment env, Continuation cont) throws GleamException {
+        try {
+            Entity lambdaParams = args.getCar();
+            Pair lambdaBody = (Pair)args.getCdr();
+            return new Closure(lambdaParams, lambdaBody, env);
+        }
+        catch (ClassCastException e) {
+            throw new GleamException(this, "invalid procedure definition", args);
+        }
+    }},
 
-	/**
-	 * if
-	 * Conditional expression.
-	 */
-	new Primitive( "if", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		2, 3, /* min, max no. of arguments */
-		"Conditional evaluation, e.g. (if (eqv? 1 0) 'strange 'ok)",
-		null /* doc strings */ ) {
-	public Entity apply3(Entity test, Entity consequent, Entity alternate, Environment env, Continuation cont) throws GleamException {
-		if (alternate == null)
-			alternate = Void.makeVoid();
+    /**
+     * if
+     * Conditional expression.
+     */
+    new Primitive( "if", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        2, 3, /* min, max no. of arguments */
+        "Conditional evaluation, e.g. (if (eqv? 1 0) 'strange 'ok)",
+        null /* doc strings */ ) {
+    public Entity apply3(Entity test, Entity consequent, Entity alternate, Environment env, Continuation cont) throws GleamException {
+        if (alternate == null)
+            alternate = Void.makeVoid();
 
-		cont.extend(
-			new ExpressionAction(test, env, null)).append(
-			new IfAction(consequent, alternate, env, null));
+        cont.extend(
+            new ExpressionAction(test, env, null)).append(
+            new IfAction(consequent, alternate, env, null));
 
-		return null;
-	}},
+        return null;
+    }},
 
-	/**
-	 * set!
-	 * Assigns a value to a variable
-	 */
-	new Primitive( "set!", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		2, 2, /* min, max no. of arguments */
-		"Variable assignment, e.g. (set! x 11)",
-		"The variable must be already bound, e.g. with define" /* doc strings */ ) {
-	public Entity apply2(Entity arg1, Entity obj, Environment env, Continuation cont) throws GleamException {
-		try {
-			Symbol s = (Symbol) arg1;
-			cont.extend(
-				new ExpressionAction(obj, env, null)).append(
-				new AssignmentAction(s, env, null));
+    /**
+     * set!
+     * Assigns a value to a variable
+     */
+    new Primitive( "set!", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        2, 2, /* min, max no. of arguments */
+        "Variable assignment, e.g. (set! x 11)",
+        "The variable must be already bound, e.g. with define" /* doc strings */ ) {
+    public Entity apply2(Entity arg1, Entity obj, Environment env, Continuation cont) throws GleamException {
+        try {
+            Symbol s = (Symbol) arg1;
+            cont.extend(
+                new ExpressionAction(obj, env, null)).append(
+                new AssignmentAction(s, env, null));
 
-			return null;
-		}
-		catch (ClassCastException e) {
-			throw new GleamException(this, "argument is not a symbol", arg1);
-		}
-	}},
+            return null;
+        }
+        catch (ClassCastException e) {
+            throw new GleamException(this, "argument is not a symbol", arg1);
+        }
+    }},
 
-	/**
-	 * begin
-	 * Evaluates each argument sequentially from left to right.
-	 * The result of the last evaluation is returned.
-	 */
-	new Primitive( "begin", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		"Sequential execution, e.g. (begin (first-step) (second-step))",
-		null /* doc strings */ ) {
-	public Entity applyN(Pair args, Environment env, Continuation cont) throws GleamException {
-		// equivalent to the body of a procedure with no arguments
-		cont.action = gleam.lang.Closure.addCommandSequenceActions(args, env, cont.action);
-		return null;
-	}},
+    /**
+     * begin
+     * Evaluates each argument sequentially from left to right.
+     * The result of the last evaluation is returned.
+     */
+    new Primitive( "begin", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        "Sequential execution, e.g. (begin (first-step) (second-step))",
+        null /* doc strings */ ) {
+    public Entity applyN(Pair args, Environment env, Continuation cont) throws GleamException {
+        // equivalent to the body of a procedure with no arguments
+        cont.action = gleam.lang.Closure.addCommandSequenceActions(args, env, cont.action);
+        return null;
+    }},
 
-	/**
-	 * case
-	 * @todo implementation
-	 */
-	new Primitive( "case",
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		null, null /* doc strings */ ) {
-	},
+    /**
+     * case
+     * @todo implementation
+     */
+    new Primitive( "case",
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        null, null /* doc strings */ ) {
+    },
 
-	/**
-	 * do
-	 * @todo implementation
-	 */
-	new Primitive( "do", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		null, null /* doc strings */ ) {
-	},
+    /**
+     * do
+     * @todo implementation
+     */
+    new Primitive( "do", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        null, null /* doc strings */ ) {
+    },
 
-	/**
-	 * delay
-	 * @todo implementation
-	 */
-	new Primitive( "delay", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		null, null /* doc strings */ ) {
-	},
-
-
-	/**
-	 * quasiquote
-	 * @todo implementation
-	 */
-	new Primitive( "quasiquote", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Gives its argument almost unevaluated, e.g. (quasiquote x); `x",
-		"If a comma appears within the argument, the expression following the "
-		+"comma is evaluated (\"unquoted\") and its result is inserted into "
-		+"the structure instead of the comma and the expression. If a comma "
-		+"appears followed immediately by an at-sign (@), then the following "
-		+"expression must evaluate to a list; the opening and closing "
-		+"parentheses of the list are then \"stripped away\" and the elements "
-		+"of the list are inserted in place of the comma at-sign expression "
-		+"sequence. (unquote x) is equivalent to ,x and (unquote-splicing x) "
-		+"is equivalent to ,@x." /* doc strings */ ) {
-	},
+    /**
+     * delay
+     * @todo implementation
+     */
+    new Primitive( "delay", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        null, null /* doc strings */ ) {
+    },
 
 
-	/**
-	 * else
-	 * @todo implementation
-	 */
-	new Primitive( "else", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		null, null /* doc strings */ ) {
-	},
+    /**
+     * quasiquote
+     * @todo implementation
+     */
+    new Primitive( "quasiquote", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Gives its argument almost unevaluated, e.g. (quasiquote x); `x",
+        "If a comma appears within the argument, the expression following the "
+        +"comma is evaluated (\"unquoted\") and its result is inserted into "
+        +"the structure instead of the comma and the expression. If a comma "
+        +"appears followed immediately by an at-sign (@), then the following "
+        +"expression must evaluate to a list; the opening and closing "
+        +"parentheses of the list are then \"stripped away\" and the elements "
+        +"of the list are inserted in place of the comma at-sign expression "
+        +"sequence. (unquote x) is equivalent to ,x and (unquote-splicing x) "
+        +"is equivalent to ,@x." /* doc strings */ ) {
+    },
 
-	/**
-	 * =>
-	 * @todo implementation
-	 */
-	new Primitive( "=>", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		null, null /* doc strings */ ) {
-	},
 
-	/**
-	 * unquote
-	 * @todo implementation
-	 */
-	new Primitive( "unquote", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		null, null /* doc strings */ ) {
-	},
+    /**
+     * else
+     * @todo implementation
+     */
+    new Primitive( "else", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        null, null /* doc strings */ ) {
+    },
 
-	/**
-	 * unquote-splicing
-	 * @todo implementation
-	 */
-	new Primitive( "unquote-splicing", 
-		Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		null, null /* doc strings */ ) {
-	},
+    /**
+     * =>
+     * @todo implementation
+     */
+    new Primitive( "=>", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        null, null /* doc strings */ ) {
+    },
 
-	/**
-	 * make-rewriter
-	 */
-	new Primitive( "make-rewriter",
-		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Makes a syntax rewriter, e.g. (make-rewriter (lambda (exp) ...))",
-		null /* doc strings */ ) {
-	public Entity apply1(Entity obj, Environment env, Continuation cont) throws GleamException {
-		// evaluate argument: must be a function of exactly one argument
-		// obj = obj.eval(env, cont);
-		if (!(obj instanceof Closure)) {
-			throw new GleamException(this, "argument must be a function of one argument", obj);
-		}
-		else {
-			Closure closure = (Closure) obj;
-			// TODO: check closure arity == 1 // FIXME ?
-			return new SyntaxRewriter(closure);
-		}
-	}},
+    /**
+     * unquote
+     * @todo implementation
+     */
+    new Primitive( "unquote", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        null, null /* doc strings */ ) {
+    },
 
-	/**
-	 * rewrite1
-	 * @todo implementation
-	 */
-	new Primitive( "rewrite1", 
-		Primitive.INTR_ENV, Primitive.KEYWORD, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Rewrites an expression applying a syntax rewriter at most once", 
-		null /* doc strings */ ) {
-	},
+    /**
+     * unquote-splicing
+     * @todo implementation
+     */
+    new Primitive( "unquote-splicing", 
+        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        null, null /* doc strings */ ) {
+    },
 
-	}; // primitives
+    /**
+     * make-rewriter
+     */
+    new Primitive( "make-rewriter",
+        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Makes a syntax rewriter, e.g. (make-rewriter (lambda (exp) ...))",
+        null /* doc strings */ ) {
+    public Entity apply1(Entity obj, Environment env, Continuation cont) throws GleamException {
+        // evaluate argument: must be a function of exactly one argument
+        // obj = obj.eval(env, cont);
+        if (!(obj instanceof Closure)) {
+            throw new GleamException(this, "argument must be a function of one argument", obj);
+        }
+        else {
+            Closure closure = (Closure) obj;
+            // TODO: check closure arity == 1 // FIXME ?
+            return new SyntaxRewriter(closure);
+        }
+    }},
+
+    /**
+     * rewrite1
+     * @todo implementation
+     */
+    new Primitive( "rewrite1", 
+        Primitive.INTR_ENV, Primitive.KEYWORD, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Rewrites an expression applying a syntax rewriter at most once", 
+        null /* doc strings */ ) {
+    },
+
+    }; // primitives
 
 }

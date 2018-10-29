@@ -36,167 +36,167 @@ import gleam.lang.*;
  */
 public final class PairsAndLists {
 
-	/**
-	 * Can't instantiate this class
-	 */
-	private PairsAndLists() {}
+    /**
+     * Can't instantiate this class
+     */
+    private PairsAndLists() {}
 
-	/**
-	 * This array contains definitions of primitives.
-	 * It is used by static initializers in gleam.lang.System to populate
-	 * the three initial environments.
-	 */
-	public static Primitive[] primitives = {
+    /**
+     * This array contains definitions of primitives.
+     * It is used by static initializers in gleam.lang.System to populate
+     * the three initial environments.
+     */
+    public static Primitive[] primitives = {
 
-	/**
-	 * car
-	 * Takes the first element of a pair.
-	 */
-	new Primitive( "car",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Gets first object in a pair, e.g. (car (list 1 2 3))",
-		null /* doc strings */ ) {
-	public Entity apply1(Entity arg1, Environment env, Continuation cont)
-		throws GleamException
-	{
-		try {
-			return ((Pair) arg1).getCar();
-		}
-		catch (ClassCastException e) {
-			throw new GleamException("car: invalid argument", arg1);
-		}
-	}},
+    /**
+     * car
+     * Takes the first element of a pair.
+     */
+    new Primitive( "car",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Gets first object in a pair, e.g. (car (list 1 2 3))",
+        null /* doc strings */ ) {
+    public Entity apply1(Entity arg1, Environment env, Continuation cont)
+        throws GleamException
+    {
+        try {
+            return ((Pair) arg1).getCar();
+        }
+        catch (ClassCastException e) {
+            throw new GleamException("car: invalid argument", arg1);
+        }
+    }},
 
-	/**
-	 * cdr
-	 * Takes the second element of a pair.
-	 */
-	new Primitive( "cdr",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Gets second object in a pair, e.g. (cdr (list 1 2 3))",
-		null /* doc strings */ ) {
-	public Entity apply1(Entity arg1, Environment env, Continuation cont)
-		throws GleamException
-	{
-		try {
-			return ((Pair) arg1).getCdr();
-		}
-		catch (ClassCastException e) {
-			throw new GleamException("cdr: invalid argument", arg1);
-		}
-	}},
+    /**
+     * cdr
+     * Takes the second element of a pair.
+     */
+    new Primitive( "cdr",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Gets second object in a pair, e.g. (cdr (list 1 2 3))",
+        null /* doc strings */ ) {
+    public Entity apply1(Entity arg1, Environment env, Continuation cont)
+        throws GleamException
+    {
+        try {
+            return ((Pair) arg1).getCdr();
+        }
+        catch (ClassCastException e) {
+            throw new GleamException("cdr: invalid argument", arg1);
+        }
+    }},
 
-	/**
-	 * cons
-	 * Creates a new pair.
-	 */
-	new Primitive( "cons",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		2, 2, /* min, max no. of arguments */
-		"Creates a new pair, e.g. (cons 1 (cons 2 '(3)))",
-		null /* doc strings */ ) {
-	public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
-		throws GleamException
-	{
-		return new Pair(first, second);
-	}},
+    /**
+     * cons
+     * Creates a new pair.
+     */
+    new Primitive( "cons",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        2, 2, /* min, max no. of arguments */
+        "Creates a new pair, e.g. (cons 1 (cons 2 '(3)))",
+        null /* doc strings */ ) {
+    public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
+        throws GleamException
+    {
+        return new Pair(first, second);
+    }},
 
-	/**
-	 * list
-	 * Creates a new list from its arguments.
-	 */
-	new Primitive( "list",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		"Creates a new list from its arguments, e.g. (list 1 2 3)",
-		null /* doc strings */ ) {
-	public Entity applyN(Pair args, Environment env, Continuation cont)
-		throws GleamException
-	{
-		// TODO: investigate: could we simply return list?
-		ListIterator it = new ListIterator(args);
-		if (!it.hasNext()) {
-			return EmptyList.makeEmptyList();
-		}
-		Pair l = new Pair(it.next(), EmptyList.makeEmptyList());
-		Pair ins = l;
-		while (it.hasNext()) {
-			Pair nextcons = new Pair(it.next(), EmptyList.makeEmptyList());
-			ins.setCdr(nextcons);
-			ins = nextcons;
-		}
-		return l;
-	}},
+    /**
+     * list
+     * Creates a new list from its arguments.
+     */
+    new Primitive( "list",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        "Creates a new list from its arguments, e.g. (list 1 2 3)",
+        null /* doc strings */ ) {
+    public Entity applyN(Pair args, Environment env, Continuation cont)
+        throws GleamException
+    {
+        // TODO: investigate: could we simply return list?
+        ListIterator it = new ListIterator(args);
+        if (!it.hasNext()) {
+            return EmptyList.makeEmptyList();
+        }
+        Pair l = new Pair(it.next(), EmptyList.makeEmptyList());
+        Pair ins = l;
+        while (it.hasNext()) {
+            Pair nextcons = new Pair(it.next(), EmptyList.makeEmptyList());
+            ins.setCdr(nextcons);
+            ins = nextcons;
+        }
+        return l;
+    }},
 
-	/**
-	 * pair?
-	 * Tests if argument is a pair
-	 */
-	new Primitive( "pair?",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Returns true if argument is a pair, false otherwise",
-		"E.g. (pair? (cons 1 2)) => #t" /* doc strings */ ) {
-	public Entity apply1(Entity obj, Environment env, Continuation cont)
-		throws GleamException
-	{
-		return Boolean.makeBoolean((obj instanceof Pair) && !(obj instanceof EmptyList));
-	}},
+    /**
+     * pair?
+     * Tests if argument is a pair
+     */
+    new Primitive( "pair?",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Returns true if argument is a pair, false otherwise",
+        "E.g. (pair? (cons 1 2)) => #t" /* doc strings */ ) {
+    public Entity apply1(Entity obj, Environment env, Continuation cont)
+        throws GleamException
+    {
+        return Boolean.makeBoolean((obj instanceof Pair) && !(obj instanceof EmptyList));
+    }},
 
-	/**
-	 * null?
-	 * Tests if argument is the empty list
-	 */
-	new Primitive( "null?",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Returns true if argument is the empty list, false otherwise",
-		"E.g. (null? '()) => #t" /* doc strings */ ) {
-	public Entity apply1(Entity obj, Environment env, Continuation cont)
-		throws GleamException
-	{
-		return Boolean.makeBoolean(obj instanceof EmptyList);
-	}},
+    /**
+     * null?
+     * Tests if argument is the empty list
+     */
+    new Primitive( "null?",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Returns true if argument is the empty list, false otherwise",
+        "E.g. (null? '()) => #t" /* doc strings */ ) {
+    public Entity apply1(Entity obj, Environment env, Continuation cont)
+        throws GleamException
+    {
+        return Boolean.makeBoolean(obj instanceof EmptyList);
+    }},
 
-	/**
-	 * set-car!
-	 * store an object in the car field of a pair.
-	 */
-	new Primitive( "set-car!",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		2, 2, /* min, max no. of arguments */
-		"Sets car field in a pair, e.g. (set-car! my-pair 1)",
-		null /* doc strings */ ) {
-	public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
-		throws GleamException
-	{
-		if (!(first instanceof Pair))
-			throw new GleamException(this, "invalid argument", first);
+    /**
+     * set-car!
+     * store an object in the car field of a pair.
+     */
+    new Primitive( "set-car!",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        2, 2, /* min, max no. of arguments */
+        "Sets car field in a pair, e.g. (set-car! my-pair 1)",
+        null /* doc strings */ ) {
+    public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
+        throws GleamException
+    {
+        if (!(first instanceof Pair))
+            throw new GleamException(this, "invalid argument", first);
 
-		((Pair) first).setCar(second);
-		return Void.makeVoid();
-	}},
+        ((Pair) first).setCar(second);
+        return Void.makeVoid();
+    }},
 
-	/**
-	 * set-cdr!
-	 * store an object in the cdr field of a pair.
-	 */
-	new Primitive( "set-cdr!",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		2, 2, /* min, max no. of arguments */
-		"Sets cdr field in a pair, e.g. (set-cdr! my-pair 2)",
-		null /* doc strings */ ) {
-	public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
-		throws GleamException
-	{
-		if (!(first instanceof Pair))
-			throw new GleamException(this, "invalid argument", first);
+    /**
+     * set-cdr!
+     * store an object in the cdr field of a pair.
+     */
+    new Primitive( "set-cdr!",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        2, 2, /* min, max no. of arguments */
+        "Sets cdr field in a pair, e.g. (set-cdr! my-pair 2)",
+        null /* doc strings */ ) {
+    public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
+        throws GleamException
+    {
+        if (!(first instanceof Pair))
+            throw new GleamException(this, "invalid argument", first);
 
-		((Pair) first).setCdr(second);
-		return Void.makeVoid();
-	}},
+        ((Pair) first).setCdr(second);
+        return Void.makeVoid();
+    }},
 
-	}; // primitives
+    }; // primitives
 }
