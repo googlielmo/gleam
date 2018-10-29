@@ -32,40 +32,40 @@ package gleam.lang;
  */
 public final class Void extends Entity {
 
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	/** the Void singleton */
-	static final Void value = new Void();
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
+    
+    /** the Void singleton */
+    static final Void value = new Void();
 
-	/** Can't instantiate this */
-	private Void() {
-	}
+    /** Can't instantiate this */
+    private Void() {
+    }
 
-	/**
-	 * Factory method
-	 */
-	public static Void makeVoid() {
-		return value;
-	}
+    /**
+     * Factory method
+     */
+    public static Void makeVoid() {
+        return value;
+    }
 
-	/**
-	 * Prevents the release of multiple instances upon deserialization.
-	 */
-	protected java.lang.Object readResolve()
-		throws java.io.ObjectStreamException
-	{
-//		java.lang.System.out.println("readResolve() called! (Void)"); //DEBUG
-		return value;
-	}
+    /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    protected java.lang.Object readResolve()
+        throws java.io.ObjectStreamException
+    {
+//      java.lang.System.out.println("readResolve() called! (Void)"); //DEBUG
+        return value;
+    }
 
-	/**
-	 * Writes the void value.
-	 */
-	public void write(java.io.PrintWriter out) {
-		out.write("#<void>");
-	}
+    /**
+     * Writes the void value.
+     */
+    public void write(java.io.PrintWriter out) {
+        out.write("#<void>");
+    }
 }
 

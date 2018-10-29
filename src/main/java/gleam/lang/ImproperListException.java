@@ -32,17 +32,17 @@ package gleam.lang;
  * in that case the method getObject will return the last (cdr) object.
  */
 public class ImproperListException extends GleamException {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * ImproperListException constructor.
-	 * 
-	 * @param aObject gleam.lang.Entity
-	 */
-	public ImproperListException(Entity aObject) {
-		super("improper list argument not allowed", aObject);
-	}
+    /**
+     * ImproperListException constructor.
+     * 
+     * @param aObject gleam.lang.Entity
+     */
+    public ImproperListException(Entity aObject) {
+        super("improper list argument not allowed", aObject);
+    }
 }

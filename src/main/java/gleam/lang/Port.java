@@ -31,11 +31,11 @@ package gleam.lang;
  */
 public abstract class Port extends Entity
 {
-	/** close the port */
-	public abstract void close()
-		throws java.io.IOException;
+    /** close the port */
+    public abstract void close()
+        throws java.io.IOException;
 
-	/** checks if port is open */
-	public abstract boolean isOpen();
+    /** checks if port is open */
+    public abstract boolean isOpen();
 }
 

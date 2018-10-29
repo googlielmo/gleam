@@ -37,34 +37,34 @@ import gleam.lang.*;
  */
 public final class Characters {
 
-	/**
-	 * Can't instantiate this class
-	 */
-	private Characters() {
-	}
+    /**
+     * Can't instantiate this class
+     */
+    private Characters() {
+    }
 
-	/**
-	 * This array contains definitions of primitives.
-	 * It is used by static initializers in gleam.lang.System to populate
-	 * the three initial environments.
-	 */
-	public static Primitive[] primitives = {
+    /**
+     * This array contains definitions of primitives.
+     * It is used by static initializers in gleam.lang.System to populate
+     * the three initial environments.
+     */
+    public static Primitive[] primitives = {
 
-	/**
-	 * char?
-	 * Tests if argument is a character
-	 */
-	new Primitive( "char?",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Returns true if argument is a character, false otherwise",
-		"E.g. (char? #\\a) => #t" /* doc strings */ ) {
-	public Entity apply1(Entity arg1, Environment env, Continuation cont)
-		throws GleamException
-	{
-		return Boolean.makeBoolean(arg1 instanceof Character);
-	}},
-	
-	}; // primitives
+    /**
+     * char?
+     * Tests if argument is a character
+     */
+    new Primitive( "char?",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Returns true if argument is a character, false otherwise",
+        "E.g. (char? #\\a) => #t" /* doc strings */ ) {
+    public Entity apply1(Entity arg1, Environment env, Continuation cont)
+        throws GleamException
+    {
+        return Boolean.makeBoolean(arg1 instanceof Character);
+    }},
+    
+    }; // primitives
 
 }

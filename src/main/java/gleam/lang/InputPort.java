@@ -31,60 +31,60 @@ package gleam.lang;
  */
 public class InputPort extends Port
 {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	java.io.Reader value;
-	private transient Reader gleamReader;
-	
-	public InputPort(String name)
-		throws java.io.FileNotFoundException
-	{
-		this( new java.io.BufferedReader(
-				new java.io.InputStreamReader(
-					new java.io.FileInputStream(name) )));
-	}
+    java.io.Reader value;
+    private transient Reader gleamReader;
+    
+    public InputPort(String name)
+        throws java.io.FileNotFoundException
+    {
+        this( new java.io.BufferedReader(
+                new java.io.InputStreamReader(
+                    new java.io.FileInputStream(name) )));
+    }
 
-	public InputPort(java.io.Reader reader) {
-		this.value = reader;
-		this.gleamReader = new Reader(value);
-	}
+    public InputPort(java.io.Reader reader) {
+        this.value = reader;
+        this.gleamReader = new Reader(value);
+    }
 
-	public void close()
-		throws java.io.IOException
-	{
-		if (value != null) {
-			value.close();
-		}
-		value = null;
-	}
+    public void close()
+        throws java.io.IOException
+    {
+        if (value != null) {
+            value.close();
+        }
+        value = null;
+    }
 
-	public boolean isOpen() {
-		return null != value;
-	}
+    public boolean isOpen() {
+        return null != value;
+    }
 
-	/**
-	 * reads (parses) an object
-	*/
-	public Entity read()
-		throws GleamException
-	{
-		Entity retVal = gleamReader.read();
-		if (retVal == null)
-			return Eof.value;
-		else
-			return retVal;
-	}
+    /**
+     * reads (parses) an object
+    */
+    public Entity read()
+        throws GleamException
+    {
+        Entity retVal = gleamReader.read();
+        if (retVal == null)
+            return Eof.value;
+        else
+            return retVal;
+    }
 
-	/**
-	 * Writes a port
-	 */
-	public void write(java.io.PrintWriter out)
-	{
-		out.print("#<input-port>");
-	}
-	
+    /**
+     * Writes a port
+     */
+    public void write(java.io.PrintWriter out)
+    {
+        out.print("#<input-port>");
+    }
+    
 }
 

@@ -34,44 +34,44 @@ import gleam.util.Log;
  */
 public class GleamException extends java.lang.Exception
 {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	protected Entity errobj;
+    protected Entity errobj;
 
-	private GleamException()
-	{
-		super();
-		errobj = null;
-	}
+    private GleamException()
+    {
+        super();
+        errobj = null;
+    }
 
-	public GleamException(Primitive primitive, String message, Entity obj)
-	{
-		this(primitive.toString() + ": " + message, obj);
-	}
-	
-	public GleamException(String message, Entity obj)
-	{
-		super(message);
-		if (obj != null)
-			errobj = obj;
-		else
-			errobj = Void.value;
+    public GleamException(Primitive primitive, String message, Entity obj)
+    {
+        this(primitive.toString() + ": " + message, obj);
+    }
+    
+    public GleamException(String message, Entity obj)
+    {
+        super(message);
+        if (obj != null)
+            errobj = obj;
+        else
+            errobj = Void.value;
 
-		if (System.getInteractionEnv() != null)
-			System.getInteractionEnv().define(Symbol.ERROBJ, errobj);
+        if (System.getInteractionEnv() != null)
+            System.getInteractionEnv().define(Symbol.ERROBJ, errobj);
 
-		Log.record(5, "Generated GleamException: " + message);
-	}
+        Log.record(5, "Generated GleamException: " + message);
+    }
 
-	/**
-	 * Gets the entity associated with this error.
-	 * 
-	 * @return gleam.lang.Entity
-	 */
-	public Entity getObject() {
-		return errobj;
-	}
+    /**
+     * Gets the entity associated with this error.
+     * 
+     * @return gleam.lang.Entity
+     */
+    public Entity getObject() {
+        return errobj;
+    }
 }

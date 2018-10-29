@@ -32,10 +32,10 @@ quasiquote
 unquote
 unquote-splicing
 
-cond	
-else	
-let	
-let*	
+cond
+else
+let
+let*
 apply
 map
 
@@ -53,28 +53,28 @@ scheme-report-environment
 null-environment
 interaction-environment
 
-+	
--	
-*	
-/	
-<	
-<=	
->	
->=	
-=	
-number?	
-symbol?	
++
+-
+*
+/
+<
+<=
+>
+>=
+=
+number?
+symbol?
 procedure?
 boolean?
-pair?	
-string?	
-null?	
-char?	
-port?	
-not	
+pair?
+string?
+null?
+char?
+port?
+not
 eof-object?
-display	
-write	
+display
+write
 newline
 read
 current-input-port
@@ -94,21 +94,21 @@ cddddr
 TODO:
 -----
 
-case	
-letrec	
-do	
-delay	
+case
+letrec
+do
+delay
 
 let-syntax
 letrec-syntax
 define-syntax
-vector?	
+vector?
 
 complex?
-real?	
+real?
 rational?
 integer?
-exact?	
+exact?
 inexact?
 inexact->exact
 exact->inexact

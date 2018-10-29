@@ -36,36 +36,36 @@ package gleam.lang;
  * An Action that evaluates an expression in an arbitrary environment.
  */
 public class ExpressionInEnvironmentAction extends Action {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	/** the expression to evaluate */
-	private Entity expr;
+    /** the expression to evaluate */
+    private Entity expr;
 
-	/** Creates a new instance of this action */
-	public ExpressionInEnvironmentAction(Entity expr, Action parent) {
-		this.expr = expr;
-		this.parent = parent;
-	}
+    /** Creates a new instance of this action */
+    public ExpressionInEnvironmentAction(Entity expr, Action parent) {
+        this.expr = expr;
+        this.parent = parent;
+    }
 
-	/**
-	 * Invokes this action, causing the evaluation of the expression in the
-	 * environment passed as argument.
-	 * @param arg the environment in which to evaluate the expression
-	 * @param cont the current Continuation
-	 * @return the result of the evaluation
-	 * @throws gleam.lang.GleamException in case of errors
-	 */
-	Entity invoke(Entity newEnv, Continuation cont) throws gleam.lang.GleamException
-	{
-		cont.action = parent;
-		if (!(newEnv instanceof Environment)) {
-			throw new GleamException("not an environment", newEnv);
-		}
-		Environment evalEnv = (Environment) newEnv;
-		expr = expr.analyze().optimize(evalEnv);
-		return expr.eval(evalEnv, cont);
-	}
+    /**
+     * Invokes this action, causing the evaluation of the expression in the
+     * environment passed as argument.
+     * @param arg the environment in which to evaluate the expression
+     * @param cont the current Continuation
+     * @return the result of the evaluation
+     * @throws gleam.lang.GleamException in case of errors
+     */
+    Entity invoke(Entity newEnv, Continuation cont) throws gleam.lang.GleamException
+    {
+        cont.action = parent;
+        if (!(newEnv instanceof Environment)) {
+            throw new GleamException("not an environment", newEnv);
+        }
+        Environment evalEnv = (Environment) newEnv;
+        expr = expr.analyze().optimize(evalEnv);
+        return expr.eval(evalEnv, cont);
+    }
 }

@@ -39,112 +39,112 @@ import java.util.logging.*;
  */
 public class Log
 {
-	/* Current level of verbosity */
-	private final static Logger logger;
-	static {
-		logger = Logger.getLogger("gleam");
-		logger.setLevel(Level.INFO);
-	}
+    /* Current level of verbosity */
+    private final static Logger logger;
+    static {
+        logger = Logger.getLogger("gleam");
+        logger.setLevel(Level.INFO);
+    }
 
-	/** Can't instantiate this class */
-	private Log() {}
+    /** Can't instantiate this class */
+    private Log() {}
 
-	/**
-	 * Sets current verbosity level.
-	 * 1 = SEVERE, internal debugging information
-	 * 2 = WARNING, information of interest to implementers
-	 * 3 = INFO, unusual or remarkable activities
-	 * 4 = CONFIG, configuration activities
-	 * 5 = FINE, detailed output
-	 * @param verbosity
-	 */
-	public static void setVerbosity(int verbosity) {
-		logger.setLevel(getLevel(verbosity));
-	}
-	
-	public static int getVerbosity() {
-		return getVerbosity(logger.getLevel());
-	}
+    /**
+     * Sets current verbosity level.
+     * 1 = SEVERE, internal debugging information
+     * 2 = WARNING, information of interest to implementers
+     * 3 = INFO, unusual or remarkable activities
+     * 4 = CONFIG, configuration activities
+     * 5 = FINE, detailed output
+     * @param verbosity
+     */
+    public static void setVerbosity(int verbosity) {
+        logger.setLevel(getLevel(verbosity));
+    }
+    
+    public static int getVerbosity() {
+        return getVerbosity(logger.getLevel());
+    }
 
-	/**
-	 * Obtains a Level from an integer level value
-	 * @param verbosity integer level value
-	 * @return the corresponding Level
-	 */
-	private static Level getLevel(int verbosity) {
-		Level n;
-		switch (verbosity) {
-			case 0:
-				n = Level.OFF;
-				break;
-			case 1:
-				n = Level.SEVERE;
-				break;
-			case 2:
-				n = Level.WARNING;
-				break;
-			case 3:
-				n = Level.INFO;
-				break;
-			case 4:
-				n = Level.CONFIG;
-				break;
-			default:
-				n = Level.FINE;
-		}
-		return n;
-	}
+    /**
+     * Obtains a Level from an integer level value
+     * @param verbosity integer level value
+     * @return the corresponding Level
+     */
+    private static Level getLevel(int verbosity) {
+        Level n;
+        switch (verbosity) {
+            case 0:
+                n = Level.OFF;
+                break;
+            case 1:
+                n = Level.SEVERE;
+                break;
+            case 2:
+                n = Level.WARNING;
+                break;
+            case 3:
+                n = Level.INFO;
+                break;
+            case 4:
+                n = Level.CONFIG;
+                break;
+            default:
+                n = Level.FINE;
+        }
+        return n;
+    }
 
-	/**
-	 * Obtains a Level from an integer level value
-	 * @param verbosity integer level value
-	 * @return the corresponding Level
-	 */
-	private static int getVerbosity(Level level) {
-		int n;
-		switch (level.intValue()) {
-			case Integer.MAX_VALUE:
-				n = 0;
-				break;
-			case 1000: // Level.SEVERE
-				n = 1;
-				break;
-			case 900: // Level.WARNING
-				n = 2;
-				break;
-			case 800: // Level.INFO
-				n = 3;
-				break;
-			case 700: // Level.CONFIG
-				n = 4;
-				break;
-			default: // Level.FINE
-				n = 5;
-		}
-		return n;
-	}
+    /**
+     * Obtains a Level from an integer level value
+     * @param verbosity integer level value
+     * @return the corresponding Level
+     */
+    private static int getVerbosity(Level level) {
+        int n;
+        switch (level.intValue()) {
+            case Integer.MAX_VALUE:
+                n = 0;
+                break;
+            case 1000: // Level.SEVERE
+                n = 1;
+                break;
+            case 900: // Level.WARNING
+                n = 2;
+                break;
+            case 800: // Level.INFO
+                n = 3;
+                break;
+            case 700: // Level.CONFIG
+                n = 4;
+                break;
+            default: // Level.FINE
+                n = 5;
+        }
+        return n;
+    }
 
-	/**
-	 * Logs a message, respecting current verbosity.
-	 */
-	public static void record(int severity, String message)
-	{
-		logger.log(getLevel(severity), message);
-	}
+    /**
+     * Logs a message, respecting current verbosity.
+     */
+    public static void record(int severity, String message)
+    {
+        logger.log(getLevel(severity), message);
+    }
 
-	/**
-	 * Logs a message and an Entity, respecting current verbosity.
-	 */
-	public static void record(int severity, String message, gleam.lang.Entity obj)
-	{
-		logger.log(getLevel(severity), message + " " + obj.toString());
-	}
+    /**
+     * Logs a message and an Entity, respecting current verbosity.
+     */
+    public static void record(int severity, String message, gleam.lang.Entity obj)
+    {
+        logger.log(getLevel(severity), message + " " + obj.toString());
+    }
 
-	/**
-	 * Logs a Throwable at verbosity 1 (SEVERE)
-	 * @param ex Throwable
-	 */
-	public static void record(Throwable ex) {
-		logger.log(Level.SEVERE, "Throwable", ex);
-	}
+    /**
+     * Logs a Throwable at verbosity 1 (SEVERE)
+     * @param ex Throwable
+     */
+    public static void record(Throwable ex) {
+        logger.log(Level.SEVERE, "Throwable", ex);
+    }
 }

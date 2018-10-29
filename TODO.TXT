@@ -11,11 +11,11 @@ TO DO:
 Use Java 5 generics where possible (?)
 
 Implement as many primitives as possible in Scheme
-	list
-	append
-	null?
-	pair? (?)
-	...
+    list
+    append
+    null?
+    pair? (?)
+    ...
 
 A rewriting system for patterns (...)
 
@@ -32,11 +32,11 @@ Arguments to functions as an array or an ArrayList?
 A better parser!
 
 GleamException
-	new "context" parameter to constructor,
-	subclasses?
+    new "context" parameter to constructor,
+    subclasses?
 
 ListIterator
-	subclass: ArgumentIterator, with param. number checking
+    subclass: ArgumentIterator, with param. number checking
 
 A compiler!
 
@@ -58,32 +58,32 @@ PARTLY DONE:
 Eval/Apply on java.lang.Objects for full Java integration OR java-object wrapper
 
 A proposal for a Java FFI:
-	syntax for java types: 
-		$java.lang.Object = 
-		(java-quote java.lang.Object) = 
-		(quote java.lang.Object) + lookup in java-import environment
-	(java-new $java.lang.Object) [done, it's called 'new']
-	(java-import $java.lang.*)
-	(define obj (java-new $String "test"))
-	(java-call 'size obj) => 4 [done, it's called 'call']
-	(. obj size) => 4
-	($size obj) => 4
-	(java-package 'gleam.ext)
-	(java-class myList ($List) ; myList extends java.util.List
-		(java-ctor ((i 'int)) (java-set-field! length i))
-		(java-field (length 'int))
-		(java-method (get (i 'int)) ... )
-		(java-method (set! (i 'int) (obj $Object)) ...) )
+    syntax for java types:
+        $java.lang.Object =
+        (java-quote java.lang.Object) =
+        (quote java.lang.Object) + lookup in java-import environment
+    (java-new $java.lang.Object) [done, it's called 'new']
+    (java-import $java.lang.*)
+    (define obj (java-new $String "test"))
+    (java-call 'size obj) => 4 [done, it's called 'call']
+    (. obj size) => 4
+    ($size obj) => 4
+    (java-package 'gleam.ext)
+    (java-class myList ($List) ; myList extends java.util.List
+        (java-ctor ((i 'int)) (java-set-field! length i))
+        (java-field (length 'int))
+        (java-method (get (i 'int)) ... )
+        (java-method (set! (i 'int) (obj $Object)) ...) )
 
 
 Explicit first-class environments, with primitives: 
-	make-environment [done]
-	call-with-current-environment [?]
-	current-environment [done]
-	in-environment [done]
-	environment? [done]
-	defined?
-	...
+    make-environment [done]
+    call-with-current-environment [?]
+    current-environment [done]
+    in-environment [done]
+    environment? [done]
+    defined?
+    ...
 
 
 --------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ DONE:
 -----
 
 toString for Entities (so that display() can use it)
-	[NOTE: the reverse is now true]
+    [NOTE: the reverse is now true]
 
 Object has a new name: Entity
 

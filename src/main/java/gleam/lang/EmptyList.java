@@ -39,78 +39,78 @@ package gleam.lang;
  * procedure evaluation.
  */
 public final class EmptyList extends Pair {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	/** the EmptyList singleton */
-	static final EmptyList value = new EmptyList();
+    /** the EmptyList singleton */
+    static final EmptyList value = new EmptyList();
 
-	/** Can't create an empty list */
-	private EmptyList() {
-		super(null, null);
-		analyzed = true;
-	}
+    /** Can't create an empty list */
+    private EmptyList() {
+        super(null, null);
+        analyzed = true;
+    }
 
-	/**
-	 * factory method
-	 */
-	public static EmptyList makeEmptyList() {
-		return value;
-	}
+    /**
+     * factory method
+     */
+    public static EmptyList makeEmptyList() {
+        return value;
+    }
 
-	/**
-	 * Evaluates the empty list, thus resulting in an error.
-	 * The empty combination is an error in Scheme, see r5rs.
-	 */
-	public Entity eval(Environment env, Continuation cont)
-		throws GleamException
-	{
-		throw new GleamException("invalid combination: empty list", this);
-	}
+    /**
+     * Evaluates the empty list, thus resulting in an error.
+     * The empty combination is an error in Scheme, see r5rs.
+     */
+    public Entity eval(Environment env, Continuation cont)
+        throws GleamException
+    {
+        throw new GleamException("invalid combination: empty list", this);
+    }
 
-	/**
-	 * Prevents the release of multiple instances upon deserialization.
-	 */
-	protected java.lang.Object readResolve()
-		throws java.io.ObjectStreamException
-	{
-//		java.lang.System.out.println("readResolve() called! (EmptyList)"); //DEBUG
-		return value;
-	}
+    /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    protected java.lang.Object readResolve()
+        throws java.io.ObjectStreamException
+    {
+//      java.lang.System.out.println("readResolve() called! (EmptyList)"); //DEBUG
+        return value;
+    }
 
-	/**
-	 * Writes the empty list value.
-	 */
-	public void write(java.io.PrintWriter out)
-	{
-		out.print("()");
-	}
+    /**
+     * Writes the empty list value.
+     */
+    public void write(java.io.PrintWriter out)
+    {
+        out.print("()");
+    }
 
-	/**
-	 * Performs environment optimization on this pair.
-	 */
-	public Entity optimize(Environment env) throws GleamException {
-		// no optimization!
-		return this;
-	}
+    /**
+     * Performs environment optimization on this pair.
+     */
+    public Entity optimize(Environment env) throws GleamException {
+        // no optimization!
+        return this;
+    }
 
-	public Entity getCar() throws GleamException {
-		throw new GleamException("car: invalid arguments", this);
-	}
+    public Entity getCar() throws GleamException {
+        throw new GleamException("car: invalid arguments", this);
+    }
 
-	public Entity getCdr() throws GleamException {
-		throw new GleamException("cdr: invalid arguments", this);
-	}
+    public Entity getCdr() throws GleamException {
+        throw new GleamException("cdr: invalid arguments", this);
+    }
 
-	public void setCar(Entity obj) throws GleamException {
-		throw new GleamException("set-car!: invalid arguments", this);
-	}
+    public void setCar(Entity obj) throws GleamException {
+        throw new GleamException("set-car!: invalid arguments", this);
+    }
 
-	public void setCdr(Entity obj) throws GleamException {
-		throw new GleamException("set-cdr!: invalid arguments", this);
-	}
+    public void setCdr(Entity obj) throws GleamException {
+        throw new GleamException("set-cdr!: invalid arguments", this);
+    }
 
 
 }

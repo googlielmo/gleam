@@ -44,111 +44,111 @@ import java.lang.reflect.InvocationTargetException;
  * A Java object.
  */
 public class JavaObject extends Entity {
-	
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	protected Object value;
-	
-	/** Creates a new instance of JavaObject */
-	public JavaObject() {
-		value = null;
-	}
+    protected Object value;
+    
+    /** Creates a new instance of JavaObject */
+    public JavaObject() {
+        value = null;
+    }
 
-	public JavaObject(Object object) {
-		value = object;
-	}
+    public JavaObject(Object object) {
+        value = object;
+    }
 
-	public JavaObject(Symbol s) throws GleamException {
-		value = null;
-		String className = s.toString();
-		try {
-			value = Class.forName(className).getConstructor(new Class[0]).newInstance(null);
-		} catch (SecurityException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
-		} catch (IllegalArgumentException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
-		} catch (NoSuchMethodException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
-		} catch (InvocationTargetException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
-		} catch (InstantiationException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
-		} catch (ClassNotFoundException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
-		} catch (IllegalAccessException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
-		}
-	}
+    public JavaObject(Symbol s) throws GleamException {
+        value = null;
+        String className = s.toString();
+        try {
+            value = Class.forName(className).getConstructor(new Class[0]).newInstance(null);
+        } catch (SecurityException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
+        } catch (IllegalArgumentException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
+        } catch (NoSuchMethodException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
+        } catch (InvocationTargetException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
+        } catch (InstantiationException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
+        } catch (ClassNotFoundException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
+        } catch (IllegalAccessException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
+        }
+    }
 
-	public JavaObject(Symbol s, Class[] classes, Object[] objects) throws GleamException {
-		value = null;
-		String className = s.toString();
-		try {
-			value = Class.forName(className).getConstructor(classes).newInstance(objects);
-		} catch (SecurityException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
-		} catch (IllegalArgumentException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
-		} catch (NoSuchMethodException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
-		} catch (InvocationTargetException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
-		} catch (InstantiationException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
-		} catch (ClassNotFoundException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
-		} catch (IllegalAccessException ex) {
-			Log.record(ex);;
-			throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
-		}
-	}
+    public JavaObject(Symbol s, Class[] classes, Object[] objects) throws GleamException {
+        value = null;
+        String className = s.toString();
+        try {
+            value = Class.forName(className).getConstructor(classes).newInstance(objects);
+        } catch (SecurityException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
+        } catch (IllegalArgumentException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
+        } catch (NoSuchMethodException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
+        } catch (InvocationTargetException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
+        } catch (InstantiationException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
+        } catch (ClassNotFoundException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
+        } catch (IllegalAccessException ex) {
+            Log.record(ex);;
+            throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
+        }
+    }
 
-	public void write(PrintWriter out) {
-		out.print(this.toString());
-	}
-	
-	public String toString() {
-		return value == null ? "null" : value.toString();
-	}
-	
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		if (value == null || value instanceof Serializable) 
-			out.defaultWriteObject();
-		else
-			out.writeObject(new JavaObject());
-	}
+    public void write(PrintWriter out) {
+        out.print(this.toString());
+    }
+    
+    public String toString() {
+        return value == null ? "null" : value.toString();
+    }
+    
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        if (value == null || value instanceof Serializable) 
+            out.defaultWriteObject();
+        else
+            out.writeObject(new JavaObject());
+    }
 
-	public Object getObjectValue() {
-		return value;
-	}
+    public Object getObjectValue() {
+        return value;
+    }
 
-	public boolean equals(Object obj) {
-		if (!(obj instanceof JavaObject))
-			return false;
-		else if (value == null) {
-			return ((JavaObject) obj).value == null;
-		}
-		else
-			return this.value.equals(((JavaObject) obj).value);
-	}
+    public boolean equals(Object obj) {
+        if (!(obj instanceof JavaObject))
+            return false;
+        else if (value == null) {
+            return ((JavaObject) obj).value == null;
+        }
+        else
+            return this.value.equals(((JavaObject) obj).value);
+    }
 
-	public boolean eq_p(JavaObject obj) {
-		return value == obj.value;
-	}
+    public boolean eq_p(JavaObject obj) {
+        return value == obj.value;
+    }
 }

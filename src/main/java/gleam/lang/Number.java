@@ -31,8 +31,8 @@ package gleam.lang;
  */
 public abstract class Number extends Entity
 {
-	/** Takes value of number as a double. */
-	public abstract double getDoubleValue()
-		throws GleamException;
+    /** Takes value of number as a double. */
+    public abstract double getDoubleValue()
+        throws GleamException;
 }
 

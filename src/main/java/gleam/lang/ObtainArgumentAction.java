@@ -28,25 +28,25 @@ package gleam.lang;
 
 public class ObtainArgumentAction extends Action {
 
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	private ArgumentList arglist;
-	private int argumentIndex;
-	
-	public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Action parent) {
-		this.arglist = arglist;
-		this.argumentIndex = argumentIndex;
-		this.parent = parent;
-	}
+    private ArgumentList arglist;
+    private int argumentIndex;
+    
+    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Action parent) {
+        this.arglist = arglist;
+        this.argumentIndex = argumentIndex;
+        this.parent = parent;
+    }
 
-	Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
-		cont.action = parent;
-		// arg is already evaluated
-		arglist.put(arg, argumentIndex);
-		return arg;
-	}
+    Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
+        cont.action = parent;
+        // arg is already evaluated
+        arglist.put(arg, argumentIndex);
+        return arg;
+    }
 
 }

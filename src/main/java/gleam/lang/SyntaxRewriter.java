@@ -36,25 +36,25 @@ import java.io.PrintWriter;
 public final class SyntaxRewriter extends Closure implements SyntaxObject 
 {
 
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	public SyntaxRewriter(Closure rewriter) {
-		super(rewriter.param, rewriter.body, rewriter.definitionenv);
-	}
+    public SyntaxRewriter(Closure rewriter) {
+        super(rewriter.param, rewriter.body, rewriter.definitionenv);
+    }
 
-	/**
-	 * write
-	 *
-	 * @param out PrintWriter
-	 */
-	public void write(PrintWriter out) {
-		Pair extrep = new Pair(Symbol.LAMBDA, new Pair(param, body));
-		out.write("#<syntax-rewriter ");
-		extrep.write(out);
-		out.write(">");
-	}
+    /**
+     * write
+     *
+     * @param out PrintWriter
+     */
+    public void write(PrintWriter out) {
+        Pair extrep = new Pair(Symbol.LAMBDA, new Pair(param, body));
+        out.write("#<syntax-rewriter ");
+        extrep.write(out);
+        out.write(">");
+    }
 
 }

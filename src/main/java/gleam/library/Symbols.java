@@ -36,52 +36,52 @@ import gleam.lang.*;
  */
 public final class Symbols {
 
-	/**
-	 * Can't instantiate this class
-	 */
-	private Symbols() {
-	}
+    /**
+     * Can't instantiate this class
+     */
+    private Symbols() {
+    }
 
-	private static int gencount = 0;
-	
-	/**
-	 * This array contains definitions of primitives.
-	 * It is used by static initializers in gleam.lang.System to populate
-	 * the three initial environments.
-	 */
-	public static Primitive[] primitives = {
+    private static int gencount = 0;
+    
+    /**
+     * This array contains definitions of primitives.
+     * It is used by static initializers in gleam.lang.System to populate
+     * the three initial environments.
+     */
+    public static Primitive[] primitives = {
 
-	/**
-	 * symbol?
-	 * Tests if argument is a symbol
-	 */
-	new Primitive( "symbol?",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Returns true if argument is a symbol, false otherwise",
-		"E.g. (symbol? 'sym) => #t" /* doc strings */ ) {
-	public Entity apply1(Entity arg1, Environment env, Continuation cont)
-		throws GleamException
-	{
-		return Boolean.makeBoolean(arg1 instanceof Symbol);
-	}},
+    /**
+     * symbol?
+     * Tests if argument is a symbol
+     */
+    new Primitive( "symbol?",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Returns true if argument is a symbol, false otherwise",
+        "E.g. (symbol? 'sym) => #t" /* doc strings */ ) {
+    public Entity apply1(Entity arg1, Environment env, Continuation cont)
+        throws GleamException
+    {
+        return Boolean.makeBoolean(arg1 instanceof Symbol);
+    }},
 
-	/**
-	 * generate-symbol
-	 * Generates a fresh uninterned symbol
-	 */
-	new Primitive( "generate-symbol",
-		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
-		0, 0, /* min, max no. of arguments */
-		"Makes a new symbol, e.g. (generate-symbol)",
-		null /* doc strings */ ) {
-	public Entity apply0(Environment env, Continuation cont)
-		throws GleamException
-	{
-		// FIXME make this synchronized for multithreaded apps
-		return Symbol.makeUninternedSymbol("__S"+(gencount++));
-	}},
-		
-	}; // primitives
+    /**
+     * generate-symbol
+     * Generates a fresh uninterned symbol
+     */
+    new Primitive( "generate-symbol",
+        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        0, 0, /* min, max no. of arguments */
+        "Makes a new symbol, e.g. (generate-symbol)",
+        null /* doc strings */ ) {
+    public Entity apply0(Environment env, Continuation cont)
+        throws GleamException
+    {
+        // FIXME make this synchronized for multithreaded apps
+        return Symbol.makeUninternedSymbol("__S"+(gencount++));
+    }},
+        
+    }; // primitives
 
 }

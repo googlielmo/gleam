@@ -30,59 +30,59 @@ package gleam.lang;
  * Initial binding descriptor.
  */
 final class Binding {
-	boolean keyword;
-	String	name;
-	String	procedureName;
-	String	comment;
-	String	documentation;
-	int minArgs, maxArgs;
-	
-	// constant values for keyword field
-	static final boolean KEYWORD = true; // binding for a language keyword
-	static final boolean IDENTIFIER = false; // binding for an identifier
-	
-	// constant value for procedureName field
-	static final String NO_PROCEDURE = null; // no procedure is defined
+    boolean keyword;
+    String  name;
+    String  procedureName;
+    String  comment;
+    String  documentation;
+    int minArgs, maxArgs;
+    
+    // constant values for keyword field
+    static final boolean KEYWORD = true; // binding for a language keyword
+    static final boolean IDENTIFIER = false; // binding for an identifier
+    
+    // constant value for procedureName field
+    static final String NO_PROCEDURE = null; // no procedure is defined
 
-	// constant value for maxArgs
-	static final int VAR_ARGS = -1; // variable number of arguments
-	
-	/**
-	 * Binding constructor without comment or documentation.
-	 */
-	Binding(boolean keyword, String name, int minArgs, int maxArgs, String procedureName) {
-		this(keyword, name, minArgs, maxArgs, procedureName, "No documentation defined",
-			null);
-	}
+    // constant value for maxArgs
+    static final int VAR_ARGS = -1; // variable number of arguments
+    
+    /**
+     * Binding constructor without comment or documentation.
+     */
+    Binding(boolean keyword, String name, int minArgs, int maxArgs, String procedureName) {
+        this(keyword, name, minArgs, maxArgs, procedureName, "No documentation defined",
+            null);
+    }
 
-	/**
-	 * Binding constructor with comment.
-	 */
-	Binding(boolean keyword, String name, int minArgs, int maxArgs, String procedureName,
-			String comment) {
-		this(keyword, name, minArgs, maxArgs, procedureName, comment, null);
-	}
+    /**
+     * Binding constructor with comment.
+     */
+    Binding(boolean keyword, String name, int minArgs, int maxArgs, String procedureName,
+            String comment) {
+        this(keyword, name, minArgs, maxArgs, procedureName, comment, null);
+    }
 
-	/**
-	 * Binding constructor with comment and documentation.
-	 */
-	Binding(boolean keyword, String name, int minArgs, int maxArgs, String procedureName,
-			String comment, String documentation) {
-		this.keyword = keyword;
-		this.name = name;
-		this.minArgs = minArgs;
-		this.maxArgs = maxArgs;
-		this.procedureName = procedureName;
-		if (comment != null)
-			this.comment = comment;
-		else
-			this.comment = "No documentation defined";
-		
-		if (documentation != null)
-			this.documentation = this.comment + "\n" + documentation;
-		else
-			this.documentation = this.comment;
+    /**
+     * Binding constructor with comment and documentation.
+     */
+    Binding(boolean keyword, String name, int minArgs, int maxArgs, String procedureName,
+            String comment, String documentation) {
+        this.keyword = keyword;
+        this.name = name;
+        this.minArgs = minArgs;
+        this.maxArgs = maxArgs;
+        this.procedureName = procedureName;
+        if (comment != null)
+            this.comment = comment;
+        else
+            this.comment = "No documentation defined";
+        
+        if (documentation != null)
+            this.documentation = this.comment + "\n" + documentation;
+        else
+            this.documentation = this.comment;
 
-	}
+    }
 
 }

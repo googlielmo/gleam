@@ -39,48 +39,48 @@ package gleam.lang;
  */
 public final class Location extends Entity
 {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	private Entity value;
+    private Entity value;
 
-	/**
-	 * Location constructor.
-	 */
-	Location(Entity value) {
-		this.value = value;
-	}
+    /**
+     * Location constructor.
+     */
+    Location(Entity value) {
+        this.value = value;
+    }
 
-	/** Location evaluates to its content value */
-	public Entity eval(Environment env, Continuation cont)
-		throws GleamException
-	{
-		return value;
-	}
+    /** Location evaluates to its content value */
+    public Entity eval(Environment env, Continuation cont)
+        throws GleamException
+    {
+        return value;
+    }
 
-	/**
-	 * Sets current referred object
-	 */
-	public void set(Entity obj) {
-		this.value = obj;
-	}
+    /**
+     * Sets current referred object
+     */
+    public void set(Entity obj) {
+        this.value = obj;
+    }
 
-	/**
-	 * Gets current referred object
-	 */
-	public Entity get() {
-		return value;
-	}
+    /**
+     * Gets current referred object
+     */
+    public Entity get() {
+        return value;
+    }
 
-	/**
-	 * Writes this location
-	 */
-	public void write(java.io.PrintWriter out) {
-		out.write("#<location of ");
-		value.write(out);
-		out.write(">");
-	}
+    /**
+     * Writes this location
+     */
+    public void write(java.io.PrintWriter out) {
+        out.write("#<location of ");
+        value.write(out);
+        out.write(">");
+    }
 }
 

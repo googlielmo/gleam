@@ -30,95 +30,95 @@ package gleam.lang;
  * List read/write iterator.
  */
 public class ListIterator {
-	private Pair pair;
-	private Pair parentPair;
-	private boolean allowImproper;
-	private boolean wasImproper;
+    private Pair pair;
+    private Pair parentPair;
+    private boolean allowImproper;
+    private boolean wasImproper;
 
-	/**
-	 * Creates an iterator over a proper list.
-	 */
-	public ListIterator(Pair pair) {
-		this(pair, false);
-	}
+    /**
+     * Creates an iterator over a proper list.
+     */
+    public ListIterator(Pair pair) {
+        this(pair, false);
+    }
 
-	/**
-	 * Creates an iterator over a (possibly improper) list.
-	 */
-	public ListIterator(Pair pair, boolean allowImproper) {
-		this.pair = pair;
-		this.allowImproper = allowImproper;
-		this.parentPair = null;
-		this.wasImproper = false;
-	}
+    /**
+     * Creates an iterator over a (possibly improper) list.
+     */
+    public ListIterator(Pair pair, boolean allowImproper) {
+        this.pair = pair;
+        this.allowImproper = allowImproper;
+        this.parentPair = null;
+        this.wasImproper = false;
+    }
 
-	/**
-	 * Determines whether there's another object to retrieve from the list.
-	 */
-	public boolean hasNext() {
-		return pair != EmptyList.value;
-	}
+    /**
+     * Determines whether there's another object to retrieve from the list.
+     */
+    public boolean hasNext() {
+        return pair != EmptyList.value;
+    }
 
-	/**
-	 * Retrieves next object from the list.
-	 */
-	public Entity next()
-		throws GleamException
-	{
-		if (!wasImproper) {
-			Entity retVal = pair.car;
-			parentPair = pair;
-			try {
-				pair = (Pair)pair.cdr;
-			}
-			catch (ClassCastException e) {
-				wasImproper = true;
-			}
-			return retVal;
-		}
-		else {
-			Entity retVal = pair.cdr;
-			pair = EmptyList.value;
-			if (allowImproper) {
-				return retVal;
-			}
-			else {
-				throw new ImproperListException(retVal);
-			}
-		}
-	}
+    /**
+     * Retrieves next object from the list.
+     */
+    public Entity next()
+        throws GleamException
+    {
+        if (!wasImproper) {
+            Entity retVal = pair.car;
+            parentPair = pair;
+            try {
+                pair = (Pair)pair.cdr;
+            }
+            catch (ClassCastException e) {
+                wasImproper = true;
+            }
+            return retVal;
+        }
+        else {
+            Entity retVal = pair.cdr;
+            pair = EmptyList.value;
+            if (allowImproper) {
+                return retVal;
+            }
+            else {
+                throw new ImproperListException(retVal);
+            }
+        }
+    }
 
-	/**
-	 * Replaces current object.
-	 * Must be called after next().
-	 */
-	public void replace(Entity newArg)
-		throws GleamException
-	{
-		if (parentPair == null) {
-			throw new GleamException(
-				"No current object to replace", pair);	
-		}
-		if (wasImproper && pair == EmptyList.value) {
-			parentPair.cdr = newArg;
-		}
-		else {
-			parentPair.car = newArg;
-		}
-	}
-	
-	/**
-	 * Remove operation currently not supported. 
-	 */
-	public void remove() {
-		throw new UnsupportedOperationException("Remove operation currently not supported");
-	}
+    /**
+     * Replaces current object.
+     * Must be called after next().
+     */
+    public void replace(Entity newArg)
+        throws GleamException
+    {
+        if (parentPair == null) {
+            throw new GleamException(
+                "No current object to replace", pair);  
+        }
+        if (wasImproper && pair == EmptyList.value) {
+            parentPair.cdr = newArg;
+        }
+        else {
+            parentPair.car = newArg;
+        }
+    }
+    
+    /**
+     * Remove operation currently not supported. 
+     */
+    public void remove() {
+        throw new UnsupportedOperationException("Remove operation currently not supported");
+    }
 
-	/**
-	 * Returns the remaining portion of the list as a Pair.
-	 */
-	public Pair rest() {
-		return pair;
-	}
+    /**
+     * Returns the remaining portion of the list as a Pair.
+     */
+    public Pair rest() {
+        return pair;
+    }
 }
 

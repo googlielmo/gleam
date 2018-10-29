@@ -31,62 +31,62 @@ package gleam.lang;
  */
 public class Real extends Number
 {
-	/**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
-	/** the value */
-	private double value;
+    /** the value */
+    private double value;
 
-	public Real(double n)
-	{
-		value = n;
-	}
+    public Real(double n)
+    {
+        value = n;
+    }
 
-	public Real(int n)
-	{
-		value = (double) n;
-	}
+    public Real(int n)
+    {
+        value = (double) n;
+    }
 
-	/**
-	 * Scheme double comparison.
-	 * Creation date: (28/10/01 12.45.00)
-	 * @return boolean
-	 * @param o java.lang.Object
-	 */
-	public boolean equals(java.lang.Object o) {
-		if (o instanceof Real) {
-			return value == ((Real)o).value;
-		}
-		else {
-			return false;	
-		}
-	}
+    /**
+     * Scheme double comparison.
+     * Creation date: (28/10/01 12.45.00)
+     * @return boolean
+     * @param o java.lang.Object
+     */
+    public boolean equals(java.lang.Object o) {
+        if (o instanceof Real) {
+            return value == ((Real)o).value;
+        }
+        else {
+            return false;   
+        }
+    }
 
-	/**
-	 * Returns a hashcode for this Scheme object.
-	 * The implementation is the same as per java.lang.Double.
-	 * @return int
-	 */
-	public int hashCode() {
-		long v = Double.doubleToLongBits(value);
-		return (int)(v^(v>>>32));
-	}
+    /**
+     * Returns a hashcode for this Scheme object.
+     * The implementation is the same as per java.lang.Double.
+     * @return int
+     */
+    public int hashCode() {
+        long v = Double.doubleToLongBits(value);
+        return (int)(v^(v>>>32));
+    }
 
-	/**
-	 * Writes a real
-	 */
-	public void write(java.io.PrintWriter out)
-	{
-		out.print(value);
-	}
-	
-	/** Takes value of number as a double.  */
-	public double getDoubleValue()
-		throws GleamException
-	{
-		return value;
-	}
+    /**
+     * Writes a real
+     */
+    public void write(java.io.PrintWriter out)
+    {
+        out.print(value);
+    }
+    
+    /** Takes value of number as a double.  */
+    public double getDoubleValue()
+        throws GleamException
+    {
+        return value;
+    }
 }
 

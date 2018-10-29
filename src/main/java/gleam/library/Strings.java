@@ -36,34 +36,34 @@ import gleam.lang.*;
  */
 public final class Strings {
 
-	/**
-	 * Can't instantiate this class
-	 */
-	private Strings() {
-	}
+    /**
+     * Can't instantiate this class
+     */
+    private Strings() {
+    }
 
-	/**
-	 * This array contains definitions of primitives.
-	 * It is used by static initializers in gleam.lang.System to populate
-	 * the three initial environments.
-	 */
-	public static Primitive[] primitives = {
+    /**
+     * This array contains definitions of primitives.
+     * It is used by static initializers in gleam.lang.System to populate
+     * the three initial environments.
+     */
+    public static Primitive[] primitives = {
 
-	/**
-	 * string?
-	 * Tests if argument is a string
-	 */
-	new Primitive( "string?",
-		Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, 1, /* min, max no. of arguments */
-		"Returns true if argument is a string, false otherwise",
-		"E.g. (string? \"hello\") => #t" /* doc strings */ ) {
-	public Entity apply1(Entity obj, Environment env, Continuation cont)
-		throws GleamException
-	{
-		return Boolean.makeBoolean(obj instanceof MutableString);
-	}},
-	
-	}; // primitives
+    /**
+     * string?
+     * Tests if argument is a string
+     */
+    new Primitive( "string?",
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Returns true if argument is a string, false otherwise",
+        "E.g. (string? \"hello\") => #t" /* doc strings */ ) {
+    public Entity apply1(Entity obj, Environment env, Continuation cont)
+        throws GleamException
+    {
+        return Boolean.makeBoolean(obj instanceof MutableString);
+    }},
+    
+    }; // primitives
 
 }

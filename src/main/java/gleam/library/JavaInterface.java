@@ -53,159 +53,159 @@ import java.util.List;
  * JAVA INTERFACE
  */
 public class JavaInterface {
-	
-	/**
-	 * Can't instantiate this class
-	 */
-	private JavaInterface() {
-	}
+    
+    /**
+     * Can't instantiate this class
+     */
+    private JavaInterface() {
+    }
 
-	/**
-	 * This array contains definitions of primitives.
-	 * It is used by static initializers in gleam.lang.System to populate
-	 * the initial environments.
-	 */
-	public static Primitive[] primitives = {
+    /**
+     * This array contains definitions of primitives.
+     * It is used by static initializers in gleam.lang.System to populate
+     * the initial environments.
+     */
+    public static Primitive[] primitives = {
 
-	/**
-	 * new
-	 */
-	new Primitive( "new",
-		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
-		1, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		"Makes a new Java object, e.g. (new 'java.util.Date)",
-		null /* doc strings */ ) {
-	public  Entity applyN(Pair args, Environment env, Continuation cont)
-		throws GleamException
-	{
-		ListIterator it = new ListIterator(args);
-		Entity className = it.next();
-		if (!(className instanceof Symbol)) {
-			throw new GleamException(this, "wrong argument type, should be a symbol", className);
-		}
-		if (!it.hasNext()) {
-			return new JavaObject((Symbol) className);
-		}
-		List argClasses = new ArrayList();
-		List argObjects = new ArrayList();
-		while (it.hasNext()) {
-			Entity arg = it.next();
-			argClasses.add(getJavaClass(arg));
-			argObjects.add(getJavaObject(arg));
-		}
-		return new JavaObject((Symbol) className, (Class[])argClasses.toArray(new Class[0]), argObjects.toArray());
-	}},
+    /**
+     * new
+     */
+    new Primitive( "new",
+        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        "Makes a new Java object, e.g. (new 'java.util.Date)",
+        null /* doc strings */ ) {
+    public  Entity applyN(Pair args, Environment env, Continuation cont)
+        throws GleamException
+    {
+        ListIterator it = new ListIterator(args);
+        Entity className = it.next();
+        if (!(className instanceof Symbol)) {
+            throw new GleamException(this, "wrong argument type, should be a symbol", className);
+        }
+        if (!it.hasNext()) {
+            return new JavaObject((Symbol) className);
+        }
+        List argClasses = new ArrayList();
+        List argObjects = new ArrayList();
+        while (it.hasNext()) {
+            Entity arg = it.next();
+            argClasses.add(getJavaClass(arg));
+            argObjects.add(getJavaObject(arg));
+        }
+        return new JavaObject((Symbol) className, (Class[])argClasses.toArray(new Class[0]), argObjects.toArray());
+    }},
 
-	/**
-	 * call
-	 */
-	new Primitive( "call",
-		Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
-		2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-		"Calls a method on a Java object", 
-		"E.g. (call 'length (new 'java.lang.String \"test\")) => 4" /* doc strings */ ) {
-	public Entity applyN(Pair args, Environment env, Continuation cont)
-		throws GleamException
-	{
-		ListIterator it = new ListIterator(args);
-		Entity methodName = it.next();
-		if (!(methodName instanceof Symbol)) {
-			throw new GleamException(this, "wrong argument type, should be a symbol", methodName);
-		}
-		Entity object = it.next();
-		if (!(object instanceof JavaObject)) {
-			throw new GleamException(this, "wrong argument type, should be a Java object", object);
-		}
-		List argClasses = new ArrayList();
-		List argObjects = new ArrayList();
-		while (it.hasNext()) {
-			Entity arg = it.next();
-			argClasses.add(getJavaClass(arg));
-			argObjects.add(getJavaObject(arg));
-		}
-		return call((JavaObject) object, (Symbol) methodName, (Class[])argClasses.toArray(new Class[0]), argObjects.toArray());		
-	}},
-	
-	}; // primitives
+    /**
+     * call
+     */
+    new Primitive( "call",
+        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        2, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        "Calls a method on a Java object", 
+        "E.g. (call 'length (new 'java.lang.String \"test\")) => 4" /* doc strings */ ) {
+    public Entity applyN(Pair args, Environment env, Continuation cont)
+        throws GleamException
+    {
+        ListIterator it = new ListIterator(args);
+        Entity methodName = it.next();
+        if (!(methodName instanceof Symbol)) {
+            throw new GleamException(this, "wrong argument type, should be a symbol", methodName);
+        }
+        Entity object = it.next();
+        if (!(object instanceof JavaObject)) {
+            throw new GleamException(this, "wrong argument type, should be a Java object", object);
+        }
+        List argClasses = new ArrayList();
+        List argObjects = new ArrayList();
+        while (it.hasNext()) {
+            Entity arg = it.next();
+            argClasses.add(getJavaClass(arg));
+            argObjects.add(getJavaObject(arg));
+        }
+        return call((JavaObject) object, (Symbol) methodName, (Class[])argClasses.toArray(new Class[0]), argObjects.toArray());     
+    }},
+    
+    }; // primitives
 
-	private static Entity call(JavaObject object, Symbol methodName, Class[] parameterTypes, Object[] arguments) throws GleamException {
-		if (object.getObjectValue() == null) {
-			throw new GleamException("call: null pointer", methodName);
-		}
-		Class clazz = object.getObjectValue().getClass();
-		try {
-			Method method = clazz.getMethod(methodName.toString(), parameterTypes);
-			Object retVal = method.invoke(object.getObjectValue(), arguments);
-			// TODO FIXME if method is void return Void.value;
-			return getEntityFromObject(retVal);
-		} catch (SecurityException ex) {
-			Log.record(ex);
-			throw new GleamException("call: SecurityException: " + ex.getMessage(), methodName);
-		} catch (IllegalArgumentException ex) {
-			Log.record(ex);
-			throw new GleamException("call: IllegalArgumentException: " + ex.getMessage(), methodName);
-		} catch (NoSuchMethodException ex) {
-			Log.record(ex);
-			throw new GleamException("call: NoSuchMethodException: " + ex.getMessage(), methodName);
-		} catch (IllegalAccessException ex) {
-			Log.record(ex);
-			throw new GleamException("call: IllegalAccessException: " + ex.getMessage(), methodName);
-		} catch (InvocationTargetException ex) {
-			Log.record(ex);
-			throw new GleamException("call: InvocationTargetException: " + ex.getMessage(), methodName);
-		}
-	}
+    private static Entity call(JavaObject object, Symbol methodName, Class[] parameterTypes, Object[] arguments) throws GleamException {
+        if (object.getObjectValue() == null) {
+            throw new GleamException("call: null pointer", methodName);
+        }
+        Class clazz = object.getObjectValue().getClass();
+        try {
+            Method method = clazz.getMethod(methodName.toString(), parameterTypes);
+            Object retVal = method.invoke(object.getObjectValue(), arguments);
+            // TODO FIXME if method is void return Void.value;
+            return getEntityFromObject(retVal);
+        } catch (SecurityException ex) {
+            Log.record(ex);
+            throw new GleamException("call: SecurityException: " + ex.getMessage(), methodName);
+        } catch (IllegalArgumentException ex) {
+            Log.record(ex);
+            throw new GleamException("call: IllegalArgumentException: " + ex.getMessage(), methodName);
+        } catch (NoSuchMethodException ex) {
+            Log.record(ex);
+            throw new GleamException("call: NoSuchMethodException: " + ex.getMessage(), methodName);
+        } catch (IllegalAccessException ex) {
+            Log.record(ex);
+            throw new GleamException("call: IllegalAccessException: " + ex.getMessage(), methodName);
+        } catch (InvocationTargetException ex) {
+            Log.record(ex);
+            throw new GleamException("call: InvocationTargetException: " + ex.getMessage(), methodName);
+        }
+    }
 
-	private static Class getJavaClass(Entity arg) throws GleamException {
-		if (arg instanceof JavaObject) {
-			Object o = ((JavaObject) arg).getObjectValue();
-			return o == null ? null : o.getClass();
-		}
-		else if (arg instanceof MutableString)
-		{
-			return String.class;
-		}
-		else if (arg instanceof Symbol)
-		{
-			return String.class;
-		}
-		else if (arg instanceof Real)
-		{
-			return double.class;
-		}
-		else 
-			throw new GleamException("cannot obtain the Java Class for a Gleam entity", arg);
-	}
+    private static Class getJavaClass(Entity arg) throws GleamException {
+        if (arg instanceof JavaObject) {
+            Object o = ((JavaObject) arg).getObjectValue();
+            return o == null ? null : o.getClass();
+        }
+        else if (arg instanceof MutableString)
+        {
+            return String.class;
+        }
+        else if (arg instanceof Symbol)
+        {
+            return String.class;
+        }
+        else if (arg instanceof Real)
+        {
+            return double.class;
+        }
+        else 
+            throw new GleamException("cannot obtain the Java Class for a Gleam entity", arg);
+    }
 
-	private static Object getJavaObject(Entity arg) throws GleamException {
-		if (arg instanceof JavaObject) {
-			return ((JavaObject) arg).getObjectValue();
-		}
-		else if (arg instanceof MutableString)
-		{
-			return ((MutableString) arg).toString();
-		}
-		else if (arg instanceof Symbol)
-		{
-			return ((Symbol) arg).toString();
-		}
-		else if (arg instanceof Real)
-		{
-			return new Double(((Real) arg).getDoubleValue());
-		}
-		else
-			throw new GleamException("cannot obtain the Java Object for a Gleam entity", arg);
-	}
+    private static Object getJavaObject(Entity arg) throws GleamException {
+        if (arg instanceof JavaObject) {
+            return ((JavaObject) arg).getObjectValue();
+        }
+        else if (arg instanceof MutableString)
+        {
+            return ((MutableString) arg).toString();
+        }
+        else if (arg instanceof Symbol)
+        {
+            return ((Symbol) arg).toString();
+        }
+        else if (arg instanceof Real)
+        {
+            return new Double(((Real) arg).getDoubleValue());
+        }
+        else
+            throw new GleamException("cannot obtain the Java Object for a Gleam entity", arg);
+    }
 
-	private static Entity getEntityFromObject(Object object) {
-		if (object == null) {
-			return new JavaObject();
-		}
-		else if (object instanceof Entity) {
-			return (Entity) object;
-		}
-		else {
-			return new JavaObject(object);
-		}
-	}
+    private static Entity getEntityFromObject(Object object) {
+        if (object == null) {
+            return new JavaObject();
+        }
+        else if (object instanceof Entity) {
+            return (Entity) object;
+        }
+        else {
+            return new JavaObject(object);
+        }
+    }
 }
