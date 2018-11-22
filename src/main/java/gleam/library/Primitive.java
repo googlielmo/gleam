@@ -211,7 +211,6 @@ public abstract class Primitive implements java.io.Serializable {
                 sb.append(maxArgs);
             }
         }
-        sb.append("");
         return sb.toString();
     }
 }

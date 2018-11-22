@@ -28,7 +28,6 @@ package gleam.lang;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Collections;
 import java.util.*;
 
 /**
@@ -56,7 +55,7 @@ public class Environment extends Entity
     {
         parent = p;
         if (p != null) intp = p.intp;
-        assoc = Collections.synchronizedMap(new HashMap());
+        assoc = new HashMap();
     }
 
     /**
@@ -75,7 +74,7 @@ public class Environment extends Entity
     /**
      * Associates a symbol in this environment with a value.
      */
-    public void define(Symbol s, Entity v)
+    public synchronized void define(Symbol s, Entity v)
     {
         java.lang.Object loc;
         if ((loc = assoc.get(s)) != null) {

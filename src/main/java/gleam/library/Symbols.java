@@ -30,6 +30,8 @@ import gleam.lang.Entity;
 import gleam.lang.Boolean;
 import gleam.lang.*;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * SYMBOLS
  * Primitive operator and procedure implementation library.
@@ -42,7 +44,10 @@ public final class Symbols {
     private Symbols() {
     }
 
-    private static int gencount = 0;
+    /**
+     * Counter used by generate-symbol
+     */
+    private static AtomicInteger gencount = new AtomicInteger(0);
     
     /**
      * This array contains definitions of primitives.
@@ -78,8 +83,7 @@ public final class Symbols {
     public Entity apply0(Environment env, Continuation cont)
         throws GleamException
     {
-        // FIXME make this synchronized for multithreaded apps
-        return Symbol.makeUninternedSymbol("__S"+(gencount++));
+        return Symbol.makeUninternedSymbol("__S"+(gencount.getAndIncrement()));
     }},
         
     }; // primitives

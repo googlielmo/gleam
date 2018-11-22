@@ -163,7 +163,7 @@ public class Interpreter {
      * Loads and executes the bootstrap code for the Gleam Scheme Interpreter.
      * @throws gleam.lang.GleamException on any error
      */
-    synchronized private void bootstrap() throws GleamException {
+    private synchronized void bootstrap() throws GleamException {
         if (!bootstrapped) {
             gleam.lang.InputPort bootstrap = 
                 new gleam.lang.InputPort(
