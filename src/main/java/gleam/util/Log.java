@@ -39,112 +39,168 @@ import java.util.logging.*;
  */
 public class Log
 {
-    /* Current level of verbosity */
-    private final static Logger logger;
+    /**
+     * Severity
+     * OFF, no output
+     * SEVERE, internal debugging information
+     * WARNING, information of interest to implementers
+     * INFO, unusual or remarkable activities
+     * CONFIG, configuration activities
+     * FINE, detailed output
+     */
+    public enum Level {
+        OFF(6),
+        SEVERE(5),
+        WARNING(4),
+        INFO(3),
+        CONFIG(2),
+        FINE(1),
+        ALL(0);
+
+        private final int value;
+
+        Level(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    };
+
+    /* Using java.util.logging */
+    final static Logger logger;
+
     static {
         logger = Logger.getLogger("gleam");
-        logger.setLevel(Level.INFO);
+        if (logger.getHandlers().length == 0) {
+            logger.setUseParentHandlers(false);
+            final ConsoleHandler consoleHandler = new ConsoleHandler();
+            consoleHandler.setLevel(java.util.logging.Level.ALL);
+            logger.addHandler(consoleHandler);
+        }
+        logger.setLevel(java.util.logging.Level.INFO);
     }
 
     /** Can't instantiate this class */
     private Log() {}
 
     /**
-     * Sets current verbosity level.
-     * 1 = SEVERE, internal debugging information
-     * 2 = WARNING, information of interest to implementers
+     * Sets current level.
+     * Message with level lower than this level will be discarded.
+     * 6 = OFF
+     * 5 = SEVERE, internal debugging information
+     * 4 = WARNING, information of interest to implementers
      * 3 = INFO, unusual or remarkable activities
-     * 4 = CONFIG, configuration activities
-     * 5 = FINE, detailed output
-     * @param verbosity
+     * 2 = CONFIG, configuration activities
+     * 1 = FINE, detailed output
+     * 0 = ALL
+     * @param level
      */
-    public static void setVerbosity(int verbosity) {
-        logger.setLevel(getLevel(verbosity));
+    public static void setLevel(int level) {
+        logger.setLevel(getLoggingLevel(level));
     }
     
-    public static int getVerbosity() {
-        return getVerbosity(logger.getLevel());
+    public static int getLevel() {
+        return getLevel(logger.getLevel());
     }
 
     /**
-     * Obtains a Level from an integer level value
-     * @param verbosity integer level value
+     * Obtains a java.util.logging Level from an integer level value
+     * @param severity integer level value
      * @return the corresponding Level
      */
-    private static Level getLevel(int verbosity) {
-        Level n;
-        switch (verbosity) {
+    private static java.util.logging.Level getLoggingLevel(int severity) {
+        java.util.logging.Level n;
+        if (severity < 0)
+            severity = 0;
+        switch (severity) {
             case 0:
-                n = Level.OFF;
+                n = java.util.logging.Level.ALL;
                 break;
             case 1:
-                n = Level.SEVERE;
+                n = java.util.logging.Level.FINE;
                 break;
             case 2:
-                n = Level.WARNING;
+                n = java.util.logging.Level.CONFIG;
                 break;
             case 3:
-                n = Level.INFO;
+                n = java.util.logging.Level.INFO;
                 break;
             case 4:
-                n = Level.CONFIG;
+                n = java.util.logging.Level.WARNING;
+                break;
+            case 5:
+                n = java.util.logging.Level.SEVERE;
                 break;
             default:
-                n = Level.FINE;
+                n = java.util.logging.Level.OFF;
         }
         return n;
     }
 
     /**
      * Obtains a Level from an integer level value
-     * @param verbosity integer level value
-     * @return the corresponding Level
+     * @param level
+     * @return the corresponding integer level value
      */
-    private static int getVerbosity(Level level) {
-        int n;
-        switch (level.intValue()) {
-            case Integer.MAX_VALUE:
-                n = 0;
-                break;
-            case 1000: // Level.SEVERE
-                n = 1;
-                break;
-            case 900: // Level.WARNING
-                n = 2;
-                break;
-            case 800: // Level.INFO
-                n = 3;
-                break;
-            case 700: // Level.CONFIG
-                n = 4;
-                break;
-            default: // Level.FINE
-                n = 5;
+    private static int getLevel(java.util.logging.Level level) {
+        final int n;
+
+        if (level.intValue() == Integer.MAX_VALUE) {
+            n = 6;
+        } else if (level.intValue() >= 1000) {
+            n = 5;
+        } else if (level.intValue() >= 900) {
+            n = 4;
+        } else if (level.intValue() >= 800) {
+            n = 3;
+        } else if (level.intValue() >= 700) {
+            n = 2;
+        } else if (level.intValue() >= 500) {
+            n = 1;
+        } else {
+            n = 0;
         }
         return n;
     }
 
     /**
-     * Logs a message, respecting current verbosity.
+     * Logs a message, respecting current level.
      */
-    public static void record(int severity, String message)
+    public static void record(int level, String message)
     {
-        logger.log(getLevel(severity), message);
+        logger.log(getLoggingLevel(level), message);
     }
 
     /**
-     * Logs a message and an Entity, respecting current verbosity.
+     * Logs a message, respecting current level.
+     */
+    public static void record(Level level, String message) {
+        record(level.getValue(), message);
+    }
+
+    /**
+     * Logs a message and an Entity, respecting current level.
      */
     public static void record(int severity, String message, gleam.lang.Entity obj)
     {
-        logger.log(getLevel(severity), message + " " + obj.toString());
+        logger.log(getLoggingLevel(severity), message + " " + obj.toString());
     }
 
     /**
-     * Logs a Throwable at verbosity 1 (SEVERE)
+     * Logs a message and an Entity, respecting current level.
+     */
+    public static void record(Level level, String message, gleam.lang.Entity obj)
+    {
+        record(level.getValue(), message, obj);
+    }
+
+    /**
+     * Logs a Throwable at level SEVERE
      * @param ex Throwable
      */
     public static void record(Throwable ex) {
-        logger.log(Level.SEVERE, "Throwable", ex);
+        logger.log(java.util.logging.Level.SEVERE, "Throwable", ex);
     }
 }

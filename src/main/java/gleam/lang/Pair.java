@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import static gleam.util.Log.Level.INFO;
+
 /**
  * The Scheme pair, also known as <i>cons</i>.
  * When used as data, the pair is equivalent to a <i>tree</i> data structure.
@@ -114,7 +116,7 @@ public class Pair extends Entity
                      *
                      * analyze cdr in place
                      */
-                    gleam.util.Log.record(3, "dotted pair in analyze... check for correctness");
+                    gleam.util.Log.record(INFO, "dotted pair in analyze... check for correctness");
                     restParent.cdr = rest.analyze();
                     break;
                 }
@@ -254,7 +256,7 @@ public class Pair extends Entity
                 /* this is an improper list
                  * (not necessarily an error: think lambda)
                  */
-                gleam.util.Log.record(3, "dotted pair in optimize... check for correctness");
+                gleam.util.Log.record(INFO, "dotted pair in optimize... check for correctness");
                 restParent.cdr = rest.optimize(env);
                 break;
             }

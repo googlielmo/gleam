@@ -42,10 +42,10 @@ public class IfAction extends Action {
     private static final long serialVersionUID = 1L;
 
     /** consequent, alternate parts of the if command */
-    protected Entity consequent, alternate;
+    protected final Entity consequent, alternate;
 
     /** environment */
-    protected Environment env;
+    protected final Environment env;
 
     /** Creates a new IfAction */
     public IfAction(Entity consequent, Entity alternate, Environment env, Action parent) {

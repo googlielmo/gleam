@@ -33,6 +33,10 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
+import static gleam.util.Log.Level.FINE;
+
 /**
  * The Gleam Scheme Interpreter
  */
@@ -153,9 +157,9 @@ public class Interpreter {
         Entity obj, val;
         while ((obj = reader.read()) != Eof.makeEof()) {
             // eval
-            gleam.util.Log.record(4, "load: read object", obj);
+            gleam.util.Log.record(FINE, "load: read object", obj);
             val = eval(obj, env);
-            gleam.util.Log.record(4, "load: result is", val);
+            gleam.util.Log.record(FINE, "load: result is", val);
         }
     }
 
