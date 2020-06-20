@@ -33,6 +33,10 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
+import static gleam.util.Log.Level.FINE;
+
 /**
  * The Gleam Scheme Interpreter
  */
@@ -153,9 +157,9 @@ public class Interpreter {
         Entity obj, val;
         while ((obj = reader.read()) != Eof.makeEof()) {
             // eval
-            gleam.util.Log.record(4, "load: read object", obj);
+            gleam.util.Log.record(FINE, "load: read object", obj);
             val = eval(obj, env);
-            gleam.util.Log.record(4, "load: result is", val);
+            gleam.util.Log.record(FINE, "load: result is", val);
         }
     }
 
@@ -163,7 +167,7 @@ public class Interpreter {
      * Loads and executes the bootstrap code for the Gleam Scheme Interpreter.
      * @throws gleam.lang.GleamException on any error
      */
-    synchronized private void bootstrap() throws GleamException {
+    private synchronized void bootstrap() throws GleamException {
         if (!bootstrapped) {
             gleam.lang.InputPort bootstrap = 
                 new gleam.lang.InputPort(

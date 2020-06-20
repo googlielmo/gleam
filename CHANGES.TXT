@@ -1,3 +1,7 @@
+2020-06-20
+
+    Adopted java.util.logging.
+
 2018-10-28
 
     Switched to Maven.

@@ -42,8 +42,7 @@ public final class Symbol extends Entity
     /**
      * The unique symbol table
      */
-    static Map symtable =
-        Collections.synchronizedMap(new java.util.HashMap(512));
+    static Map symtable = new java.util.HashMap(512);
 
     /*
      * common symbols (some are keywords, some are not)
@@ -121,7 +120,7 @@ public final class Symbol extends Entity
     /**
      * Factory method to create and intern a symbol.
      */
-    public static Symbol makeSymbol(String s)
+    public synchronized static Symbol makeSymbol(String s)
     {
         java.lang.Object o = symtable.get(s);
         if (o == null) {

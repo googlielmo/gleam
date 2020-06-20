@@ -28,6 +28,9 @@ package gleam.lang;
 
 import gleam.library.Primitive;
 
+import static gleam.util.Log.Level.FINE;
+import static gleam.util.Log.Level.SEVERE;
+
 /**
  * Scheme runtime support.
  * Creation date: 03/11/2001
@@ -171,9 +174,9 @@ public final class System
                 }
         catch (GleamException e) {
             // should never happen
-            gleam.util.Log.record(1,
-              "Internal error during environment initialization: "
-              + e.getMessage());
+            gleam.util.Log.record(SEVERE,
+                "Internal error during environment initialization: "
+                    + e.getMessage());
         }
     }
 
@@ -195,8 +198,7 @@ public final class System
      * Gets the set of help-enabled procedures
      */
     public static java.util.Set getHelpNames() {
-        return new java.util.TreeSet(
-            (java.util.Set) helpDocumentation.keySet());
+        return new java.util.TreeSet(helpDocumentation.keySet());
     }
 
     public static Environment getInteractionEnv() {
@@ -467,7 +469,7 @@ public final class System
             }
         }
         else {
-            gleam.util.Log.record(4, "not a special form!");
+            gleam.util.Log.record(FINE, "analyzeSpecialForm: not a special form");
         }
     }
 
@@ -673,14 +675,14 @@ public final class System
         else {
             Environment retVal = new Environment(env);
             // iterate on varList, binding each var to Undefined
-            gleam.util.Log.record(5, "Scanned out: ");
+            gleam.util.Log.record(FINE, "Scanned out: ");
             ListIterator vit = new ListIterator(varList);
             while (vit.hasNext()) {
                 Symbol var = (Symbol) vit.next();
                 retVal.define(var, Undefined.value);
-                gleam.util.Log.record(5, "variable", var);
+                gleam.util.Log.record(FINE, "variable", var);
             }
-            gleam.util.Log.record(5, "...end of scan-out");
+            gleam.util.Log.record(FINE, "...end of scan-out");
             return retVal;
         }
     }

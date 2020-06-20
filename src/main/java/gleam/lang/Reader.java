@@ -28,6 +28,8 @@ package gleam.lang;
 
 import java.io.StreamTokenizer;
 
+import static gleam.util.Log.Level.FINE;
+
 /**
  * Scheme reader (lexical analyzer & parser).
  * Implemented as recursive descent.
@@ -192,7 +194,7 @@ class Reader {
         && !t.equals("-")
         && !t.equals("...")) {
             try {
-                gleam.util.Log.record(5, "readOthers: interpreting '" + t + "' as a number");
+                gleam.util.Log.record(FINE, "readOthers: interpreting '" + t + "' as a number");
                 return new Real(Double.parseDouble(t));
             }
             catch (java.lang.NumberFormatException e) {
@@ -213,9 +215,7 @@ class Reader {
         }
         else if (t.startsWith("\"")) {
             // it is a string
-            gleam.util.Log.record(5,
-                "readOthers: interpreting '"
-                + t + "' as a string");
+            gleam.util.Log.record(FINE, "readOthers: interpreting '" + t + "' as a string");
             return new MutableString(t.substring(1));
         }
         else if (t.equalsIgnoreCase("#f")) {
@@ -241,9 +241,7 @@ class Reader {
         }
         else {
             // it is a symbol
-            gleam.util.Log.record(5,
-                "readOthers: interpreting '"
-                + t + "' as a symbol");
+            gleam.util.Log.record(FINE, "readOthers: interpreting '" + t + "' as a symbol");
             return Symbol.makeSymbol(t);
         }
     }
@@ -280,7 +278,7 @@ class Reader {
         }
 
         if (retVal != null)
-            gleam.util.Log.record(5, "TOKEN="+retVal);
+            gleam.util.Log.record(FINE, "TOKEN="+retVal);
 
         return retVal;
     }

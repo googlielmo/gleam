@@ -29,6 +29,8 @@ package gleam.lang;
 import gleam.library.Primitive;
 import gleam.util.Log;
 
+import static gleam.util.Log.Level.FINE;
+
 /**
  * The base class for Gleam error objects.
  */
@@ -39,7 +41,7 @@ public class GleamException extends java.lang.Exception
      */
     private static final long serialVersionUID = 1L;
 
-    protected Entity errobj;
+    protected final Entity errobj;
 
     private GleamException()
     {
@@ -63,7 +65,7 @@ public class GleamException extends java.lang.Exception
         if (System.getInteractionEnv() != null)
             System.getInteractionEnv().define(Symbol.ERROBJ, errobj);
 
-        Log.record(5, "Generated GleamException: " + message);
+        Log.record(FINE, "Generated GleamException: " + message);
     }
 
     /**

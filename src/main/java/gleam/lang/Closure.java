@@ -26,7 +26,12 @@
 
 package gleam.lang;
 
-import java.util.*;
+import gleam.util.Log;
+
+import java.util.Iterator;
+
+import static gleam.util.Log.Level.FINE;
+import static gleam.util.Log.Level.WARNING;
 
 /**
  * Scheme closure, a procedure with a definition environment.
@@ -84,7 +89,7 @@ public class Closure extends Procedure
         Entity currparam = param;
         Pair prev = null;
         boolean arglist = false;
-        gleam.util.Log.record(4, "apply: ARGS = ", args);
+        gleam.util.Log.record(FINE, "apply: ARGS = ", args);
 
         /* bind actual arguments to formals (long)
          */
@@ -107,7 +112,7 @@ public class Closure extends Procedure
                             localenv.define((Symbol)p, obj);
                         }
                         else {
-                            gleam.util.Log.record(5, "apply: param is not a symbol");
+                            gleam.util.Log.record(WARNING, "apply: param is not a symbol");
                         }
                         // next param, please
                         currparam = ((Pair)currparam).cdr;

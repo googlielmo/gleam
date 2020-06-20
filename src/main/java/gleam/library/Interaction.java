@@ -140,7 +140,7 @@ public final class Interaction {
         if (v < 0.0 || v > 5.0) {
             throw new GleamException(this, "invalid argument (should be between 0 and 5)", arg1);
         }
-        gleam.util.Log.setVerbosity((int) v);
+        gleam.util.Log.setLevel(6 - (int) v);
         return Void.makeVoid();
     }},
 
@@ -155,7 +155,7 @@ public final class Interaction {
     public Entity apply0(Environment env, Continuation cont)
         throws GleamException
     {
-        return new Real(gleam.util.Log.getVerbosity());
+        return new Real(6 - gleam.util.Log.getLevel());
     }},
 
     /**
