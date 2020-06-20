@@ -19,6 +19,8 @@
     <properties>
         <maven.compiler.source>1.5</maven.compiler.source>
         <maven.compiler.target>1.5</maven.compiler.target>
+        <exec.mainClass>gleam.Gleam</exec.mainClass>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <build>
@@ -30,7 +32,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>gleam.Gleam</mainClass>
+                            <mainClass>${exec.mainClass}</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
