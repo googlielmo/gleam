@@ -1,7 +1,10 @@
-Gleam Scheme Interpreter
-(c) 2001-2007 Guglielmo Nigri <guglielmonigri@yahoo.it>.
+# Gleam Scheme Interpreter
+
+(c) 2001-2020 Guglielmo Nigri <guglielmonigri@yahoo.it>.
 Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are
 welcome to redistribute it under certain conditions; see LICENSE.TXT.
+
+## Abstract
 
 Gleam is a simple Scheme language interpreter written in Java. 
 
@@ -9,6 +12,24 @@ Project goals: to support the discovery of Scheme for beginners, simplicity,
 R5RS compliance, full integration with the Java platform (call Java from Scheme 
 and vice versa).
 
+## Contents
+
+- [Project background](#Project background)
+- [Programming in Gleam Scheme]() 'TODO'
+- [Using Java from Scheme]()
+- [Using Scheme from Java]()
+
+### Other docs in this repository
+
+- [Changes](CHANGES.TXT)
+- [Building and running Gleam Scheme](BUILD.TXT)
+- [Current status](STATUS.TXT)
+- [Backlog / TODO list](TODO.TXT)
+- [Contributing](CONTRIBUTING.md)
+
+---
+
+## Project background
 This is a project that I started in 2001 while looking for a Lisp interpreter to
 give scripting capabilities to Java programs. I already knew Lisp (and liked it
 a lot) from my university days in Pisa, Italy. Then I discovered Scheme, and I
