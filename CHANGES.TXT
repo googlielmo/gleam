@@ -1,3 +1,7 @@
+2002-06-21
+
+    Reworked Readme. Added Code of Conduct and Contributing docs.
+
 2020-06-20
 
     Adopted java.util.logging.
