@@ -33,26 +33,27 @@ import java.io.StringWriter;
  * The base class for all Gleam objects. Entities are also referred to as 
  * "objects" or "values".
  */
-public abstract class Entity implements java.io.Serializable
+public abstract class Entity
+        implements java.io.Serializable
 {
+    /**
+     * Evaluates this entity in the given environment,
+     * with the given continuation.
+     */
+    public Entity eval(Environment env, Continuation cont)
+            throws GleamException
+    {
+        // default: evaluating an entity yields the same entity
+        return this;
+    }
+
     /**
      * Performs syntax analysis on this entity.
      */
     public Entity analyze()
         throws GleamException
     {
-        // default: analyzing an entity yields same entity
-        return this;
-    }
-
-    /**
-     * Evaluates this entity in the given environment,
-     * with the given continuation.
-     */
-    public Entity eval(Environment env, Continuation cont)
-        throws GleamException
-    {
-        // default: evaluating an entity yelds same entity
+        // default: analyzing an entity yields the same entity
         return this;
     }
 
@@ -62,7 +63,7 @@ public abstract class Entity implements java.io.Serializable
     public Entity optimize(Environment env)
         throws GleamException
     {
-        // default: optimizing an entity yields same entity
+        // default: optimizing an entity yields the same entity
         return this;
     }
 
