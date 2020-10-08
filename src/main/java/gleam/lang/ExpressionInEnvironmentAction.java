@@ -53,7 +53,7 @@ public class ExpressionInEnvironmentAction extends Action {
     /**
      * Invokes this action, causing the evaluation of the expression in the
      * environment passed as argument.
-     * @param arg the environment in which to evaluate the expression
+     * @param newEnv the environment in which to evaluate the expression
      * @param cont the current Continuation
      * @return the result of the evaluation
      * @throws gleam.lang.GleamException in case of errors

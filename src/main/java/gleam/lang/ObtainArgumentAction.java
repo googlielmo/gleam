@@ -45,7 +45,7 @@ public class ObtainArgumentAction extends Action {
     Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
         cont.action = parent;
         // arg is already evaluated
-        arglist.put(arg, argumentIndex);
+        arglist.set(argumentIndex, arg);
         return arg;
     }
 

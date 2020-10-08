@@ -160,7 +160,7 @@ public final class Syntax {
         null /* doc strings */ ) {
     public Entity apply3(Entity test, Entity consequent, Entity alternate, Environment env, Continuation cont) throws GleamException {
         if (alternate == null)
-            alternate = Void.makeVoid();
+            alternate = Void.value();
 
         cont.extend(
             new ExpressionAction(test, env, null)).append(

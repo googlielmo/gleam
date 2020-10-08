@@ -56,7 +56,7 @@ public final class EmptyList extends Pair {
     /**
      * factory method
      */
-    public static EmptyList makeEmptyList() {
+    public static EmptyList value() {
         return value;
     }
 

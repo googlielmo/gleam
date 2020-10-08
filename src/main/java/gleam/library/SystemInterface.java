@@ -64,7 +64,7 @@ public final class SystemInterface {
             MutableString filename = (MutableString) arg1;
             InputPort iport = new InputPort(filename.toString());
             env.getInterpreter().load(iport, env);
-            return Void.makeVoid();
+            return Void.value();
         }
         catch (ClassCastException e) {
             throw new GleamException(this, "argument is not a string", arg1);

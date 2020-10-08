@@ -32,7 +32,8 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>>${exec.mainClass}</mainClass>
+                            <mainClass>${exec.mainClass}</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>
                 </configuration>

@@ -73,11 +73,8 @@ public class Pair extends Entity
     public Entity analyze()
         throws GleamException
     {
-        if (analyzed) {
-            return this;
-        }
-        else {
-            if (car instanceof Symbol && System.isKeyword((Symbol)car)) {
+        if (!analyzed) {
+            if (car instanceof Symbol && System.isKeyword((Symbol) car)) {
                 /* we have a special form, so let's
                  * perform syntax analysis
                  * -- may change car, cdr
@@ -104,13 +101,12 @@ public class Pair extends Entity
             while (rest != EmptyList.value) {
                 if (rest instanceof Pair) {
                     // this is a proper list
-                    Pair restAsPair = (Pair)rest;
+                    Pair restAsPair = (Pair) rest;
                     restParent = restAsPair;
                     restAsPair.car =
-                        restAsPair.car.analyze();
+                            restAsPair.car.analyze();
                     rest = restAsPair.cdr;
-                }
-                else {
+                } else {
                     /* this is an improper list
                      * (not necessarily an error: think lambda)
                      *
@@ -122,8 +118,8 @@ public class Pair extends Entity
                 }
             }
             analyzed = true;
-            return this;
         }
+        return this;
     }
 
     /**
@@ -141,14 +137,8 @@ public class Pair extends Entity
         if (operator instanceof Symbol) {
             Entity e = env.lookup( (Symbol) operator);
             if (e instanceof SyntaxRewriter) {
-                // call of syntax rewriter followed by evaluation of resulting expression
-                Action a = new EvalAction(env, cont.action);
-                a = new ProcedureCallAction(arglist, env, a);
-                a = new ExpressionAction((SyntaxRewriter) e, env, a);
-                cont.action = a;
-                // don't evaluate arguments at all!
-                // gleam.util.Log.record(2, "THIS: ", this); // DEBUG
-                arglist.put(this, 0);
+                // call of syntax rewriter, will be followed by evaluation of resulting expression
+                rewriteAndEval((SyntaxRewriter) e, arglist, env, cont);
                 return null;
             }
             else if (System.isKeyword( (Symbol) operator)) {
@@ -161,21 +151,16 @@ public class Pair extends Entity
                 return null;
             }
         }
-        else if (operator instanceof Location) { // TODO FIXME THIS IS UGLY
+        else if (operator instanceof Location) { // FIXME
             Entity e = ( (Location) operator).get();
             if (e instanceof SyntaxRewriter) {
-                // call of syntax rewriter followed by evaluation of resulting expression
-                Action a = new EvalAction(env, cont.action);
-                a = new ProcedureCallAction(arglist, env, a);
-                a = new ExpressionAction((SyntaxRewriter) e, env, a);
-                cont.action = a;
-                // don't evaluate arguments at all!
-                arglist.put(this, 0);
+                // call of syntax rewriter, will be followed by evaluation of resulting expression
+                rewriteAndEval((SyntaxRewriter) e, arglist, env, cont);
                 return null;
             }
         }
         
-        /* ok, it's a standard procedure call */
+        /* so we have a regular procedure call */
         Action a = new ProcedureCallAction(arglist, env, cont.action);
         a = new ExpressionAction(operator, env, a);
         // evaluate each argument
@@ -188,6 +173,15 @@ public class Pair extends Entity
         arglist.ensureSize(argidx);
         cont.action = a;
         return null;
+    }
+
+    private void rewriteAndEval(SyntaxRewriter syntaxRewriter, ArgumentList args, Environment env, Continuation cont) {
+        Action a = new EvalAction(env, cont.action);
+        a = new ProcedureCallAction(args, env, a);
+        a = new ExpressionAction(syntaxRewriter, env, a);
+        cont.action = a;
+        // pass this pair, not evaluated
+        args.set(0, this);
     }
 
     /**

@@ -75,20 +75,19 @@ public final class Interaction {
             String doc = System.getHelpDocumentation(pname);
             if (doc != null) {
                 System.getCout().print(doc);
-                System.getCout().newline();
             }
             else {
                 System.getCout().print("No documentation available for ");
                 System.getCout().print(((Symbol)arg1).toString());
                 System.getCout().print(". Try (help).");
-                System.getCout().newline();
             }
-            return Void.makeVoid();
+            System.getCout().newline();
+            return Void.value();
         }
 
         // no args: print short comments on all primitives      
         // prepare filler for first column
-        char chars[] = new char[helpColumnWidth];
+        char[] chars = new char[helpColumnWidth];
         java.util.Arrays.fill(chars, ' ');
         StringBuffer spc = new StringBuffer();
         spc.append(chars);
@@ -106,19 +105,18 @@ public final class Interaction {
                 System.getCout().print(pname.toString());
                 System.getCout().print(" ");
                 System.getCout().print(doc);
-                System.getCout().newline();
             }
             else {
                 System.getCout().print("No documentation available ");
                 System.getCout().print("(but it should be!). ");
                 System.getCout().print("Please report to Gleam developers.");
-                System.getCout().newline();
             }
+            System.getCout().newline();
         }
         System.getCout().newline();
         System.getCout().print("Special variable __errobj contains last offending object after an error.");
         System.getCout().newline();
-        return Void.makeVoid();
+        return Void.value();
     }},
 
     /**
@@ -141,7 +139,7 @@ public final class Interaction {
             throw new GleamException(this, "invalid argument (should be between 0 and 5)", arg1);
         }
         gleam.util.Log.setLevel(6 - (int) v);
-        return Void.makeVoid();
+        return Void.value();
     }},
 
     /**
@@ -177,7 +175,7 @@ public final class Interaction {
                 java.io.ObjectOutput
                     s = new java.io.ObjectOutputStream(f);
                 s.writeObject(env.getInterpreter().getSessionEnv());
-                return Void.makeVoid();
+                return Void.value();
             }
             catch (java.io.FileNotFoundException e) {
                 throw new GleamException(this, "file not found", arg1);
@@ -212,7 +210,7 @@ public final class Interaction {
                     s = new java.io.ObjectInputStream(f);
                 Environment glob = (Environment) s.readObject();
                 env.getInterpreter().setSessionEnv(glob);
-                return Void.makeVoid();
+                return Void.value();
             }
             catch (java.io.FileNotFoundException e) {
                 Log.record(e);

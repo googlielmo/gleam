@@ -45,9 +45,9 @@ public final class Void extends Entity {
     }
 
     /**
-     * Factory method
+     * Factory methodh
      */
-    public static Void makeVoid() {
+    public static Void value() {
         return value;
     }
 
@@ -57,7 +57,6 @@ public final class Void extends Entity {
     protected java.lang.Object readResolve()
         throws java.io.ObjectStreamException
     {
-//      java.lang.System.out.println("readResolve() called! (Void)"); //DEBUG
         return value;
     }
 

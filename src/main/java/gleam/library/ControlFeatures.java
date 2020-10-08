@@ -77,7 +77,7 @@ public final class ControlFeatures {
         if (arg1 instanceof Procedure) {
             /* create a new procedure call with the continuation argument. */
             ArgumentList arglist = new ArgumentList();
-            arglist.put(new Continuation(cont), 0); // copy-constructor: cont itself is going to change soon!
+            arglist.set(0, new Continuation(cont)); // copy-constructor: cont itself is going to change soon!
             cont.action = new ProcedureCallAction(arglist, env, cont.action);
             return arg1;
         }

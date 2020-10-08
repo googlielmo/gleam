@@ -79,7 +79,7 @@ public final class Output {
         // print object
         if (out.isOpen()) {
             out.display(obj);
-            return Void.makeVoid();
+            return Void.value();
         }
         else {
             throw new GleamException(this, "closed output port", out);
@@ -116,7 +116,7 @@ public final class Output {
         // print object
         if (out.isOpen()) {
             out.write(obj);
-            return Void.makeVoid();
+            return Void.value();
         }
         else {
             throw new GleamException(this, "closed output port", out);
@@ -150,7 +150,7 @@ public final class Output {
 
         if (oport.isOpen()) {
             oport.newline();
-            return Void.makeVoid();
+            return Void.value();
         }
         else {
             throw new GleamException(this, "closed output port", oport);

@@ -33,8 +33,6 @@
 
 package gleam.lang;
 
-import gleam.util.Log;
-
 import static gleam.util.Log.Level.FINE;
 
 /**
@@ -155,7 +153,7 @@ public class Interpreter {
     public void load(InputPort reader, Environment env) throws GleamException {
         // read
         Entity obj, val;
-        while ((obj = reader.read()) != Eof.makeEof()) {
+        while ((obj = reader.read()) != Eof.value()) {
             // eval
             gleam.util.Log.record(FINE, "load: read object", obj);
             val = eval(obj, env);

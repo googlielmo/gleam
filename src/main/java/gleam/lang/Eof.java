@@ -36,7 +36,7 @@ public final class Eof extends Entity {
     private static final long serialVersionUID = 1L;
 
     /** the Eof singleton */
-    protected static final Eof value = new Eof();
+    static final Eof value = new Eof();
 
     /** Can't instantiate this class */
     private Eof() {
@@ -45,7 +45,7 @@ public final class Eof extends Entity {
     /**
      * Factory method
      */
-    public static Eof makeEof() {
+    public static Eof value() {
         return value;
     }
 

@@ -88,7 +88,7 @@ public class Closure extends Procedure
         Environment localenv = new Environment(definitionenv);
         Entity currparam = param;
         Pair prev = null;
-        boolean arglist = false;
+        boolean dotparam = false;
         gleam.util.Log.record(FINE, "apply: ARGS = ", args);
 
         /* bind actual arguments to formals (long)
@@ -99,7 +99,7 @@ public class Closure extends Procedure
                 // get next already-evaluated arg
                 Entity obj = args.car;
 
-                if (arglist == false) {
+                if (!dotparam) {
                     if (currparam == EmptyList.value) {
                         throw new GleamException("apply: too many arguments", this);
                     }
@@ -112,7 +112,7 @@ public class Closure extends Procedure
                             localenv.define((Symbol)p, obj);
                         }
                         else {
-                            gleam.util.Log.record(WARNING, "apply: param is not a symbol");
+                            Log.record(WARNING, "apply: param is not a symbol");
                         }
                         // next param, please
                         currparam = ((Pair)currparam).cdr;
@@ -125,7 +125,7 @@ public class Closure extends Procedure
                         // this param in local env
                         prev = new Pair(obj, EmptyList.value);
                         localenv.define((Symbol) currparam, prev);
-                        arglist = true;
+                        dotparam = true;
                     }
                     else {
                         throw new GleamException("apply: invalid formal parameter", currparam);
@@ -144,12 +144,12 @@ public class Closure extends Procedure
             throw new GleamException("apply: improper list", currparam);
         }
 
-        if (currparam instanceof Symbol && !arglist) {
+        if (currparam instanceof Symbol && !dotparam) {
             // special case:
             // a "." notation parameter taking the empty list
             localenv.define((Symbol) currparam, EmptyList.value);
         }
-        else if (currparam != EmptyList.value && !arglist) {
+        else if (currparam != EmptyList.value && !dotparam) {
             throw new GleamException("apply: too few arguments", this);
         }
 

@@ -118,12 +118,12 @@ public final class PairsAndLists {
         // TODO: investigate: could we simply return list?
         ListIterator it = new ListIterator(args);
         if (!it.hasNext()) {
-            return EmptyList.makeEmptyList();
+            return EmptyList.value();
         }
-        Pair l = new Pair(it.next(), EmptyList.makeEmptyList());
+        Pair l = new Pair(it.next(), EmptyList.value());
         Pair ins = l;
         while (it.hasNext()) {
-            Pair nextcons = new Pair(it.next(), EmptyList.makeEmptyList());
+            Pair nextcons = new Pair(it.next(), EmptyList.value());
             ins.setCdr(nextcons);
             ins = nextcons;
         }
@@ -176,7 +176,7 @@ public final class PairsAndLists {
             throw new GleamException(this, "invalid argument", first);
 
         ((Pair) first).setCar(second);
-        return Void.makeVoid();
+        return Void.value();
     }},
 
     /**
@@ -195,7 +195,7 @@ public final class PairsAndLists {
             throw new GleamException(this, "invalid argument", first);
 
         ((Pair) first).setCdr(second);
-        return Void.makeVoid();
+        return Void.value();
     }},
 
     }; // primitives

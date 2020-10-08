@@ -35,12 +35,13 @@ package gleam.lang;
 /**
  * An abstract execution unit. This object represents a single program
  * fragment, which can be invoked during the execution of the program.
- * It can be seen as a partial continuation, because a full continuation
+ * It is a constituent of continuations, because a full continuation
  * consists of a sequence of invocations of these units.
  * Actions are linked together in a tree-like structure, where an execution
- * goes from leaf to root. In a simple program, the tree may have the shape
- * of a simple list; but when continuations are captured and re-used,
- * the proper tree-shape may appear.
+ * goes from leaf to root. In an ordinary program, the tree may degenerate
+ * into a list, taking the role of the traditional stack used in many
+ * non tail-recursive languages. When continuations are captured and
+ * re-used, they may end up being arranged as a proper tree.
  */
 public abstract class Action implements java.io.Serializable {
     /** the next action to execute, this creates a tree structure */
@@ -63,7 +64,7 @@ public abstract class Action implements java.io.Serializable {
      * value, and advancing the continuation to the next action.
      * Subclasses that implement this abstract method must update the 
      * continuation's action with the next action to execute (e.g. 
-     * <CODE>cont.action = this.parent</CODE>), so to go forward in program 
+     * <CODE>cont.action = parent</CODE>), so to go forward in program
      * execution
      * @param arg the Entity argument to this step of execution
      * @param cont the current Continuation

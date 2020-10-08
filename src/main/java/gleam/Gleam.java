@@ -26,10 +26,19 @@
 
 package gleam;
 
+import gleam.lang.Entity;
+import gleam.lang.Eof;
 import gleam.lang.GleamException;
+import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
-import gleam.lang.Symbol;
 import gleam.util.Log;
+import gleam.lang.MutableString;
+import gleam.lang.OutputPort;
+import gleam.lang.Symbol;
+import gleam.lang.System;
+import gleam.lang.Void;
+
+import java.io.PrintStream;
 
 
 /**
@@ -37,8 +46,8 @@ import gleam.util.Log;
  */
 public class Gleam
 {
-    // Gleam release number
-    private static final String RELEASE="0.90 pre-2";
+    // Gleam release version
+    private static final String RELEASE="1.0-SNAPSHOT (source)";
 
     // Dump env symbol (for debugging)
     private static final Symbol cEnv = Symbol.makeSymbol("!e");
@@ -53,29 +62,31 @@ public class Gleam
     public static void main(String[] args)
     {
         Interpreter intp = null;
+        PrintStream out = java.lang.System.out;
+        String version = Gleam.class.getPackage().getImplementationVersion();
 
-        System.out.println("Welcome to Gleam, release " + RELEASE);
-        System.out.println("(c) 2001-2008 Guglielmo Nigri <guglielmonigri@yahoo.it>.");
-        System.out.println("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are");
-        System.out.println("welcome to redistribute it under certain conditions; see LICENSE.TXT.");
+        out.println("Welcome to Gleam, release " + (version != null ? version : RELEASE));
+        out.println("(c) 2001-2008 Guglielmo Nigri <guglielmonigri@yahoo.it>.");
+        out.println("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are");
+        out.println("welcome to redistribute it under certain conditions; see LICENSE.TXT.");
 
         try {
-            System.out.print("Bootstrapping... ");
+            out.print("Bootstrapping... ");
             intp = new Interpreter();
-            System.out.println("OK");
+            out.println("OK");
         } catch (GleamException e) {
             Log.record(e);
-            System.exit(1);
+            java.lang.System.exit(1);
         }
-        System.out.print("Type (help) for help, !q to quit.\n\n");
+        out.print("Type (help) for help, !q to quit.\n\n");
 
         gleam.lang.Environment session;
 
-        gleam.lang.InputPort r = gleam.lang.System.getCin();
-        gleam.lang.OutputPort w = gleam.lang.System.getCout();
+        InputPort r = System.getCin();
+        OutputPort w = System.getCout();
 
-        gleam.lang.Entity prompt = new gleam.lang.MutableString("> ");
-        gleam.lang.Entity result;
+        Entity prompt = new MutableString("> ");
+        Entity result;
         
         for(;;)
         {
@@ -87,9 +98,9 @@ public class Gleam
                 w.display(prompt);
                 w.flush();
 
-                gleam.lang.Entity obj = r.read();
-                if (obj == gleam.lang.Eof.makeEof() || obj == cQuit) {
-                    System.out.println("Bye.");
+                Entity obj = r.read();
+                if (obj == Eof.value() || obj == cQuit) {
+                    out.println("Bye.");
                     break;
                 }
 
@@ -101,17 +112,16 @@ public class Gleam
                     result = intp.eval(obj, session);
 
                     // print
-                    if (result != gleam.lang.Void.makeVoid())
-                        w.write(result);
+                    if (result != Void.value()) w.write(result);
                     w.newline();
                 }
             }
-            catch (gleam.lang.GleamException e) {
-                System.out.println("*** " + e.getMessage());
+            catch (GleamException e) {
+                out.println("*** " + e.getMessage());
             }
             catch (Exception e){
-                System.out.println("*** Uncaught Exception: " + e.getMessage());
-                gleam.util.Log.record(e);
+                out.println("*** Uncaught Exception: " + e.getMessage());
+                Log.record(e);
             }
         }
     }

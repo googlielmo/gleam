@@ -66,7 +66,7 @@ public class Log
         public int getValue() {
             return value;
         }
-    };
+    }
 
     /* Using java.util.logging */
     final static Logger logger;

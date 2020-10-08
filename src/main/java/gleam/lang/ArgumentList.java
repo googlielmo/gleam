@@ -47,12 +47,12 @@ public class ArgumentList implements java.io.Serializable {
         this.pairArgs = args;
     }
 
-    public void put(Entity obj, int index) {
+    public void set(int index, Entity obj) {
         ensureSize(index+1);
         listArgs.set(index, obj);
     }
 
-    public void ensureSize(int size) {
+    void ensureSize(int size) {
         int missing = size - listArgs.size();
         listArgs.ensureCapacity(size);
         for (int i = 0 ; i < missing; ++i) {

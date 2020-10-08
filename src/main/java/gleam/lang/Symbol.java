@@ -91,8 +91,7 @@ public final class Symbol extends Entity
      */
     private Symbol(String value)
     {
-        this.value = value;
-        this.interned = true;
+        this(value, true);
     }
 
     private Symbol(String value, boolean interned)

@@ -123,19 +123,7 @@ public class Environment extends Entity
     public Entity lookup(Symbol s)
         throws GleamException
     {
-        java.lang.Object o;
-        Environment f = this;
-        while (f != null) {
-            o = f.assoc.get(s);
-            if (o == null) {
-                f = f.parent;
-            }
-            else {
-                return ((Location) o).get();
-            }
-        }
-        // so it is unbound...
-        throw new GleamException("Unbound variable: " + s.value, s);
+        return getLocation(s).get();
     }
 
     /** Writes this environment */
