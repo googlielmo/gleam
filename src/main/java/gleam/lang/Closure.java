@@ -176,7 +176,7 @@ public class Closure extends Procedure
         java.util.ArrayList temp = new java.util.ArrayList();
         ListIterator it = new ListIterator(body);
         while (it.hasNext()) {
-            Entity expr = (Entity) it.next();
+            Entity expr = it.next();
             temp.add(0, expr);
         }
         for (Iterator iter = temp.iterator(); iter.hasNext(); ) {

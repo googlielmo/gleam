@@ -71,14 +71,14 @@ public final class Interaction {
                 throw new GleamException(this, "invalid argument", arg1);
             }
 
-            String pname = ((Symbol)arg1).toString();
+            String pname = arg1.toString();
             String doc = System.getHelpDocumentation(pname);
             if (doc != null) {
                 System.getCout().print(doc);
             }
             else {
                 System.getCout().print("No documentation available for ");
-                System.getCout().print(((Symbol)arg1).toString());
+                System.getCout().print(arg1.toString());
                 System.getCout().print(". Try (help).");
             }
             System.getCout().newline();
@@ -171,7 +171,7 @@ public final class Interaction {
         if (arg1 instanceof MutableString) {
             try {
                 java.io.FileOutputStream
-                    f = new java.io.FileOutputStream(((MutableString)arg1).toString());
+                    f = new java.io.FileOutputStream(arg1.toString());
                 java.io.ObjectOutput
                     s = new java.io.ObjectOutputStream(f);
                 s.writeObject(env.getInterpreter().getSessionEnv());
@@ -205,7 +205,7 @@ public final class Interaction {
         if (arg1 instanceof MutableString) {
             try {
                 java.io.FileInputStream
-                    f = new java.io.FileInputStream(((MutableString)arg1).toString());
+                    f = new java.io.FileInputStream(arg1.toString());
                 java.io.ObjectInputStream
                     s = new java.io.ObjectInputStream(f);
                 Environment glob = (Environment) s.readObject();

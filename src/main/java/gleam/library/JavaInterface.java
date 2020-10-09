@@ -183,11 +183,11 @@ public class JavaInterface {
         }
         else if (arg instanceof MutableString)
         {
-            return ((MutableString) arg).toString();
+            return arg.toString();
         }
         else if (arg instanceof Symbol)
         {
-            return ((Symbol) arg).toString();
+            return arg.toString();
         }
         else if (arg instanceof Real)
         {
