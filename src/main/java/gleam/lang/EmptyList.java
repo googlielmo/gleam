@@ -91,7 +91,7 @@ public final class EmptyList extends Pair {
     /**
      * Performs environment optimization on this pair.
      */
-    public Entity optimize(Environment env) throws GleamException {
+    public Entity optimize(Environment env) {
         // no optimization!
         return this;
     }

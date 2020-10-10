@@ -95,7 +95,7 @@ public class Log
      * 2 = CONFIG, configuration activities
      * 1 = FINE, detailed output
      * 0 = ALL
-     * @param level
+     * @param level the new level
      */
     public static void setLevel(int level) {
         logger.setLevel(getLoggingLevel(level));
@@ -141,7 +141,7 @@ public class Log
 
     /**
      * Obtains a Level from an integer level value
-     * @param level
+     * @param level the current level
      * @return the corresponding integer level value
      */
     private static int getLevel(java.util.logging.Level level) {

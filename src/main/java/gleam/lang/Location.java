@@ -54,9 +54,7 @@ public final class Location extends Entity
     }
 
     /** Location evaluates to its content value */
-    public Entity eval(Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity eval(Environment env, Continuation cont) {
         return value;
     }
 

@@ -58,9 +58,10 @@ public class Continuation extends Procedure
     }
 
     /**
-     * 
-     * @param action 
-     * @return 
+     * Prepend an action to this continuation's chain.
+     *
+     * @param action the Action to prepend
+     * @return the prepended action
      */
     public Action extend(Action action) {
         action.parent = this.action;
@@ -78,7 +79,6 @@ public class Continuation extends Procedure
      * @param args Pair
      * @param env Environment
      * @param cont Continuation
-     * @throws gleam.lang.GleamException 
      * @return Entity
      */
     public Entity apply(Pair args, Environment env, Continuation cont)

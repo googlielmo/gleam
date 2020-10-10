@@ -65,7 +65,7 @@ public final class Syntax {
         1, 1, /* min, max no. of arguments */
         "Gives its argument unevaluated, e.g. (quote x); 'x",
         null /* doc strings */ ) {
-    public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException {
+    public Entity apply1(Entity arg1, Environment env, Continuation cont) {
         return arg1;
     }},
 
@@ -158,7 +158,7 @@ public final class Syntax {
         2, 3, /* min, max no. of arguments */
         "Conditional evaluation, e.g. (if (eqv? 1 0) 'strange 'ok)",
         null /* doc strings */ ) {
-    public Entity apply3(Entity test, Entity consequent, Entity alternate, Environment env, Continuation cont) throws GleamException {
+    public Entity apply3(Entity test, Entity consequent, Entity alternate, Environment env, Continuation cont) {
         if (alternate == null)
             alternate = Void.value();
 

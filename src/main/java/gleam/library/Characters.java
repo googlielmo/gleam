@@ -59,7 +59,6 @@ public final class Characters {
         "Returns true if argument is a character, false otherwise",
         "E.g. (char? #\\a) => #t" /* doc strings */ ) {
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
-        throws GleamException
     {
         return Boolean.makeBoolean(arg1 instanceof Character);
     }},

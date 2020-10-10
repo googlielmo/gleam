@@ -36,8 +36,6 @@ import static gleam.util.Log.Level.FINE;
  */
 class Reader {
 
-    protected java.io.Reader rdr;
-
     protected StreamTokenizer tkzr;
 
     /**
@@ -45,9 +43,8 @@ class Reader {
      *
      * @param r java.io.Reader
      */
-    public Reader(java.io.Reader r) {
-        rdr = r;
-
+    public Reader(java.io.Reader r)
+    {
         tkzr = new StreamTokenizer(r);
         tkzr.resetSyntax();
         tkzr.lowerCaseMode(false);
@@ -240,7 +237,7 @@ class Reader {
      * @return java.lang.String
      */
     private String readToken()
-    throws GleamException, java.io.IOException {
+            throws java.io.IOException {
         String retVal;
         int c = tkzr.nextToken();
 

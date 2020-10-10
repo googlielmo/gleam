@@ -59,7 +59,6 @@ public final class Booleans {
         "Returns true if argument is a boolean, false otherwise",
         "E.g. (boolean? #f) => #t" /* doc strings */ ) {
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
-        throws GleamException
     {
         return Boolean.makeBoolean(arg1 instanceof Boolean);
     }},
@@ -74,7 +73,6 @@ public final class Booleans {
         "Returns true if argument is false, false otherwise",
         "E.g. (not #f) => #t" /* doc strings */ ) {
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
-        throws GleamException
     {
         return Boolean.makeBoolean(arg1.equals(Boolean.falseValue));
     }},

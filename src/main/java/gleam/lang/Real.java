@@ -83,9 +83,7 @@ public class Real extends Number
     }
     
     /** Takes value of number as a double.  */
-    public double getDoubleValue()
-        throws GleamException
-    {
+    public double getDoubleValue() {
         return value;
     }
 }

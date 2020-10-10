@@ -60,9 +60,7 @@ public class OutputPort extends Port
     /**
      * closes this port
      */
-    public void close()
-        throws java.io.IOException
-    {
+    public void close() {
         if (out != null) {
             out.close();
         }

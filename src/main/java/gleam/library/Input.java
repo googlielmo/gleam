@@ -58,7 +58,6 @@ public final class Input {
         "Input.gleam_eof_object_p",
         "Returns true if argument is the EOF object, false otherwise" /* doc strings */ ) {
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
-        throws GleamException
     {
         return Boolean.makeBoolean(arg1 instanceof Eof);
     }},

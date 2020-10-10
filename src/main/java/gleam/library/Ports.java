@@ -57,9 +57,7 @@ public final class Ports {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a port, false otherwise",
         "E.g. (port? (current-input-port)) => #t" /* doc strings */ ) {
-    public Entity apply1(Entity obj, Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply1(Entity obj, Environment env, Continuation cont) {
         return Boolean.makeBoolean(obj instanceof Port);
     }},
 
@@ -72,9 +70,7 @@ public final class Ports {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is an input port, false otherwise",
         "E.g. (input-port? (current-input-port)) => #t" /* doc strings */ ) {
-    public Entity apply1(Entity obj, Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply1(Entity obj, Environment env, Continuation cont) {
         return Boolean.makeBoolean(obj instanceof InputPort);
     }},
 
@@ -87,9 +83,7 @@ public final class Ports {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is an output port, false otherwise",
         "E.g. (output-port? (current-input-port)) => #f" /* doc strings */ ) {
-    public Entity apply1(Entity obj, Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply1(Entity obj, Environment env, Continuation cont) {
         return Boolean.makeBoolean(obj instanceof OutputPort);
     }},
 
@@ -102,9 +96,7 @@ public final class Ports {
         0, 0, /* min, max no. of arguments */
         "Returns the current input port",
         null /* doc strings */ ) {
-    public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply0(Environment env, Continuation cont) {
         return gleam.lang.System.getCin();
     }},
 
@@ -117,9 +109,7 @@ public final class Ports {
         0, 0, /* min, max no. of arguments */
         "Returns the current output port",
         null /* doc strings */ ) {
-    public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply0(Environment env, Continuation cont) {
         return gleam.lang.System.getCout();
     }},
 

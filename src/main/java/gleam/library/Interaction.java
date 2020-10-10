@@ -151,7 +151,6 @@ public final class Interaction {
         0, 0, /* min, max no. of arguments */
         "Returns current verbosity level", null /* doc strings */ ) {
     public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
     {
         return new Real(6 - gleam.util.Log.getLevel());
     }},

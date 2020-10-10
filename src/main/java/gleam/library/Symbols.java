@@ -65,7 +65,6 @@ public final class Symbols {
         "Returns true if argument is a symbol, false otherwise",
         "E.g. (symbol? 'sym) => #t" /* doc strings */ ) {
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
-        throws GleamException
     {
         return Boolean.makeBoolean(arg1 instanceof Symbol);
     }},
@@ -80,7 +79,6 @@ public final class Symbols {
         "Makes a new symbol, e.g. (generate-symbol)",
         null /* doc strings */ ) {
     public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
     {
         return Symbol.makeUninternedSymbol("__S"+(gencount.getAndIncrement()));
     }},

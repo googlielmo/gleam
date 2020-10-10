@@ -282,9 +282,7 @@ public final class Numbers {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a number, false otherwise",
         "E.g. (number? 3) => #t" /* doc strings */ ) {
-    public Entity apply1(Entity arg1, Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply1(Entity arg1, Environment env, Continuation cont) {
         return Boolean.makeBoolean(arg1 instanceof Number);
     }},
 

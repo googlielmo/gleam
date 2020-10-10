@@ -97,9 +97,7 @@ public final class PairsAndLists {
         2, 2, /* min, max no. of arguments */
         "Creates a new pair, e.g. (cons 1 (cons 2 '(3)))",
         null /* doc strings */ ) {
-    public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply2(Entity first, Entity second, Environment env, Continuation cont) {
         return new Pair(first, second);
     }},
 
@@ -139,9 +137,7 @@ public final class PairsAndLists {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a pair, false otherwise",
         "E.g. (pair? (cons 1 2)) => #t" /* doc strings */ ) {
-    public Entity apply1(Entity obj, Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply1(Entity obj, Environment env, Continuation cont) {
         return Boolean.makeBoolean((obj instanceof Pair) && !(obj instanceof EmptyList));
     }},
 
@@ -154,9 +150,7 @@ public final class PairsAndLists {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is the empty list, false otherwise",
         "E.g. (null? '()) => #t" /* doc strings */ ) {
-    public Entity apply1(Entity obj, Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply1(Entity obj, Environment env, Continuation cont) {
         return Boolean.makeBoolean(obj instanceof EmptyList);
     }},
 

@@ -26,6 +26,7 @@
 
 package gleam.library;
 
+import gleam.lang.Boolean;
 import gleam.lang.Number;
  
 import gleam.lang.*;
@@ -141,7 +142,6 @@ public final class Eval {
         "Returns the interaction (top-level) environment", 
         null /* doc strings */ ) {
     public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
     {
         return gleam.lang.System.getInteractionEnv();
     }},
@@ -155,9 +155,7 @@ public final class Eval {
         0, 0, /* min, max no. of arguments */
         "Returns the current environment",
         null /* doc strings */ ) {
-    public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply0(Environment env, Continuation cont) {
         return env;
     }},
 
@@ -170,9 +168,7 @@ public final class Eval {
         2, 2, /* min, max no. of arguments */
         "Evaluates an expression in a given environment",
         "E.g. (in-environment (scheme-report-environment 5) (+ 1 2)) => 3" /* doc strings */ ) {
-    public Entity apply2(Entity argEnv, Entity argExpr, Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply2(Entity argEnv, Entity argExpr, Environment env, Continuation cont) {
         cont.extend(
             new ExpressionAction(argEnv, env, null)).append( // 1) evaluate environment expr
             new ExpressionInEnvironmentAction(argExpr, null)); // 2) evaluate expr in that env
@@ -188,9 +184,7 @@ public final class Eval {
         0, 0, /* min, max no. of arguments */
         "Creates a new environment",
         "E.g. (in-environment (make-environment) (begin (define a 7) a)) => 7" /* doc strings */ ) {
-    public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply0(Environment env, Continuation cont) {
         return new Environment(env);
     }},
 
@@ -204,11 +198,9 @@ public final class Eval {
         "Returns true if argument is an environment, false otherwise",
         "E.g. (environment? (scheme-report-environment 5)) => #t" /* doc strings */ ) {
     public Entity apply1(Entity arg, Environment env, Continuation cont)
-        throws GleamException
     {
-        return gleam.lang.Boolean.makeBoolean(arg instanceof Environment);
+        return Boolean.makeBoolean(arg instanceof Environment);
     }},
 
     }; // primitives
-
 }

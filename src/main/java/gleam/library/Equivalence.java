@@ -56,7 +56,6 @@ public final class Equivalence {
         "True if two objects are the same in memory, false otherwise",
         "E.g. (eq? 'a 'a) => #t, but (eq? (list 'a) (list 'a)) => #f" /* doc strings */ ) {
     public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
-        throws GleamException
     {
         // Java object are a special case, since we want to compare the 
         // underlying objects to preserve common Java semantics
@@ -76,7 +75,6 @@ public final class Equivalence {
         "True if two objects have equivalent values, false otherwise",
         "E.g. (eqv? 10 10) => #t" /* doc strings */ ) {
     public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
-        throws GleamException
     {
         return Boolean.makeBoolean(arg1.equals(arg2));
     }},

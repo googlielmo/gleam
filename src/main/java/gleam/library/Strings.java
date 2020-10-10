@@ -57,9 +57,7 @@ public final class Strings {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a string, false otherwise",
         "E.g. (string? \"hello\") => #t" /* doc strings */ ) {
-    public Entity apply1(Entity obj, Environment env, Continuation cont)
-        throws GleamException
-    {
+    public Entity apply1(Entity obj, Environment env, Continuation cont) {
         return Boolean.makeBoolean(obj instanceof MutableString);
     }},
     

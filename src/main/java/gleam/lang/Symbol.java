@@ -154,7 +154,6 @@ public final class Symbol extends Entity
      * Performs environment optimization on this symbol.
      */
     public Entity optimize(Environment env)
-        throws GleamException
     {
         try {
             Location loc = env.getLocation(this);

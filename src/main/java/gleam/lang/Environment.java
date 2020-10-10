@@ -88,7 +88,6 @@ public class Environment extends Entity
      *
      * @param s Symbol
      * @return Location
-     * @throws gleam.lang.GleamException 
      * @see Location
      */
     public Location getLocation(Symbol s)
@@ -115,7 +114,6 @@ public class Environment extends Entity
      * environments, up to the topmost (global) environment.
      *
      * @param s Symbol
-     * @throws gleam.lang.GleamException 
      * @return Entity
      */
     public Entity lookup(Symbol s)
