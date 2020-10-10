@@ -43,12 +43,6 @@ public class GleamException extends java.lang.Exception
 
     protected final Entity errobj;
 
-    private GleamException()
-    {
-        super();
-        errobj = null;
-    }
-
     public GleamException(Primitive primitive, String message, Entity obj)
     {
         this(primitive.toString() + ": " + message, obj);

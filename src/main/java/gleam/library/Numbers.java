@@ -61,7 +61,6 @@ public final class Numbers {
         throws GleamException
     {
         double result = 0.0;
-        Entity obj;
         ListIterator it = new ListIterator(args);
         // first assume unary minus
         if (it.hasNext()) {

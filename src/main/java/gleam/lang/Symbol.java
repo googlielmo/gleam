@@ -27,7 +27,6 @@
 package gleam.lang;
 
 import java.util.Map;
-import java.util.Collections;
 
 /**
  * Scheme symbol factory.

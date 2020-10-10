@@ -57,7 +57,6 @@ public class PrimitiveProcedure extends Procedure
             return value.applyN(arg, env, cont);
         }
         // ok, 0 <= maxArgs <= 3 : special rules
-        assert 0 <= value.maxArgs && value.maxArgs <= 3; // DEBUG
         Entity[] argArray = new Entity[] {null, null, null};
         int countedArgs = 0;
         ListIterator it = new ListIterator(arg);
@@ -77,11 +76,8 @@ public class PrimitiveProcedure extends Procedure
                 return value.apply1(argArray[0], env, cont);
             case 2:
                 return value.apply2(argArray[0], argArray[1], env, cont);
-            case 3:
+            default: // 3
                 return value.apply3(argArray[0], argArray[1], argArray[2], env, cont);
-            default: // DEBUG CANNOT HAPPEN
-                assert false;
-                return null;
         }
     }
 
@@ -105,5 +101,4 @@ public class PrimitiveProcedure extends Procedure
             }
         }
     }
-
 }

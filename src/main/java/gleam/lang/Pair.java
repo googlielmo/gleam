@@ -151,7 +151,7 @@ public class Pair extends Entity
                 return null;
             }
         }
-        else if (operator instanceof Location) { // FIXME
+        else if (operator instanceof Location) {
             Entity e = ( (Location) operator).get();
             if (e instanceof SyntaxRewriter) {
                 // call of syntax rewriter, will be followed by evaluation of resulting expression
@@ -248,7 +248,7 @@ public class Pair extends Entity
             }
             else {
                 /* this is an improper list
-                 * (not necessarily an error: think lambda)
+                 * (not necessarily an error: e.g., lambda)
                  */
                 gleam.util.Log.record(INFO, "dotted pair in optimize... check for correctness");
                 restParent.cdr = rest.optimize(env);

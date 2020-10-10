@@ -59,17 +59,15 @@ class Reader {
         tkzr.wordChars('A','Z'); // A-Z
         tkzr.wordChars('a','z'); // a-z
         tkzr.wordChars('0','9'); // 0-9
-        tkzr.wordChars('\u00a0','\u00FF'); // latin-1 upper chars
+        tkzr.wordChars('\u00A1','\u00FF'); // Unicode latin-1 supplement, symbols and letters
         tkzr.wordChars('*','.'); // '*', '+', ',', '-', '.'
         tkzr.wordChars('!','!'); // '!'
-        tkzr.wordChars('#','#'); // '#' TODO: remove
+        tkzr.wordChars('#','#'); // '#' Gleam extension
         tkzr.wordChars('\\','\\'); // '\'
         tkzr.wordChars('/','/'); // '/'
         tkzr.wordChars('$','$'); // '$'
         tkzr.wordChars('_','_'); // '_'
         tkzr.wordChars('<','@'); // '<', '=', '>', '?', '@'
-
-        //tkzr.parseNumbers(); // TODO: self-made parsing
     }
 
     /**
@@ -106,7 +104,7 @@ class Reader {
             }
 
             if (t.equals(")")) {
-                if (first && !seendot) {
+                if (first) {
                     return EmptyList.value;
                 }
                 else {
@@ -168,15 +166,11 @@ class Reader {
         }
         else if (t.equals("'")) { // quote
             Entity quotedobj = readObject();
-            Pair l = new Pair(Symbol.QUOTE,
-            new Pair(quotedobj, EmptyList.value));
-            return l;
+            return new Pair(Symbol.QUOTE, new Pair(quotedobj, EmptyList.value));
         }
         else if (t.equals("`")) { // semiquote
             Entity quotedobj = readObject();
-            Pair l = new Pair(Symbol.QUASIQUOTE,
-            new Pair(quotedobj, EmptyList.value));
-            return l;
+            return new Pair(Symbol.QUASIQUOTE, new Pair(quotedobj, EmptyList.value));
         }
         else if (t.equals(")")) { // extra parens
             throw new GleamException("read: unexpected \")\"", null);
@@ -203,15 +197,11 @@ class Reader {
         }
         else if (t.startsWith(",@")) {
             Entity unquotedobj = readObject(t.substring(2));
-            Pair l = new Pair(Symbol.UNQUOTE_SPLICING,
-            new Pair(unquotedobj, EmptyList.value));
-            return l;
+            return new Pair(Symbol.UNQUOTE_SPLICING, new Pair(unquotedobj, EmptyList.value));
         }
         else if (t.startsWith(",")) {
             Entity unquotedobj = readObject(t.substring(1));
-            Pair l = new Pair(Symbol.UNQUOTE,
-            new Pair(unquotedobj, EmptyList.value));
-            return l;
+            return new Pair(Symbol.UNQUOTE, new Pair(unquotedobj, EmptyList.value));
         }
         else if (t.startsWith("\"")) {
             // it is a string
@@ -225,8 +215,7 @@ class Reader {
             return Boolean.trueValue;
         }
         else if (t.startsWith("#\\")) {
-            // TODO: this is a poorman's character parser
-            // should replace the tokenizer instead...
+            // poor man's character parser
             String charstring = t.substring(2);
             if (charstring.equalsIgnoreCase("space")) {
                 return new Character(' ');
@@ -283,4 +272,3 @@ class Reader {
         return retVal;
     }
 }
-

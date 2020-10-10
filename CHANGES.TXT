@@ -1,4 +1,8 @@
-2002-06-21
+2020-10-10
+
+    Removed some redundant code and clarified comments
+
+2020-06-21
 
     Reworked Readme. Added Code of Conduct and Contributing docs.
 

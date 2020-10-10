@@ -43,6 +43,7 @@ import gleam.lang.MutableString;
 import gleam.lang.Pair;
 import gleam.lang.Real;
 import gleam.lang.Symbol;
+import gleam.lang.Void;
 import gleam.util.Log;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -136,7 +137,9 @@ public class JavaInterface {
         try {
             Method method = clazz.getMethod(methodName.toString(), parameterTypes);
             Object retVal = method.invoke(object.getObjectValue(), arguments);
-            // TODO FIXME if method is void return Void.value;
+            if (method.getReturnType().isInstance(java.lang.Void.class)) {
+                return Void.value();
+            }
             return getEntityFromObject(retVal);
         } catch (SecurityException ex) {
             Log.record(ex);

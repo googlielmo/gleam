@@ -46,7 +46,7 @@ public class Real extends Number
 
     public Real(int n)
     {
-        value = (double) n;
+        value = n;
     }
 
     /**

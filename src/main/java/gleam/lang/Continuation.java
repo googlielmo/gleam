@@ -52,10 +52,6 @@ public class Continuation extends Procedure
         this.action = null;
     }
 
-    Continuation(Action what) {
-        this.action = what;
-    }
-
     public Continuation(Continuation other)
     {
         this.action = other.action;

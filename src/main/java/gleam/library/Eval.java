@@ -26,7 +26,6 @@
 
 package gleam.library;
 
-import gleam.lang.Entity;
 import gleam.lang.Number;
  
 import gleam.lang.*;

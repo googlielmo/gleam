@@ -242,12 +242,10 @@ public final class System
 
     /**
      * Determines if a given object is a variable.
-     * An object is a variable iff it is a symbol but
-     * is not a syntactic keyword.
+     * An object is a variable iff it is a symbol.
      */
     static boolean isVariable(Entity s) {
-        return s instanceof Symbol
-            ; //***FIXME && !isKeyword( (Symbol) s);
+        return s instanceof Symbol;
     }
 
     /**
@@ -400,7 +398,6 @@ public final class System
             if (arg == EmptyList.value) {
                 throw new GleamException(
                     "define: invalid function name", form);
-                // ok
             }
             else if (isVariable(arg)) {
                 isFunction = false;
@@ -474,7 +471,7 @@ public final class System
     }
 
     /**
-     * Clones a pair
+     * Deep clones a pair
      *
      * @return gleam.lang.Pair
      * @param p gleam.lang.Pair
@@ -503,7 +500,7 @@ public final class System
          * has already been performed, so we skip syntax checking.
          */
 
-        // TODO: remove clonePair!!!
+        // TODO: remove clonePair ?
         if (form.cdr instanceof Pair) {
             form.cdr = clonePair( (Pair) form.cdr);
         }
@@ -594,7 +591,7 @@ public final class System
             // TODO
         }
         else if (op == Symbol.QUASIQUOTE) {
-            // shall not touch arg, as in quote!
+            // shall not touch arg, like quote
         }
         else if (op == Symbol.DEFINE) {
             /* in case this is a procedure

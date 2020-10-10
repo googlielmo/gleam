@@ -45,7 +45,7 @@ public final class Void extends Entity {
     }
 
     /**
-     * Factory methodh
+     * Factory method
      */
     public static Void value() {
         return value;
