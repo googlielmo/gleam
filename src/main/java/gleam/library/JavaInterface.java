@@ -45,6 +45,7 @@ import gleam.lang.Real;
 import gleam.lang.Symbol;
 import gleam.lang.Void;
 import gleam.util.Log;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ import java.util.List;
  * JAVA INTERFACE
  */
 public class JavaInterface {
-    
+
     /**
      * Can't instantiate this class
      */
@@ -76,7 +77,7 @@ public class JavaInterface {
         1, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Makes a new Java object, e.g. (new 'java.util.Date)",
         null /* doc strings */ ) {
-    public  Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(Pair args, Environment env, Continuation cont)
         throws GleamException
     {
         ListIterator it = new ListIterator(args);
@@ -126,7 +127,30 @@ public class JavaInterface {
         }
         return call((JavaObject) object, (Symbol) methodName, (Class[])argClasses.toArray(new Class[0]), argObjects.toArray());     
     }},
-    
+
+    /**
+     * class-of
+     */
+    new Primitive( "class-of",
+            Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+            1, 1, /* min, max no. of arguments */
+            "Returns the class of its argument",
+            "E.g. (class-of (new 'java.lang.String \"test\")) => class java.lang.String" /* doc strings */ ) {
+    public Entity apply1(Entity arg1, Environment env, Continuation cont)
+            throws GleamException
+    {
+        if (arg1 instanceof JavaObject) {
+            JavaObject javaObject = (JavaObject) arg1;
+            if (javaObject.getObjectValue() == null) {
+                return javaObject;
+            }
+            else {
+                return new JavaObject(javaObject.getObjectValue().getClass());
+            }
+        }
+        return new JavaObject(arg1.getClass());
+    }},
+
     }; // primitives
 
     private static Entity call(JavaObject object, Symbol methodName, Class[] parameterTypes, Object[] arguments) throws GleamException {

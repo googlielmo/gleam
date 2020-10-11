@@ -8,6 +8,9 @@ welcome to redistribute it under certain conditions; see LICENSE.TXT.
 TO DO:
 ------
 
+Remove System.isKeyword(). Move analyzeSpecialForm() and optimizeSpecialForm()
+to specific subclasses of SyntaxProcedure, where they belong.
+
 Use Java 5 generics where possible (?)
 
 Implement as many primitives as possible in Scheme
