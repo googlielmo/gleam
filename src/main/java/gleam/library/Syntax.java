@@ -26,7 +26,19 @@
 
 package gleam.library;
 
-import gleam.lang.*;
+import gleam.lang.AssignmentAction;
+import gleam.lang.Closure;
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.ExpressionAction;
+import gleam.lang.GleamException;
+import gleam.lang.IfAction;
+import gleam.lang.ListIterator;
+import gleam.lang.Pair;
+import gleam.lang.Symbol;
+import gleam.lang.SyntaxRewriter;
+import gleam.lang.Undefined;
 import gleam.lang.Void;
 
 /**

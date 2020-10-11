@@ -26,9 +26,13 @@
 
 package gleam.library;
 
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.GleamException;
+import gleam.lang.OutputPort;
 import gleam.lang.System;
 import gleam.lang.Void;
-import gleam.lang.*;
 
 /**
  * Output

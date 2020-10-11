@@ -27,9 +27,13 @@
 package gleam.library;
 
 import gleam.lang.Boolean;
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.ExpressionAction;
+import gleam.lang.ExpressionInEnvironmentAction;
+import gleam.lang.GleamException;
 import gleam.lang.Number;
- 
-import gleam.lang.*;
 
 /**
  * EVAL

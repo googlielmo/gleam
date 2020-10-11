@@ -27,8 +27,14 @@
 package gleam.library;
 
 import gleam.lang.Boolean;
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.GleamException;
+import gleam.lang.ListIterator;
 import gleam.lang.Number;
-import gleam.lang.*;
+import gleam.lang.Pair;
+import gleam.lang.Real;
 
 /**
  * Primitive operator and procedure implementation library.

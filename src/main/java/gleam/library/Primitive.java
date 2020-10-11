@@ -33,7 +33,11 @@
 
 package gleam.library;
 
-import gleam.lang.*;
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.GleamException;
+import gleam.lang.Pair;
 
 /**
  * A primitive procedure of the language.
@@ -59,7 +63,7 @@ public abstract class Primitive implements java.io.Serializable {
     public int minArgs;
     /** maximum no. of arguments, or VAR_ARGS for a variable number */
     public int maxArgs;
-    
+
     // documentation fields
     /** a short note about this primitive */
     public transient String comment;
@@ -71,18 +75,18 @@ public abstract class Primitive implements java.io.Serializable {
     public static final boolean KEYWORD = true;
     /** binding for an identifier */
     public static final boolean IDENTIFIER = false;
-    
+
     // constant values for maxArgs field
     /** constant to signal a variable (unlimited) number of arguments */
-    public static final int VAR_ARGS = -1; 
-    
+    public static final int VAR_ARGS = -1;
+
     // constant values for definitionEnv field
     /** the null environment */
-    public static final int NULL_ENV = 0; // 
+    public static final int NULL_ENV = 0; //
     /** the r5rs environment */
-    public static final int R5RS_ENV = 1; // 
+    public static final int R5RS_ENV = 1; //
     /** the interaction environment */
-    public static final int INTR_ENV = 2; // 
+    public static final int INTR_ENV = 2; //
 
     Primitive(String name, int definitionEnv, boolean keyword, int minArgs, int maxArgs, String comment, String documentation){
         this.name = name;
@@ -94,12 +98,12 @@ public abstract class Primitive implements java.io.Serializable {
             this.comment = comment;
         else
             this.comment = "No documentation defined";
-        
+
         if (documentation != null)
             this.documentation = this.comment + "\n" + documentation;
         else
             this.documentation = this.comment;
-        
+
     }
 
     /**
@@ -118,7 +122,7 @@ public abstract class Primitive implements java.io.Serializable {
 
     /**
      * Apply this primitive to at most one argument.
-     * @param arg1 the only argument to this primitive, or null if not 
+     * @param arg1 the only argument to this primitive, or null if not
      * present
      * @param env the environment in which to apply the primitive
      * @param cont the current continuation
@@ -134,9 +138,9 @@ public abstract class Primitive implements java.io.Serializable {
 
     /**
      * Apply this primitive to at most two arguments.
-     * @param arg1 the first argument to this primitive, or null if not 
+     * @param arg1 the first argument to this primitive, or null if not
      * present
-     * @param arg2 the second argument to this primitive, or null if not 
+     * @param arg2 the second argument to this primitive, or null if not
      * present
      * @param env the environment in which to apply the primitive
      * @param cont the current continuation
@@ -152,11 +156,11 @@ public abstract class Primitive implements java.io.Serializable {
 
     /**
      * Apply this primitive to at most three arguments.
-     * @param arg1 the first argument to this primitive, or null if not 
+     * @param arg1 the first argument to this primitive, or null if not
      * present
-     * @param arg2 the second argument to this primitive, or null if not 
+     * @param arg2 the second argument to this primitive, or null if not
      * present
-     * @param arg3 the third argument to this primitive, or null if not 
+     * @param arg3 the third argument to this primitive, or null if not
      * present
      * @param env the environment in which to apply the primitive
      * @param cont the current continuation
@@ -204,7 +208,7 @@ public abstract class Primitive implements java.io.Serializable {
         sb.append(":");
         sb.append(minArgs);
         if (minArgs != maxArgs) {
-            if (maxArgs < 0) 
+            if (maxArgs < 0)
                 sb.append("..*");
             else{
                 sb.append("..");

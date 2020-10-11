@@ -3,7 +3,7 @@ package gleam.util;
 import org.junit.Test;
 
 import static gleam.util.Log.Level.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LogTest {
 

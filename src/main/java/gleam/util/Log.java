@@ -26,7 +26,8 @@
 
 package gleam.util;
 
-import java.util.logging.*;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Logger;
 
 /*
  * Log.java

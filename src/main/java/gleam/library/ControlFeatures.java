@@ -26,8 +26,15 @@
 
 package gleam.library;
 
+import gleam.lang.ArgumentList;
 import gleam.lang.Boolean;
-import gleam.lang.*;
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.GleamException;
+import gleam.lang.Pair;
+import gleam.lang.Procedure;
+import gleam.lang.ProcedureCallAction;
 
 /**
  * CONTROL FEATURES

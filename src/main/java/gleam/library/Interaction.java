@@ -26,10 +26,16 @@
 
 package gleam.library;
 
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.GleamException;
+import gleam.lang.MutableString;
 import gleam.lang.Number;
+import gleam.lang.Real;
+import gleam.lang.Symbol;
 import gleam.lang.System;
 import gleam.lang.Void;
-import gleam.lang.*;
 import gleam.util.Log;
 
 /**

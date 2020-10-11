@@ -28,7 +28,9 @@ package gleam.library;
 
 import gleam.lang.Boolean;
 import gleam.lang.Character;
-import gleam.lang.*;
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
 
 /**
  * CHARACTERS
