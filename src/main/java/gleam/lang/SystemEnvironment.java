@@ -50,7 +50,6 @@ public final class SystemEnvironment extends Environment
 
     /** avoids to serialize data of system environments */
     protected Entity writeReplace()
-        throws java.io.ObjectStreamException
     {
         return new SystemEnvironment(null, kind);
     }

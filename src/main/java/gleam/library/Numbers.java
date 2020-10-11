@@ -64,7 +64,7 @@ public final class Numbers {
         ListIterator it = new ListIterator(args);
         // first assume unary minus
         if (it.hasNext()) {
-            result -= getNumberArgument(this, it);
+            result -= getNumberArgument(this, it.next());
         }
         /* if it is a real difference make sign adjustment and
          * subtract remaining arguments
@@ -73,7 +73,7 @@ public final class Numbers {
             result = -result;
         }
         while (it.hasNext()) {
-            result -= getNumberArgument(this, it);
+            result -= getNumberArgument(this, it.next());
         }
         return new Real(result);
     }},
@@ -93,7 +93,7 @@ public final class Numbers {
         double result = 0.0;
         ListIterator it = new ListIterator(args);
         while (it.hasNext()) {
-            result += getNumberArgument(this, it);
+            result += getNumberArgument(this, it.next());
         }
         return new Real(result);
     }},
@@ -113,7 +113,7 @@ public final class Numbers {
         double result = 1.0;
         ListIterator it = new ListIterator(args);
         while (it.hasNext()) {
-            result /= getNumberArgument(this, it);
+            result /= getNumberArgument(this, it.next());
         }
         return new Real(result);
     }},
@@ -133,7 +133,7 @@ public final class Numbers {
         double result = 1.0;
         ListIterator it = new ListIterator(args);
         while (it.hasNext()) {
-            result *= getNumberArgument(this, it);
+            result *= getNumberArgument(this, it.next());
         }
         return new Real(result);
     }},
@@ -154,11 +154,11 @@ public final class Numbers {
         double prev, curr;
         ListIterator it = new ListIterator(args);
         // get first argument as prev
-        prev = getNumberArgument(this, it);
+        prev = getNumberArgument(this, it.next());
 
         // follow remaining arguments
         while (it.hasNext()) {
-            curr = getNumberArgument(this, it);
+            curr = getNumberArgument(this, it.next());
             retVal &= prev == curr;
             prev = curr;
         }
@@ -181,11 +181,11 @@ public final class Numbers {
         double prev, curr;
         ListIterator it = new ListIterator(args);
         // get first argument as prev
-        prev = getNumberArgument(this, it);
+        prev = getNumberArgument(this, it.next());
 
         // follow remaining arguments
         while (it.hasNext()) {
-            curr = getNumberArgument(this, it);
+            curr = getNumberArgument(this, it.next());
             retVal &= prev >= curr;
             prev = curr;
         }
@@ -208,11 +208,11 @@ public final class Numbers {
         double prev, curr;
         ListIterator it = new ListIterator(args);
         // get first argument as prev
-        prev = getNumberArgument(this, it);
+        prev = getNumberArgument(this, it.next());
 
         // follow remaining arguments
         while (it.hasNext()) {
-            curr = getNumberArgument(this, it);
+            curr = getNumberArgument(this, it.next());
             retVal &= prev <= curr;
             prev = curr;
         }
@@ -235,11 +235,11 @@ public final class Numbers {
         double prev, curr;
         ListIterator it = new ListIterator(args);
         // get first argument as prev
-        prev = getNumberArgument(this, it);
+        prev = getNumberArgument(this, it.next());
 
         // follow remaining arguments
         while (it.hasNext()) {
-            curr = getNumberArgument(this, it);
+            curr = getNumberArgument(this, it.next());
             retVal &= prev > curr;
             prev = curr;
         }
@@ -262,11 +262,11 @@ public final class Numbers {
         double prev, curr;
         ListIterator it = new ListIterator(args);
         // get first argument as prev
-        prev = getNumberArgument(this, it);
+        prev = getNumberArgument(this, it.next());
 
         // follow remaining arguments
         while (it.hasNext()) {
-            curr = getNumberArgument(this, it);
+            curr = getNumberArgument(this, it.next());
             retVal &= prev < curr;
             prev = curr;
         }
@@ -288,9 +288,8 @@ public final class Numbers {
 
     }; // primitives
 
-    private static double getNumberArgument(Primitive primitive, ListIterator it) throws GleamException {
+    private static double getNumberArgument(Primitive primitive, Entity obj) throws GleamException {
         double arg;
-        Entity obj = it.next();
         if (obj instanceof Number) {
             arg = ((Number) obj).getDoubleValue();
         }

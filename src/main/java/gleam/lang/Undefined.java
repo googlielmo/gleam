@@ -64,7 +64,6 @@ public final class Undefined extends Entity {
      * Prevents the release of multiple instances upon deserialization.
      */
     protected java.lang.Object readResolve()
-        throws java.io.ObjectStreamException
     {
 //      java.lang.System.out.println("readResolve() called! (Undefined)"); //DEBUG
         return value;
@@ -74,6 +73,6 @@ public final class Undefined extends Entity {
      * Writes the undefined value
      */
     public void write(java.io.PrintWriter out) {
-        out.write("#<?>");
+        out.write("#<undefined>");
     }
 }

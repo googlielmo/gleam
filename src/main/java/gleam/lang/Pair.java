@@ -141,7 +141,7 @@ public class Pair extends Entity
                 rewriteAndEval((SyntaxRewriter) e, arglist, env, cont);
                 return null;
             }
-            else if (System.isKeyword( (Symbol) operator)) {
+            else if (e instanceof SyntaxProcedure) {
                 // special procedure call
                 Action a = new ProcedureCallAction(arglist, env, cont.action);
                 a = new ExpressionAction(operator, env, a);

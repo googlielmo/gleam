@@ -171,7 +171,7 @@ public final class System
             intrEnv.define(Symbol.CALL_CC, r5rsEnv.lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
             intrEnv.define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
 
-                }
+        }
         catch (GleamException e) {
             // should never happen
             gleam.util.Log.record(SEVERE,

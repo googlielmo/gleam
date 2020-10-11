@@ -55,7 +55,6 @@ public final class Void extends Entity {
      * Prevents the release of multiple instances upon deserialization.
      */
     protected java.lang.Object readResolve()
-        throws java.io.ObjectStreamException
     {
         return value;
     }

@@ -74,7 +74,6 @@ public final class EmptyList extends Pair {
      * Prevents the release of multiple instances upon deserialization.
      */
     protected java.lang.Object readResolve()
-        throws java.io.ObjectStreamException
     {
 //      java.lang.System.out.println("readResolve() called! (EmptyList)"); //DEBUG
         return value;
