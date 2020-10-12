@@ -33,7 +33,7 @@ package gleam.lang;
  */
 
 /**
- * Scheme continuation, representing the "next things to do" for a procedure, 
+ * Scheme continuation, representing the "next things to do" for a procedure,
  * or the future execution path in a Gleam program.
  * This object is a wrapper for a chain of actions (partial continuations or
  * execution steps), and can be called as a procedure of one argument.
@@ -52,9 +52,17 @@ public class Continuation extends Procedure
         this.action = null;
     }
 
+    /** Copy constructor */
     public Continuation(Continuation other)
     {
         this.action = other.action;
+    }
+
+    /**
+     * Clears this continuation (unwinds stack)
+     */
+    public void clear() {
+        this.action = null;
     }
 
     /**

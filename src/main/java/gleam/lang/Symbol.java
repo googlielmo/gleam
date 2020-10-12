@@ -154,22 +154,18 @@ public final class Symbol extends Entity
      */
     public Entity optimize(Environment env)
     {
-        try {
-            Location loc = env.getLocation(this);
-            if (loc.get() == Undefined.value) {
-                /* this symbol is a function parameter, so let
-                 * name resolution take place at run time
-                 */
-                return this;
-            }
-            else {
-                return loc;
-            }
-        }
-        catch (GleamException ex) {
+        Location loc = env.getLocationOrNull(this);
+        if (loc == null) {
             // if unbound, return just the symbol (for syntax rewriters)
             return this;
         }
+        if (loc.get() == Undefined.value) {
+            /* this symbol is a function parameter, so let
+             * name resolution take place at run time
+             */
+            return this;
+        }
+        return loc;
     }
 
     /** Writes this symbol */

@@ -4,21 +4,6 @@ TODO.TXT
 Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are
 welcome to redistribute it under certain conditions; see LICENSE.TXT.
 
-KNOWN BUGS:
-___________
-
-# class-of, dirty continuation?
-
-> (define a "ciao")
-
-> (class-of a)
-class gleam.lang.MutableString
-> (class-of b)
-*** Unbound variable: b
-> (class-of a)
-class java.lang.Class
-> (class-of a)
-
 
 TO DO:
 ------
@@ -37,7 +22,7 @@ Implement as many primitives as possible in Scheme
 
 A rewriting system for patterns (...)
 
-Check tail-call optimizations
+Test fully: tail-call optimizations
 
 rewriter? type function
 

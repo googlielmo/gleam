@@ -39,13 +39,13 @@ import static gleam.util.Log.Level.FINE;
  * The Gleam Scheme Interpreter
  */
 public class Interpreter {
-    
+
     /** the current program continuation */
     Continuation cont;
-    
+
     /** the accumulator register */
     Entity accum;
-    
+
     /**
      * the session (top-level) environment;
      * can be changed by the application.
@@ -73,8 +73,8 @@ public class Interpreter {
      * Evaluates a Gleam Scheme expression in the current session environment
      * @param expr a String holding an arbitrary Scheme expression
      * @return the value of the expression
-     * @throws gleam.lang.GleamException as soon as an error condition is 
-     *  raised, the loading / execution operation will terminate, 
+     * @throws gleam.lang.GleamException as soon as an error condition is
+     *  raised, the loading / execution operation will terminate,
      *  leaving the session environment in a possibly modified state
      */
     public Entity eval(String expr) throws GleamException {
@@ -83,7 +83,7 @@ public class Interpreter {
 
     /**
      * Evaluates a Gleam Scheme program in the current session environment
-     * @param reader a <CODE>java.io.Reader</CODE> representing the program 
+     * @param reader a <CODE>java.io.Reader</CODE> representing the program
      *  stream
      * @return the return value of the program
      * @throws gleam.lang.GleamException on any error
@@ -95,7 +95,7 @@ public class Interpreter {
 
     /**
      * Evaluates a Gleam Scheme entity in a given environment
-     * @param expr the <CODE>gleam.lang.Entity</CODE> corresponding to a 
+     * @param expr the <CODE>gleam.lang.Entity</CODE> corresponding to a
      *  Scheme expression to evaluate
      * @param env the environment of evaluation
      * @throws gleam.lang.GleamException on any error
@@ -120,12 +120,19 @@ public class Interpreter {
     }
 
     /**
-     * The main loop of program execution. 
-     * When this method is called, the first action in the current 
-     * continuation is invoked with the current value of the accumulator 
-     * register as its argument. When a result is produced, it is stored in 
-     * the accumulator. Then the next action in the continuation chain is 
-     * extracted, and the loop repeats itself until there are no more 
+     * Clears up the current continuation, e.g., after an error.
+     */
+    public void clearContinuation() {
+        this.cont.clear();
+    }
+
+    /**
+     * The main loop of program execution.
+     * When this method is called, the first action in the current
+     * continuation is invoked with the current value of the accumulator
+     * register as its argument. When a result is produced, it is stored in
+     * the accumulator. Then the next action in the continuation chain is
+     * extracted, and the loop repeats itself until there are no more
      * actions to execute.
      * @throws gleam.lang.GleamException on any error
      */
@@ -143,11 +150,11 @@ public class Interpreter {
 
     /**
      * Loads and executes a Gleam Scheme program from a stream
-     * @param reader a <CODE>gleam.lang.InputPort</CODE> representing the 
+     * @param reader a <CODE>gleam.lang.InputPort</CODE> representing the
      *  program stream
      * @param env the environment for program execution
-     * @throws gleam.lang.GleamException as soon as an error condition is 
-     *  raised, the loading / execution operation will terminate, 
+     * @throws gleam.lang.GleamException as soon as an error condition is
+     *  raised, the loading / execution operation will terminate,
      *  leaving the environment in a possibly modified state
      */
     public void load(InputPort reader, Environment env) throws GleamException {
@@ -167,12 +174,12 @@ public class Interpreter {
      */
     private synchronized void bootstrap() throws GleamException {
         if (!bootstrapped) {
-            gleam.lang.InputPort bootstrap = 
+            gleam.lang.InputPort bootstrap =
                 new gleam.lang.InputPort(
                     new java.io.BufferedReader(
                         new java.io.InputStreamReader(
                             getClass().getResourceAsStream("/bootstrap.scm"))));
-            // FIXME the bootstrap takes place in the interaction environment 
+            // FIXME the bootstrap takes place in the interaction environment
             // instead of r5rs, which is against the standar, but we need make-rewriter.
             // We should solve this problem, maybe using set! on preallocated r5rs names
             load(bootstrap, gleam.lang.System.getInteractionEnv());
@@ -204,7 +211,7 @@ public class Interpreter {
      * A variable with the given name will be bound to the given Java object
      * in the current session environment
      * @param name the variable name for the object
-     * @param object the <CODE>java.lang.Object</CODE> to bind to the given 
+     * @param object the <CODE>java.lang.Object</CODE> to bind to the given
      *  name
      */
     public void bind(String name, java.lang.Object object) {

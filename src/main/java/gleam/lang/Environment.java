@@ -88,12 +88,29 @@ public class Environment extends Entity
     /**
      * Gives the Location for the specified variable.
      *
-     * @param s Symbol
+     * @param s Symbol a variable name
      * @return Location
+     * @throws UnboundVariableException if the variable is unbound
      * @see Location
      */
     public Location getLocation(Symbol s)
-        throws GleamException
+        throws UnboundVariableException
+    {
+        Location location = getLocationOrNull(s);
+        if (location != null)
+            return location;
+        throw new UnboundVariableException(s);
+    }
+
+    /**
+     * Gives the Location for the specified variable, or null
+     * if unbound.
+     *
+     * @param s Symbol a variable name
+     * @return Location or null
+     * @see Location
+     */
+    Location getLocationOrNull(Symbol s)
     {
         java.lang.Object o;
         Environment e = this;
@@ -107,7 +124,7 @@ public class Environment extends Entity
             }
         }
         // so it is unbound...
-        throw new GleamException("Unbound variable: " + s.value, s);
+        return null;
     }
 
     /**

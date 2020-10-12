@@ -26,53 +26,21 @@
 
 package gleam.lang;
 
-/*
- * Boolean.java
- *
- * Created on October 26, 2001, 9:27 PM
- */
-
 /**
- * Scheme boolean.
+ * Exception thrown when attempting to dereference an unbound symbol.
  */
-public final class Boolean extends Entity
-{
+public class UnboundVariableException extends GleamException {
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
 
-    /** the truth value of this object */
-    protected boolean value;
-
-    /** the one and only #t */
-    static public final Boolean trueValue = new Boolean(true);
-
-    /** the one and only #f */
-    static public final Boolean falseValue = new Boolean(false);
-
-    /** private constructor */
-    private Boolean(boolean v)
-    {
-        value = v;
-    }
-
     /**
-     * Static factory.
+     * UnboundVariableException constructor.
+     *
+     * @param symbol the unbound symbol
      */
-    public static Boolean makeBoolean(boolean b)
-    {
-        if (b)
-            return trueValue;
-        else
-            return falseValue;
-    }
-
-    /**
-     * Writes a boolean.
-     */
-    public void write(java.io.PrintWriter out)
-    {
-        out.print(value ? "#t" : "#f");
+    public UnboundVariableException(Symbol symbol) {
+        super("Unbound variable: " + symbol, symbol);
     }
 }

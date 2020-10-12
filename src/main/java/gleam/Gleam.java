@@ -26,11 +26,14 @@
 
 package gleam;
 
+import gleam.lang.Continuation;
+import gleam.lang.EmptyList;
 import gleam.lang.Entity;
 import gleam.lang.Eof;
 import gleam.lang.GleamException;
 import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
+import gleam.lang.Pair;
 import gleam.util.Log;
 import gleam.lang.MutableString;
 import gleam.lang.OutputPort;
@@ -52,9 +55,15 @@ public class Gleam
     // Dump env symbol (for debugging)
     private static final Symbol cEnv = Symbol.makeSymbol("!e");
 
-    // Quit symbol 
+    // Help symbol
+    private static final Symbol cHelp = Symbol.makeSymbol("!h");
+
+    // Quit symbol
     private static final Symbol cQuit = Symbol.makeSymbol("!q");
-        
+
+    // '(help)
+    public static final Pair CALL_HELP = new Pair(Symbol.HELP, EmptyList.value());
+
     /**
      * Entry point for the Gleam interactive interpreter
      * @param args command line arguments
@@ -78,7 +87,7 @@ public class Gleam
             Log.record(e);
             java.lang.System.exit(1);
         }
-        out.print("Type (help) for help, !q to quit.\n\n");
+        out.print("Type !h for help, !q to quit.\n\n");
 
         gleam.lang.Environment session;
 
@@ -87,7 +96,7 @@ public class Gleam
 
         Entity prompt = new MutableString("> ");
         Entity result;
-        
+
         for(;;)
         {
             try {
@@ -99,29 +108,35 @@ public class Gleam
                 w.flush();
 
                 Entity obj = r.read();
+                if (obj == cEnv) {
+                    session.dump();
+                    break;
+                }
+
                 if (obj == Eof.value() || obj == cQuit) {
                     out.println("Bye.");
                     break;
                 }
 
-                if (obj == cEnv) {
-                    session.dump();
+                if (obj == cHelp) {
+                    obj = CALL_HELP;
                 }
-                else {
-                    // eval
-                    result = intp.eval(obj, session);
 
-                    // print
-                    if (result != Void.value()) w.write(result);
-                    w.newline();
-                }
+                // eval
+                result = intp.eval(obj, session);
+
+                // print
+                if (result != Void.value()) w.write(result);
+                w.newline();
             }
             catch (GleamException e) {
                 out.println("*** " + e.getMessage());
+                intp.clearContinuation();
             }
             catch (Exception e){
                 out.println("*** Uncaught Exception: " + e.getMessage());
                 Log.record(e);
+                intp.clearContinuation();
             }
         }
     }
