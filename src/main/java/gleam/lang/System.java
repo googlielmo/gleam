@@ -28,6 +28,8 @@ package gleam.lang;
 
 import gleam.library.Primitive;
 
+import java.util.Set;
+
 import static gleam.util.Log.Level.FINE;
 import static gleam.util.Log.Level.SEVERE;
 
@@ -41,7 +43,7 @@ public final class System
     private System() {}
 
     /** the keyword set */
-    private static java.util.HashSet kwSet = new java.util.HashSet();
+    private static Set kwSet = new java.util.HashSet();
 
     /** the null environment, as defined in r5rs */
     private static Environment nullEnv = null;

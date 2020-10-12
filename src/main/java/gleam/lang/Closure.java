@@ -29,6 +29,7 @@ package gleam.lang;
 import gleam.util.Log;
 
 import java.util.Iterator;
+import java.util.List;
 
 import static gleam.util.Log.Level.FINE;
 import static gleam.util.Log.Level.WARNING;
@@ -173,7 +174,7 @@ public class Closure extends Procedure
         throws GleamException
     {
         Action  currAction = action;
-        java.util.ArrayList temp = new java.util.ArrayList();
+        List temp = new java.util.ArrayList();
         ListIterator it = new ListIterator(body);
         while (it.hasNext()) {
             Entity expr = it.next();

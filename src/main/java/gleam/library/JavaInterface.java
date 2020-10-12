@@ -104,7 +104,7 @@ public class JavaInterface {
     new Primitive( "call",
         Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-        "Calls a method on a Java object", 
+        "Calls a method on a Java object",
         "E.g. (call 'length (new 'java.lang.String \"test\")) => 4" /* doc strings */ ) {
     public Entity applyN(Pair args, Environment env, Continuation cont)
         throws GleamException
@@ -125,7 +125,7 @@ public class JavaInterface {
             argClasses.add(getJavaClass(arg));
             argObjects.add(getJavaObject(arg));
         }
-        return call((JavaObject) object, (Symbol) methodName, (Class[])argClasses.toArray(new Class[0]), argObjects.toArray());     
+        return call((JavaObject) object, (Symbol) methodName, (Class[])argClasses.toArray(new Class[0]), argObjects.toArray());
     }},
 
     /**
@@ -137,7 +137,6 @@ public class JavaInterface {
             "Returns the class of its argument",
             "E.g. (class-of (new 'java.lang.String \"test\")) => class java.lang.String" /* doc strings */ ) {
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
-            throws GleamException
     {
         if (arg1 instanceof JavaObject) {
             JavaObject javaObject = (JavaObject) arg1;
@@ -200,7 +199,7 @@ public class JavaInterface {
         {
             return double.class;
         }
-        else 
+        else
             throw new GleamException("cannot obtain the Java Class for a Gleam entity", arg);
     }
 

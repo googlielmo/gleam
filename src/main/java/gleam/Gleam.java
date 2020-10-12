@@ -26,7 +26,6 @@
 
 package gleam;
 
-import gleam.lang.Continuation;
 import gleam.lang.EmptyList;
 import gleam.lang.Entity;
 import gleam.lang.Eof;
