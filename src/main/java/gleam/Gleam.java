@@ -83,7 +83,7 @@ public class Gleam
             intp = new Interpreter();
             out.println("OK");
         } catch (GleamException e) {
-            Log.record(e);
+            Log.error(e);
             java.lang.System.exit(1);
         }
         out.print("Type !h for help, !q to quit.\n\n");
@@ -134,7 +134,7 @@ public class Gleam
             }
             catch (Exception e){
                 out.println("*** Uncaught Exception: " + e.getMessage());
-                Log.record(e);
+                Log.error(e);
                 intp.clearContinuation();
             }
         }

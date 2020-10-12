@@ -37,6 +37,7 @@ import gleam.lang.Symbol;
 import gleam.lang.System;
 import gleam.lang.Void;
 import gleam.util.Log;
+import gleam.util.Log.Level;
 
 /**
  * INTERACTION -- GLEAM-SPECIFIC
@@ -91,13 +92,13 @@ public final class Interaction {
             return Void.value();
         }
 
-        // no args: print short comments on all primitives      
+        // no args: print short comments on all primitives
         // prepare filler for first column
         char[] chars = new char[helpColumnWidth];
         java.util.Arrays.fill(chars, ' ');
         StringBuffer spc = new StringBuffer();
         spc.append(chars);
-        
+
         System.getCout().print("Available primitives:\n\n");
         java.util.Set nameset = System.getHelpNames();
         java.util.Iterator nameit = nameset.iterator();
@@ -141,10 +142,12 @@ public final class Interaction {
             throw new GleamException(this, "invalid argument", arg1);
         }
         double v = ((Number)arg1).getDoubleValue();
-        if (v < 0.0 || v > 5.0) {
-            throw new GleamException(this, "invalid argument (should be between 0 and 5)", arg1);
+        if (v < Level.ALL || v > Level.SEVERE) {
+            throw new GleamException(this,
+                    "invalid argument (should be between "+ Level.ALL +" and " + Level.SEVERE +")",
+                    arg1);
         }
-        gleam.util.Log.setLevel(6 - (int) v);
+        Log.setLevel(Level.OFF - (int) v);
         return Void.value();
     }},
 
@@ -158,7 +161,7 @@ public final class Interaction {
         "Returns current verbosity level", null /* doc strings */ ) {
     public Entity apply0(Environment env, Continuation cont)
     {
-        return new Real(6 - gleam.util.Log.getLevel());
+        return new Real(Level.OFF - Log.getLevel());
     }},
 
     /**
@@ -186,7 +189,7 @@ public final class Interaction {
                 throw new GleamException(this, "file not found", arg1);
             }
             catch (java.io.IOException e) {
-                Log.record(e);
+                Log.error(e);
                 throw new GleamException(this, "I/O error", arg1);
             }
         }
@@ -218,19 +221,19 @@ public final class Interaction {
                 return Void.value();
             }
             catch (java.io.FileNotFoundException e) {
-                Log.record(e);
+                Log.error(e);
                 throw new GleamException(this, "file not found", arg1);
             }
             catch (java.io.IOException e) {
-                Log.record(e);
+                Log.error(e);
                 throw new GleamException(this, "I/O error", arg1);
             }
             catch (java.lang.ClassNotFoundException e) {
-                Log.record(e);
+                Log.error(e);
                 throw new GleamException(this, "class not found", arg1);
             }
             catch (java.lang.ClassCastException e) {
-                Log.record(e);
+                Log.error(e);
                 throw new GleamException(this, "invalid class", arg1);
             }
         }
@@ -238,7 +241,6 @@ public final class Interaction {
             throw new GleamException(this, "invalid argument", arg1);
         }
     }},
-    
-    }; // primitives
 
+    }; // primitives
 }

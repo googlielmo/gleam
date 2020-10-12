@@ -68,7 +68,7 @@ public class Closure extends Procedure
      */
     protected Entity param;
     protected Pair body;
-    protected Environment definitionenv;
+    protected Environment definitionEnv;
 
     /**
      * Constructor.
@@ -77,7 +77,7 @@ public class Closure extends Procedure
     {
         this.param = param;
         this.body = body;
-        this.definitionenv = env;
+        this.definitionEnv = env;
     }
 
     /**
@@ -86,7 +86,7 @@ public class Closure extends Procedure
     public Entity apply(Pair args, Environment env, Continuation cont)
         throws GleamException
     {
-        Environment localenv = new Environment(definitionenv);
+        Environment localenv = new Environment(definitionEnv);
         Entity currparam = param;
         Pair prev = null;
         boolean dotparam = false;
@@ -154,7 +154,7 @@ public class Closure extends Procedure
             throw new GleamException("apply: too few arguments", this);
         }
 
-        /* now we have bound params, let's eval body
+        /* we have bound params, let's eval body
          * through a new continuation
          */
         cont.action = addCommandSequenceActions(body, localenv, cont.action);
@@ -169,18 +169,17 @@ public class Closure extends Procedure
      * @param action Action
      * @return Action
      */
-    public static Action addCommandSequenceActions(Pair body, Environment env,
-                        Action action)
+    public static Action addCommandSequenceActions(Pair body, Environment env, Action action)
         throws GleamException
     {
         Action  currAction = action;
-        List temp = new java.util.ArrayList();
+        List list = new java.util.ArrayList();
         ListIterator it = new ListIterator(body);
         while (it.hasNext()) {
             Entity expr = it.next();
-            temp.add(0, expr);
+            list.add(0, expr); // prepend
         }
-        for (Iterator iter = temp.iterator(); iter.hasNext(); ) {
+        for (Iterator iter = list.iterator(); iter.hasNext(); ) {
             Entity expr = (Entity) iter.next();
             currAction = new ExpressionAction(expr, env, currAction);
         }
@@ -192,9 +191,11 @@ public class Closure extends Procedure
      */
     public void write(java.io.PrintWriter out)
     {
-        Pair extrep = new Pair(Symbol.LAMBDA, new Pair(param, body));
-        out.write("#<procedure ");
-        extrep.write(out);
+        out.write("#<procedure");
+        if (Log.getLevel() < Log.Level.INFO) {
+            out.write(" ");
+            new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
+        }
         out.write(">");
     }
 }

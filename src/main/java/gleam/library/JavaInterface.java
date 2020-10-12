@@ -165,19 +165,19 @@ public class JavaInterface {
             }
             return getEntityFromObject(retVal);
         } catch (SecurityException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("call: SecurityException: " + ex.getMessage(), methodName);
         } catch (IllegalArgumentException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("call: IllegalArgumentException: " + ex.getMessage(), methodName);
         } catch (NoSuchMethodException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("call: NoSuchMethodException: " + ex.getMessage(), methodName);
         } catch (IllegalAccessException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("call: IllegalAccessException: " + ex.getMessage(), methodName);
         } catch (InvocationTargetException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("call: InvocationTargetException: " + ex.getMessage(), methodName);
         }
     }

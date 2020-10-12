@@ -49,24 +49,14 @@ public class Log
      * CONFIG, configuration activities
      * FINE, detailed output
      */
-    public enum Level {
-        OFF(6),
-        SEVERE(5),
-        WARNING(4),
-        INFO(3),
-        CONFIG(2),
-        FINE(1),
-        ALL(0);
-
-        private final int value;
-
-        Level(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
+    public interface Level {
+        int OFF = 6,
+            SEVERE = 5,
+            WARNING = 4,
+            INFO = 3,
+            CONFIG = 2,
+            FINE = 1,
+            ALL = 0;
     }
 
     /* Using java.util.logging */
@@ -101,7 +91,7 @@ public class Log
     public static void setLevel(int level) {
         logger.setLevel(getLoggingLevel(level));
     }
-    
+
     public static int getLevel() {
         return getLevel(logger.getLevel());
     }
@@ -111,7 +101,7 @@ public class Log
      * @param severity integer level value
      * @return the corresponding Level
      */
-    private static java.util.logging.Level getLoggingLevel(int severity) {
+     static java.util.logging.Level getLoggingLevel(int severity) {
         java.util.logging.Level n;
         if (severity < 0)
             severity = 0;
@@ -145,23 +135,23 @@ public class Log
      * @param level the current level
      * @return the corresponding integer level value
      */
-    private static int getLevel(java.util.logging.Level level) {
+     static int getLevel(java.util.logging.Level level) {
         final int n;
 
         if (level.intValue() == Integer.MAX_VALUE) {
-            n = 6;
+            n = Level.OFF;
         } else if (level.intValue() >= 1000) {
-            n = 5;
+            n = Level.SEVERE;
         } else if (level.intValue() >= 900) {
-            n = 4;
+            n = Level.WARNING;
         } else if (level.intValue() >= 800) {
-            n = 3;
+            n = Level.INFO;
         } else if (level.intValue() >= 700) {
-            n = 2;
+            n = Level.CONFIG;
         } else if (level.intValue() >= 500) {
-            n = 1;
+            n = Level.FINE;
         } else {
-            n = 0;
+            n = Level.ALL;
         }
         return n;
     }
@@ -175,13 +165,6 @@ public class Log
     }
 
     /**
-     * Logs a message, respecting current level.
-     */
-    public static void record(Level level, String message) {
-        record(level.getValue(), message);
-    }
-
-    /**
      * Logs a message and an Entity, respecting current level.
      */
     public static void record(int severity, String message, gleam.lang.Entity obj)
@@ -190,18 +173,10 @@ public class Log
     }
 
     /**
-     * Logs a message and an Entity, respecting current level.
-     */
-    public static void record(Level level, String message, gleam.lang.Entity obj)
-    {
-        record(level.getValue(), message, obj);
-    }
-
-    /**
      * Logs a Throwable at level SEVERE
      * @param ex Throwable
      */
-    public static void record(Throwable ex) {
-        logger.log(java.util.logging.Level.SEVERE, "Throwable", ex);
+    public static void error(Throwable ex) {
+        logger.log(java.util.logging.Level.SEVERE, ex.getMessage(), ex);
     }
 }

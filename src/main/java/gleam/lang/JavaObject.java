@@ -44,14 +44,14 @@ import java.lang.reflect.InvocationTargetException;
  * A Java object.
  */
 public class JavaObject extends Entity {
-    
+
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
 
     protected Object value;
-    
+
     /** Creates a new instance of JavaObject */
     public JavaObject() {
         value = null;
@@ -67,25 +67,25 @@ public class JavaObject extends Entity {
         try {
             value = Class.forName(className).getConstructor().newInstance();
         } catch (SecurityException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
         } catch (IllegalArgumentException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
         } catch (NoSuchMethodException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
         } catch (InvocationTargetException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
         } catch (InstantiationException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
         } catch (ClassNotFoundException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
         } catch (IllegalAccessException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
         }
     }
@@ -96,25 +96,25 @@ public class JavaObject extends Entity {
         try {
             value = Class.forName(className).getConstructor(classes).newInstance(objects);
         } catch (SecurityException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
         } catch (IllegalArgumentException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
         } catch (NoSuchMethodException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
         } catch (InvocationTargetException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
         } catch (InstantiationException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
         } catch (ClassNotFoundException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
         } catch (IllegalAccessException ex) {
-            Log.record(ex);
+            Log.error(ex);
             throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
         }
     }
@@ -122,13 +122,13 @@ public class JavaObject extends Entity {
     public void write(PrintWriter out) {
         out.print(this.toString());
     }
-    
+
     public String toString() {
         return value == null ? "null" : value.toString();
     }
-    
+
     private void writeObject(ObjectOutputStream out) throws IOException {
-        if (value == null || value instanceof Serializable) 
+        if (value == null || value instanceof Serializable)
             out.defaultWriteObject();
         else
             out.writeObject(new JavaObject());
