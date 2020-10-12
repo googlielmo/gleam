@@ -36,15 +36,21 @@ public class ProcedureCallAction extends Action {
     private ArgumentList arglist;
     private Environment env;
 
-    public ProcedureCallAction(ArgumentList arglist, Environment env, Action parent) {
+    /** Creates a new instance of this action */
+    public ProcedureCallAction(ArgumentList arglist, Environment env, Action next) {
         this.arglist = arglist;
         this.env = env;
-        this.parent = parent;
+        this.next = next;
+    }
+
+    /** Creates a new instance of this action */
+    public ProcedureCallAction(ArgumentList arglist, Environment env) {
+        this(arglist, env, null);
     }
 
     // arg is the function, arglist contains the arguments
     Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
-        cont.action = parent;
+        cont.head = next;
         // apply function to args, return result
         Procedure operator;
         try {

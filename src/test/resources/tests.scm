@@ -185,17 +185,49 @@
 
 (define a 12)
 a
-;12.0 
+;12.0
 (in-environment (current-environment) a)
 ;12.0
-(in-environment (scheme-report-environment 5) a) 
+(in-environment (scheme-report-environment 5) a)
 ;*** Unbound variable: a
 a
 ;12.0
 (in-environment (null-environment 5) a)
 ;*** Unbound variable: a
-(in-environment (null-environment 5) (define a 77) ) 
+(in-environment (null-environment 5) (define a 77) )
 a
 ;12.0
 (in-environment (null-environment 5) a)
 ;77.0
+
+
+;;;;;;;; side-effects
+
+(define
+  (add3 a b c)
+    (display #\newline)
+    (+ a b c))
+
+(define
+  (op)
+    (display " op ")
+    add3)
+
+(define
+ (one)
+   (display " one ")
+   1)
+
+(define
+ (two)
+   (display " two ")
+   2)
+
+(define
+ (three)
+   (display " three ")
+   3)
+
+((op) (one) (two) (three))
+; one  two  three  op
+;6.0

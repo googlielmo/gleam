@@ -60,19 +60,19 @@ public final class Syntax {
     public static Primitive[] primitives = {
 
 //  /**
-//   * 
+//   *
 //   */
-//  new Primitive( "", 
+//  new Primitive( "",
 //      Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
 //      0, Primitive.VAR_ARGS, /* min, max no. of arguments */
 //      null, null /* doc strings */ ) {
 //  },
 
-    /** 
-     * quote 
+    /**
+     * quote
      * Returns its argument without evaluation.
      */
-    new Primitive( "quote", 
+    new Primitive( "quote",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Gives its argument unevaluated, e.g. (quote x); 'x",
@@ -85,7 +85,7 @@ public final class Syntax {
      * define
      * Defines a new binding in the environment.
      */
-    new Primitive( "define", 
+    new Primitive( "define",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Variable or procedure definition, e.g. (define (inc x) (+ x 1))",
@@ -105,14 +105,13 @@ public final class Syntax {
                 if (it.hasNext()) {
                     throw new GleamException(this, "too many arguments", args);
                 }
-                // TODO: check that target is not a keyword (?)
                 Symbol s = (Symbol) target;
                 // create binding
-                env.define(s, Undefined.makeUndefined());
-                // now it is equivalent to set!
-                cont.extend(
-                    new ExpressionAction(value, env, null)).append(
-                    new AssignmentAction(s, env, null));
+                env.define(s, Undefined.value());
+                // equivalent to set!
+                cont
+                        .begin(new ExpressionAction(value, env))
+                        .andThen(new AssignmentAction(s, env));
 
                 return null;
             }
@@ -123,9 +122,10 @@ public final class Syntax {
                 if (rtarget instanceof Symbol) {
                     Symbol s = (Symbol) rtarget;
                     // create binding
-                    env.define(s, Undefined.makeUndefined());
+                    env.define(s, Undefined.value());
                     // equivalent to set!
-                    cont.extend(new AssignmentAction(s, env, null));
+                    cont.begin(new AssignmentAction(s, env));
+
                     return new Closure(params, body, env);
                 }
                 else {
@@ -145,7 +145,7 @@ public final class Syntax {
      * lambda
      * Creates a new procedure.
      */
-    new Primitive( "lambda", 
+    new Primitive( "lambda",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Creates a procedure, e.g. (lambda (x) (+ x 1))",
@@ -165,18 +165,18 @@ public final class Syntax {
      * if
      * Conditional expression.
      */
-    new Primitive( "if", 
+    new Primitive( "if",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         2, 3, /* min, max no. of arguments */
-        "Conditional evaluation, e.g. (if (eqv? 1 0) 'strange 'ok)",
+        "Conditional evaluation, e.g. (if (eqv? 1 0) 'hmm 'ok)",
         null /* doc strings */ ) {
     public Entity apply3(Entity test, Entity consequent, Entity alternate, Environment env, Continuation cont) {
         if (alternate == null)
             alternate = Void.value();
 
-        cont.extend(
-            new ExpressionAction(test, env, null)).append(
-            new IfAction(consequent, alternate, env, null));
+        cont
+                .begin(new ExpressionAction(test, env))
+                .andThen(new IfAction(consequent, alternate, env));
 
         return null;
     }},
@@ -185,7 +185,7 @@ public final class Syntax {
      * set!
      * Assigns a value to a variable
      */
-    new Primitive( "set!", 
+    new Primitive( "set!",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         2, 2, /* min, max no. of arguments */
         "Variable assignment, e.g. (set! x 11)",
@@ -193,9 +193,9 @@ public final class Syntax {
     public Entity apply2(Entity arg1, Entity obj, Environment env, Continuation cont) throws GleamException {
         try {
             Symbol s = (Symbol) arg1;
-            cont.extend(
-                new ExpressionAction(obj, env, null)).append(
-                new AssignmentAction(s, env, null));
+            cont
+                    .begin(new ExpressionAction(obj, env, null))
+                    .andThen(new AssignmentAction(s, env, null));
 
             return null;
         }
@@ -209,14 +209,14 @@ public final class Syntax {
      * Evaluates each argument sequentially from left to right.
      * The result of the last evaluation is returned.
      */
-    new Primitive( "begin", 
+    new Primitive( "begin",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Sequential execution, e.g. (begin (first-step) (second-step))",
         null /* doc strings */ ) {
     public Entity applyN(Pair args, Environment env, Continuation cont) throws GleamException {
         // equivalent to the body of a procedure with no arguments
-        cont.action = gleam.lang.Closure.addCommandSequenceActions(args, env, cont.action);
+        cont.addCommandSequenceActions(args, env);
         return null;
     }},
 
@@ -234,7 +234,7 @@ public final class Syntax {
      * do
      * @todo implementation
      */
-    new Primitive( "do", 
+    new Primitive( "do",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
@@ -244,7 +244,7 @@ public final class Syntax {
      * delay
      * @todo implementation
      */
-    new Primitive( "delay", 
+    new Primitive( "delay",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
@@ -255,7 +255,7 @@ public final class Syntax {
      * quasiquote
      * @todo implementation
      */
-    new Primitive( "quasiquote", 
+    new Primitive( "quasiquote",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Gives its argument almost unevaluated, e.g. (quasiquote x); `x",
@@ -275,7 +275,7 @@ public final class Syntax {
      * else
      * @todo implementation
      */
-    new Primitive( "else", 
+    new Primitive( "else",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
@@ -285,7 +285,7 @@ public final class Syntax {
      * =>
      * @todo implementation
      */
-    new Primitive( "=>", 
+    new Primitive( "=>",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
@@ -295,7 +295,7 @@ public final class Syntax {
      * unquote
      * @todo implementation
      */
-    new Primitive( "unquote", 
+    new Primitive( "unquote",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
@@ -305,7 +305,7 @@ public final class Syntax {
      * unquote-splicing
      * @todo implementation
      */
-    new Primitive( "unquote-splicing", 
+    new Primitive( "unquote-splicing",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
@@ -336,10 +336,10 @@ public final class Syntax {
      * rewrite1
      * @todo implementation
      */
-    new Primitive( "rewrite1", 
+    new Primitive( "rewrite1",
         Primitive.INTR_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
-        "Rewrites an expression applying a syntax rewriter at most once", 
+        "Rewrites an expression applying a syntax rewriter at most once",
         null /* doc strings */ ) {
     },
 

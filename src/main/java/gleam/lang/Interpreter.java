@@ -103,7 +103,7 @@ public class Interpreter {
      */
     public Entity eval(Entity expr, Environment env) throws GleamException {
         expr = expr.analyze().optimize(env);
-        cont.extend(new ExpressionAction(expr, env, null));
+        cont.begin(new ExpressionAction(expr, env, null));
         execute();
         return accum;
     }
@@ -116,7 +116,7 @@ public class Interpreter {
      */
     public void replaceContinuation(Continuation cont) {
         // in-place copy
-        this.cont.action = cont.action;
+        this.cont.head = cont.head;
     }
 
     /**
@@ -137,14 +137,14 @@ public class Interpreter {
      * @throws gleam.lang.GleamException on any error
      */
     private void execute() throws GleamException {
-        Action currentAction = cont.action;
+        Action currentAction = cont.head;
         Entity tmp;
         while (currentAction != null) {
             tmp = currentAction.invoke(accum, cont);
             if (tmp != null) {
                 accum = tmp;
             }
-            currentAction = cont.action;
+            currentAction = cont.head;
         }
     }
 

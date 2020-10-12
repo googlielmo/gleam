@@ -84,14 +84,14 @@ public final class ControlFeatures {
             /* create a new procedure call with the continuation argument. */
             ArgumentList arglist = new ArgumentList();
             arglist.set(0, new Continuation(cont)); // copy-constructor: cont itself is going to change soon!
-            cont.action = new ProcedureCallAction(arglist, env, cont.action);
+            cont.begin(new ProcedureCallAction(arglist, env));
             return arg1;
         }
         else {
             throw new GleamException("call-with-current-continuation: wrong argument type, should be a procedure", arg1);
         }
     }},
-    
+
     /**
      * apply
      */
@@ -99,20 +99,21 @@ public final class ControlFeatures {
         Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, 2, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
-    public Entity apply2(Entity arg1, Entity argList, Environment env, Continuation cont)
+    public Entity apply2(Entity proc, Entity args, Environment env, Continuation cont)
         throws GleamException
     {
-        if (!(arg1 instanceof Procedure)) {
-            throw new GleamException(this, "wrong argument type, should be a procedure", arg1);
+        if (!(proc instanceof Procedure)) {
+            throw new GleamException(this, "wrong argument type, should be a procedure", proc);
         }
-        if (!(argList instanceof Pair)) {
-            throw new GleamException(this, "wrong argument type, should be a list", argList);
+
+        if (args instanceof Pair) {
+            /* create a new procedure call with the given arguments. */
+            ArgumentList argList = new ArgumentList((Pair) args);
+            cont.begin(new ProcedureCallAction(argList, env));
+            return proc;
         }
-        /* create a new procedure call with the given arguments. */
-        ArgumentList arglist = new ArgumentList();
-        arglist.setArguments((Pair)argList);
-        cont.action = new ProcedureCallAction(arglist, env, cont.action);
-        return arg1;
+
+        throw new GleamException(this, "wrong argument type, should be a list", args);
     }},
 
     }; // primitives

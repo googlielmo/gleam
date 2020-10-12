@@ -36,7 +36,7 @@ public final class Void extends Entity {
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
-    
+
     /** the Void singleton */
     static final Void value = new Void();
 
@@ -45,7 +45,7 @@ public final class Void extends Entity {
     }
 
     /**
-     * Factory method
+     * Get the only value
      */
     public static Void value() {
         return value;

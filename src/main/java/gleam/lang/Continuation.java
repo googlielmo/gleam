@@ -45,36 +45,104 @@ public class Continuation extends Procedure
      */
     private static final long serialVersionUID = 1L;
 
-    public Action action;
+    /**
+     * Dummy action used as anchor to add actions
+     */
+    private static final Action DUMMY_ACTION = new Action() {
+        Entity invoke(Entity arg, Continuation cont) throws GleamException {
+            throw new GleamException("internal error: dummy action invoked", null);
+        }
+    };
+
+    public Action head;
 
     /** Constructor */
     Continuation() {
-        this.action = null;
+        this.head = null;
     }
 
     /** Copy constructor */
     public Continuation(Continuation other)
     {
-        this.action = other.action;
+        this.head = other.head;
     }
 
     /**
      * Clears this continuation (unwinds stack)
      */
     public void clear() {
-        this.action = null;
+        this.head = null;
     }
 
     /**
-     * Prepend an action to this continuation's chain.
+     * Change this continuation to begin with a given action.
+     * Prepend a single action to this continuation's chain.
+     * The action's next is changed to be the current head, therefore
+     * <i>do not</i> pass an action that is already chained to other actions:
+     * its <CODE>next</CODE> field will be overwritten.<BR>
+     * You can safely add other actions <i>after</i> calling this method by using
+     * {@link Action#andThen(Action)} on the action.<BR>
+     * If you need to add a variable number of actions at the head of
+     * this continuation, see {@link #beginSequence()}
      *
      * @param action the Action to prepend
      * @return the prepended action
      */
-    public Action extend(Action action) {
-        action.parent = this.action;
-        this.action = action;
+    public Action begin(Action action) {
+        action.next = this.head;
+        this.head = action;
         return action;
+    }
+
+    /**
+     * Prepares for inserting a sequence of actions at the start of this continuation.
+     * Append new actions to this method's return value with {@link Action#andThen(Action)}
+     * Terminate the sequence by calling {@link #endSequence()}.
+     * E.g.,
+     * <BR><BR>
+     * <CODE>
+     *      Action action = cont.beginSequence();<BR>
+     *      action = action.andThen(...).andThen(...);<BR>
+     *          ...<BR>
+     *      action = action.andThen(...);<BR>
+     *          ...<BR>
+     *      cont.endSequence();<BR>
+     * </CODE>
+     *
+     * @return a "dummy" Action to append to
+     * @see Action#andThen(Action)
+     * @see #endSequence()
+     */
+    public Action beginSequence() {
+        return begin(DUMMY_ACTION);
+    }
+
+    /**
+     * Finalizes an insertion sequence started with {@link #beginSequence()}.
+     * Removes the "dummy" action at the head of this continuation.
+     */
+    public void endSequence() {
+        if (this.head == DUMMY_ACTION)
+            this.head = this.head.next;
+    }
+
+    /**
+     * addCommandSequenceActions
+     *
+     * @param body Pair
+     * @param env Environment
+     * @return Action
+     */
+    public void addCommandSequenceActions(Pair body, Environment env)
+            throws GleamException
+    {
+        Action currAction = beginSequence();
+        ListIterator it = new ListIterator(body);
+        while (it.hasNext()) {
+            Entity expr = it.next();
+            currAction = currAction.andThen(new ExpressionAction(expr, env));
+        }
+        endSequence();
     }
 
     /**

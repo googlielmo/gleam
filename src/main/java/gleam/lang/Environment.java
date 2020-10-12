@@ -51,19 +51,17 @@ public class Environment extends Entity
     private Map assoc;
 
     /** Constructor */
-    public Environment(Environment p)
+    public Environment(Environment parent)
     {
-        parent = p;
-        if (p != null) intp = p.intp;
-        assoc = new HashMap();
+        this.parent = parent;
+        if (parent != null) intp = parent.intp;
+        this.assoc = new HashMap();
     }
 
     /**
-     * Returns the current interpreter
      * @return the current interpreter
      */
     public Interpreter getInterpreter() {
-        //return intp;
         return intp;
     }
 

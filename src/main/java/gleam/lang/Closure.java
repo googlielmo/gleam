@@ -28,9 +28,6 @@ package gleam.lang;
 
 import gleam.util.Log;
 
-import java.util.Iterator;
-import java.util.List;
-
 import static gleam.util.Log.Level.FINE;
 import static gleam.util.Log.Level.WARNING;
 
@@ -155,35 +152,10 @@ public class Closure extends Procedure
         }
 
         /* we have bound params, let's eval body
-         * through a new continuation
+         * by adding to the continuation
          */
-        cont.action = addCommandSequenceActions(body, localenv, cont.action);
+        cont.addCommandSequenceActions(body, localenv);
         return null;
-    }
-
-    /**
-     * addCommandSequenceActions
-     *
-     * @param body Pair
-     * @param env Environment
-     * @param action Action
-     * @return Action
-     */
-    public static Action addCommandSequenceActions(Pair body, Environment env, Action action)
-        throws GleamException
-    {
-        Action  currAction = action;
-        List list = new java.util.ArrayList();
-        ListIterator it = new ListIterator(body);
-        while (it.hasNext()) {
-            Entity expr = it.next();
-            list.add(0, expr); // prepend
-        }
-        for (Iterator iter = list.iterator(); iter.hasNext(); ) {
-            Entity expr = (Entity) iter.next();
-            currAction = new ExpressionAction(expr, env, currAction);
-        }
-        return currAction;
     }
 
     /**

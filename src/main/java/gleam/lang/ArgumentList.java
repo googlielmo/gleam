@@ -43,7 +43,7 @@ public class ArgumentList implements java.io.Serializable {
         this.pairArgs = null;
     }
 
-    public void setArguments(Pair args) {
+    public ArgumentList(Pair args) {
         this.listArgs = null;
         this.pairArgs = args;
     }
@@ -67,16 +67,16 @@ public class ArgumentList implements java.io.Serializable {
      * @return Pair
      */
     public Pair getArguments() {
-        if (pairArgs != null) 
+        if (pairArgs != null)
             return pairArgs;
         else
             return j2g(listArgs);
     }
-    
+
     private Pair j2g(List lst) {
         if (lst.size() == 0)
             return EmptyList.value;
-        
+
         Pair p = EmptyList.value;
         for (int i = lst.size() - 1; i >= 0; --i) {
             p = new Pair((Entity)lst.get(i), p);

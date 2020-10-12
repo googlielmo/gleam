@@ -76,7 +76,7 @@ public final class Eval {
             throw new GleamException(this, "not an environment", arg2);
         }
         arg1 = arg1.analyze().optimize(eval_env);
-        cont.extend(new ExpressionAction(arg1, eval_env, null));
+        cont.begin(new ExpressionAction(arg1, eval_env, null));
         return null;
     }},
 
@@ -143,13 +143,13 @@ public final class Eval {
     new Primitive( "interaction-environment",
         Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 0, /* min, max no. of arguments */
-        "Returns the interaction (top-level) environment", 
+        "Returns the interaction (top-level) environment",
         null /* doc strings */ ) {
     public Entity apply0(Environment env, Continuation cont)
     {
         return gleam.lang.System.getInteractionEnv();
     }},
-    
+
     /**
      * current-environment
      * Returns the current environment
@@ -173,9 +173,10 @@ public final class Eval {
         "Evaluates an expression in a given environment",
         "E.g. (in-environment (scheme-report-environment 5) (+ 1 2)) => 3" /* doc strings */ ) {
     public Entity apply2(Entity argEnv, Entity argExpr, Environment env, Continuation cont) {
-        cont.extend(
-            new ExpressionAction(argEnv, env, null)).append( // 1) evaluate environment expr
-            new ExpressionInEnvironmentAction(argExpr, null)); // 2) evaluate expr in that env
+        cont
+                .begin(new ExpressionAction(argEnv, env))         // 1) evaluate environment expr
+                .andThen(new ExpressionInEnvironmentAction(argExpr)); // 2) evaluate expr in that env
+
         return null;
     }},
 

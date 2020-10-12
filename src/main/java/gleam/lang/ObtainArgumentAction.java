@@ -35,15 +35,21 @@ public class ObtainArgumentAction extends Action {
 
     private ArgumentList arglist;
     private int argumentIndex;
-    
-    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Action parent) {
+
+    /** Creates a new instance of this action */
+    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Action next) {
         this.arglist = arglist;
         this.argumentIndex = argumentIndex;
-        this.parent = parent;
+        this.next = next;
+    }
+
+    /** Creates a new instance of this action */
+    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex) {
+        this(arglist, argumentIndex, null);
     }
 
     Entity invoke(Entity arg, Continuation cont) {
-        cont.action = parent;
+        cont.head = next;
         // arg is already evaluated
         arglist.set(argumentIndex, arg);
         return arg;

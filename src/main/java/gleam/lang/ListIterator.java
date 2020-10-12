@@ -31,9 +31,9 @@ package gleam.lang;
  */
 public class ListIterator {
     private Pair pair;
-    private Pair parentPair;
+    private Pair restPair;
     private boolean allowImproper;
-    private boolean wasImproper;
+    private boolean isImproper;
 
     /**
      * Creates an iterator over a proper list.
@@ -48,8 +48,8 @@ public class ListIterator {
     public ListIterator(Pair pair, boolean allowImproper) {
         this.pair = pair;
         this.allowImproper = allowImproper;
-        this.parentPair = null;
-        this.wasImproper = false;
+        this.restPair = null;
+        this.isImproper = false;
     }
 
     /**
@@ -65,14 +65,14 @@ public class ListIterator {
     public Entity next()
         throws GleamException
     {
-        if (!wasImproper) {
+        if (!isImproper) {
             Entity retVal = pair.car;
-            parentPair = pair;
-            try {
+            restPair = pair;
+            if (pair.cdr instanceof Pair) {
                 pair = (Pair)pair.cdr;
             }
-            catch (ClassCastException e) {
-                wasImproper = true;
+            else {
+                isImproper = true;
             }
             return retVal;
         }
@@ -95,20 +95,20 @@ public class ListIterator {
     public void replace(Entity newArg)
         throws GleamException
     {
-        if (parentPair == null) {
+        if (restPair == null) {
             throw new GleamException(
-                "No current object to replace", pair);  
+                "No current object to replace", pair);
         }
-        if (wasImproper && pair == EmptyList.value) {
-            parentPair.cdr = newArg;
+        if (isImproper && pair == EmptyList.value) {
+            restPair.cdr = newArg;
         }
         else {
-            parentPair.car = newArg;
+            restPair.car = newArg;
         }
     }
-    
+
     /**
-     * Remove operation currently not supported. 
+     * Remove operation currently not supported.
      */
     public void remove() {
         throw new UnsupportedOperationException("Remove operation currently not supported");

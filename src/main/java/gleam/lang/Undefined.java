@@ -36,7 +36,7 @@ public final class Undefined extends Entity {
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
-    
+
     /** the Undefined singleton */
     protected static final Undefined value = new Undefined();
 
@@ -45,9 +45,9 @@ public final class Undefined extends Entity {
     }
 
     /**
-     * Factory method
+     * Get the only value
      */
-    public static Undefined makeUndefined() {
+    public static Undefined value() {
         return value;
     }
 

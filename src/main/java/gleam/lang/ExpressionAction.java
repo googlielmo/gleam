@@ -43,18 +43,23 @@ public class ExpressionAction extends Action {
 
     /** the expression to evaluate */
     private Entity expr;
-    
+
     /** the environment in which to evaluate the expression */
     private Environment env;
 
     /** Creates a new instance of this action */
-    public ExpressionAction(Entity expr, Environment env, Action parent) {
+    public ExpressionAction(Entity expr, Environment env, Action next) {
         this.expr = expr;
         this.env = env;
-        this.parent = parent;
+        this.next = next;
     }
 
-    /** Invokes this action, causing the evaluation of the expression 
+    /** Creates a new instance of this action */
+    public ExpressionAction(Entity value, Environment env) {
+        this(value, env, null);
+    }
+
+    /** Invokes this action, causing the evaluation of the expression
      * @param arg is ignored
      * @param cont the current Continuation
      * @return the result of the evaluation
@@ -62,7 +67,7 @@ public class ExpressionAction extends Action {
     */
     Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException
     {
-        cont.action = parent;
+        cont.head = next;
         // note: ignore arg
         return expr.eval(env, cont);
     }

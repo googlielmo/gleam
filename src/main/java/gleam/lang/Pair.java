@@ -131,23 +131,22 @@ public class Pair extends Entity
         ListIterator it = new ListIterator(this);
         // operator
         Entity operator = it.next();
-        ArgumentList arglist = new ArgumentList();
 
         /* check for special forms or syntax rewriters */
         if (operator instanceof Symbol) {
             Entity e = env.lookup( (Symbol) operator);
             if (e instanceof SyntaxRewriter) {
                 // call of syntax rewriter, will be followed by evaluation of resulting expression
-                rewriteAndEval((SyntaxRewriter) e, arglist, env, cont);
+                rewriteAndEval((SyntaxRewriter) e, new ArgumentList(), env, cont);
                 return null;
             }
             else if (e instanceof SyntaxProcedure) {
                 // special procedure call
-                Action a = new ProcedureCallAction(arglist, env, cont.action);
-                a = new ExpressionAction(operator, env, a);
-                cont.action = a;
                 // don't evaluate arguments at all!
-                arglist.setArguments((Pair)this.cdr);
+                cont
+                        .begin(new ExpressionAction(operator, env))
+                        .andThen(new ProcedureCallAction(new ArgumentList((Pair)this.cdr), env));
+
                 return null;
             }
         }
@@ -155,31 +154,37 @@ public class Pair extends Entity
             Entity e = ( (Location) operator).get();
             if (e instanceof SyntaxRewriter) {
                 // call of syntax rewriter, will be followed by evaluation of resulting expression
-                rewriteAndEval((SyntaxRewriter) e, arglist, env, cont);
+                rewriteAndEval((SyntaxRewriter) e, new ArgumentList(), env, cont);
                 return null;
             }
         }
-        
-        /* so we have a regular procedure call */
-        Action a = new ProcedureCallAction(arglist, env, cont.action);
-        a = new ExpressionAction(operator, env, a);
+
+        /* we have a regular procedure call */
+        ArgumentList argList = new ArgumentList();
+        Action action = cont.beginSequence();
+
         // evaluate each argument
         int argidx = 0;
         while (it.hasNext()) {
             Entity nextArg = it.next();
-            a = new ObtainArgumentAction(arglist, argidx++, a);
-            a = new ExpressionAction(nextArg, env, a);
+            action = action
+                    .andThen(new ExpressionAction(nextArg, env))
+                    .andThen(new ObtainArgumentAction(argList, argidx++));
         }
-        arglist.ensureSize(argidx);
-        cont.action = a;
+        argList.ensureSize(argidx);
+        action
+                .andThen(new ExpressionAction(operator, env))
+                .andThen(new ProcedureCallAction(argList, env));
+
+        cont.endSequence();
         return null;
     }
 
     private void rewriteAndEval(SyntaxRewriter syntaxRewriter, ArgumentList args, Environment env, Continuation cont) {
-        Action a = new EvalAction(env, cont.action);
-        a = new ProcedureCallAction(args, env, a);
-        a = new ExpressionAction(syntaxRewriter, env, a);
-        cont.action = a;
+        cont
+                .begin(new ExpressionAction(syntaxRewriter, env))
+                .andThen(new ProcedureCallAction(args, env))
+                .andThen(new EvalAction(env));
         // pass this pair, not evaluated
         args.set(0, this);
     }
@@ -201,7 +206,7 @@ public class Pair extends Entity
         }
 
         /* if the operator is a syntax rewriter, we must not optimize */
-        if ((car instanceof SyntaxRewriter) || 
+        if ((car instanceof SyntaxRewriter) ||
             (car instanceof Symbol && env.lookup( (Symbol) car) instanceof SyntaxRewriter)) {
             return this;
         }
@@ -264,29 +269,29 @@ public class Pair extends Entity
     public void write(java.io.PrintWriter out)
     {
         if (car == Symbol.QUOTE
-                && !(cdr instanceof EmptyList) 
-                && cdr instanceof Pair 
+                && !(cdr instanceof EmptyList)
+                && cdr instanceof Pair
                 && ((Pair)cdr).cdr instanceof EmptyList) {
             out.print("'");
             ((Pair)cdr).car.write(out);
         }
         else if (car == Symbol.QUASIQUOTE
-                && !(cdr instanceof EmptyList) 
-                && cdr instanceof Pair 
+                && !(cdr instanceof EmptyList)
+                && cdr instanceof Pair
                 && ((Pair)cdr).cdr instanceof EmptyList) {
             out.print("`");
             ((Pair)cdr).car.write(out);
         }
         else if (car == Symbol.UNQUOTE
-                && !(cdr instanceof EmptyList) 
-                && cdr instanceof Pair 
+                && !(cdr instanceof EmptyList)
+                && cdr instanceof Pair
                 && ((Pair)cdr).cdr instanceof EmptyList) {
             out.print(",");
             ((Pair)cdr).car.write(out);
         }
         else if (car == Symbol.UNQUOTE_SPLICING
-                && !(cdr instanceof EmptyList) 
-                && cdr instanceof Pair 
+                && !(cdr instanceof EmptyList)
+                && cdr instanceof Pair
                 && ((Pair)cdr).cdr instanceof EmptyList) {
             out.print(",@");
             ((Pair)cdr).car.write(out);
@@ -302,7 +307,7 @@ public class Pair extends Entity
             }
             if (!(current.cdr instanceof EmptyList)) {
                 out.print(" . ");
-                current.cdr.write(out);             
+                current.cdr.write(out);
             }
             out.print(")");
         }

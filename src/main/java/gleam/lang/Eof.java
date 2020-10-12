@@ -43,7 +43,7 @@ public final class Eof extends Entity {
     }
 
     /**
-     * Factory method
+     * Get the only value
      */
     public static Eof value() {
         return value;
