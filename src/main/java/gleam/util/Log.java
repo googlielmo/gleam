@@ -159,7 +159,7 @@ public class Log
     /**
      * Logs a message, respecting current level.
      */
-    public static void record(int level, String message)
+    public static void enter(int level, String message)
     {
         logger.log(getLoggingLevel(level), message);
     }
@@ -167,7 +167,7 @@ public class Log
     /**
      * Logs a message and an Entity, respecting current level.
      */
-    public static void record(int severity, String message, gleam.lang.Entity obj)
+    public static void enter(int severity, String message, gleam.lang.Entity obj)
     {
         logger.log(getLoggingLevel(severity), message + " " + obj.toString());
     }

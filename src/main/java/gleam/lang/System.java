@@ -176,7 +176,7 @@ public final class System
         }
         catch (GleamException e) {
             // should never happen
-            gleam.util.Log.record(SEVERE,
+            gleam.util.Log.enter(SEVERE,
                 "Internal error during environment initialization: "
                     + e.getMessage());
         }
@@ -468,7 +468,7 @@ public final class System
             }
         }
         else {
-            gleam.util.Log.record(FINE, "analyzeSpecialForm: not a special form");
+            gleam.util.Log.enter(FINE, "analyzeSpecialForm: not a special form");
         }
     }
 
@@ -674,14 +674,14 @@ public final class System
         else {
             Environment retVal = new Environment(env);
             // iterate on varList, binding each var to Undefined
-            gleam.util.Log.record(FINE, "Scanned out: ");
+            gleam.util.Log.enter(FINE, "Scanned out: ");
             ListIterator vit = new ListIterator(varList);
             while (vit.hasNext()) {
                 Symbol var = (Symbol) vit.next();
                 retVal.define(var, Undefined.value);
-                gleam.util.Log.record(FINE, "variable", var);
+                gleam.util.Log.enter(FINE, "variable", var);
             }
-            gleam.util.Log.record(FINE, "...end of scan-out");
+            gleam.util.Log.enter(FINE, "...end of scan-out");
             return retVal;
         }
     }

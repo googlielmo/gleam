@@ -87,7 +87,7 @@ public class Closure extends Procedure
         Entity currparam = param;
         Pair prev = null;
         boolean dotparam = false;
-        gleam.util.Log.record(FINE, "apply: ARGS = ", args);
+        gleam.util.Log.enter(FINE, "apply: ARGS = ", args);
 
         /* bind actual arguments to formals (long)
          */
@@ -110,7 +110,7 @@ public class Closure extends Procedure
                             localenv.define((Symbol)p, obj);
                         }
                         else {
-                            Log.record(WARNING, "apply: param is not a symbol");
+                            Log.enter(WARNING, "apply: param is not a symbol");
                         }
                         // next param, please
                         currparam = ((Pair)currparam).cdr;

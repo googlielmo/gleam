@@ -73,7 +73,7 @@ public final class EmptyList extends Pair {
     /**
      * Prevents the release of multiple instances upon deserialization.
      */
-    protected java.lang.Object readResolve()
+    protected Object readResolve()
     {
 //      java.lang.System.out.println("readResolve() called! (EmptyList)"); //DEBUG
         return value;

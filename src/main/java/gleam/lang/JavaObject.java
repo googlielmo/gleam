@@ -34,6 +34,7 @@
 package gleam.lang;
 
 import gleam.util.Log;
+
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
@@ -141,11 +142,10 @@ public class JavaObject extends Entity {
     public boolean equals(Object obj) {
         if (!(obj instanceof JavaObject))
             return false;
-        else if (value == null) {
-            return ((JavaObject) obj).value == null;
-        }
-        else
-            return this.value.equals(((JavaObject) obj).value);
+        JavaObject javaObject = (JavaObject) obj;
+        return value == null ?
+                javaObject.value == null :
+                this.value.equals(((JavaObject) obj).value);
     }
 
     public boolean eq_p(JavaObject obj) {

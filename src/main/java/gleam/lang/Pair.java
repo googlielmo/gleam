@@ -112,7 +112,7 @@ public class Pair extends Entity
                      *
                      * analyze cdr in place
                      */
-                    gleam.util.Log.record(INFO, "dotted pair in analyze... check for correctness");
+                    gleam.util.Log.enter(INFO, "dotted pair in analyze... check for correctness");
                     restParent.cdr = rest.analyze();
                     break;
                 }
@@ -255,7 +255,7 @@ public class Pair extends Entity
                 /* this is an improper list
                  * (not necessarily an error: e.g., lambda)
                  */
-                gleam.util.Log.record(INFO, "dotted pair in optimize... check for correctness");
+                gleam.util.Log.enter(INFO, "dotted pair in optimize... check for correctness");
                 restParent.cdr = rest.optimize(env);
                 break;
             }

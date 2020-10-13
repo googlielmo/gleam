@@ -56,7 +56,7 @@ public final class SystemEnvironment extends Environment
 
 
     /** resolve environment as correct system environment on deserialization */
-    protected java.lang.Object readResolve()
+    protected Object readResolve()
         throws java.io.ObjectStreamException
     {
 //      java.lang.System.out.println("readResolve() called! (SystemEnvironment)"); //DEBUG

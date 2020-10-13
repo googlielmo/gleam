@@ -228,11 +228,11 @@ public final class Interaction {
                 Log.error(e);
                 throw new GleamException(this, "I/O error", arg1);
             }
-            catch (java.lang.ClassNotFoundException e) {
+            catch (ClassNotFoundException e) {
                 Log.error(e);
                 throw new GleamException(this, "class not found", arg1);
             }
-            catch (java.lang.ClassCastException e) {
+            catch (ClassCastException e) {
                 Log.error(e);
                 throw new GleamException(this, "invalid class", arg1);
             }

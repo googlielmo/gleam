@@ -52,7 +52,7 @@ public final class Eof extends Entity {
     /**
      * Prevents the release of multiple instances upon deserialization.
      */
-    protected java.lang.Object readResolve()
+    protected Object readResolve()
     {
 //      java.lang.System.out.println("readResolve() called! (Eof)"); //DEBUG
         return value;

@@ -63,7 +63,7 @@ public class ListIterator {
      * Retrieves next object from the list.
      */
     public Entity next()
-        throws GleamException
+        throws ImproperListException
     {
         if (!isImproper) {
             Entity retVal = pair.car;

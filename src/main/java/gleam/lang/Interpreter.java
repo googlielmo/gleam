@@ -162,9 +162,9 @@ public class Interpreter {
         Entity obj, val;
         while ((obj = reader.read()) != Eof.value()) {
             // eval
-            gleam.util.Log.record(FINE, "load: read object", obj);
+            gleam.util.Log.enter(FINE, "load: read object", obj);
             val = eval(obj, env);
-            gleam.util.Log.record(FINE, "load: result is", val);
+            gleam.util.Log.enter(FINE, "load: result is", val);
         }
     }
 
@@ -214,7 +214,7 @@ public class Interpreter {
      * @param object the <CODE>java.lang.Object</CODE> to bind to the given
      *  name
      */
-    public void bind(String name, java.lang.Object object) {
+    public void bind(String name, Object object) {
         sesnEnv.define(Symbol.makeSymbol(name), new JavaObject(object));
     }
 }

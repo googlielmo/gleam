@@ -29,7 +29,7 @@ package gleam.lang;
 /**
  * Exception thrown by a ListIterator when an improper list is found.
  * Useful to catch if an improper list is not an error condition,
- * in that case the method getObject will return the last (cdr) object.
+ * in that case #value() will return the last (cdr) object.
  */
 public class ImproperListException extends GleamException {
     /**
@@ -39,10 +39,10 @@ public class ImproperListException extends GleamException {
 
     /**
      * ImproperListException constructor.
-     * 
-     * @param aObject gleam.lang.Entity
+     *
+     * @param value an Entity
      */
-    public ImproperListException(Entity aObject) {
-        super("improper list argument not allowed", aObject);
+    public ImproperListException(Entity value) {
+        super("improper list argument not allowed", value);
     }
 }

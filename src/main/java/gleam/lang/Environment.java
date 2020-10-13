@@ -74,7 +74,7 @@ public class Environment extends Entity
      */
     public synchronized void define(Symbol s, Entity v)
     {
-        java.lang.Object loc;
+        Object loc;
         if ((loc = assoc.get(s)) != null) {
             ((Location) loc).set(v);
         }
@@ -110,7 +110,7 @@ public class Environment extends Entity
      */
     Location getLocationOrNull(Symbol s)
     {
-        java.lang.Object o;
+        Object o;
         Environment e = this;
         while (e != null) {
             o = e.assoc.get(s);

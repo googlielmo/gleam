@@ -32,13 +32,13 @@ import gleam.lang.Eof;
 import gleam.lang.GleamException;
 import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
-import gleam.lang.Pair;
-import gleam.util.Log;
 import gleam.lang.MutableString;
 import gleam.lang.OutputPort;
+import gleam.lang.Pair;
 import gleam.lang.Symbol;
 import gleam.lang.System;
 import gleam.lang.Void;
+import gleam.util.Log;
 
 import java.io.PrintStream;
 

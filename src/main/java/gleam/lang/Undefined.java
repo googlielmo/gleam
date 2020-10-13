@@ -63,7 +63,7 @@ public final class Undefined extends Entity {
     /**
      * Prevents the release of multiple instances upon deserialization.
      */
-    protected java.lang.Object readResolve()
+    protected Object readResolve()
     {
 //      java.lang.System.out.println("readResolve() called! (Undefined)"); //DEBUG
         return value;

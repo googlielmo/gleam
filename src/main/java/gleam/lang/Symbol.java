@@ -120,7 +120,7 @@ public final class Symbol extends Entity
      */
     public synchronized static Symbol makeSymbol(String s)
     {
-        java.lang.Object o = symtable.get(s);
+        Object o = symtable.get(s);
         if (o == null) {
             o = new Symbol(s);
             symtable.put(s, o);
@@ -140,7 +140,7 @@ public final class Symbol extends Entity
     /**
      * Prevents the release of multiple instances upon deserialization.
      */
-    protected java.lang.Object readResolve()
+    protected Object readResolve()
     {
 //      java.lang.System.out.println("readResolve() called! (Symbol)"); //DEBUG
         if (interned)

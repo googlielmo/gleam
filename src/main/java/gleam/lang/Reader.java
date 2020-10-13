@@ -185,10 +185,10 @@ class Reader {
         && !t.equals("-")
         && !t.equals("...")) {
             try {
-                gleam.util.Log.record(FINE, "readOthers: interpreting '" + t + "' as a number");
+                gleam.util.Log.enter(FINE, "readOthers: interpreting '" + t + "' as a number");
                 return new Real(Double.parseDouble(t));
             }
-            catch (java.lang.NumberFormatException e) {
+            catch (NumberFormatException e) {
                 throw new GleamException("read: invalid number " + t, null);
             }
         }
@@ -202,7 +202,7 @@ class Reader {
         }
         else if (t.startsWith("\"")) {
             // it is a string
-            gleam.util.Log.record(FINE, "readOthers: interpreting '" + t + "' as a string");
+            gleam.util.Log.enter(FINE, "readOthers: interpreting '" + t + "' as a string");
             return new MutableString(t.substring(1));
         }
         else if (t.equalsIgnoreCase("#f")) {
@@ -227,7 +227,7 @@ class Reader {
         }
         else {
             // it is a symbol
-            gleam.util.Log.record(FINE, "readOthers: interpreting '" + t + "' as a symbol");
+            gleam.util.Log.enter(FINE, "readOthers: interpreting '" + t + "' as a symbol");
             return Symbol.makeSymbol(t);
         }
     }
@@ -264,7 +264,7 @@ class Reader {
         }
 
         if (retVal != null)
-            gleam.util.Log.record(FINE, "TOKEN="+retVal);
+            gleam.util.Log.enter(FINE, "TOKEN="+retVal);
 
         return retVal;
     }

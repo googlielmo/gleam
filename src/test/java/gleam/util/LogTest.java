@@ -66,20 +66,20 @@ public class LogTest {
     @Test
     public void t1() {
         Log.setLevel(2);
-        Log.record(1, "1");
-        Log.record(2, "2");
-        Log.record(3, "3");
-        Log.record(4, "4");
-        Log.record(5, "5");
+        Log.enter(1, "1");
+        Log.enter(2, "2");
+        Log.enter(3, "3");
+        Log.enter(4, "4");
+        Log.enter(5, "5");
     }
 
     @Test
     public void t2() {
         Log.setLevel(2);
-        Log.record(FINE, "1");
-        Log.record(CONFIG, "2");
-        Log.record(INFO, "3");
-        Log.record(WARNING, "4");
-        Log.record(SEVERE, "5");
+        Log.enter(FINE, "1");
+        Log.enter(CONFIG, "2");
+        Log.enter(INFO, "3");
+        Log.enter(WARNING, "4");
+        Log.enter(SEVERE, "5");
     }
 }
