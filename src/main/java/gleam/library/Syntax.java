@@ -35,6 +35,7 @@ import gleam.lang.ExpressionAction;
 import gleam.lang.GleamException;
 import gleam.lang.IfAction;
 import gleam.lang.ListIterator;
+import gleam.lang.List;
 import gleam.lang.Pair;
 import gleam.lang.Symbol;
 import gleam.lang.SyntaxRewriter;
@@ -92,7 +93,7 @@ public final class Syntax {
         "Can be used at top-level to create a new global variable, "
         +"e.g. (define x 1); or at the beginning of a procedure body "
         +"to create a new local variable." /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont) throws GleamException {
+    public Entity applyN(List args, Environment env, Continuation cont) throws GleamException {
         try {
             ListIterator it = new ListIterator(args);
             Entity target = it.next();
@@ -116,8 +117,8 @@ public final class Syntax {
                 return null;
             }
             else if (target instanceof Pair) {
-                Entity rtarget = ((Pair)target).getCar();
-                Entity params = ((Pair)target).getCdr();
+                Entity rtarget = ((List) target).getCar();
+                Entity params = ((List) target).getCdr();
                 Pair body = new Pair(value, it.rest());
                 if (rtarget instanceof Symbol) {
                     Symbol s = (Symbol) rtarget;
@@ -150,7 +151,7 @@ public final class Syntax {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Creates a procedure, e.g. (lambda (x) (+ x 1))",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont) throws GleamException {
+    public Entity applyN(List args, Environment env, Continuation cont) throws GleamException {
         try {
             Entity lambdaParams = args.getCar();
             Pair lambdaBody = (Pair)args.getCdr();
@@ -214,7 +215,7 @@ public final class Syntax {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Sequential execution, e.g. (begin (first-step) (second-step))",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont) throws GleamException {
+    public Entity applyN(List args, Environment env, Continuation cont) throws GleamException {
         // equivalent to the body of a procedure with no arguments
         cont.addCommandSequenceActions(args, env);
         return null;

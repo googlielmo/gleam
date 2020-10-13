@@ -41,11 +41,15 @@ public class GleamException extends Exception
      */
     private static final long serialVersionUID = 1L;
 
-    protected final Entity errobj;
+    private final Entity errobj;
 
-    public GleamException(Primitive primitive, String message, Entity obj)
+    public GleamException(String message) {
+        this(message, Void.value());
+    }
+
+    public GleamException(Primitive primitive, String message, Entity value)
     {
-        this(primitive.toString() + ": " + message, obj);
+        this(primitive + ": " + message, value);
     }
 
     public GleamException(String message, Entity value)

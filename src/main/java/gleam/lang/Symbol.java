@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * Scheme symbol factory.
  */
-public final class Symbol extends Entity
+public final class Symbol extends AbstractEntity
 {
     /**
      * serialVersionUID

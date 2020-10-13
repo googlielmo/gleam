@@ -32,13 +32,15 @@ package gleam.lang;
  * Created on October 24, 2001, 1:55 AM
  */
 
+import java.io.PrintWriter;
+
 /**
  * This class represents the distinct type of the Scheme empty list.
  * There is only one instance of this class, i.e. the empty list itself '().
  * EmptyList is a specialization of Pair uniquely for efficiency reasons in
  * procedure evaluation.
  */
-public final class EmptyList extends Pair {
+public final class EmptyList extends AbstractEntity implements List {
     /**
      * serialVersionUID
      */
@@ -49,8 +51,6 @@ public final class EmptyList extends Pair {
 
     /** Can't create an empty list */
     private EmptyList() {
-        super(null, null);
-        analyzed = true;
     }
 
     /**
@@ -70,6 +70,10 @@ public final class EmptyList extends Pair {
         throw new GleamException("invalid combination: empty list", this);
     }
 
+    public Entity analyze() throws GleamException {
+        return this;
+    }
+
     /**
      * Prevents the release of multiple instances upon deserialization.
      */
@@ -85,6 +89,10 @@ public final class EmptyList extends Pair {
     public void write(java.io.PrintWriter out)
     {
         out.print("()");
+    }
+
+    public void display(PrintWriter out) {
+        write(out);
     }
 
     /**
@@ -110,6 +118,4 @@ public final class EmptyList extends Pair {
     public void setCdr(Entity obj) throws GleamException {
         throw new GleamException("set-cdr!: invalid arguments", this);
     }
-
-
 }

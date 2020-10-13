@@ -32,6 +32,7 @@ import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
+import gleam.lang.List;
 import gleam.lang.Pair;
 import gleam.lang.Procedure;
 import gleam.lang.ProcedureCallAction;
@@ -106,9 +107,9 @@ public final class ControlFeatures {
             throw new GleamException(this, "wrong argument type, should be a procedure", proc);
         }
 
-        if (args instanceof Pair) {
+        if (args instanceof List) {
             /* create a new procedure call with the given arguments. */
-            ArgumentList argList = new ArgumentList((Pair) args);
+            ArgumentList argList = new ArgumentList((List) args);
             cont.begin(new ProcedureCallAction(argList, env));
             return proc;
         }

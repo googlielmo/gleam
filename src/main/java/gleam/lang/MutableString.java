@@ -30,7 +30,7 @@ package gleam.lang;
  * Scheme mutable string.
  * Creation date: (28/10/2001 12.22.48)
  */
-public class MutableString extends Entity {
+public class MutableString extends AbstractEntity {
     /**
      * serialVersionUID
      */

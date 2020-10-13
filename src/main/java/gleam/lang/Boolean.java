@@ -35,7 +35,7 @@ package gleam.lang;
 /**
  * Scheme boolean.
  */
-public final class Boolean extends Entity
+public final class Boolean extends AbstractEntity
 {
     /**
      * serialVersionUID

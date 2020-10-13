@@ -61,7 +61,7 @@ public class ProcedureCallAction extends Action {
                       "procedure call: operator is not a procedure",
                       arg);
         }
-        return operator.apply(arglist.getArguments(), env, cont);
+        return operator.apply((List) arglist.getArguments(), env, cont);
     }
 
 }

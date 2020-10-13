@@ -29,7 +29,7 @@ package gleam.lang;
 /**
  * The base class for Scheme numerical objects.
  */
-public abstract class Number extends Entity
+public abstract class Number extends AbstractEntity
 {
     /** Takes value of number as a double. */
     public abstract double getDoubleValue();

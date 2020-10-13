@@ -30,7 +30,7 @@ package gleam.lang;
  * The Scheme void value (a singleton).
  * Creation date: (31/10/01 23.06.59)
  */
-public final class Void extends Entity {
+public final class Void extends AbstractEntity {
 
     /**
      * serialVersionUID

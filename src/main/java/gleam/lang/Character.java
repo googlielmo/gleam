@@ -29,7 +29,7 @@ package gleam.lang;
 /**
  * Scheme character.
  */
-public final class Character extends Entity
+public final class Character extends AbstractEntity
 {
     /**
      * serialVersionUID

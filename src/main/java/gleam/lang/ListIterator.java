@@ -30,22 +30,22 @@ package gleam.lang;
  * List read/write iterator.
  */
 public class ListIterator {
-    private Pair pair;
-    private Pair restPair;
+    private List pair;
+    private List restPair;
     private boolean allowImproper;
     private boolean isImproper;
 
     /**
      * Creates an iterator over a proper list.
      */
-    public ListIterator(Pair pair) {
+    public ListIterator(List pair) {
         this(pair, false);
     }
 
     /**
      * Creates an iterator over a (possibly improper) list.
      */
-    public ListIterator(Pair pair, boolean allowImproper) {
+    public ListIterator(List pair, boolean allowImproper) {
         this.pair = pair;
         this.allowImproper = allowImproper;
         this.restPair = null;
@@ -56,20 +56,20 @@ public class ListIterator {
      * Determines whether there's another object to retrieve from the list.
      */
     public boolean hasNext() {
-        return pair != EmptyList.value;
+        return pair != EmptyList.value();
     }
 
     /**
      * Retrieves next object from the list.
      */
     public Entity next()
-        throws ImproperListException
+            throws GleamException
     {
         if (!isImproper) {
-            Entity retVal = pair.car;
+            Entity retVal = pair.getCar();
             restPair = pair;
-            if (pair.cdr instanceof Pair) {
-                pair = (Pair)pair.cdr;
+            if (pair.getCdr() instanceof List) {
+                pair = (List) pair.getCdr();
             }
             else {
                 isImproper = true;
@@ -77,7 +77,7 @@ public class ListIterator {
             return retVal;
         }
         else {
-            Entity retVal = pair.cdr;
+            Entity retVal = pair.getCdr();
             pair = EmptyList.value;
             if (allowImproper) {
                 return retVal;
@@ -97,13 +97,13 @@ public class ListIterator {
     {
         if (restPair == null) {
             throw new GleamException(
-                "No current object to replace", pair);
+                "No current object to replace", (Entity) pair);
         }
         if (isImproper && pair == EmptyList.value) {
-            restPair.cdr = newArg;
+            restPair.setCdr(newArg);
         }
         else {
-            restPair.car = newArg;
+            restPair.setCar(newArg);
         }
     }
 
@@ -117,8 +117,8 @@ public class ListIterator {
     /**
      * Returns the remaining portion of the list as a Pair.
      */
-    public Pair rest() {
-        return pair;
+    public Entity rest() {
+        return (Entity) pair;
     }
 }
 

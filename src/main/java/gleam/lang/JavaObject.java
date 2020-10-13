@@ -44,7 +44,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * A Java object.
  */
-public class JavaObject extends Entity {
+public class JavaObject extends AbstractEntity {
 
     /**
      * serialVersionUID

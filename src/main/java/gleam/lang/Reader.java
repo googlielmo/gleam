@@ -82,7 +82,7 @@ class Reader {
             return o;
         }
         catch (java.io.IOException e) {
-            throw new GleamException("read: I/O Error "+ e.getMessage(), null);
+            throw new GleamException("read: I/O Error "+ e.getMessage());
         }
     }
 
@@ -97,7 +97,7 @@ class Reader {
         for(;;) {
             t = readToken();
             if (t == null) {
-                throw new GleamException("read: unterminated list", null);
+                throw new GleamException("read: unterminated list");
             }
 
             if (t.equals(")")) {
@@ -111,31 +111,31 @@ class Reader {
             else if (t.equals(".")) {
                 if (!seendot) {
                     if (first) {
-                        throw new GleamException("read: at least one datum must precede \".\"", null);
+                        throw new GleamException("read: at least one datum must precede \".\"");
                     }
                     else {
-                        ins.cdr = readObject();
+                        ins.setCdr(readObject());
                         seendot = true;
                     }
                 }
                 else {
-                    throw new GleamException("read: more than one \".\" in a list", null);
+                    throw new GleamException("read: more than one \".\" in a list");
                 }
             }
             else if (!seendot) {
                 tkzr.pushBack();
                 if (first) {
                     first = false;
-                    ins.car = readObject();
+                    ins.setCar(readObject());
                 }
                 else {
                     Pair nextcons = new Pair(readObject(), EmptyList.value);
-                    ins.cdr = nextcons;
+                    ins.setCdr(nextcons);
                     ins = nextcons;
                 }
             }
             else {
-                throw new GleamException("read: missing \")\"", null);
+                throw new GleamException("read: missing \")\"");
             }
         }
     }
@@ -145,7 +145,7 @@ class Reader {
     {
         String t = readToken();
         if (t == null) {
-            throw new GleamException("read: unexpected end of input", null);
+            throw new GleamException("read: unexpected end of input");
         }
 
         return readObject(t);
@@ -170,7 +170,7 @@ class Reader {
             return new Pair(Symbol.QUASIQUOTE, new Pair(quotedobj, EmptyList.value));
         }
         else if (t.equals(")")) { // extra parens
-            throw new GleamException("read: unexpected \")\"", null);
+            throw new GleamException("read: unexpected \")\"");
         }
         else {
             return readOthers(t);
@@ -189,7 +189,7 @@ class Reader {
                 return new Real(Double.parseDouble(t));
             }
             catch (NumberFormatException e) {
-                throw new GleamException("read: invalid number " + t, null);
+                throw new GleamException("read: invalid number " + t);
             }
         }
         else if (t.startsWith(",@")) {
@@ -223,7 +223,7 @@ class Reader {
             else if (charstring.length() == 1) {
                 return new Character(charstring.charAt(0));
             }
-            else throw new GleamException("read: invalid character", null);
+            else throw new GleamException("read: invalid character");
         }
         else {
             // it is a symbol

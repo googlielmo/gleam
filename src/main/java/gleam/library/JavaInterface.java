@@ -33,6 +33,7 @@
 
 package gleam.library;
 
+import gleam.lang.AbstractEntity;
 import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
@@ -40,7 +41,6 @@ import gleam.lang.GleamException;
 import gleam.lang.JavaObject;
 import gleam.lang.ListIterator;
 import gleam.lang.MutableString;
-import gleam.lang.Pair;
 import gleam.lang.Real;
 import gleam.lang.Symbol;
 import gleam.lang.Void;
@@ -77,7 +77,7 @@ public class JavaInterface {
         1, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Makes a new Java object, e.g. (new 'java.util.Date)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(gleam.lang.List args, Environment env, Continuation cont)
         throws GleamException
     {
         ListIterator it = new ListIterator(args);
@@ -106,7 +106,7 @@ public class JavaInterface {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Calls a method on a Java object",
         "E.g. (call 'length (new 'java.lang.String \"test\")) => 4" /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(gleam.lang.List args, Environment env, Continuation cont)
         throws GleamException
     {
         ListIterator it = new ListIterator(args);
@@ -227,7 +227,7 @@ public class JavaInterface {
         if (object == null) {
             return new JavaObject();
         }
-        else if (object instanceof Entity) {
+        else if (object instanceof AbstractEntity) {
             return (Entity) object;
         }
         else {

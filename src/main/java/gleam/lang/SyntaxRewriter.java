@@ -57,6 +57,7 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
         if (Log.getLevel() < Log.Level.INFO) {
             out.write(" ");
             new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
-        }out.write(">");
+        }
+        out.write(">");
     }
 }

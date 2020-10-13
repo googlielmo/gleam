@@ -29,9 +29,9 @@ package gleam.lang;
 /**
  * Abstract Scheme function object.
  */
-public abstract class Procedure extends Entity
+public abstract class Procedure extends AbstractEntity
 {
     public abstract Entity
-        apply(Pair args, Environment env, Continuation cont)
+        apply(List args, Environment env, Continuation cont)
             throws GleamException;
 }

@@ -29,7 +29,7 @@ package gleam.lang;
 /**
  * Abstract Port object.
  */
-public abstract class Port extends Entity
+public abstract class Port extends AbstractEntity
 {
     /** close the port */
     public abstract void close()

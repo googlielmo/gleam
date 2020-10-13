@@ -64,13 +64,13 @@ public class Closure extends Procedure
      * to a new constructor.
      */
     protected Entity param;
-    protected Pair body;
+    protected List body;
     protected Environment definitionEnv;
 
     /**
      * Constructor.
      */
-    public Closure(Entity param, Pair body, Environment env)
+    public Closure(Entity param, List body, Environment env)
     {
         this.param = param;
         this.body = body;
@@ -80,14 +80,14 @@ public class Closure extends Procedure
     /**
      * Applies this closure.
      */
-    public Entity apply(Pair args, Environment env, Continuation cont)
+    public Entity apply(List args, Environment env, Continuation cont)
         throws GleamException
     {
         Environment localenv = new Environment(definitionEnv);
         Entity currparam = param;
-        Pair prev = null;
+        List prev = null;
         boolean dotparam = false;
-        gleam.util.Log.enter(FINE, "apply: ARGS = ", args);
+        gleam.util.Log.enter(FINE, "apply: ARGS = ", (Entity) args);
 
         /* bind actual arguments to formals (long)
          */
@@ -95,7 +95,7 @@ public class Closure extends Procedure
             // for each passed arg
             while (args != EmptyList.value) {
                 // get next already-evaluated arg
-                Entity obj = args.car;
+                Entity obj = args.getCar();
 
                 if (!dotparam) {
                     if (currparam == EmptyList.value) {
@@ -105,7 +105,7 @@ public class Closure extends Procedure
                         // normal case: get param symbol
                         // and bind it to argument in
                         // local env
-                        Entity p = ((Pair)currparam).car;
+                        Entity p = ((Pair) currparam).getCar();
                         if (p instanceof Symbol) {
                             localenv.define((Symbol)p, obj);
                         }
@@ -113,7 +113,7 @@ public class Closure extends Procedure
                             Log.enter(WARNING, "apply: param is not a symbol");
                         }
                         // next param, please
-                        currparam = ((Pair)currparam).cdr;
+                        currparam = ((Pair) currparam).getCdr();
                     }
                     else if (currparam instanceof Symbol) {
                         // this is the unusual case
@@ -131,11 +131,11 @@ public class Closure extends Procedure
                 }
                 else {
                     // accumulate argument
-                    prev.cdr = new Pair(obj, EmptyList.value);
-                    prev = (Pair)prev.cdr;
+                    prev.setCdr(new Pair(obj, EmptyList.value));
+                    prev = (List) prev.getCdr();
                 }
                 // next argument, please
-                args = (Pair)args.cdr;
+                args = (List) args.getCdr();
             }
         }
         catch (ClassCastException e) {

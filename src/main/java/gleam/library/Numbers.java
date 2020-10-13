@@ -31,9 +31,9 @@ import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
+import gleam.lang.List;
 import gleam.lang.ListIterator;
 import gleam.lang.Number;
-import gleam.lang.Pair;
 import gleam.lang.Real;
 
 /**
@@ -63,7 +63,7 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Difference, e.g. (- 7 3); Also negation, e.g. (- x)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         double result = 0.0;
@@ -93,7 +93,7 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Addition, e.g (+ 1 2)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         double result = 0.0;
@@ -113,7 +113,7 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Division, e.g. (/ 42 7)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         double result = 1.0;
@@ -133,7 +133,7 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Multiplication, e.g. (* 7 9)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         double result = 1.0;
@@ -153,7 +153,7 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Equals comparison, e.g. (= 1 1)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         boolean retVal = true;
@@ -180,7 +180,7 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Greater-than-or-equals comparison, e.g. (>= 1 2)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         boolean retVal = true;
@@ -207,7 +207,7 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Less-than-or-equals comparison, e.g. (<= 1 2)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         boolean retVal = true;
@@ -234,7 +234,7 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Greater-than comparison, e.g. (> 1 2)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         boolean retVal = true;
@@ -261,7 +261,7 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Less-than comparison, e.g. (< 1 2)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         boolean retVal = true;

@@ -37,7 +37,7 @@ package gleam.lang;
  * a variable. Locations are used in compiled Scheme code to avoid interpreted
  * (non constant-time) lookup and set operations on variables.
  */
-public final class Location extends Entity
+public final class Location extends AbstractEntity
 {
     /**
      * serialVersionUID

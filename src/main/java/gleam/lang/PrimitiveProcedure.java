@@ -47,7 +47,7 @@ public class PrimitiveProcedure extends Procedure
         this.value = primitive;
     }
 
-    public Entity apply(Pair arg, Environment env, Continuation cont)
+    public Entity apply(List arg, Environment env, Continuation cont)
         throws GleamException
     {
         if (value.maxArgs < 0 || value.maxArgs > 3) {
@@ -86,7 +86,7 @@ public class PrimitiveProcedure extends Procedure
         out.write("#<primitive-procedure "+ value.toString() + ">");
     }
 
-    private void checkNumArgs(Pair args) throws GleamException {
+    private void checkNumArgs(List args) throws GleamException {
         ListIterator it = new ListIterator(args);
         int i;
         for (i = 0; i < value.minArgs; ++i) {

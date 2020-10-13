@@ -33,6 +33,7 @@ import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
 import gleam.lang.ListIterator;
+import gleam.lang.List;
 import gleam.lang.Pair;
 import gleam.lang.Void;
 
@@ -67,7 +68,7 @@ public final class PairsAndLists {
         throws GleamException
     {
         try {
-            return ((Pair) arg1).getCar();
+            return ((List) arg1).getCar();
         }
         catch (ClassCastException e) {
             throw new GleamException("car: invalid argument", arg1);
@@ -87,7 +88,7 @@ public final class PairsAndLists {
         throws GleamException
     {
         try {
-            return ((Pair) arg1).getCdr();
+            return ((List) arg1).getCdr();
         }
         catch (ClassCastException e) {
             throw new GleamException("cdr: invalid argument", arg1);
@@ -116,7 +117,7 @@ public final class PairsAndLists {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Creates a new list from its arguments, e.g. (list 1 2 3)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         // TODO: investigate: could we simply return list?

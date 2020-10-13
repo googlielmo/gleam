@@ -34,7 +34,7 @@ import java.util.Map;
  * Constituent part of Scheme environment
  *
  */
-public class Environment extends Entity
+public class Environment extends AbstractEntity
 {
     /**
      * serialVersionUID

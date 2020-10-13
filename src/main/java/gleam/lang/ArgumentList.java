@@ -27,7 +27,6 @@
 package gleam.lang;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ArgumentList implements java.io.Serializable {
     /**
@@ -36,14 +35,14 @@ public class ArgumentList implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
     private ArrayList listArgs;
-    private Pair pairArgs;
+    private List pairArgs;
 
     public ArgumentList() {
         this.listArgs = new ArrayList();
         this.pairArgs = null;
     }
 
-    public ArgumentList(Pair args) {
+    public ArgumentList(List args) {
         this.listArgs = null;
         this.pairArgs = args;
     }
@@ -66,18 +65,18 @@ public class ArgumentList implements java.io.Serializable {
      *
      * @return Pair
      */
-    public Pair getArguments() {
+    public Entity getArguments() {
         if (pairArgs != null)
             return pairArgs;
         else
             return j2g(listArgs);
     }
 
-    private Pair j2g(List lst) {
+    private Entity j2g(java.util.List lst) {
         if (lst.size() == 0)
-            return EmptyList.value;
+            return EmptyList.value();
 
-        Pair p = EmptyList.value;
+        Entity p = EmptyList.value();
         for (int i = lst.size() - 1; i >= 0; --i) {
             p = new Pair((Entity)lst.get(i), p);
         }

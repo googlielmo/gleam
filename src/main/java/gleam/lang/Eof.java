@@ -29,7 +29,7 @@ package gleam.lang;
 /**
  * The EOF value (a singleton).
  */
-public final class Eof extends Entity {
+public final class Eof extends AbstractEntity {
     /**
      * serialVersionUID
      */

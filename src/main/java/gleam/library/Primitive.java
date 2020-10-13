@@ -37,7 +37,7 @@ import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
-import gleam.lang.Pair;
+import gleam.lang.List;
 
 /**
  * A primitive procedure of the language.
@@ -185,7 +185,7 @@ public abstract class Primitive implements java.io.Serializable {
      * @throws gleam.lang.GleamException if any error is signaled during
      * the execution of this primitive
      */
-    public Entity applyN(Pair args, Environment env, Continuation cont) throws GleamException
+    public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
     {
         throw new GleamException(this, "applyN not implemented", null);
     }

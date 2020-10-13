@@ -50,7 +50,7 @@ public class Continuation extends Procedure
      */
     private static final Action DUMMY_ACTION = new Action() {
         Entity invoke(Entity arg, Continuation cont) throws GleamException {
-            throw new GleamException("internal error: dummy action invoked", null);
+            throw new GleamException("internal error: dummy action invoked");
         }
     };
 
@@ -133,7 +133,7 @@ public class Continuation extends Procedure
      * @param env Environment
      * @return Action
      */
-    public void addCommandSequenceActions(Pair body, Environment env)
+    public void addCommandSequenceActions(List body, Environment env)
             throws GleamException
     {
         Action currAction = beginSequence();
@@ -152,20 +152,20 @@ public class Continuation extends Procedure
      * argument that this continuation will receive when executed, i. e.
      * immediately after the action of returning.
      *
-     * @param args Pair
+     * @param args List
      * @param env Environment
      * @param cont Continuation
      * @return Entity
      */
-    public Entity apply(Pair args, Environment env, Continuation cont)
+    public Entity apply(List args, Environment env, Continuation cont)
         throws GleamException
     {
         if (args != EmptyList.value) {
-            if (args.cdr == EmptyList.value) {
+            if (args.getCdr() == EmptyList.value) {
                 // replace continuation
                 env.getInterpreter().replaceContinuation(this);
                 // return argument (it's already evaluated)
-                return args.car;
+                return args.getCar();
             }
             else {
                 throw new GleamException("continuation: too many arguments", args);
