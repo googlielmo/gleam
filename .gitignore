@@ -5,5 +5,7 @@
 # jenv
 .java-version
 
-# Maven
+# common
 target/
+classes/
+*.sav
