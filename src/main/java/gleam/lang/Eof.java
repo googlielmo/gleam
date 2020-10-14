@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
 /**
  * The EOF value (a singleton).
  */
@@ -54,7 +56,7 @@ public final class Eof extends AbstractEntity {
      */
     protected Object readResolve()
     {
-//      java.lang.System.out.println("readResolve() called! (Eof)"); //DEBUG
+        Log.enter(Log.Level.FINE, "readResolve() called! (Eof)"); //DEBUG
         return value;
     }
 

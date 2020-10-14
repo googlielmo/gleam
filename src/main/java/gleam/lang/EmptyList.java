@@ -32,6 +32,8 @@ package gleam.lang;
  * Created on October 24, 2001, 1:55 AM
  */
 
+import gleam.util.Log;
+
 import java.io.PrintWriter;
 
 /**
@@ -61,6 +63,15 @@ public final class EmptyList extends AbstractEntity implements List {
     }
 
     /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    protected Object readResolve()
+    {
+        Log.enter(Log.Level.FINE, "readResolve() called! (EmptyList)"); //DEBUG
+        return value;
+    }
+
+    /**
      * Evaluates the empty list, thus resulting in an error.
      * The empty combination is an error in Scheme, see r5rs.
      */
@@ -70,37 +81,12 @@ public final class EmptyList extends AbstractEntity implements List {
         throw new GleamException("invalid combination: empty list", this);
     }
 
-    public Entity analyze() throws GleamException {
-        return this;
-    }
-
-    /**
-     * Prevents the release of multiple instances upon deserialization.
-     */
-    protected Object readResolve()
-    {
-//      java.lang.System.out.println("readResolve() called! (EmptyList)"); //DEBUG
-        return value;
-    }
-
     /**
      * Writes the empty list value.
      */
     public void write(java.io.PrintWriter out)
     {
         out.print("()");
-    }
-
-    public void display(PrintWriter out) {
-        write(out);
-    }
-
-    /**
-     * Performs environment optimization on this pair.
-     */
-    public Entity optimize(Environment env) {
-        // no optimization!
-        return this;
     }
 
     public Entity getCar() throws GleamException {

@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
 /**
  * The Scheme undefined value (a singleton).
  * Creation date: (07/nov/2001 23.40.59)
@@ -52,21 +54,21 @@ public final class Undefined extends AbstractEntity {
     }
 
     /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    protected Object readResolve()
+    {
+        Log.enter(Log.Level.FINE, "readResolve() called! (Undefined)"); //DEBUG
+        return value;
+    }
+
+    /**
      * Evaluates this object in the given environment.
      */
     public Entity eval(Environment env, Continuation cont)
         throws GleamException
     {
         throw new GleamException("Evaluation of undefined value", this);
-    }
-
-    /**
-     * Prevents the release of multiple instances upon deserialization.
-     */
-    protected Object readResolve()
-    {
-//      java.lang.System.out.println("readResolve() called! (Undefined)"); //DEBUG
-        return value;
     }
 
     /**

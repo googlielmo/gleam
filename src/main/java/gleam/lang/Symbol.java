@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
 import java.util.Map;
 
 /**
@@ -142,7 +144,7 @@ public final class Symbol extends AbstractEntity
      */
     protected Object readResolve()
     {
-//      java.lang.System.out.println("readResolve() called! (Symbol)"); //DEBUG
+        Log.enter(Log.Level.FINE, "readResolve() called! (Symbol)"); //DEBUG
         if (interned)
             return makeSymbol(value);
         else

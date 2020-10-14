@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
 /**
  * Specialization of Environment with special serialization rules.
  */
@@ -41,6 +43,7 @@ public final class SystemEnvironment extends Environment
     static final int NULL = 0;
 
     int kind;
+
     /** Constructor */
     SystemEnvironment(Environment p, int kind)
     {
@@ -54,12 +57,11 @@ public final class SystemEnvironment extends Environment
         return new SystemEnvironment(null, kind);
     }
 
-
     /** resolve environment as correct system environment on deserialization */
     protected Object readResolve()
         throws java.io.ObjectStreamException
     {
-//      java.lang.System.out.println("readResolve() called! (SystemEnvironment)"); //DEBUG
+        Log.enter(Log.Level.FINE, "readResolve() called! (SystemEnvironment)"); //DEBUG
         switch (kind) {
             case INTR:
                 return System.getInteractionEnv();
@@ -71,5 +73,4 @@ public final class SystemEnvironment extends Environment
                 throw new java.io.InvalidObjectException("Unknown kind of SystemEnvironment");
         }
     }
-
 }
