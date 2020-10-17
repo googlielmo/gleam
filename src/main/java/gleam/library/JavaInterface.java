@@ -77,6 +77,7 @@ public class JavaInterface {
         1, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Makes a new Java object, e.g. (new 'java.util.Date)",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(gleam.lang.List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -106,6 +107,7 @@ public class JavaInterface {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Calls a method on a Java object",
         "E.g. (call 'length (new 'java.lang.String \"test\")) => 4" /* doc strings */ ) {
+    @Override
     public Entity applyN(gleam.lang.List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -136,6 +138,7 @@ public class JavaInterface {
             1, 1, /* min, max no. of arguments */
             "Returns the class of its argument",
             "E.g. (class-of (new 'java.lang.String \"test\")) => class java.lang.String" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
     {
         if (arg1 instanceof JavaObject) {
@@ -217,7 +220,7 @@ public class JavaInterface {
         }
         else if (arg instanceof Real)
         {
-            return new Double(((Real) arg).getDoubleValue());
+            return ((Real) arg).getDoubleValue();
         }
         else
             throw new GleamException("cannot obtain the Java Object for a Gleam entity", arg);

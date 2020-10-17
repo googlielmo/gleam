@@ -62,6 +62,7 @@ public final class Input {
         1, 1, /* min, max no. of arguments */
         "Input.gleam_eof_object_p",
         "Returns true if argument is the EOF object, false otherwise" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
     {
         return Boolean.makeBoolean(arg1 instanceof Eof);
@@ -76,6 +77,7 @@ public final class Input {
         0, 1, /* min, max no. of arguments */
         "Reads an object from the current or specified input port",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -98,7 +100,7 @@ public final class Input {
             throw new GleamException(this, "not an input port", arg1);
         }
     }},
-    
+
     }; // primitives
 
 }

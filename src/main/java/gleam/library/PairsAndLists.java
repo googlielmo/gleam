@@ -64,6 +64,7 @@ public final class PairsAndLists {
         1, 1, /* min, max no. of arguments */
         "Gets first object in a pair, e.g. (car (list 1 2 3))",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -84,6 +85,7 @@ public final class PairsAndLists {
         1, 1, /* min, max no. of arguments */
         "Gets second object in a pair, e.g. (cdr (list 1 2 3))",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -104,6 +106,7 @@ public final class PairsAndLists {
         2, 2, /* min, max no. of arguments */
         "Creates a new pair, e.g. (cons 1 (cons 2 '(3)))",
         null /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity first, Entity second, Environment env, Continuation cont) {
         return new Pair(first, second);
     }},
@@ -117,6 +120,7 @@ public final class PairsAndLists {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Creates a new list from its arguments, e.g. (list 1 2 3)",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -144,6 +148,7 @@ public final class PairsAndLists {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a pair, false otherwise",
         "E.g. (pair? (cons 1 2)) => #t" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity obj, Environment env, Continuation cont) {
         return Boolean.makeBoolean((obj instanceof Pair) && !(obj instanceof EmptyList));
     }},
@@ -157,6 +162,7 @@ public final class PairsAndLists {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is the empty list, false otherwise",
         "E.g. (null? '()) => #t" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity obj, Environment env, Continuation cont) {
         return Boolean.makeBoolean(obj instanceof EmptyList);
     }},
@@ -170,6 +176,7 @@ public final class PairsAndLists {
         2, 2, /* min, max no. of arguments */
         "Sets car field in a pair, e.g. (set-car! my-pair 1)",
         null /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
         throws GleamException
     {
@@ -189,6 +196,7 @@ public final class PairsAndLists {
         2, 2, /* min, max no. of arguments */
         "Sets cdr field in a pair, e.g. (set-cdr! my-pair 2)",
         null /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
         throws GleamException
     {

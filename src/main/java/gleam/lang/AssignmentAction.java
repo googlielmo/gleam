@@ -60,6 +60,7 @@ public class AssignmentAction extends Action {
     }
 
     /** invocation  */
+    @Override
     Entity invoke(Entity arg, Continuation cont) throws GleamException {
         cont.head = next;
         env.getLocation(symbol).set(arg);

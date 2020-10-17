@@ -90,18 +90,18 @@ public final class System
      */
     private static void importPrimitives(Primitive[] primitives) {
         Environment instEnv;
-        for (int i = 0; i < primitives.length; ++i) {
-            switch (primitives[i].definitionEnv) {
-            case Primitive.NULL_ENV:
-                instEnv = nullEnv;
-                break;
-            case Primitive.R5RS_ENV:
-                instEnv = r5rsEnv;
-                break;
-            default:
-                instEnv = intrEnv;
+        for (Primitive primitive : primitives) {
+            switch (primitive.definitionEnv) {
+                case Primitive.NULL_ENV:
+                    instEnv = nullEnv;
+                    break;
+                case Primitive.R5RS_ENV:
+                    instEnv = r5rsEnv;
+                    break;
+                default:
+                    instEnv = intrEnv;
             }
-            installPrimitive(instEnv, primitives[i]);
+            installPrimitive(instEnv, primitive);
         }
     }
 

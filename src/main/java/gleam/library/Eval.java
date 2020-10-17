@@ -63,6 +63,7 @@ public final class Eval {
         1, 2, /* min, max no. of arguments */
         "Evaluates an expression in a given environment",
         "E.g. (eval '(+ 1 2) (interaction-environment)) => 3" /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
         throws GleamException
     {
@@ -90,6 +91,7 @@ public final class Eval {
         "Returns the null environment",
         "A scheme-report version number must be specified, e.g. (null-environment 5). "
         + "Currently supported versions are 4 and 5" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -118,6 +120,7 @@ public final class Eval {
         "Returns the scheme-report environment",
         "A scheme-report version number must be specified, e.g. (scheme-report-environment 5). "
         + "Currently supported versions are 4 and 5" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -145,6 +148,7 @@ public final class Eval {
         0, 0, /* min, max no. of arguments */
         "Returns the interaction (top-level) environment",
         null /* doc strings */ ) {
+    @Override
     public Entity apply0(Environment env, Continuation cont)
     {
         return gleam.lang.System.getInteractionEnv();
@@ -159,6 +163,7 @@ public final class Eval {
         0, 0, /* min, max no. of arguments */
         "Returns the current environment",
         null /* doc strings */ ) {
+    @Override
     public Entity apply0(Environment env, Continuation cont) {
         return env;
     }},
@@ -172,6 +177,7 @@ public final class Eval {
         2, 2, /* min, max no. of arguments */
         "Evaluates an expression in a given environment",
         "E.g. (in-environment (scheme-report-environment 5) (+ 1 2)) => 3" /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity argEnv, Entity argExpr, Environment env, Continuation cont) {
         cont
                 .begin(new ExpressionAction(argEnv, env))         // 1) evaluate environment expr
@@ -189,6 +195,7 @@ public final class Eval {
         0, 0, /* min, max no. of arguments */
         "Creates a new environment",
         "E.g. (in-environment (make-environment) (begin (define a 7) a)) => 7" /* doc strings */ ) {
+    @Override
     public Entity apply0(Environment env, Continuation cont) {
         return new Environment(env);
     }},
@@ -202,6 +209,7 @@ public final class Eval {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is an environment, false otherwise",
         "E.g. (environment? (scheme-report-environment 5)) => #t" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg, Environment env, Continuation cont)
     {
         return Boolean.makeBoolean(arg instanceof Environment);

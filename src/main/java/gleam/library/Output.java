@@ -62,6 +62,7 @@ public final class Output {
         1, 2, /* min, max no. of arguments */
         "Writes an object in human-readable form, e.g. (display \"hello\")",
         null /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity obj, Entity obj2, Environment env, Continuation cont)
         throws GleamException
     {
@@ -99,6 +100,7 @@ public final class Output {
         1, 2, /* min, max no. of arguments */
         "Writes an object in machine-readable form, e.g. (write \"hello\")",
         null /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity obj, Entity obj2, Environment env, Continuation cont)
         throws GleamException
     {
@@ -136,6 +138,7 @@ public final class Output {
         0, 1, /* min, max no. of arguments */
         "Writes an end of line to the current or specified output port",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {

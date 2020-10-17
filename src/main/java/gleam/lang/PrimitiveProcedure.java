@@ -47,6 +47,7 @@ public class PrimitiveProcedure extends Procedure
         this.value = primitive;
     }
 
+    @Override
     public Entity apply(List arg, Environment env, Continuation cont)
         throws GleamException
     {
@@ -81,6 +82,7 @@ public class PrimitiveProcedure extends Procedure
         }
     }
 
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.write("#<primitive-procedure "+ value.toString() + ">");

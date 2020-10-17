@@ -202,6 +202,7 @@ public abstract class Primitive implements java.io.Serializable {
      * Gets a representation of this Primitive
      * @return a String representing this Primitive in human readable form
      */
+    @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append(name);

@@ -55,12 +55,13 @@ public class Real extends Number
      * @return boolean
      * @param o java.lang.Object
      */
+    @Override
     public boolean equals(java.lang.Object o) {
         if (o instanceof Real) {
             return value == ((Real)o).value;
         }
         else {
-            return false;   
+            return false;
         }
     }
 
@@ -69,6 +70,7 @@ public class Real extends Number
      * The implementation is the same as per java.lang.Double.
      * @return int
      */
+    @Override
     public int hashCode() {
         long v = Double.doubleToLongBits(value);
         return (int)(v^(v>>>32));
@@ -77,12 +79,14 @@ public class Real extends Number
     /**
      * Writes a real
      */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.print(value);
     }
-    
+
     /** Takes value of number as a double.  */
+    @Override
     public double getDoubleValue() {
         return value;
     }

@@ -104,6 +104,7 @@ public final class Symbol extends AbstractEntity
     /**
      * Obtains the string representation of this symbol
      */
+    @Override
     public String toString() {
         return value;
     }
@@ -111,6 +112,7 @@ public final class Symbol extends AbstractEntity
     /**
      * Evaluates this symbol in the given environment.
      */
+    @Override
     public Entity eval(Environment env, Continuation cont)
         throws GleamException
     {
@@ -154,6 +156,7 @@ public final class Symbol extends AbstractEntity
     /**
      * Performs environment optimization on this symbol.
      */
+    @Override
     public Entity optimize(Environment env)
     {
         Location loc = env.getLocationOrNull(this);
@@ -171,6 +174,7 @@ public final class Symbol extends AbstractEntity
     }
 
     /** Writes this symbol */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.write(value);

@@ -64,6 +64,7 @@ public final class ControlFeatures {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a procedure, false otherwise",
         "E.g. (procedure? cons) => #t" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
     {
         return Boolean.makeBoolean(arg1 instanceof Procedure);
@@ -78,6 +79,7 @@ public final class ControlFeatures {
         "Calls a procedure with an escape procedure arg.",
         "Also known as call/cc, this operator is both unusual and powerful.\n"+
         "A simple usage pattern of call/cc is to implement exception handling." /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -100,6 +102,7 @@ public final class ControlFeatures {
         Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, 2, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity proc, Entity args, Environment env, Continuation cont)
         throws GleamException
     {

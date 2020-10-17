@@ -80,6 +80,7 @@ public class Closure extends Procedure
     /**
      * Applies this closure.
      */
+    @Override
     public Entity apply(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -161,6 +162,7 @@ public class Closure extends Procedure
     /**
      * Writes a Closure
      */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.write("#<procedure");

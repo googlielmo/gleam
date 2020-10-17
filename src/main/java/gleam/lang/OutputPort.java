@@ -60,6 +60,7 @@ public class OutputPort extends Port
     /**
      * closes this port
      */
+    @Override
     public void close() {
         if (out != null) {
             out.close();
@@ -70,6 +71,7 @@ public class OutputPort extends Port
     /**
      * tests whether port is open
      */
+    @Override
     public boolean isOpen() {
         return null != out;
     }
@@ -130,6 +132,7 @@ public class OutputPort extends Port
     /**
      * Writes this port
      */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.print("#<output-port>");

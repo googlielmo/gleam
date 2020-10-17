@@ -63,6 +63,7 @@ public class ExpressionInEnvironmentAction extends Action {
      * @return the result of the evaluation
      * @throws gleam.lang.GleamException in case of errors
      */
+    @Override
     Entity invoke(Entity newEnv, Continuation cont) throws gleam.lang.GleamException
     {
         cont.head = next;

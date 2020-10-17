@@ -48,6 +48,7 @@ public class ObtainArgumentAction extends Action {
         this(arglist, argumentIndex, null);
     }
 
+    @Override
     Entity invoke(Entity arg, Continuation cont) {
         cont.head = next;
         // arg is already evaluated

@@ -78,6 +78,7 @@ public final class Syntax {
         1, 1, /* min, max no. of arguments */
         "Gives its argument unevaluated, e.g. (quote x); 'x",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont) {
         return arg1;
     }},
@@ -93,6 +94,7 @@ public final class Syntax {
         "Can be used at top-level to create a new global variable, "
         +"e.g. (define x 1); or at the beginning of a procedure body "
         +"to create a new local variable." /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont) throws GleamException {
         try {
             ListIterator it = new ListIterator(args);
@@ -151,6 +153,7 @@ public final class Syntax {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Creates a procedure, e.g. (lambda (x) (+ x 1))",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont) throws GleamException {
         try {
             Entity lambdaParams = args.getCar();
@@ -171,6 +174,7 @@ public final class Syntax {
         2, 3, /* min, max no. of arguments */
         "Conditional evaluation, e.g. (if (eqv? 1 0) 'hmm 'ok)",
         null /* doc strings */ ) {
+    @Override
     public Entity apply3(Entity test, Entity consequent, Entity alternate, Environment env, Continuation cont) {
         if (alternate == null)
             alternate = Void.value();
@@ -191,6 +195,7 @@ public final class Syntax {
         2, 2, /* min, max no. of arguments */
         "Variable assignment, e.g. (set! x 11)",
         "The variable must be already bound, e.g. with define" /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity arg1, Entity obj, Environment env, Continuation cont) throws GleamException {
         try {
             Symbol s = (Symbol) arg1;
@@ -215,6 +220,7 @@ public final class Syntax {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Sequential execution, e.g. (begin (first-step) (second-step))",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont) throws GleamException {
         // equivalent to the body of a procedure with no arguments
         cont.addCommandSequenceActions(args, env);
@@ -320,6 +326,7 @@ public final class Syntax {
         1, 1, /* min, max no. of arguments */
         "Makes a syntax rewriter, e.g. (make-rewriter (lambda (exp) ...))",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity obj, Environment env, Continuation cont) throws GleamException {
         // evaluate argument: must be a function of exactly one argument
         // obj = obj.eval(env, cont);

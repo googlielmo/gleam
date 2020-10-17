@@ -63,6 +63,7 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Difference, e.g. (- 7 3); Also negation, e.g. (- x)",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -93,6 +94,7 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Addition, e.g (+ 1 2)",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -113,6 +115,7 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Division, e.g. (/ 42 7)",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -133,6 +136,7 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Multiplication, e.g. (* 7 9)",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -153,6 +157,7 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Equals comparison, e.g. (= 1 1)",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -180,6 +185,7 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Greater-than-or-equals comparison, e.g. (>= 1 2)",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -207,6 +213,7 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Less-than-or-equals comparison, e.g. (<= 1 2)",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -234,6 +241,7 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Greater-than comparison, e.g. (> 1 2)",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -261,6 +269,7 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Less-than comparison, e.g. (< 1 2)",
         null /* doc strings */ ) {
+    @Override
     public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -288,6 +297,7 @@ public final class Numbers {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a number, false otherwise",
         "E.g. (number? 3) => #t" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont) {
         return Boolean.makeBoolean(arg1 instanceof Number);
     }},

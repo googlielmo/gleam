@@ -54,6 +54,7 @@ public final class Location extends AbstractEntity
     }
 
     /** Location evaluates to its content value */
+    @Override
     public Entity eval(Environment env, Continuation cont) {
         return value;
     }
@@ -75,6 +76,7 @@ public final class Location extends AbstractEntity
     /**
      * Writes this location
      */
+    @Override
     public void write(java.io.PrintWriter out) {
         out.write("#<location of ");
         value.write(out);

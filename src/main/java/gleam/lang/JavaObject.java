@@ -120,10 +120,12 @@ public class JavaObject extends AbstractEntity {
         }
     }
 
+    @Override
     public void write(PrintWriter out) {
         out.print(this.toString());
     }
 
+    @Override
     public String toString() {
         return value == null ? "null" : value.toString();
     }
@@ -139,6 +141,7 @@ public class JavaObject extends AbstractEntity {
         return value;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof JavaObject))
             return false;

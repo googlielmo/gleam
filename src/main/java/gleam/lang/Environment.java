@@ -140,6 +140,7 @@ public class Environment extends AbstractEntity
     }
 
     /** Writes this environment */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.write("#<environment>");
@@ -150,13 +151,13 @@ public class Environment extends AbstractEntity
         OutputPort out = System.getCout();
         out.print("--------------- "+this.toString());
         out.newline();
-        for (Iterator iter = assoc.keySet().iterator(); iter.hasNext(); ) {
-            Symbol s = (Symbol) iter.next();
+        for (Object o : assoc.keySet()) {
+            Symbol s = (Symbol) o;
             Location l = (Location) assoc.get(s);
 
             out.write(s);
-            out.print("\t"+s.toString());
-            out.print("\t"+l.get().toString());
+            out.print("\t" + s.toString());
+            out.print("\t" + l.get().toString());
             out.newline();
         }
         if (this.parent != null) {

@@ -65,6 +65,7 @@ public final class Undefined extends AbstractEntity {
     /**
      * Evaluates this object in the given environment.
      */
+    @Override
     public Entity eval(Environment env, Continuation cont)
         throws GleamException
     {
@@ -74,6 +75,7 @@ public final class Undefined extends AbstractEntity {
     /**
      * Writes the undefined value
      */
+    @Override
     public void write(java.io.PrintWriter out) {
         out.write("#<undefined>");
     }

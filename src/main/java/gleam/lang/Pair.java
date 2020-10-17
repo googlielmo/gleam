@@ -52,18 +52,22 @@ public class Pair extends AbstractEntity implements List {
         this.analyzed = false;
     }
 
+    @Override
     public Entity getCar() {
         return car;
     }
 
+    @Override
     public Entity getCdr() {
         return cdr;
     }
 
+    @Override
     public void setCar(Entity obj) {
         car = obj;
     }
 
+    @Override
     public void setCdr(Entity obj) {
         cdr = obj;
     }
@@ -71,6 +75,7 @@ public class Pair extends AbstractEntity implements List {
     /**
      * Performs syntax analysis on this pair.
      */
+    @Override
     public Entity analyze()
         throws GleamException
     {
@@ -125,6 +130,7 @@ public class Pair extends AbstractEntity implements List {
     /**
      * Evaluates the procedure call this pair stands for.
      */
+    @Override
     public Entity eval(Environment env, Continuation cont)
         throws GleamException
     {
@@ -192,6 +198,7 @@ public class Pair extends AbstractEntity implements List {
     /**
      * Performs environment optimization on this pair.
      */
+    @Override
     public Entity optimize(Environment env)
         throws GleamException
     {
@@ -264,6 +271,7 @@ public class Pair extends AbstractEntity implements List {
     /**
      * Writes this pair.
      */
+    @Override
     public void write(java.io.PrintWriter out) {
         if (getCar() == Symbol.QUOTE
                 && !(getCdr() instanceof EmptyList)

@@ -61,6 +61,7 @@ public class EvalAction extends Action {
      * @return the result of the evaluation
      * @throws gleam.lang.GleamException in case of errors
      */
+    @Override
     Entity invoke(Entity arg, Continuation cont) throws GleamException {
         cont.head = next;
         return arg.eval(env, cont);

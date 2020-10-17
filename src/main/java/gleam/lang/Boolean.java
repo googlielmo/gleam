@@ -71,6 +71,7 @@ public final class Boolean extends AbstractEntity
     /**
      * Writes a boolean.
      */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.print(value ? "#t" : "#f");

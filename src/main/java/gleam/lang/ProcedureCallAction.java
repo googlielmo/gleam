@@ -49,6 +49,7 @@ public class ProcedureCallAction extends Action {
     }
 
     // arg is the function, arglist contains the arguments
+    @Override
     Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
         cont.head = next;
         // apply function to args, return result

@@ -49,6 +49,7 @@ public class Continuation extends Procedure
      * Dummy action used as anchor to add actions
      */
     private static final Action DUMMY_ACTION = new Action() {
+        @Override
         Entity invoke(Entity arg, Continuation cont) throws GleamException {
             throw new GleamException("internal error: dummy action invoked");
         }
@@ -157,6 +158,7 @@ public class Continuation extends Procedure
      * @param cont Continuation
      * @return Entity
      */
+    @Override
     public Entity apply(List args, Environment env, Continuation cont)
         throws GleamException
     {
@@ -179,6 +181,7 @@ public class Continuation extends Procedure
     /**
      * Writes this continuation.
      */
+    @Override
     public void write(java.io.PrintWriter out) {
         out.write("#<continuation>");
     }

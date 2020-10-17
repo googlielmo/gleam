@@ -60,11 +60,12 @@ public final class Characters {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a character, false otherwise",
         "E.g. (char? #\\a) => #t" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
     {
         return Boolean.makeBoolean(arg1 instanceof Character);
     }},
-    
+
     }; // primitives
 
 }

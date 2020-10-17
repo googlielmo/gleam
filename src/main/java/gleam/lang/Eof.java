@@ -63,6 +63,7 @@ public final class Eof extends AbstractEntity {
     /**
      * Writes the Eof value (nothing).
      */
+    @Override
     public void write(java.io.PrintWriter out) {
         //out.write("#<eof>");
     }

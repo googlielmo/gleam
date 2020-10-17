@@ -62,6 +62,7 @@ public final class Void extends AbstractEntity {
     /**
      * Writes the void value.
      */
+    @Override
     public void write(java.io.PrintWriter out) {
         out.write("#<void>");
     }

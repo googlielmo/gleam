@@ -52,6 +52,7 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
      *
      * @param out PrintWriter
      */
+    @Override
     public void write(PrintWriter out) {
         out.write("#<syntax-rewriter");
         if (Log.getLevel() < Log.Level.INFO) {

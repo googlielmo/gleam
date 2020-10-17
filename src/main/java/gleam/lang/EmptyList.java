@@ -75,6 +75,7 @@ public final class EmptyList extends AbstractEntity implements List {
      * Evaluates the empty list, thus resulting in an error.
      * The empty combination is an error in Scheme, see r5rs.
      */
+    @Override
     public Entity eval(Environment env, Continuation cont)
         throws GleamException
     {
@@ -84,23 +85,28 @@ public final class EmptyList extends AbstractEntity implements List {
     /**
      * Writes the empty list value.
      */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.print("()");
     }
 
+    @Override
     public Entity getCar() throws GleamException {
         throw new GleamException("car: invalid arguments", this);
     }
 
+    @Override
     public Entity getCdr() throws GleamException {
         throw new GleamException("cdr: invalid arguments", this);
     }
 
+    @Override
     public void setCar(Entity obj) throws GleamException {
         throw new GleamException("set-car!: invalid arguments", this);
     }
 
+    @Override
     public void setCdr(Entity obj) throws GleamException {
         throw new GleamException("set-cdr!: invalid arguments", this);
     }

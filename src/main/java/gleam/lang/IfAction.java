@@ -69,6 +69,7 @@ public class IfAction extends Action {
      * @return the result of the evaluation
      * @throws gleam.lang.GleamException in case of errors
     */
+    @Override
     Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
         cont.head = next;
         if (arg != Boolean.falseValue)

@@ -68,6 +68,7 @@ public final class Interaction {
         "Gives a short help on a primitive, e.g. (help if)",
         null /* doc strings */ ) {
     private static final int helpColumnWidth = 15;
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -101,12 +102,11 @@ public final class Interaction {
 
         System.getCout().print("Available primitives:\n\n");
         java.util.Set nameset = System.getHelpNames();
-        java.util.Iterator nameit = nameset.iterator();
-        while (nameit.hasNext()) {
-            StringBuffer pname = new StringBuffer((String) nameit.next());
+        for (Object o : nameset) {
+            StringBuffer pname = new StringBuffer((String) o);
             String doc = System.getHelpComment(pname.toString());
             if (doc != null) {
-                if (pname.length() < helpColumnWidth ) {
+                if (pname.length() < helpColumnWidth) {
                     pname.append(spc.subSequence(0, helpColumnWidth - pname.length()));
                 }
                 System.getCout().print(pname.toString());
@@ -135,6 +135,7 @@ public final class Interaction {
         1, 1, /* min, max no. of arguments */
         "Sets verbosity level: 0=off, 1=standard ... 5=pedantic",
         "E.g. (set-verbosity! 2)" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -159,6 +160,7 @@ public final class Interaction {
         Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 0, /* min, max no. of arguments */
         "Returns current verbosity level", null /* doc strings */ ) {
+    @Override
     public Entity apply0(Environment env, Continuation cont)
     {
         return new Real(Level.OFF - Log.getLevel());
@@ -173,6 +175,7 @@ public final class Interaction {
         1, 1, /* min, max no. of arguments */
         "Saves current session environment, e.g. (save-session \"file\")",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -207,6 +210,7 @@ public final class Interaction {
         1, 1, /* min, max no. of arguments */
         "Loads a session environment, e.g. (load-session \"file\")",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
