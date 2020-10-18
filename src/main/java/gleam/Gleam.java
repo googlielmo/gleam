@@ -38,14 +38,14 @@ import gleam.util.Log;
 public class Gleam
 {
     // Gleam release number
-    private static final String RELEASE="0.90 pre-2";
+    private static final String RELEASE="1.1-SNAPSHOT";
 
     // Dump env symbol (for debugging)
     private static final Symbol cEnv = Symbol.makeSymbol("!e");
 
-    // Quit symbol 
+    // Quit symbol
     private static final Symbol cQuit = Symbol.makeSymbol("!q");
-        
+
     /**
      * Entry point for the Gleam interactive interpreter
      * @param args command line arguments
@@ -76,7 +76,7 @@ public class Gleam
 
         gleam.lang.Entity prompt = new gleam.lang.MutableString("> ");
         gleam.lang.Entity result;
-        
+
         for(;;)
         {
             try {
