@@ -127,8 +127,10 @@ public final class Symbol extends AbstractEntity
     {
         Symbol o = symtable.get(s);
         if (o == null) {
-            symtable.put(s, new Symbol(s));
+            o = new Symbol(s);
+            symtable.put(s, o);
         }
+
         return o;
     }
 
@@ -170,6 +172,7 @@ public final class Symbol extends AbstractEntity
              */
             return this;
         }
+
         return loc;
     }
 
