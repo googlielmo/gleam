@@ -48,14 +48,14 @@ public class Environment extends AbstractEntity
     private transient Interpreter intp;
 
     /** Association function: symbol --> location */
-    private Map assoc;
+    private Map<Symbol, Location> assoc;
 
     /** Constructor */
     public Environment(Environment parent)
     {
         this.parent = parent;
         if (parent != null) intp = parent.intp;
-        this.assoc = new HashMap();
+        this.assoc = new HashMap<Symbol, Location>();
     }
 
     /**
@@ -151,9 +151,8 @@ public class Environment extends AbstractEntity
         OutputPort out = System.getCout();
         out.print("--------------- "+this.toString());
         out.newline();
-        for (Object o : assoc.keySet()) {
-            Symbol s = (Symbol) o;
-            Location l = (Location) assoc.get(s);
+        for (Symbol s : assoc.keySet()) {
+            Location l = assoc.get(s);
 
             out.write(s);
             out.print("\t" + s.toString());

@@ -82,21 +82,22 @@ public class JavaInterface {
         throws GleamException
     {
         ListIterator it = new ListIterator(args);
-        Entity className = it.next();
-        if (!(className instanceof Symbol)) {
-            throw new GleamException(this, "wrong argument type, should be a symbol", className);
+        Entity e = it.next();
+        if (!(e instanceof Symbol)) {
+            throw new GleamException(this, "wrong argument type, should be a symbol", e);
         }
+        Symbol className = (Symbol) e;
         if (!it.hasNext()) {
-            return new JavaObject((Symbol) className);
+            return new JavaObject(className);
         }
-        List argClasses = new ArrayList();
-        List argObjects = new ArrayList();
+        List<Class<?>> argClasses = new ArrayList<Class<?>>();
+        List<Object> argObjects = new ArrayList<Object>();
         while (it.hasNext()) {
             Entity arg = it.next();
             argClasses.add(getJavaClass(arg));
             argObjects.add(getJavaObject(arg));
         }
-        return new JavaObject((Symbol) className, (Class[])argClasses.toArray(new Class[0]), argObjects.toArray());
+        return new JavaObject(className, argClasses.toArray(new Class<?>[0]), argObjects.toArray());
     }},
 
     /**
@@ -120,14 +121,14 @@ public class JavaInterface {
         if (!(object instanceof JavaObject)) {
             throw new GleamException(this, "wrong argument type, should be a Java object", object);
         }
-        List argClasses = new ArrayList();
-        List argObjects = new ArrayList();
+        List<Class<?>> argClasses = new ArrayList<Class<?>>();
+        List<Object> argObjects = new ArrayList<Object>();
         while (it.hasNext()) {
             Entity arg = it.next();
             argClasses.add(getJavaClass(arg));
             argObjects.add(getJavaObject(arg));
         }
-        return call((JavaObject) object, (Symbol) methodName, (Class[])argClasses.toArray(new Class[0]), argObjects.toArray());
+        return call((JavaObject) object, (Symbol) methodName, argClasses.toArray(new Class<?>[0]), argObjects.toArray());
     }},
 
     /**
@@ -155,11 +156,11 @@ public class JavaInterface {
 
     }; // primitives
 
-    private static Entity call(JavaObject object, Symbol methodName, Class[] parameterTypes, Object[] arguments) throws GleamException {
+    private static Entity call(JavaObject object, Symbol methodName, Class<?>[] parameterTypes, Object[] arguments) throws GleamException {
         if (object.getObjectValue() == null) {
             throw new GleamException("call: null pointer", methodName);
         }
-        Class clazz = object.getObjectValue().getClass();
+        Class<?> clazz = object.getObjectValue().getClass();
         try {
             Method method = clazz.getMethod(methodName.toString(), parameterTypes);
             Object retVal = method.invoke(object.getObjectValue(), arguments);
@@ -185,7 +186,7 @@ public class JavaInterface {
         }
     }
 
-    private static Class getJavaClass(Entity arg) throws GleamException {
+    private static Class<?> getJavaClass(Entity arg) throws GleamException {
         if (arg instanceof JavaObject) {
             Object o = ((JavaObject) arg).getObjectValue();
             return o == null ? null : o.getClass();

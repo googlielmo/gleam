@@ -39,6 +39,8 @@ import gleam.lang.Void;
 import gleam.util.Log;
 import gleam.util.Log.Level;
 
+import java.util.Set;
+
 /**
  * INTERACTION -- GLEAM-SPECIFIC
  * Primitive operator and procedure implementation library.
@@ -101,9 +103,9 @@ public final class Interaction {
         spc.append(chars);
 
         System.getCout().print("Available primitives:\n\n");
-        java.util.Set nameset = System.getHelpNames();
-        for (Object o : nameset) {
-            StringBuffer pname = new StringBuffer((String) o);
+        Set<String> nameset = System.getHelpNames();
+        for (String s : nameset) {
+            StringBuffer pname = new StringBuffer(s);
             String doc = System.getHelpComment(pname.toString());
             if (doc != null) {
                 if (pname.length() < helpColumnWidth) {

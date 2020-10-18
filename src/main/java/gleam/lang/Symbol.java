@@ -28,6 +28,7 @@ package gleam.lang;
 
 import gleam.util.Log;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -43,7 +44,7 @@ public final class Symbol extends AbstractEntity
     /**
      * The unique symbol table
      */
-    static Map symtable = new java.util.HashMap(512);
+    static Map<String, Symbol> symtable = new HashMap<String, Symbol>(512);
 
     /*
      * common symbols (some are keywords, some are not)
@@ -124,12 +125,11 @@ public final class Symbol extends AbstractEntity
      */
     public synchronized static Symbol makeSymbol(String s)
     {
-        Object o = symtable.get(s);
+        Symbol o = symtable.get(s);
         if (o == null) {
-            o = new Symbol(s);
-            symtable.put(s, o);
+            symtable.put(s, new Symbol(s));
         }
-        return (Symbol) o;
+        return o;
     }
 
     /**

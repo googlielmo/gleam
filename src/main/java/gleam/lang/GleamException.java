@@ -55,10 +55,7 @@ public class GleamException extends Exception
     public GleamException(String message, Entity value)
     {
         super(message);
-        if (value != null)
-            errobj = value;
-        else
-            errobj = Void.value;
+        errobj = value != null ? value : Void.value;
 
         if (System.getInteractionEnv() != null)
             System.getInteractionEnv().define(Symbol.ERROBJ, errobj);

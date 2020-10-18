@@ -91,7 +91,7 @@ public class JavaObject extends AbstractEntity {
         }
     }
 
-    public JavaObject(Symbol s, Class[] classes, Object[] objects) throws GleamException {
+    public JavaObject(Symbol s, Class<?>[] classes, Object[] objects) throws GleamException {
         value = null;
         String className = s.toString();
         try {

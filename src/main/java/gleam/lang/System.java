@@ -28,7 +28,10 @@ package gleam.lang;
 
 import gleam.library.Primitive;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import static gleam.util.Log.Level.FINE;
 import static gleam.util.Log.Level.SEVERE;
@@ -43,7 +46,7 @@ public final class System
     private System() {}
 
     /** the keyword set */
-    private static Set kwSet = new java.util.HashSet();
+    private static Set<Symbol> kwSet = new HashSet<Symbol>();
 
     /** the null environment, as defined in r5rs */
     private static Environment nullEnv = null;
@@ -61,12 +64,12 @@ public final class System
     private static OutputPort cout = null;
 
     /** the short-help map */
-    private static java.util.HashMap helpComment
-        = new java.util.HashMap();
+    private static HashMap<String, String> helpComment
+        = new HashMap<String, String>();
 
     /** the long-help map */
-    private static java.util.HashMap helpDocumentation
-        = new java.util.HashMap();
+    private static HashMap<String, String> helpDocumentation
+        = new HashMap<String, String>();
 
     // static initializer, executed once after loading class
     static {
@@ -199,8 +202,8 @@ public final class System
     /**
      * Gets the set of help-enabled procedures
      */
-    public static java.util.Set getHelpNames() {
-        return new java.util.TreeSet(helpDocumentation.keySet());
+    public static Set<String> getHelpNames() {
+        return new TreeSet<String>(helpDocumentation.keySet());
     }
 
     public static Environment getInteractionEnv() {
@@ -298,7 +301,7 @@ public final class System
             else if (arg instanceof List) {
                 // iterate over (possibly improper) list
                 ListIterator ait = new ListIterator( (List) arg, true);
-                java.util.Set paramSet = new java.util.HashSet();
+                Set<Symbol> paramSet = new HashSet<Symbol>();
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
                     if (!isVariable(pobj)) {
@@ -413,7 +416,7 @@ public final class System
 
                 // iterate over (possibly improper) list
                 ListIterator ait = new ListIterator( (List) arg, true);
-                java.util.Set paramSet = new java.util.HashSet();
+                Set<Symbol> paramSet = new HashSet<Symbol>();
 
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
