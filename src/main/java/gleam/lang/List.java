@@ -1,6 +1,6 @@
 package gleam.lang;
 
-public interface List extends Entity {
+public interface List extends Entity, Iterable<Entity> {
 
     Entity getCar()
             throws GleamException;

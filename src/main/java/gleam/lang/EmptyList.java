@@ -35,6 +35,7 @@ package gleam.lang;
 import gleam.util.Log;
 
 import java.io.PrintWriter;
+import java.util.Iterator;
 
 /**
  * This class represents the distinct type of the Scheme empty list.
@@ -109,5 +110,15 @@ public final class EmptyList extends AbstractEntity implements List {
     @Override
     public void setCdr(Entity obj) throws GleamException {
         throw new GleamException("set-cdr!: invalid arguments", this);
+    }
+
+    /**
+     * Returns an iterator for the empty list.
+     *
+     * @return an Entity iterator.
+     */
+    @Override
+    public Iterator<Entity> iterator() {
+        return new ListIterator(this);
     }
 }

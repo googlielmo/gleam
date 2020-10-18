@@ -180,7 +180,7 @@ public class Interpreter {
                         new java.io.InputStreamReader(
                             getClass().getResourceAsStream("/bootstrap.scm"))));
             // FIXME the bootstrap takes place in the interaction environment
-            // instead of r5rs, which is against the standar, but we need make-rewriter.
+            // instead of r5rs, which is against the standard, but we need make-rewriter.
             // We should solve this problem, maybe using set! on preallocated r5rs names
             load(bootstrap, gleam.lang.System.getInteractionEnv());
             bootstrapped = true;

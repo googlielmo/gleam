@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import java.util.Iterator;
+
 import static gleam.util.Log.Level.INFO;
 
 /**
@@ -308,7 +310,10 @@ public class Pair extends AbstractEntity implements List {
             while (current.getCdr() instanceof Pair && !(current.getCdr() instanceof EmptyList)) {
                 current = (Pair) current.getCdr();
                 out.print(" ");
-                current.getCar().write(out);
+                if ((current.getCar() == null))
+                    out.print("ERROR");
+                else
+                    current.getCar().write(out);
             }
             if (!(current.getCdr() instanceof EmptyList)) {
                 out.print(" . ");
@@ -316,5 +321,15 @@ public class Pair extends AbstractEntity implements List {
             }
             out.print(")");
         }
+    }
+
+    /**
+     * Returns an iterator over elements of this List.
+     *
+     * @return an Entity iterator.
+     */
+    @Override
+    public Iterator<Entity> iterator() {
+        return new ListIterator(this);
     }
 }

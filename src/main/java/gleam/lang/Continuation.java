@@ -138,9 +138,7 @@ public class Continuation extends Procedure
             throws GleamException
     {
         Action currAction = beginSequence();
-        ListIterator it = new ListIterator(body);
-        while (it.hasNext()) {
-            Entity expr = it.next();
+        for (Entity expr : body) {
             currAction = currAction.andThen(new ExpressionAction(expr, env));
         }
         endSequence();

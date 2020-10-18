@@ -26,10 +26,13 @@
 
 package gleam.lang;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * List read/write iterator.
  */
-public class ListIterator {
+public class ListIterator implements Iterator<Entity> {
     private List pair;
     private List restPair;
     private boolean allowImproper;
@@ -61,43 +64,55 @@ public class ListIterator {
 
     /**
      * Retrieves next object from the list.
+     *
+     * @return the next Entity in the list
+     * @throws NoSuchElementException if no next element is available
      */
+    @Override
     public Entity next()
-            throws GleamException
+            throws NoSuchElementException
     {
-        if (!isImproper) {
-            Entity retVal = pair.getCar();
-            restPair = pair;
-            if (pair.getCdr() instanceof List) {
-                pair = (List) pair.getCdr();
-            }
-            else {
-                isImproper = true;
-            }
-            return retVal;
-        }
-        else {
-            Entity retVal = pair.getCdr();
-            pair = EmptyList.value;
-            if (allowImproper) {
+        try {
+            if (isImproper) {
+                Entity retVal = pair.getCdr();
+                pair = EmptyList.value;
+                if (allowImproper) {
+                    return retVal;
+                }
+                else {
+                    throw new ImproperListException(retVal);
+                }
+            } else {
+                Entity retVal = pair.getCar();
+                restPair = pair;
+                if (pair.getCdr() instanceof List) {
+                    pair = (List) pair.getCdr();
+                }
+                else {
+                    isImproper = true;
+                }
                 return retVal;
             }
-            else {
-                throw new ImproperListException(retVal);
-            }
+        } catch (GleamException e) {
+            throw (NoSuchElementException)
+                    new NoSuchElementException("improper list")
+                            .initCause(e);
         }
     }
 
     /**
-     * Replaces current object.
+     * Replaces current value.
      * Must be called after next().
      */
     public void replace(Entity newArg)
         throws GleamException
     {
+        if (newArg == null) {
+            throw new GleamException("Unexpectd null");
+        }
         if (restPair == null) {
             throw new GleamException(
-                "No current object to replace", (Entity) pair);
+                "No current value to replace", (Entity) pair);
         }
         if (isImproper && pair == EmptyList.value) {
             restPair.setCdr(newArg);
@@ -110,8 +125,9 @@ public class ListIterator {
     /**
      * Remove operation currently not supported.
      */
+    @Override
     public void remove() {
-        throw new UnsupportedOperationException("Remove operation currently not supported");
+        throw new UnsupportedOperationException("Unsupported remove operation");
     }
 
     /**
