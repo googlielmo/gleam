@@ -80,6 +80,6 @@ public class LogTest {
         Log.record(CONFIG, "2");
         Log.record(INFO, "3");
         Log.record(WARNING, "4");
-        Log.record(SEVERE, "5");
+        Log.record(ERROR, "5");
     }
 }

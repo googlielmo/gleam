@@ -40,17 +40,20 @@ import java.util.logging.*;
 public class Log
 {
     /**
-     * Severity
-     * OFF, no output
-     * SEVERE, internal debugging information
-     * WARNING, information of interest to implementers
-     * INFO, unusual or remarkable activities
-     * CONFIG, configuration activities
-     * FINE, detailed output
+     * Level<BR>
+     * <code>
+     * OFF, no output<BR>
+     * ERROR, a serious failure<BR>
+     * WARNING, a potential problem<BR>
+     * INFO, significant messages<BR>
+     * CONFIG, configuration messages<BR>
+     * FINE, tracing information<BR>
+     * ALL, all messages<BR>
+     * </code>
      */
     public enum Level {
         OFF(6),
-        SEVERE(5),
+        ERROR(5),
         WARNING(4),
         INFO(3),
         CONFIG(2),
@@ -88,33 +91,43 @@ public class Log
     /**
      * Sets current level.
      * Message with level lower than this level will be discarded.
-     * 6 = OFF
-     * 5 = SEVERE, internal debugging information
-     * 4 = WARNING, information of interest to implementers
-     * 3 = INFO, unusual or remarkable activities
-     * 2 = CONFIG, configuration activities
-     * 1 = FINE, detailed output
-     * 0 = ALL
-     * @param level
+     *
+     * @param level level value
+     * @see Level
      */
     public static void setLevel(int level) {
         logger.setLevel(getLoggingLevel(level));
     }
-    
+
+    /**
+     * Sets current level.
+     * Message with level lower than this level will be discarded.
+     *
+     *
+     * @param level numeric level value
+     * @see Level
+     */
+    public static void setLevel(Level level) {
+        logger.setLevel(getLoggingLevel(level.getValue()));
+    }
+
+    /**
+     * @return the current level
+     */
     public static int getLevel() {
         return getLevel(logger.getLevel());
     }
 
     /**
      * Obtains a java.util.logging Level from an integer level value
-     * @param severity integer level value
+     * @param level integer level value
      * @return the corresponding Level
      */
-    private static java.util.logging.Level getLoggingLevel(int severity) {
+    private static java.util.logging.Level getLoggingLevel(int level) {
         java.util.logging.Level n;
-        if (severity < 0)
-            severity = 0;
-        switch (severity) {
+        if (level < 0)
+            level = 0;
+        switch (level) {
             case 0:
                 n = java.util.logging.Level.ALL;
                 break;
@@ -183,9 +196,9 @@ public class Log
     /**
      * Logs a message and an Entity, respecting current level.
      */
-    public static void record(int severity, String message, gleam.lang.Entity obj)
+    public static void record(int level, String message, gleam.lang.Entity obj)
     {
-        logger.log(getLoggingLevel(severity), message + " " + obj.toString());
+        logger.log(getLoggingLevel(level), message + " " + obj.toString());
     }
 
     /**
@@ -197,10 +210,10 @@ public class Log
     }
 
     /**
-     * Logs a Throwable at level SEVERE
+     * Logs a Throwable at WARNING level
      * @param ex Throwable
      */
     public static void record(Throwable ex) {
-        logger.log(java.util.logging.Level.SEVERE, "Throwable", ex);
+        logger.log(java.util.logging.Level.WARNING, "", ex);
     }
 }

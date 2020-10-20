@@ -29,7 +29,7 @@ package gleam.lang;
 import gleam.library.Primitive;
 
 import static gleam.util.Log.Level.FINE;
-import static gleam.util.Log.Level.SEVERE;
+import static gleam.util.Log.Level.ERROR;
 
 /**
  * Scheme runtime support.
@@ -174,7 +174,7 @@ public final class System
                 }
         catch (GleamException e) {
             // should never happen
-            gleam.util.Log.record(SEVERE,
+            gleam.util.Log.record(ERROR,
                 "Internal error during environment initialization: "
                     + e.getMessage());
         }
