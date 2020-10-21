@@ -26,9 +26,11 @@
 
 package gleam.library;
 
-import gleam.lang.Entity;
 import gleam.lang.Boolean;
-import gleam.lang.*;
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.JavaObject;
 
 /**
  * Primitive operator and procedure implementation library.
@@ -51,15 +53,15 @@ public final class Equivalence {
      * eq?
      * Compares arguments by address.
      */
-    new Primitive( "eq?", 
+    new Primitive( "eq?",
         Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, 2, /* min, max no. of arguments */
         "True if two objects are the same in memory, false otherwise",
         "E.g. (eq? 'a 'a) => #t, but (eq? (list 'a) (list 'a)) => #f" /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
-        throws GleamException
     {
-        // Java object are a special case, since we want to compare the 
+        // Java object are a special case, since we want to compare the
         // underlying objects to preserve common Java semantics
         if (arg1 instanceof JavaObject && arg2 instanceof JavaObject)
             return Boolean.makeBoolean(((JavaObject) arg1).eq_p((JavaObject) arg2));
@@ -71,16 +73,16 @@ public final class Equivalence {
      * eqv?
      * Compares arguments by address or value.
      */
-    new Primitive( "eqv?", 
+    new Primitive( "eqv?",
         Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, 2, /* min, max no. of arguments */
         "True if two objects have equivalent values, false otherwise",
         "E.g. (eqv? 10 10) => #t" /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
-        throws GleamException
     {
         return Boolean.makeBoolean(arg1.equals(arg2));
     }},
-    
+
     }; // primitives
 }

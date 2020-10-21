@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
 import java.io.PrintWriter;
 
 /**
@@ -33,7 +35,7 @@ import java.io.PrintWriter;
  *
  * Creation date: Dec. 22, 2004 15:32
  */
-public final class SyntaxRewriter extends Closure implements SyntaxObject 
+public final class SyntaxRewriter extends Closure implements SyntaxObject
 {
 
     /**
@@ -42,7 +44,7 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
     private static final long serialVersionUID = 1L;
 
     public SyntaxRewriter(Closure rewriter) {
-        super(rewriter.param, rewriter.body, rewriter.definitionenv);
+        super(rewriter.param, rewriter.body, rewriter.definitionEnv);
     }
 
     /**
@@ -50,11 +52,13 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
      *
      * @param out PrintWriter
      */
+    @Override
     public void write(PrintWriter out) {
-        Pair extrep = new Pair(Symbol.LAMBDA, new Pair(param, body));
-        out.write("#<syntax-rewriter ");
-        extrep.write(out);
+        out.write("#<syntax-rewriter");
+        if (Log.getLevelValue() < Log.Level.INFO.getValue()) {
+            out.write(" ");
+            new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
+        }
         out.write(">");
     }
-
 }

@@ -26,33 +26,31 @@
 
 package gleam.lang;
 
-import java.util.*;
-
 public class ArgumentList implements java.io.Serializable {
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
 
-    private ArrayList listArgs;
-    private Pair pairArgs;
+    private java.util.ArrayList<Entity> listArgs;
+    private List pairArgs;
 
     public ArgumentList() {
-        this.listArgs = new ArrayList();
+        this.listArgs = new java.util.ArrayList<Entity>();
         this.pairArgs = null;
     }
 
-    public void setArguments(Pair args) {
+    public ArgumentList(List args) {
         this.listArgs = null;
         this.pairArgs = args;
     }
 
-    public void put(Entity obj, int index) {
+    public void set(int index, Entity obj) {
         ensureSize(index+1);
         listArgs.set(index, obj);
     }
 
-    public void ensureSize(int size) {
+    void ensureSize(int size) {
         int missing = size - listArgs.size();
         listArgs.ensureCapacity(size);
         for (int i = 0 ; i < missing; ++i) {
@@ -65,20 +63,20 @@ public class ArgumentList implements java.io.Serializable {
      *
      * @return Pair
      */
-    public Pair getArguments() {
-        if (pairArgs != null) 
+    public Entity getArguments() {
+        if (pairArgs != null)
             return pairArgs;
         else
             return j2g(listArgs);
     }
-    
-    private Pair j2g(List lst) {
+
+    private Entity j2g(java.util.List<Entity> lst) {
         if (lst.size() == 0)
-            return EmptyList.value;
-        
-        Pair p = EmptyList.value;
+            return EmptyList.value();
+
+        Entity p = EmptyList.value();
         for (int i = lst.size() - 1; i >= 0; --i) {
-            p = new Pair((Entity)lst.get(i), p);
+            p = new Pair(lst.get(i), p);
         }
         return p;
     }

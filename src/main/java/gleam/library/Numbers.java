@@ -27,8 +27,14 @@
 package gleam.library;
 
 import gleam.lang.Boolean;
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.GleamException;
+import gleam.lang.List;
+import gleam.lang.ListIterator;
 import gleam.lang.Number;
-import gleam.lang.*;
+import gleam.lang.Real;
 
 /**
  * Primitive operator and procedure implementation library.
@@ -57,21 +63,15 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Difference, e.g. (- 7 3); Also negation, e.g. (- x)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    @Override
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         double result = 0.0;
-        Entity obj;
         ListIterator it = new ListIterator(args);
         // first assume unary minus
         if (it.hasNext()) {
-            obj = it.next();
-            if (obj instanceof Number) {
-                result -= ((Number) obj).getDoubleValue();
-            }
-            else {
-                throw new GleamException(this, "argument is not a number", obj);
-            }
+            result -= getNumberArgument(this, it.next());
         }
         /* if it is a real difference make sign adjustment and
          * subtract remaining arguments
@@ -80,14 +80,8 @@ public final class Numbers {
             result = -result;
         }
         while (it.hasNext()) {
-            obj = it.next();
-            if (obj instanceof Number) {
-                result -= ((Number) obj).getDoubleValue();
-            }
-            else {
-                throw new GleamException(this, "argument is not a number", obj);
-            }
-        }   
+            result -= getNumberArgument(this, it.next());
+        }
         return new Real(result);
     }},
 
@@ -100,21 +94,15 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Addition, e.g (+ 1 2)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    @Override
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         double result = 0.0;
-        Entity obj;
-        ListIterator it = new ListIterator(args);   
+        ListIterator it = new ListIterator(args);
         while (it.hasNext()) {
-            obj = it.next();
-            if (obj instanceof Number) {
-                result += ((Number) obj).getDoubleValue();
-            }
-            else {
-                throw new GleamException(this, "argument is not a number", obj);
-            }
-        }   
+            result += getNumberArgument(this, it.next());
+        }
         return new Real(result);
     }},
 
@@ -127,21 +115,15 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Division, e.g. (/ 42 7)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    @Override
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         double result = 1.0;
-        Entity obj;
-        ListIterator it = new ListIterator(args);   
+        ListIterator it = new ListIterator(args);
         while (it.hasNext()) {
-            obj = it.next();
-            if (obj instanceof Number) {
-                result /= ((Number) obj).getDoubleValue();
-            }
-            else {
-                throw new GleamException(this, "argument is not a number", obj);
-            }
-        }   
+            result /= getNumberArgument(this, it.next());
+        }
         return new Real(result);
     }},
 
@@ -154,24 +136,18 @@ public final class Numbers {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Multiplication, e.g. (* 7 9)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    @Override
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         double result = 1.0;
-        Entity obj;
-        ListIterator it = new ListIterator(args);   
+        ListIterator it = new ListIterator(args);
         while (it.hasNext()) {
-            obj = it.next();
-            if (obj instanceof Number) {
-                result *= ((Number) obj).getDoubleValue();
-            }
-            else {
-                throw new GleamException(this, "argument is not a number", obj);
-            }
-        }   
+            result *= getNumberArgument(this, it.next());
+        }
         return new Real(result);
     }},
-    
+
     /**
      * =
      * Implements the equals operator.
@@ -181,39 +157,27 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Equals comparison, e.g. (= 1 1)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    @Override
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         boolean retVal = true;
         double prev, curr;
-        Entity obj;
         ListIterator it = new ListIterator(args);
         // get first argument as prev
-        obj = it.next();
-        if (obj instanceof Number) {
-            prev = ((Number) obj).getDoubleValue();
-        }
-        else {
-            throw new GleamException(this, "argument is not a number", obj);
-        }
-        
+        prev = getNumberArgument(this, it.next());
+
         // follow remaining arguments
         while (it.hasNext()) {
-            obj = it.next();
-            if (obj instanceof Number) {
-                curr = ((Number) obj).getDoubleValue();
-                retVal &= prev == curr;
-                prev = curr;
-            }
-            else {
-                throw new GleamException(this, "argument is not a number", obj);
-            }
-        }   
+            curr = getNumberArgument(this, it.next());
+            retVal &= prev == curr;
+            prev = curr;
+        }
         return Boolean.makeBoolean(retVal);
     }},
 
     /**
-     * &gt;= 
+     * &gt;=
      * Implements the greater than or equals operator.
      */
     new Primitive( ">=",
@@ -221,34 +185,22 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Greater-than-or-equals comparison, e.g. (>= 1 2)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    @Override
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         boolean retVal = true;
         double prev, curr;
-        Entity obj;
         ListIterator it = new ListIterator(args);
         // get first argument as prev
-        obj = it.next();
-        if (obj instanceof Number) {
-            prev = ((Number) obj).getDoubleValue();
-        }
-        else {
-            throw new GleamException(this, "argument is not a number", obj);
-        }
-        
+        prev = getNumberArgument(this, it.next());
+
         // follow remaining arguments
         while (it.hasNext()) {
-            obj = it.next();
-            if (obj instanceof Number) {
-                curr = ((Number) obj).getDoubleValue();
-                retVal &= prev >= curr;
-                prev = curr;
-            }
-            else {
-                throw new GleamException(this, "argument is not a number", obj);
-            }
-        }   
+            curr = getNumberArgument(this, it.next());
+            retVal &= prev >= curr;
+            prev = curr;
+        }
         return Boolean.makeBoolean(retVal);
     }},
 
@@ -261,34 +213,22 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Less-than-or-equals comparison, e.g. (<= 1 2)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    @Override
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         boolean retVal = true;
         double prev, curr;
-        Entity obj;
-        ListIterator it = new ListIterator(args);   
+        ListIterator it = new ListIterator(args);
         // get first argument as prev
-        obj = it.next();
-        if (obj instanceof Number) {
-            prev = ((Number) obj).getDoubleValue();
-        }
-        else {
-            throw new GleamException(this, "argument is not a number", obj);
-        }
-        
+        prev = getNumberArgument(this, it.next());
+
         // follow remaining arguments
         while (it.hasNext()) {
-            obj = it.next();
-            if (obj instanceof Number) {
-                curr = ((Number) obj).getDoubleValue();
-                retVal &= prev <= curr;
-                prev = curr;
-            }
-            else {
-                throw new GleamException(this, "argument is not a number", obj);
-            }
-        }   
+            curr = getNumberArgument(this, it.next());
+            retVal &= prev <= curr;
+            prev = curr;
+        }
         return Boolean.makeBoolean(retVal);
     }},
 
@@ -301,34 +241,22 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Greater-than comparison, e.g. (> 1 2)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    @Override
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         boolean retVal = true;
         double prev, curr;
-        Entity obj;
-        ListIterator it = new ListIterator(args);   
+        ListIterator it = new ListIterator(args);
         // get first argument as prev
-        obj = it.next();
-        if (obj instanceof Number) {
-            prev = ((Number) obj).getDoubleValue();
-        }
-        else {
-            throw new GleamException(this, "argument is not a number", obj);
-        }
-        
+        prev = getNumberArgument(this, it.next());
+
         // follow remaining arguments
         while (it.hasNext()) {
-            obj = it.next();
-            if (obj instanceof Number) {
-                curr = ((Number) obj).getDoubleValue();
-                retVal &= prev > curr;
-                prev = curr;
-            }
-            else {
-                throw new GleamException(this, "argument is not a number", obj);
-            }
-        }   
+            curr = getNumberArgument(this, it.next());
+            retVal &= prev > curr;
+            prev = curr;
+        }
         return Boolean.makeBoolean(retVal);
     }},
 
@@ -341,34 +269,22 @@ public final class Numbers {
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Less-than comparison, e.g. (< 1 2)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    @Override
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         boolean retVal = true;
         double prev, curr;
-        Entity obj;
-        ListIterator it = new ListIterator(args);   
+        ListIterator it = new ListIterator(args);
         // get first argument as prev
-        obj = it.next();
-        if (obj instanceof Number) {
-            prev = ((Number) obj).getDoubleValue();
-        }
-        else {
-            throw new GleamException(this, "argument is not a number", obj);
-        }
-        
+        prev = getNumberArgument(this, it.next());
+
         // follow remaining arguments
         while (it.hasNext()) {
-            obj = it.next();
-            if (obj instanceof Number) {
-                curr = ((Number) obj).getDoubleValue();
-                retVal &= prev < curr;
-                prev = curr;
-            }
-            else {
-                throw new GleamException(this, "argument is not a number", obj);
-            }
-        }   
+            curr = getNumberArgument(this, it.next());
+            retVal &= prev < curr;
+            prev = curr;
+        }
         return Boolean.makeBoolean(retVal);
     }},
 
@@ -381,11 +297,21 @@ public final class Numbers {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a number, false otherwise",
         "E.g. (number? 3) => #t" /* doc strings */ ) {
-    public Entity apply1(Entity arg1, Environment env, Continuation cont)
-        throws GleamException
-    {
+    @Override
+    public Entity apply1(Entity arg1, Environment env, Continuation cont) {
         return Boolean.makeBoolean(arg1 instanceof Number);
     }},
-    
+
     }; // primitives
+
+    private static double getNumberArgument(Primitive primitive, Entity obj) throws GleamException {
+        double arg;
+        if (obj instanceof Number) {
+            arg = ((Number) obj).getDoubleValue();
+        }
+        else {
+            throw new GleamException(primitive, "argument is not a number", obj);
+        }
+        return arg;
+    }
 }

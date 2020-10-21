@@ -26,13 +26,15 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Collections;
 
 /**
  * Scheme symbol factory.
  */
-public final class Symbol extends Entity
+public final class Symbol extends AbstractEntity
 {
     /**
      * serialVersionUID
@@ -42,7 +44,7 @@ public final class Symbol extends Entity
     /**
      * The unique symbol table
      */
-    static Map symtable = new java.util.HashMap(512);
+    static Map<String, Symbol> symtable = new HashMap<String, Symbol>(512);
 
     /*
      * common symbols (some are keywords, some are not)
@@ -91,8 +93,7 @@ public final class Symbol extends Entity
      */
     private Symbol(String value)
     {
-        this.value = value;
-        this.interned = true;
+        this(value, true);
     }
 
     private Symbol(String value, boolean interned)
@@ -104,6 +105,7 @@ public final class Symbol extends Entity
     /**
      * Obtains the string representation of this symbol
      */
+    @Override
     public String toString() {
         return value;
     }
@@ -111,6 +113,7 @@ public final class Symbol extends Entity
     /**
      * Evaluates this symbol in the given environment.
      */
+    @Override
     public Entity eval(Environment env, Continuation cont)
         throws GleamException
     {
@@ -122,12 +125,13 @@ public final class Symbol extends Entity
      */
     public synchronized static Symbol makeSymbol(String s)
     {
-        java.lang.Object o = symtable.get(s);
+        Symbol o = symtable.get(s);
         if (o == null) {
             o = new Symbol(s);
             symtable.put(s, o);
         }
-        return (Symbol) o;
+
+        return o;
     }
 
     /**
@@ -142,10 +146,9 @@ public final class Symbol extends Entity
     /**
      * Prevents the release of multiple instances upon deserialization.
      */
-    protected java.lang.Object readResolve()
-        throws java.io.ObjectStreamException
+    protected Object readResolve()
     {
-//      java.lang.System.out.println("readResolve() called! (Symbol)"); //DEBUG
+        Log.enter(Log.Level.FINE, "readResolve() called! (Symbol)"); //DEBUG
         if (interned)
             return makeSymbol(value);
         else
@@ -155,28 +158,26 @@ public final class Symbol extends Entity
     /**
      * Performs environment optimization on this symbol.
      */
+    @Override
     public Entity optimize(Environment env)
-        throws GleamException
     {
-        try {
-            Location loc = env.getLocation(this);
-            if (loc.get() == Undefined.value) {
-                /* this symbol is a function parameter, so let
-                 * name resolution take place at run time
-                 */
-                return this;
-            }
-            else {
-                return loc;
-            }
-        }
-        catch (GleamException ex) {
+        Location loc = env.getLocationOrNull(this);
+        if (loc == null) {
             // if unbound, return just the symbol (for syntax rewriters)
             return this;
         }
+        if (loc.get() == Undefined.value) {
+            /* this symbol is a function parameter, so let
+             * name resolution take place at run time
+             */
+            return this;
+        }
+
+        return loc;
     }
 
     /** Writes this symbol */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.write(value);

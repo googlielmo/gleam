@@ -32,13 +32,18 @@ package gleam.lang;
  * Created on October 24, 2001, 1:55 AM
  */
 
+import gleam.util.Log;
+
+import java.io.PrintWriter;
+import java.util.Iterator;
+
 /**
  * This class represents the distinct type of the Scheme empty list.
  * There is only one instance of this class, i.e. the empty list itself '().
  * EmptyList is a specialization of Pair uniquely for efficiency reasons in
  * procedure evaluation.
  */
-public final class EmptyList extends Pair {
+public final class EmptyList extends AbstractEntity implements List {
     /**
      * serialVersionUID
      */
@@ -49,14 +54,21 @@ public final class EmptyList extends Pair {
 
     /** Can't create an empty list */
     private EmptyList() {
-        super(null, null);
-        analyzed = true;
     }
 
     /**
      * factory method
      */
-    public static EmptyList makeEmptyList() {
+    public static EmptyList value() {
+        return value;
+    }
+
+    /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    protected Object readResolve()
+    {
+        Log.enter(Log.Level.FINE, "readResolve() called! (EmptyList)"); //DEBUG
         return value;
     }
 
@@ -64,6 +76,7 @@ public final class EmptyList extends Pair {
      * Evaluates the empty list, thus resulting in an error.
      * The empty combination is an error in Scheme, see r5rs.
      */
+    @Override
     public Entity eval(Environment env, Continuation cont)
         throws GleamException
     {
@@ -71,46 +84,41 @@ public final class EmptyList extends Pair {
     }
 
     /**
-     * Prevents the release of multiple instances upon deserialization.
-     */
-    protected java.lang.Object readResolve()
-        throws java.io.ObjectStreamException
-    {
-//      java.lang.System.out.println("readResolve() called! (EmptyList)"); //DEBUG
-        return value;
-    }
-
-    /**
      * Writes the empty list value.
      */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.print("()");
     }
 
-    /**
-     * Performs environment optimization on this pair.
-     */
-    public Entity optimize(Environment env) throws GleamException {
-        // no optimization!
-        return this;
-    }
-
+    @Override
     public Entity getCar() throws GleamException {
         throw new GleamException("car: invalid arguments", this);
     }
 
+    @Override
     public Entity getCdr() throws GleamException {
         throw new GleamException("cdr: invalid arguments", this);
     }
 
+    @Override
     public void setCar(Entity obj) throws GleamException {
         throw new GleamException("set-car!: invalid arguments", this);
     }
 
+    @Override
     public void setCdr(Entity obj) throws GleamException {
         throw new GleamException("set-cdr!: invalid arguments", this);
     }
 
-
+    /**
+     * Returns an iterator for the empty list.
+     *
+     * @return an Entity iterator.
+     */
+    @Override
+    public Iterator<Entity> iterator() {
+        return new ListIterator(this);
+    }
 }

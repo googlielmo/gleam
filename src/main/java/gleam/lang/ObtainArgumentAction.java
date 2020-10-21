@@ -35,17 +35,24 @@ public class ObtainArgumentAction extends Action {
 
     private ArgumentList arglist;
     private int argumentIndex;
-    
-    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Action parent) {
+
+    /** Creates a new instance of this action */
+    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Action next) {
         this.arglist = arglist;
         this.argumentIndex = argumentIndex;
-        this.parent = parent;
+        this.next = next;
     }
 
-    Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
-        cont.action = parent;
+    /** Creates a new instance of this action */
+    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex) {
+        this(arglist, argumentIndex, null);
+    }
+
+    @Override
+    Entity invoke(Entity arg, Continuation cont) {
+        cont.head = next;
         // arg is already evaluated
-        arglist.put(arg, argumentIndex);
+        arglist.set(argumentIndex, arg);
         return arg;
     }
 

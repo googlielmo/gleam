@@ -26,9 +26,13 @@
 
 package gleam.library;
 
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.GleamException;
+import gleam.lang.OutputPort;
 import gleam.lang.System;
 import gleam.lang.Void;
-import gleam.lang.*;
 
 /**
  * Output
@@ -58,6 +62,7 @@ public final class Output {
         1, 2, /* min, max no. of arguments */
         "Writes an object in human-readable form, e.g. (display \"hello\")",
         null /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity obj, Entity obj2, Environment env, Continuation cont)
         throws GleamException
     {
@@ -79,7 +84,7 @@ public final class Output {
         // print object
         if (out.isOpen()) {
             out.display(obj);
-            return Void.makeVoid();
+            return Void.value();
         }
         else {
             throw new GleamException(this, "closed output port", out);
@@ -95,6 +100,7 @@ public final class Output {
         1, 2, /* min, max no. of arguments */
         "Writes an object in machine-readable form, e.g. (write \"hello\")",
         null /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity obj, Entity obj2, Environment env, Continuation cont)
         throws GleamException
     {
@@ -116,7 +122,7 @@ public final class Output {
         // print object
         if (out.isOpen()) {
             out.write(obj);
-            return Void.makeVoid();
+            return Void.value();
         }
         else {
             throw new GleamException(this, "closed output port", out);
@@ -132,6 +138,7 @@ public final class Output {
         0, 1, /* min, max no. of arguments */
         "Writes an end of line to the current or specified output port",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -150,7 +157,7 @@ public final class Output {
 
         if (oport.isOpen()) {
             oport.newline();
-            return Void.makeVoid();
+            return Void.value();
         }
         else {
             throw new GleamException(this, "closed output port", oport);

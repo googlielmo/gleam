@@ -29,7 +29,7 @@ package gleam.lang;
 /**
  * Scheme character.
  */
-public final class Character extends Entity
+public final class Character extends AbstractEntity
 {
     /**
      * serialVersionUID
@@ -47,6 +47,7 @@ public final class Character extends Entity
     }
 
     /** Writes this character */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         if (value == '\n') {
@@ -61,6 +62,7 @@ public final class Character extends Entity
     }
 
     /** Displays this character */
+    @Override
     public void display(java.io.PrintWriter out)
     {
         out.print(value);

@@ -30,13 +30,13 @@ package gleam.lang;
  * The Scheme void value (a singleton).
  * Creation date: (31/10/01 23.06.59)
  */
-public final class Void extends Entity {
+public final class Void extends AbstractEntity {
 
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
-    
+
     /** the Void singleton */
     static final Void value = new Void();
 
@@ -45,25 +45,24 @@ public final class Void extends Entity {
     }
 
     /**
-     * Factory method
+     * Get the only value
      */
-    public static Void makeVoid() {
+    public static Void value() {
         return value;
     }
 
     /**
      * Prevents the release of multiple instances upon deserialization.
      */
-    protected java.lang.Object readResolve()
-        throws java.io.ObjectStreamException
+    protected Object readResolve()
     {
-//      java.lang.System.out.println("readResolve() called! (Void)"); //DEBUG
         return value;
     }
 
     /**
      * Writes the void value.
      */
+    @Override
     public void write(java.io.PrintWriter out) {
         out.write("#<void>");
     }

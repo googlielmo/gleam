@@ -45,22 +45,28 @@ public class ExpressionInEnvironmentAction extends Action {
     private Entity expr;
 
     /** Creates a new instance of this action */
-    public ExpressionInEnvironmentAction(Entity expr, Action parent) {
+    public ExpressionInEnvironmentAction(Entity expr, Action next) {
         this.expr = expr;
-        this.parent = parent;
+        this.next = next;
+    }
+
+    /** Creates a new instance of this action */
+    public ExpressionInEnvironmentAction(Entity expr) {
+        this(expr, null);
     }
 
     /**
      * Invokes this action, causing the evaluation of the expression in the
      * environment passed as argument.
-     * @param arg the environment in which to evaluate the expression
+     * @param newEnv the environment in which to evaluate the expression
      * @param cont the current Continuation
      * @return the result of the evaluation
      * @throws gleam.lang.GleamException in case of errors
      */
+    @Override
     Entity invoke(Entity newEnv, Continuation cont) throws gleam.lang.GleamException
     {
-        cont.action = parent;
+        cont.head = next;
         if (!(newEnv instanceof Environment)) {
             throw new GleamException("not an environment", newEnv);
         }

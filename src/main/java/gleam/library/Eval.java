@@ -26,10 +26,14 @@
 
 package gleam.library;
 
+import gleam.lang.Boolean;
+import gleam.lang.Continuation;
 import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.ExpressionAction;
+import gleam.lang.ExpressionInEnvironmentAction;
+import gleam.lang.GleamException;
 import gleam.lang.Number;
- 
-import gleam.lang.*;
 
 /**
  * EVAL
@@ -59,6 +63,7 @@ public final class Eval {
         1, 2, /* min, max no. of arguments */
         "Evaluates an expression in a given environment",
         "E.g. (eval '(+ 1 2) (interaction-environment)) => 3" /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
         throws GleamException
     {
@@ -72,7 +77,7 @@ public final class Eval {
             throw new GleamException(this, "not an environment", arg2);
         }
         arg1 = arg1.analyze().optimize(eval_env);
-        cont.extend(new ExpressionAction(arg1, eval_env, null));
+        cont.begin(new ExpressionAction(arg1, eval_env, null));
         return null;
     }},
 
@@ -86,6 +91,7 @@ public final class Eval {
         "Returns the null environment",
         "A scheme-report version number must be specified, e.g. (null-environment 5). "
         + "Currently supported versions are 4 and 5" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -114,6 +120,7 @@ public final class Eval {
         "Returns the scheme-report environment",
         "A scheme-report version number must be specified, e.g. (scheme-report-environment 5). "
         + "Currently supported versions are 4 and 5" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -139,14 +146,14 @@ public final class Eval {
     new Primitive( "interaction-environment",
         Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 0, /* min, max no. of arguments */
-        "Returns the interaction (top-level) environment", 
+        "Returns the interaction (top-level) environment",
         null /* doc strings */ ) {
+    @Override
     public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
     {
         return gleam.lang.System.getInteractionEnv();
     }},
-    
+
     /**
      * current-environment
      * Returns the current environment
@@ -156,9 +163,8 @@ public final class Eval {
         0, 0, /* min, max no. of arguments */
         "Returns the current environment",
         null /* doc strings */ ) {
-    public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
-    {
+    @Override
+    public Entity apply0(Environment env, Continuation cont) {
         return env;
     }},
 
@@ -171,12 +177,12 @@ public final class Eval {
         2, 2, /* min, max no. of arguments */
         "Evaluates an expression in a given environment",
         "E.g. (in-environment (scheme-report-environment 5) (+ 1 2)) => 3" /* doc strings */ ) {
-    public Entity apply2(Entity argEnv, Entity argExpr, Environment env, Continuation cont)
-        throws GleamException
-    {
-        cont.extend(
-            new ExpressionAction(argEnv, env, null)).append( // 1) evaluate environment expr
-            new ExpressionInEnvironmentAction(argExpr, null)); // 2) evaluate expr in that env
+    @Override
+    public Entity apply2(Entity argEnv, Entity argExpr, Environment env, Continuation cont) {
+        cont
+                .begin(new ExpressionAction(argEnv, env))         // 1) evaluate environment expr
+                .andThen(new ExpressionInEnvironmentAction(argExpr)); // 2) evaluate expr in that env
+
         return null;
     }},
 
@@ -189,9 +195,8 @@ public final class Eval {
         0, 0, /* min, max no. of arguments */
         "Creates a new environment",
         "E.g. (in-environment (make-environment) (begin (define a 7) a)) => 7" /* doc strings */ ) {
-    public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
-    {
+    @Override
+    public Entity apply0(Environment env, Continuation cont) {
         return new Environment(env);
     }},
 
@@ -204,12 +209,11 @@ public final class Eval {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is an environment, false otherwise",
         "E.g. (environment? (scheme-report-environment 5)) => #t" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg, Environment env, Continuation cont)
-        throws GleamException
     {
-        return gleam.lang.Boolean.makeBoolean(arg instanceof Environment);
+        return Boolean.makeBoolean(arg instanceof Environment);
     }},
 
     }; // primitives
-
 }

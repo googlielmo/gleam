@@ -26,58 +26,63 @@
 
 package gleam.lang;
 
+import java.util.Iterator;
+
 import static gleam.util.Log.Level.INFO;
 
 /**
  * The Scheme pair, also known as <i>cons</i>.
  * When used as data, the pair is equivalent to a <i>tree</i> data structure.
- * Most often it is used as a degenerate tree to give a <i>list</i>
- * data structure. If evaluated as code, the list is the procedure application.
+ * Most often, it is used as a degenerate tree to implement a <i>list</i>
+ * data structure.
+ * If evaluated as code, the list represents the procedure application.
  */
-public class Pair extends Entity
-{
+public class Pair extends AbstractEntity implements List {
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
 
-    Entity car, cdr;
+    private Entity car;
+    private Entity cdr;
     boolean analyzed;
 
     public Pair(Entity head, Entity tail)
     {
-        car = head;
-        cdr = tail;
-        analyzed = false;
+        this.car = head;
+        this.cdr = tail;
+        this.analyzed = false;
     }
 
-    public Entity getCar() throws GleamException {
+    @Override
+    public Entity getCar() {
         return car;
     }
 
-    public Entity getCdr() throws GleamException {
+    @Override
+    public Entity getCdr() {
         return cdr;
     }
 
-    public void setCar(Entity obj) throws GleamException {
+    @Override
+    public void setCar(Entity obj) {
         car = obj;
     }
 
-    public void setCdr(Entity obj) throws GleamException {
+    @Override
+    public void setCdr(Entity obj) {
         cdr = obj;
     }
 
     /**
      * Performs syntax analysis on this pair.
      */
+    @Override
     public Entity analyze()
         throws GleamException
     {
-        if (analyzed) {
-            return this;
-        }
-        else {
-            if (car instanceof Symbol && System.isKeyword((Symbol)car)) {
+        if (!analyzed) {
+            if (getCar() instanceof Symbol && System.isKeyword((Symbol) getCar())) {
                 /* we have a special form, so let's
                  * perform syntax analysis
                  * -- may change car, cdr
@@ -90,7 +95,7 @@ public class Pair extends Entity
             /* we have a procedure application
              * first car, then cdr
              */
-            car = car.analyze();
+            setCar(getCar().analyze());
 
             /* now process rest of the list (i.e. the form arguments)
              *
@@ -99,105 +104,108 @@ public class Pair extends Entity
              * level; otherwise (f1 f2 f3) would be analyzed as
              * (f1 (f2 (f3)), which is wrong.
              */
-            Entity rest = cdr;
-            Pair restParent = this;
+            Entity rest = getCdr();
+            List restParent = this;
             while (rest != EmptyList.value) {
-                if (rest instanceof Pair) {
+                if (rest instanceof List) {
                     // this is a proper list
-                    Pair restAsPair = (Pair)rest;
+                    List restAsPair = (List) rest;
                     restParent = restAsPair;
-                    restAsPair.car =
-                        restAsPair.car.analyze();
-                    rest = restAsPair.cdr;
-                }
-                else {
+                    restAsPair.setCar(restAsPair.getCar().analyze());
+                    rest = restAsPair.getCdr();
+                } else {
                     /* this is an improper list
                      * (not necessarily an error: think lambda)
                      *
                      * analyze cdr in place
                      */
-                    gleam.util.Log.record(INFO, "dotted pair in analyze... check for correctness");
-                    restParent.cdr = rest.analyze();
+                    gleam.util.Log.enter(INFO, "dotted pair in analyze... check for correctness");
+                    restParent.setCdr(rest.analyze());
                     break;
                 }
             }
             analyzed = true;
-            return this;
         }
+        return this;
     }
 
     /**
      * Evaluates the procedure call this pair stands for.
      */
+    @Override
     public Entity eval(Environment env, Continuation cont)
         throws GleamException
     {
         ListIterator it = new ListIterator(this);
         // operator
         Entity operator = it.next();
-        ArgumentList arglist = new ArgumentList();
 
         /* check for special forms or syntax rewriters */
         if (operator instanceof Symbol) {
             Entity e = env.lookup( (Symbol) operator);
             if (e instanceof SyntaxRewriter) {
-                // call of syntax rewriter followed by evaluation of resulting expression
-                Action a = new EvalAction(env, cont.action);
-                a = new ProcedureCallAction(arglist, env, a);
-                a = new ExpressionAction((SyntaxRewriter) e, env, a);
-                cont.action = a;
-                // don't evaluate arguments at all!
-                // gleam.util.Log.record(2, "THIS: ", this); // DEBUG
-                arglist.put(this, 0);
+                // call of syntax rewriter, will be followed by evaluation of resulting expression
+                rewriteAndEval((SyntaxRewriter) e, new ArgumentList(), env, cont);
                 return null;
             }
-            else if (System.isKeyword( (Symbol) operator)) {
+            else if (e instanceof SyntaxProcedure) {
                 // special procedure call
-                Action a = new ProcedureCallAction(arglist, env, cont.action);
-                a = new ExpressionAction(operator, env, a);
-                cont.action = a;
                 // don't evaluate arguments at all!
-                arglist.setArguments((Pair)this.cdr);
+                cont
+                        .begin(new ExpressionAction(operator, env))
+                        .andThen(new ProcedureCallAction(new ArgumentList((List) this.getCdr()), env));
+
                 return null;
             }
         }
-        else if (operator instanceof Location) { // TODO FIXME THIS IS UGLY
+        else if (operator instanceof Location) {
             Entity e = ( (Location) operator).get();
             if (e instanceof SyntaxRewriter) {
-                // call of syntax rewriter followed by evaluation of resulting expression
-                Action a = new EvalAction(env, cont.action);
-                a = new ProcedureCallAction(arglist, env, a);
-                a = new ExpressionAction((SyntaxRewriter) e, env, a);
-                cont.action = a;
-                // don't evaluate arguments at all!
-                arglist.put(this, 0);
+                // call of syntax rewriter, will be followed by evaluation of resulting expression
+                rewriteAndEval((SyntaxRewriter) e, new ArgumentList(), env, cont);
                 return null;
             }
         }
-        
-        /* ok, it's a standard procedure call */
-        Action a = new ProcedureCallAction(arglist, env, cont.action);
-        a = new ExpressionAction(operator, env, a);
+
+        /* we have a regular procedure call */
+        ArgumentList argList = new ArgumentList();
+        Action action = cont.beginSequence();
+
         // evaluate each argument
         int argidx = 0;
         while (it.hasNext()) {
             Entity nextArg = it.next();
-            a = new ObtainArgumentAction(arglist, argidx++, a);
-            a = new ExpressionAction(nextArg, env, a);
+            action = action
+                    .andThen(new ExpressionAction(nextArg, env))
+                    .andThen(new ObtainArgumentAction(argList, argidx++));
         }
-        arglist.ensureSize(argidx);
-        cont.action = a;
+        argList.ensureSize(argidx);
+        action
+                .andThen(new ExpressionAction(operator, env))
+                .andThen(new ProcedureCallAction(argList, env));
+
+        cont.endSequence();
         return null;
+    }
+
+    private void rewriteAndEval(SyntaxRewriter syntaxRewriter, ArgumentList args, Environment env, Continuation cont) {
+        cont
+                .begin(new ExpressionAction(syntaxRewriter, env))
+                .andThen(new ProcedureCallAction(args, env))
+                .andThen(new EvalAction(env));
+        // pass this pair, not evaluated
+        args.set(0, this);
     }
 
     /**
      * Performs environment optimization on this pair.
      */
+    @Override
     public Entity optimize(Environment env)
         throws GleamException
     {
         /* first check for special forms */
-        if (car instanceof Symbol && System.isKeyword( (Symbol) car)) {
+        if (getCar() instanceof Symbol && System.isKeyword( (Symbol) getCar())) {
             // we have a special form, so let's perform
             // specific optimization
             // -- may change retVal.{car|cdr}
@@ -207,8 +215,8 @@ public class Pair extends Entity
         }
 
         /* if the operator is a syntax rewriter, we must not optimize */
-        if ((car instanceof SyntaxRewriter) || 
-            (car instanceof Symbol && env.lookup( (Symbol) car) instanceof SyntaxRewriter)) {
+        if ((getCar() instanceof SyntaxRewriter) ||
+            (getCar() instanceof Symbol && env.lookup( (Symbol) getCar()) instanceof SyntaxRewriter)) {
             return this;
         }
 
@@ -216,19 +224,19 @@ public class Pair extends Entity
          * potentially result in a syntax rewriter, so no optimization
          * can be performed at this stage
          */
-        if (car instanceof Pair) {
+        if (getCar() instanceof Pair) {
             return this;
         }
 
         /* we must not modify in place, since this pair must remain
          * a valid data structure after optimization (think eval)
          */
-        Pair retVal = new Pair(car, cdr);
+        Pair retVal = new Pair(getCar(), getCdr());
 
         /* so we have a simple procedure application:
          * first optimize car, then cdr
          */
-        retVal.car = retVal.car.optimize(env);
+        retVal.setCar(retVal.getCar().optimize(env));
 
         /* we can't simply do: retVal.cdr = retVal.cdr.optimize(env)
          * but we must traverse the cdr list ourselves at this level,
@@ -238,26 +246,24 @@ public class Pair extends Entity
          * this also means that we must allocate new pairs for tail
          * here.
          */
-        Entity rest = retVal.cdr;
-        Pair restParent = retVal;
+        Entity rest = retVal.getCdr();
+        List restParent = retVal;
         while (rest != EmptyList.value) {
-            if (rest instanceof Pair) {
+            if (rest instanceof List) {
                 // this is a proper list
-                rest = new Pair(
-                    ((Pair)rest).car, ((Pair)rest).cdr);
-                restParent.cdr = rest;
-
-                Pair restAsPair = (Pair)rest;
+                Pair restAsPair = (Pair) rest;
+                rest = new Pair(restAsPair.getCar(), restAsPair.getCdr());
+                restParent.setCdr(rest);
                 restParent = restAsPair;
-                restAsPair.car = restAsPair.car.optimize(env);
-                rest = restAsPair.cdr;
+                restAsPair.setCar(restAsPair.getCar().optimize(env));
+                rest = restAsPair.getCdr();
             }
             else {
                 /* this is an improper list
-                 * (not necessarily an error: think lambda)
+                 * (not necessarily an error: e.g., lambda)
                  */
-                gleam.util.Log.record(INFO, "dotted pair in optimize... check for correctness");
-                restParent.cdr = rest.optimize(env);
+                gleam.util.Log.enter(INFO, "dotted pair in optimize... check for correctness");
+                restParent.setCdr(rest.optimize(env));
                 break;
             }
         }
@@ -267,50 +273,63 @@ public class Pair extends Entity
     /**
      * Writes this pair.
      */
-    public void write(java.io.PrintWriter out)
-    {
-        if (car == Symbol.QUOTE
-                && !(cdr instanceof EmptyList) 
-                && cdr instanceof Pair 
-                && ((Pair)cdr).cdr instanceof EmptyList) {
+    @Override
+    public void write(java.io.PrintWriter out) {
+        if (getCar() == Symbol.QUOTE
+                && !(getCdr() instanceof EmptyList)
+                && getCdr() instanceof Pair
+                && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print("'");
-            ((Pair)cdr).car.write(out);
+            ((Pair) getCdr()).getCar().write(out);
         }
-        else if (car == Symbol.QUASIQUOTE
-                && !(cdr instanceof EmptyList) 
-                && cdr instanceof Pair 
-                && ((Pair)cdr).cdr instanceof EmptyList) {
+        else if (getCar() == Symbol.QUASIQUOTE
+                && !(getCdr() instanceof EmptyList)
+                && getCdr() instanceof Pair
+                && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print("`");
-            ((Pair)cdr).car.write(out);
+            ((Pair) getCdr()).getCar().write(out);
         }
-        else if (car == Symbol.UNQUOTE
-                && !(cdr instanceof EmptyList) 
-                && cdr instanceof Pair 
-                && ((Pair)cdr).cdr instanceof EmptyList) {
+        else if (getCar() == Symbol.UNQUOTE
+                && !(getCdr() instanceof EmptyList)
+                && getCdr() instanceof Pair
+                && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print(",");
-            ((Pair)cdr).car.write(out);
+            ((Pair) getCdr()).getCar().write(out);
         }
-        else if (car == Symbol.UNQUOTE_SPLICING
-                && !(cdr instanceof EmptyList) 
-                && cdr instanceof Pair 
-                && ((Pair)cdr).cdr instanceof EmptyList) {
+        else if (getCar() == Symbol.UNQUOTE_SPLICING
+                && !(getCdr() instanceof EmptyList)
+                && getCdr() instanceof Pair
+                && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print(",@");
-            ((Pair)cdr).car.write(out);
+            ((Pair) getCdr()).getCar().write(out);
         }
         else {
             Pair current = this;
             out.print("(");
-            car.write(out);
-            while (current.cdr instanceof Pair && !(current.cdr instanceof EmptyList)) {
-                current = (Pair)current.cdr;
+            getCar().write(out);
+            while (current.getCdr() instanceof Pair && !(current.getCdr() instanceof EmptyList)) {
+                current = (Pair) current.getCdr();
                 out.print(" ");
-                current.car.write(out);
+                if ((current.getCar() == null))
+                    out.print("ERROR");
+                else
+                    current.getCar().write(out);
             }
-            if (!(current.cdr instanceof EmptyList)) {
+            if (!(current.getCdr() instanceof EmptyList)) {
                 out.print(" . ");
-                current.cdr.write(out);             
+                current.getCdr().write(out);
             }
             out.print(")");
         }
+    }
+
+    /**
+     * Returns an iterator over elements of this List.
+     *
+     * @return an Entity iterator.
+     */
+    @Override
+    public Iterator<Entity> iterator() {
+        return new ListIterator(this);
     }
 }

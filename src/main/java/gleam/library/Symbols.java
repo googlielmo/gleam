@@ -26,9 +26,11 @@
 
 package gleam.library;
 
-import gleam.lang.Entity;
 import gleam.lang.Boolean;
-import gleam.lang.*;
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.Symbol;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -48,7 +50,7 @@ public final class Symbols {
      * Counter used by generate-symbol
      */
     private static AtomicInteger gencount = new AtomicInteger(0);
-    
+
     /**
      * This array contains definitions of primitives.
      * It is used by static initializers in gleam.lang.System to populate
@@ -65,8 +67,8 @@ public final class Symbols {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a symbol, false otherwise",
         "E.g. (symbol? 'sym) => #t" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
-        throws GleamException
     {
         return Boolean.makeBoolean(arg1 instanceof Symbol);
     }},
@@ -80,12 +82,12 @@ public final class Symbols {
         0, 0, /* min, max no. of arguments */
         "Makes a new symbol, e.g. (generate-symbol)",
         null /* doc strings */ ) {
+    @Override
     public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
     {
         return Symbol.makeUninternedSymbol("__S"+(gencount.getAndIncrement()));
     }},
-        
+
     }; // primitives
 
 }

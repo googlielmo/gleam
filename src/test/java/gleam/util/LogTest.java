@@ -3,7 +3,7 @@ package gleam.util;
 import org.junit.Test;
 
 import static gleam.util.Log.Level.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LogTest {
 
@@ -12,7 +12,7 @@ public class LogTest {
         // given
         Log.setLevel(0);
         // expected
-        assertEquals(0, Log.getLevel());
+        assertEquals(0, Log.getLevelValue());
     }
 
     @Test
@@ -20,7 +20,7 @@ public class LogTest {
         // given
         Log.setLevel(1);
         // expected
-        assertEquals(1, Log.getLevel());
+        assertEquals(1, Log.getLevelValue());
     }
 
     @Test
@@ -28,7 +28,7 @@ public class LogTest {
         // given
         Log.setLevel(2);
         // expected
-        assertEquals(2, Log.getLevel());
+        assertEquals(2, Log.getLevelValue());
     }
 
     @Test
@@ -36,7 +36,7 @@ public class LogTest {
         // given
         Log.setLevel(3);
         // expected
-        assertEquals(3, Log.getLevel());
+        assertEquals(3, Log.getLevelValue());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class LogTest {
         // given
         Log.setLevel(4);
         // expected
-        assertEquals(4, Log.getLevel());
+        assertEquals(4, Log.getLevelValue());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class LogTest {
         // given
         Log.setLevel(5);
         // expected
-        assertEquals(5, Log.getLevel());
+        assertEquals(5, Log.getLevelValue());
     }
 
     @Test
@@ -60,26 +60,26 @@ public class LogTest {
         // given
         Log.setLevel(6);
         // expected
-        assertEquals(6, Log.getLevel());
+        assertEquals(6, Log.getLevelValue());
     }
 
     @Test
     public void t1() {
         Log.setLevel(2);
-        Log.record(1, "1");
-        Log.record(2, "2");
-        Log.record(3, "3");
-        Log.record(4, "4");
-        Log.record(5, "5");
+        Log.enter(1, "1");
+        Log.enter(2, "2");
+        Log.enter(3, "3");
+        Log.enter(4, "4");
+        Log.enter(5, "5");
     }
 
     @Test
     public void t2() {
         Log.setLevel(2);
-        Log.record(FINE, "1");
-        Log.record(CONFIG, "2");
-        Log.record(INFO, "3");
-        Log.record(WARNING, "4");
-        Log.record(ERROR, "5");
+        Log.enter(FINE, "1");
+        Log.enter(CONFIG, "2");
+        Log.enter(INFO, "3");
+        Log.enter(WARNING, "4");
+        Log.enter(ERROR, "5");
     }
 }

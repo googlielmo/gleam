@@ -26,7 +26,8 @@
 
 package gleam.util;
 
-import java.util.logging.*;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Logger;
 
 /*
  * Log.java
@@ -37,8 +38,7 @@ import java.util.logging.*;
 /**
  * Logging utility class for Gleam.
  */
-public class Log
-{
+public class Log {
     /**
      * Level<BR>
      * <code>
@@ -69,7 +69,7 @@ public class Log
         public int getValue() {
             return value;
         }
-    };
+    }
 
     /* Using java.util.logging */
     final static Logger logger;
@@ -85,8 +85,11 @@ public class Log
         logger.setLevel(java.util.logging.Level.INFO);
     }
 
-    /** Can't instantiate this class */
-    private Log() {}
+    /**
+     * Can't instantiate this class
+     */
+    private Log() {
+    }
 
     /**
      * Sets current level.
@@ -103,7 +106,6 @@ public class Log
      * Sets current level.
      * Message with level lower than this level will be discarded.
      *
-     *
      * @param level numeric level value
      * @see Level
      */
@@ -114,12 +116,13 @@ public class Log
     /**
      * @return the current level
      */
-    public static int getLevel() {
-        return getLevel(logger.getLevel());
+    public static int getLevelValue() {
+        return getLevelValue(logger.getLevel());
     }
 
     /**
      * Obtains a java.util.logging Level from an integer level value
+     *
      * @param level integer level value
      * @return the corresponding Level
      */
@@ -154,26 +157,27 @@ public class Log
 
     /**
      * Obtains a Level from an integer level value
-     * @param level
+     *
+     * @param level the current level
      * @return the corresponding integer level value
      */
-    private static int getLevel(java.util.logging.Level level) {
+    private static int getLevelValue(java.util.logging.Level level) {
         final int n;
 
         if (level.intValue() == Integer.MAX_VALUE) {
-            n = 6;
+            n = Level.OFF.getValue();
         } else if (level.intValue() >= 1000) {
-            n = 5;
+            n = Level.ERROR.getValue();
         } else if (level.intValue() >= 900) {
-            n = 4;
+            n = Level.WARNING.getValue();
         } else if (level.intValue() >= 800) {
-            n = 3;
+            n = Level.INFO.getValue();
         } else if (level.intValue() >= 700) {
-            n = 2;
+            n = Level.CONFIG.getValue();
         } else if (level.intValue() >= 500) {
-            n = 1;
+            n = Level.FINE.getValue();
         } else {
-            n = 0;
+            n = Level.ALL.getValue();
         }
         return n;
     }
@@ -181,39 +185,37 @@ public class Log
     /**
      * Logs a message, respecting current level.
      */
-    public static void record(int level, String message)
-    {
+    public static void enter(int level, String message) {
         logger.log(getLoggingLevel(level), message);
     }
 
     /**
      * Logs a message, respecting current level.
      */
-    public static void record(Level level, String message) {
-        record(level.getValue(), message);
+    public static void enter(Level level, String message) {
+        enter(level.getValue(), message);
     }
 
     /**
      * Logs a message and an Entity, respecting current level.
      */
-    public static void record(int level, String message, gleam.lang.Entity obj)
-    {
+    public static void enter(int level, String message, gleam.lang.Entity obj) {
         logger.log(getLoggingLevel(level), message + " " + obj.toString());
     }
 
     /**
      * Logs a message and an Entity, respecting current level.
      */
-    public static void record(Level level, String message, gleam.lang.Entity obj)
-    {
-        record(level.getValue(), message, obj);
+    public static void enter(Level level, String message, gleam.lang.Entity obj) {
+        enter(level.getValue(), message, obj);
     }
 
     /**
      * Logs a Throwable at WARNING level
+     *
      * @param ex Throwable
      */
-    public static void record(Throwable ex) {
+    public static void error(Throwable ex) {
         logger.log(java.util.logging.Level.WARNING, "", ex);
     }
 }

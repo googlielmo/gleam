@@ -38,7 +38,7 @@ public class InputPort extends Port
 
     java.io.Reader value;
     private transient Reader gleamReader;
-    
+
     public InputPort(String name)
         throws java.io.FileNotFoundException
     {
@@ -52,6 +52,7 @@ public class InputPort extends Port
         this.gleamReader = new Reader(value);
     }
 
+    @Override
     public void close()
         throws java.io.IOException
     {
@@ -61,6 +62,7 @@ public class InputPort extends Port
         value = null;
     }
 
+    @Override
     public boolean isOpen() {
         return null != value;
     }
@@ -81,10 +83,11 @@ public class InputPort extends Port
     /**
      * Writes a port
      */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.print("#<input-port>");
     }
-    
+
 }
 

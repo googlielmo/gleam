@@ -24,48 +24,23 @@
  *
  */
 
-package gleam.library;
-
-import gleam.lang.Boolean;
-import gleam.lang.Character;
-import gleam.lang.Continuation;
-import gleam.lang.Entity;
-import gleam.lang.Environment;
+package gleam.lang;
 
 /**
- * CHARACTERS
- * Primitive operator and procedure implementation library.
+ * Exception thrown when attempting to dereference an unbound symbol.
  */
-public final class Characters {
+public class UnboundVariableException extends GleamException {
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Can't instantiate this class
+     * UnboundVariableException constructor.
+     *
+     * @param symbol the unbound symbol
      */
-    private Characters() {
+    public UnboundVariableException(Symbol symbol) {
+        super("Unbound variable: " + symbol, symbol);
     }
-
-    /**
-     * This array contains definitions of primitives.
-     * It is used by static initializers in gleam.lang.System to populate
-     * the three initial environments.
-     */
-    public static Primitive[] primitives = {
-
-    /**
-     * char?
-     * Tests if argument is a character
-     */
-    new Primitive( "char?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-        1, 1, /* min, max no. of arguments */
-        "Returns true if argument is a character, false otherwise",
-        "E.g. (char? #\\a) => #t" /* doc strings */ ) {
-    @Override
-    public Entity apply1(Entity arg1, Environment env, Continuation cont)
-    {
-        return Boolean.makeBoolean(arg1 instanceof Character);
-    }},
-
-    }; // primitives
-
 }

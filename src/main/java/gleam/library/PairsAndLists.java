@@ -27,8 +27,15 @@
 package gleam.library;
 
 import gleam.lang.Boolean;
+import gleam.lang.Continuation;
+import gleam.lang.EmptyList;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.GleamException;
+import gleam.lang.ListIterator;
+import gleam.lang.List;
+import gleam.lang.Pair;
 import gleam.lang.Void;
-import gleam.lang.*;
 
 /**
  * PAIRS AND LISTS
@@ -57,11 +64,12 @@ public final class PairsAndLists {
         1, 1, /* min, max no. of arguments */
         "Gets first object in a pair, e.g. (car (list 1 2 3))",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
         try {
-            return ((Pair) arg1).getCar();
+            return ((List) arg1).getCar();
         }
         catch (ClassCastException e) {
             throw new GleamException("car: invalid argument", arg1);
@@ -77,11 +85,12 @@ public final class PairsAndLists {
         1, 1, /* min, max no. of arguments */
         "Gets second object in a pair, e.g. (cdr (list 1 2 3))",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
         try {
-            return ((Pair) arg1).getCdr();
+            return ((List) arg1).getCdr();
         }
         catch (ClassCastException e) {
             throw new GleamException("cdr: invalid argument", arg1);
@@ -97,9 +106,8 @@ public final class PairsAndLists {
         2, 2, /* min, max no. of arguments */
         "Creates a new pair, e.g. (cons 1 (cons 2 '(3)))",
         null /* doc strings */ ) {
-    public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
-        throws GleamException
-    {
+    @Override
+    public Entity apply2(Entity first, Entity second, Environment env, Continuation cont) {
         return new Pair(first, second);
     }},
 
@@ -112,18 +120,19 @@ public final class PairsAndLists {
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Creates a new list from its arguments, e.g. (list 1 2 3)",
         null /* doc strings */ ) {
-    public Entity applyN(Pair args, Environment env, Continuation cont)
+    @Override
+    public Entity applyN(List args, Environment env, Continuation cont)
         throws GleamException
     {
         // TODO: investigate: could we simply return list?
         ListIterator it = new ListIterator(args);
         if (!it.hasNext()) {
-            return EmptyList.makeEmptyList();
+            return EmptyList.value();
         }
-        Pair l = new Pair(it.next(), EmptyList.makeEmptyList());
+        Pair l = new Pair(it.next(), EmptyList.value());
         Pair ins = l;
         while (it.hasNext()) {
-            Pair nextcons = new Pair(it.next(), EmptyList.makeEmptyList());
+            Pair nextcons = new Pair(it.next(), EmptyList.value());
             ins.setCdr(nextcons);
             ins = nextcons;
         }
@@ -139,9 +148,8 @@ public final class PairsAndLists {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a pair, false otherwise",
         "E.g. (pair? (cons 1 2)) => #t" /* doc strings */ ) {
-    public Entity apply1(Entity obj, Environment env, Continuation cont)
-        throws GleamException
-    {
+    @Override
+    public Entity apply1(Entity obj, Environment env, Continuation cont) {
         return Boolean.makeBoolean((obj instanceof Pair) && !(obj instanceof EmptyList));
     }},
 
@@ -154,9 +162,8 @@ public final class PairsAndLists {
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is the empty list, false otherwise",
         "E.g. (null? '()) => #t" /* doc strings */ ) {
-    public Entity apply1(Entity obj, Environment env, Continuation cont)
-        throws GleamException
-    {
+    @Override
+    public Entity apply1(Entity obj, Environment env, Continuation cont) {
         return Boolean.makeBoolean(obj instanceof EmptyList);
     }},
 
@@ -169,6 +176,7 @@ public final class PairsAndLists {
         2, 2, /* min, max no. of arguments */
         "Sets car field in a pair, e.g. (set-car! my-pair 1)",
         null /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
         throws GleamException
     {
@@ -176,7 +184,7 @@ public final class PairsAndLists {
             throw new GleamException(this, "invalid argument", first);
 
         ((Pair) first).setCar(second);
-        return Void.makeVoid();
+        return Void.value();
     }},
 
     /**
@@ -188,6 +196,7 @@ public final class PairsAndLists {
         2, 2, /* min, max no. of arguments */
         "Sets cdr field in a pair, e.g. (set-cdr! my-pair 2)",
         null /* doc strings */ ) {
+    @Override
     public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
         throws GleamException
     {
@@ -195,7 +204,7 @@ public final class PairsAndLists {
             throw new GleamException(this, "invalid argument", first);
 
         ((Pair) first).setCdr(second);
-        return Void.makeVoid();
+        return Void.value();
     }},
 
     }; // primitives

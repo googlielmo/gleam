@@ -35,7 +35,7 @@ package gleam.lang;
 /**
  * Scheme boolean.
  */
-public final class Boolean extends Entity
+public final class Boolean extends AbstractEntity
 {
     /**
      * serialVersionUID
@@ -44,10 +44,10 @@ public final class Boolean extends Entity
 
     /** the truth value of this object */
     protected boolean value;
-    
+
     /** the one and only #t */
     static public final Boolean trueValue = new Boolean(true);
-    
+
     /** the one and only #f */
     static public final Boolean falseValue = new Boolean(false);
 
@@ -71,13 +71,9 @@ public final class Boolean extends Entity
     /**
      * Writes a boolean.
      */
+    @Override
     public void write(java.io.PrintWriter out)
     {
-        if (value) {
-            out.print("#t");
-        }
-        else {
-            out.print("#f");
-        }   
+        out.print(value ? "#t" : "#f");
     }
 }

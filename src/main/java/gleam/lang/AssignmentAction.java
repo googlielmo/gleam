@@ -48,15 +48,21 @@ public class AssignmentAction extends Action {
     protected Symbol symbol;
 
     /** Creates a new AssignmentAction */
-    public AssignmentAction(Symbol symbol, Environment env, Action parent) {
+    public AssignmentAction(Symbol symbol, Environment env, Action next) {
         this.symbol = symbol;
         this.env = env;
-        this.parent = parent;
+        this.next = next;
+    }
+
+    /** Creates a new AssignmentAction */
+    public AssignmentAction(Symbol symbol, Environment env) {
+        this(symbol, env, null);
     }
 
     /** invocation  */
+    @Override
     Entity invoke(Entity arg, Continuation cont) throws GleamException {
-        cont.action = parent;
+        cont.head = next;
         env.getLocation(symbol).set(arg);
         return Void.value;
     }

@@ -26,7 +26,12 @@
 
 package gleam.library;
 
-import gleam.lang.*;
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.GleamException;
+import gleam.lang.InputPort;
+import gleam.lang.MutableString;
 import gleam.lang.Void;
 
 /**
@@ -57,6 +62,7 @@ public final class SystemInterface {
         1, 1, /* min, max no. of arguments */
         "Loads and executes a source file",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -64,7 +70,7 @@ public final class SystemInterface {
             MutableString filename = (MutableString) arg1;
             InputPort iport = new InputPort(filename.toString());
             env.getInterpreter().load(iport, env);
-            return Void.makeVoid();
+            return Void.value();
         }
         catch (ClassCastException e) {
             throw new GleamException(this, "argument is not a string", arg1);
@@ -73,6 +79,6 @@ public final class SystemInterface {
             throw new GleamException(this, "file not found", arg1);
         }
     }},
-    
+
     }; // primitives
 }

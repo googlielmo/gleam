@@ -28,8 +28,6 @@ package gleam.lang;
 
 import gleam.util.Log;
 
-import java.util.Iterator;
-
 import static gleam.util.Log.Level.FINE;
 import static gleam.util.Log.Level.WARNING;
 
@@ -66,30 +64,31 @@ public class Closure extends Procedure
      * to a new constructor.
      */
     protected Entity param;
-    protected Pair body;
-    protected Environment definitionenv;
+    protected List body;
+    protected Environment definitionEnv;
 
     /**
      * Constructor.
      */
-    public Closure(Entity param, Pair body, Environment env)
+    public Closure(Entity param, List body, Environment env)
     {
         this.param = param;
         this.body = body;
-        this.definitionenv = env;
+        this.definitionEnv = env;
     }
 
     /**
      * Applies this closure.
      */
-    public Entity apply(Pair args, Environment env, Continuation cont)
+    @Override
+    public Entity apply(List args, Environment env, Continuation cont)
         throws GleamException
     {
-        Environment localenv = new Environment(definitionenv);
+        Environment localenv = new Environment(definitionEnv);
         Entity currparam = param;
-        Pair prev = null;
-        boolean arglist = false;
-        gleam.util.Log.record(FINE, "apply: ARGS = ", args);
+        List prev = null;
+        boolean dotparam = false;
+        gleam.util.Log.enter(FINE, "apply: ARGS = ", (Entity) args);
 
         /* bind actual arguments to formals (long)
          */
@@ -97,9 +96,9 @@ public class Closure extends Procedure
             // for each passed arg
             while (args != EmptyList.value) {
                 // get next already-evaluated arg
-                Entity obj = args.car;
+                Entity obj = args.getCar();
 
-                if (arglist == false) {
+                if (!dotparam) {
                     if (currparam == EmptyList.value) {
                         throw new GleamException("apply: too many arguments", this);
                     }
@@ -107,15 +106,15 @@ public class Closure extends Procedure
                         // normal case: get param symbol
                         // and bind it to argument in
                         // local env
-                        Entity p = ((Pair)currparam).car;
+                        Entity p = ((Pair) currparam).getCar();
                         if (p instanceof Symbol) {
                             localenv.define((Symbol)p, obj);
                         }
                         else {
-                            gleam.util.Log.record(WARNING, "apply: param is not a symbol");
+                            Log.enter(WARNING, "apply: param is not a symbol");
                         }
                         // next param, please
-                        currparam = ((Pair)currparam).cdr;
+                        currparam = ((Pair) currparam).getCdr();
                     }
                     else if (currparam instanceof Symbol) {
                         // this is the unusual case
@@ -125,7 +124,7 @@ public class Closure extends Procedure
                         // this param in local env
                         prev = new Pair(obj, EmptyList.value);
                         localenv.define((Symbol) currparam, prev);
-                        arglist = true;
+                        dotparam = true;
                     }
                     else {
                         throw new GleamException("apply: invalid formal parameter", currparam);
@@ -133,67 +132,44 @@ public class Closure extends Procedure
                 }
                 else {
                     // accumulate argument
-                    prev.cdr = new Pair(obj, EmptyList.value);
-                    prev = (Pair)prev.cdr;
+                    prev.setCdr(new Pair(obj, EmptyList.value));
+                    prev = (List) prev.getCdr();
                 }
                 // next argument, please
-                args = (Pair)args.cdr;
+                args = (List) args.getCdr();
             }
         }
         catch (ClassCastException e) {
             throw new GleamException("apply: improper list", currparam);
         }
 
-        if (currparam instanceof Symbol && !arglist) {
+        if (currparam instanceof Symbol && !dotparam) {
             // special case:
             // a "." notation parameter taking the empty list
             localenv.define((Symbol) currparam, EmptyList.value);
         }
-        else if (currparam != EmptyList.value && !arglist) {
+        else if (currparam != EmptyList.value && !dotparam) {
             throw new GleamException("apply: too few arguments", this);
         }
 
-        /* now we have bound params, let's eval body
-         * through a new continuation
+        /* we have bound params, let's eval body
+         * by adding to the continuation
          */
-        cont.action = addCommandSequenceActions(body, localenv, cont.action);
+        cont.addCommandSequenceActions(body, localenv);
         return null;
-    }
-
-    /**
-     * addCommandSequenceActions
-     *
-     * @param body Pair
-     * @param env Environment
-     * @param action Action
-     * @return Action
-     */
-    public static Action addCommandSequenceActions(Pair body, Environment env,
-                        Action action)
-        throws GleamException
-    {
-        Action  currAction = action;
-        java.util.ArrayList temp = new java.util.ArrayList();
-        ListIterator it = new ListIterator(body);
-        while (it.hasNext()) {
-            Entity expr = (Entity) it.next();
-            temp.add(0, expr);
-        }
-        for (Iterator iter = temp.iterator(); iter.hasNext(); ) {
-            Entity expr = (Entity) iter.next();
-            currAction = new ExpressionAction(expr, env, currAction);
-        }
-        return currAction;
     }
 
     /**
      * Writes a Closure
      */
+    @Override
     public void write(java.io.PrintWriter out)
     {
-        Pair extrep = new Pair(Symbol.LAMBDA, new Pair(param, body));
-        out.write("#<procedure ");
-        extrep.write(out);
+        out.write("#<procedure");
+        if (Log.getLevelValue() < Log.Level.INFO.getValue()) {
+            out.write(" ");
+            new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
+        }
         out.write(">");
     }
 }

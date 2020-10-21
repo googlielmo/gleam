@@ -34,46 +34,41 @@ import static gleam.util.Log.Level.FINE;
 /**
  * The base class for Gleam error objects.
  */
-public class GleamException extends java.lang.Exception
+public class GleamException extends Exception
 {
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
 
-    protected final Entity errobj;
+    private final Entity errobj;
 
-    private GleamException()
-    {
-        super();
-        errobj = null;
+    public GleamException(String message) {
+        this(message, Void.value());
     }
 
-    public GleamException(Primitive primitive, String message, Entity obj)
+    public GleamException(Primitive primitive, String message, Entity value)
     {
-        this(primitive.toString() + ": " + message, obj);
+        this(primitive + ": " + message, value);
     }
-    
-    public GleamException(String message, Entity obj)
+
+    public GleamException(String message, Entity value)
     {
         super(message);
-        if (obj != null)
-            errobj = obj;
-        else
-            errobj = Void.value;
+        errobj = (value != null) ? value : Void.value;
 
         if (System.getInteractionEnv() != null)
             System.getInteractionEnv().define(Symbol.ERROBJ, errobj);
 
-        Log.record(FINE, "Generated GleamException: " + message);
+        Log.enter(FINE, "Generated GleamException: " + message);
     }
 
     /**
      * Gets the entity associated with this error.
-     * 
-     * @return gleam.lang.Entity
+     *
+     * @return Entity the error value.
      */
-    public Entity getObject() {
+    public Entity value() {
         return errobj;
     }
 }

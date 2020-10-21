@@ -37,7 +37,7 @@ package gleam.lang;
  * a variable. Locations are used in compiled Scheme code to avoid interpreted
  * (non constant-time) lookup and set operations on variables.
  */
-public final class Location extends Entity
+public final class Location extends AbstractEntity
 {
     /**
      * serialVersionUID
@@ -54,9 +54,8 @@ public final class Location extends Entity
     }
 
     /** Location evaluates to its content value */
-    public Entity eval(Environment env, Continuation cont)
-        throws GleamException
-    {
+    @Override
+    public Entity eval(Environment env, Continuation cont) {
         return value;
     }
 
@@ -77,6 +76,7 @@ public final class Location extends Entity
     /**
      * Writes this location
      */
+    @Override
     public void write(java.io.PrintWriter out) {
         out.write("#<location of ");
         value.write(out);

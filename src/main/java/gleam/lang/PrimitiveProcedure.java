@@ -47,7 +47,8 @@ public class PrimitiveProcedure extends Procedure
         this.value = primitive;
     }
 
-    public Entity apply(Pair arg, Environment env, Continuation cont)
+    @Override
+    public Entity apply(List arg, Environment env, Continuation cont)
         throws GleamException
     {
         if (value.maxArgs < 0 || value.maxArgs > 3) {
@@ -57,7 +58,6 @@ public class PrimitiveProcedure extends Procedure
             return value.applyN(arg, env, cont);
         }
         // ok, 0 <= maxArgs <= 3 : special rules
-        assert 0 <= value.maxArgs && value.maxArgs <= 3; // DEBUG
         Entity[] argArray = new Entity[] {null, null, null};
         int countedArgs = 0;
         ListIterator it = new ListIterator(arg);
@@ -77,20 +77,18 @@ public class PrimitiveProcedure extends Procedure
                 return value.apply1(argArray[0], env, cont);
             case 2:
                 return value.apply2(argArray[0], argArray[1], env, cont);
-            case 3:
+            default: // 3
                 return value.apply3(argArray[0], argArray[1], argArray[2], env, cont);
-            default: // DEBUG CANNOT HAPPEN
-                assert false;
-                return null;
         }
     }
 
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.write("#<primitive-procedure "+ value.toString() + ">");
     }
 
-    private void checkNumArgs(Pair args) throws GleamException {
+    private void checkNumArgs(List args) throws GleamException {
         ListIterator it = new ListIterator(args);
         int i;
         for (i = 0; i < value.minArgs; ++i) {
@@ -105,5 +103,4 @@ public class PrimitiveProcedure extends Procedure
             }
         }
     }
-
 }

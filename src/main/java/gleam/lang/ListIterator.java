@@ -26,99 +26,115 @@
 
 package gleam.lang;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * List read/write iterator.
  */
-public class ListIterator {
-    private Pair pair;
-    private Pair parentPair;
+public class ListIterator implements Iterator<Entity> {
+    private List pair;
+    private List restPair;
     private boolean allowImproper;
-    private boolean wasImproper;
+    private boolean isImproper;
 
     /**
      * Creates an iterator over a proper list.
      */
-    public ListIterator(Pair pair) {
+    public ListIterator(List pair) {
         this(pair, false);
     }
 
     /**
      * Creates an iterator over a (possibly improper) list.
      */
-    public ListIterator(Pair pair, boolean allowImproper) {
+    public ListIterator(List pair, boolean allowImproper) {
         this.pair = pair;
         this.allowImproper = allowImproper;
-        this.parentPair = null;
-        this.wasImproper = false;
+        this.restPair = null;
+        this.isImproper = false;
     }
 
     /**
      * Determines whether there's another object to retrieve from the list.
      */
     public boolean hasNext() {
-        return pair != EmptyList.value;
+        return pair != EmptyList.value();
     }
 
     /**
      * Retrieves next object from the list.
+     *
+     * @return the next Entity in the list
+     * @throws NoSuchElementException if no next element is available
      */
+    @Override
     public Entity next()
-        throws GleamException
+            throws NoSuchElementException
     {
-        if (!wasImproper) {
-            Entity retVal = pair.car;
-            parentPair = pair;
-            try {
-                pair = (Pair)pair.cdr;
-            }
-            catch (ClassCastException e) {
-                wasImproper = true;
-            }
-            return retVal;
-        }
-        else {
-            Entity retVal = pair.cdr;
-            pair = EmptyList.value;
-            if (allowImproper) {
+        try {
+            if (isImproper) {
+                Entity retVal = pair.getCdr();
+                pair = EmptyList.value;
+                if (allowImproper) {
+                    return retVal;
+                }
+                else {
+                    throw new ImproperListException(retVal);
+                }
+            } else {
+                Entity retVal = pair.getCar();
+                restPair = pair;
+                if (pair.getCdr() instanceof List) {
+                    pair = (List) pair.getCdr();
+                }
+                else {
+                    isImproper = true;
+                }
                 return retVal;
             }
-            else {
-                throw new ImproperListException(retVal);
-            }
+        } catch (GleamException e) {
+            throw (NoSuchElementException)
+                    new NoSuchElementException("improper list")
+                            .initCause(e);
         }
     }
 
     /**
-     * Replaces current object.
+     * Replaces current value.
      * Must be called after next().
      */
     public void replace(Entity newArg)
         throws GleamException
     {
-        if (parentPair == null) {
-            throw new GleamException(
-                "No current object to replace", pair);  
+        if (newArg == null) {
+            throw new GleamException("Unexpectd null");
         }
-        if (wasImproper && pair == EmptyList.value) {
-            parentPair.cdr = newArg;
+        if (restPair == null) {
+            throw new GleamException(
+                "No current value to replace", (Entity) pair);
+        }
+        if (isImproper && pair == EmptyList.value) {
+            restPair.setCdr(newArg);
         }
         else {
-            parentPair.car = newArg;
+            restPair.setCar(newArg);
         }
     }
-    
+
     /**
-     * Remove operation currently not supported. 
+     * Remove operation currently not supported.
      */
+    @Override
     public void remove() {
-        throw new UnsupportedOperationException("Remove operation currently not supported");
+        throw new UnsupportedOperationException("Unsupported remove operation");
     }
 
     /**
      * Returns the remaining portion of the list as a Pair.
      */
-    public Pair rest() {
-        return pair;
+    public Entity rest() {
+        return (Entity) pair;
     }
 }
 

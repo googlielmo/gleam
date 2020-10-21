@@ -53,6 +53,7 @@ public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject 
         super(p);
     }
 
+    @Override
     public void write(java.io.PrintWriter out) {
         out.write("#<syntax-procedure "+ value.getName() + ">");
     }

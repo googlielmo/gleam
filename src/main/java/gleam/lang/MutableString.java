@@ -27,10 +27,10 @@
 package gleam.lang;
 
 /**
- * Scheme string.
+ * Scheme mutable string.
  * Creation date: (28/10/2001 12.22.48)
  */
-public class MutableString extends Entity {
+public class MutableString extends AbstractEntity {
     /**
      * serialVersionUID
      */
@@ -51,6 +51,7 @@ public class MutableString extends Entity {
     /**
      * Obtains the current string value as a java.lang.String.
      */
+    @Override
     public String toString() {
         return value.toString();
     }
@@ -58,6 +59,7 @@ public class MutableString extends Entity {
     /**
      * Writes a Scheme string.
      */
+    @Override
     public void write(java.io.PrintWriter out) {
         out.print("\"");
         for (int i = 0; i < value.length(); ++i) {
@@ -87,6 +89,7 @@ public class MutableString extends Entity {
     /**
      * Displays a Scheme string.
      */
+    @Override
     public void display(java.io.PrintWriter out) {
         out.print(value);
     }

@@ -28,6 +28,11 @@ package gleam.lang;
 
 import gleam.library.Primitive;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
 import static gleam.util.Log.Level.FINE;
 import static gleam.util.Log.Level.ERROR;
 
@@ -41,7 +46,7 @@ public final class System
     private System() {}
 
     /** the keyword set */
-    private static java.util.HashSet kwSet = new java.util.HashSet();
+    private static Set<Symbol> kwSet = new HashSet<Symbol>();
 
     /** the null environment, as defined in r5rs */
     private static Environment nullEnv = null;
@@ -59,12 +64,12 @@ public final class System
     private static OutputPort cout = null;
 
     /** the short-help map */
-    private static java.util.HashMap helpComment
-        = new java.util.HashMap();
+    private static HashMap<String, String> helpComment
+        = new HashMap<String, String>();
 
     /** the long-help map */
-    private static java.util.HashMap helpDocumentation
-        = new java.util.HashMap();
+    private static HashMap<String, String> helpDocumentation
+        = new HashMap<String, String>();
 
     // static initializer, executed once after loading class
     static {
@@ -88,18 +93,18 @@ public final class System
      */
     private static void importPrimitives(Primitive[] primitives) {
         Environment instEnv;
-        for (int i = 0; i < primitives.length; ++i) {
-            switch (primitives[i].definitionEnv) {
-            case Primitive.NULL_ENV:
-                instEnv = nullEnv;
-                break;
-            case Primitive.R5RS_ENV:
-                instEnv = r5rsEnv;
-                break;
-            default:
-                instEnv = intrEnv;
+        for (Primitive primitive : primitives) {
+            switch (primitive.definitionEnv) {
+                case Primitive.NULL_ENV:
+                    instEnv = nullEnv;
+                    break;
+                case Primitive.R5RS_ENV:
+                    instEnv = r5rsEnv;
+                    break;
+                default:
+                    instEnv = intrEnv;
             }
-            installPrimitive(instEnv, primitives[i]);
+            installPrimitive(instEnv, primitive);
         }
     }
 
@@ -171,10 +176,10 @@ public final class System
             intrEnv.define(Symbol.CALL_CC, r5rsEnv.lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
             intrEnv.define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
 
-                }
+        }
         catch (GleamException e) {
             // should never happen
-            gleam.util.Log.record(ERROR,
+            gleam.util.Log.enter(ERROR,
                 "Internal error during environment initialization: "
                     + e.getMessage());
         }
@@ -197,8 +202,8 @@ public final class System
     /**
      * Gets the set of help-enabled procedures
      */
-    public static java.util.Set getHelpNames() {
-        return new java.util.TreeSet(helpDocumentation.keySet());
+    public static Set<String> getHelpNames() {
+        return new TreeSet<String>(helpDocumentation.keySet());
     }
 
     public static Environment getInteractionEnv() {
@@ -242,19 +247,17 @@ public final class System
 
     /**
      * Determines if a given object is a variable.
-     * An object is a variable iff it is a symbol but
-     * is not a syntactic keyword.
+     * An object is a variable iff it is a symbol.
      */
     static boolean isVariable(Entity s) {
-        return s instanceof Symbol
-            ; //***FIXME && !isKeyword( (Symbol) s);
+        return s instanceof Symbol;
     }
 
     /**
      * Performs syntactic analysis of special forms.
      * Creation date: (02/11/2001 12.34.35)
      */
-    public static void analyzeSpecialForm(Pair form) throws GleamException {
+    public static void analyzeSpecialForm(List form) throws GleamException {
         ListIterator it = new ListIterator(form);
         if (!it.hasNext()) {
             throw new GleamException("invalid special form", form);
@@ -295,10 +298,10 @@ public final class System
                 // ok
                 it.replace(arg.analyze());
             }
-            else if (arg instanceof Pair) {
+            else if (arg instanceof List) {
                 // iterate over (possibly improper) list
-                ListIterator ait = new ListIterator( (Pair) arg, true);
-                java.util.Set paramSet = new java.util.HashSet();
+                ListIterator ait = new ListIterator( (List) arg, true);
+                Set<Symbol> paramSet = new HashSet<Symbol>();
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
                     if (!isVariable(pobj)) {
@@ -397,24 +400,23 @@ public final class System
         else if (op == Symbol.DEFINE) {
             // analyze variable or function
             boolean isFunction;
-            if (arg == EmptyList.value) {
+            if (arg == EmptyList.value()) {
                 throw new GleamException(
                     "define: invalid function name", form);
-                // ok
             }
             else if (isVariable(arg)) {
                 isFunction = false;
                 it.replace(arg.analyze());
             }
-            else if (arg instanceof Pair) {
+            else if (arg instanceof List) {
                 isFunction = true;
 
                 // take out function name
                 boolean fname = true;
 
                 // iterate over (possibly improper) list
-                ListIterator ait = new ListIterator( (Pair) arg, true);
-                java.util.Set paramSet = new java.util.HashSet();
+                ListIterator ait = new ListIterator( (List) arg, true);
+                Set<Symbol> paramSet = new HashSet<Symbol>();
 
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
@@ -469,26 +471,27 @@ public final class System
             }
         }
         else {
-            gleam.util.Log.record(FINE, "analyzeSpecialForm: not a special form");
+            gleam.util.Log.enter(FINE, "analyzeSpecialForm: not a special form");
         }
     }
 
     /**
-     * Clones a pair
+     * Deep clones a list
      *
-     * @return gleam.lang.Pair
-     * @param p gleam.lang.Pair
+     * @return gleam.lang.List
+     * @param p gleam.lang.List
      */
-    private static Pair clonePair(Pair p) {
-        if (p == EmptyList.value)
+    private static List cloneList(List p)
+            throws GleamException {
+        if (p == EmptyList.value())
             return p;
         else {
-            Entity newcar = p.car;
-            Entity newcdr = p.cdr;
+            Entity newcar = p.getCar();
+            Entity newcdr = p.getCdr();
             if (newcar instanceof Pair)
-                newcar = clonePair( (Pair) newcar);
+                newcar = cloneList((List) newcar);
             if (newcdr instanceof Pair)
-                newcdr = clonePair( (Pair) newcdr);
+                newcdr = cloneList((List) newcdr);
             return new Pair(newcar, newcdr);
         }
     }
@@ -497,15 +500,15 @@ public final class System
      * Performs optimization of special forms.
      * Creation date: (14/11/2001 02.19.35)
      */
-    public static void optimizeSpecialForm(Pair form, Environment env) throws
+    public static void optimizeSpecialForm(List form, Environment env) throws
         GleamException {
         /* We operate under the assumption that syntax analysis
          * has already been performed, so we skip syntax checking.
          */
 
-        // TODO: remove clonePair!!!
-        if (form.cdr instanceof Pair) {
-            form.cdr = clonePair( (Pair) form.cdr);
+        // TODO: remove clonePair ?
+        if (form.getCdr() instanceof List) {
+            form.setCdr(cloneList( (List) form.getCdr()));
         }
 
         ListIterator it = new ListIterator(form);
@@ -550,9 +553,9 @@ public final class System
                 // ok, but we add it to paramEnv
                 paramEnv.define( (Symbol) arg, Undefined.value);
             }
-            else if (arg instanceof Pair) {
+            else if (arg instanceof List) {
                 // iterate over (possibly improper) list
-                ListIterator ait = new ListIterator( (Pair) arg, true);
+                ListIterator ait = new ListIterator( (List) arg, true);
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
                     paramEnv.define( (Symbol) pobj,
@@ -594,7 +597,7 @@ public final class System
             // TODO
         }
         else if (op == Symbol.QUASIQUOTE) {
-            // shall not touch arg, as in quote!
+            // shall not touch arg, like quote
         }
         else if (op == Symbol.DEFINE) {
             /* in case this is a procedure
@@ -612,9 +615,9 @@ public final class System
             if (isVariable(arg)) {
                 // ok, leave it alone
             }
-            else if (arg instanceof Pair) {
+            else if (arg instanceof List) {
                 // iterate over (possibly improper) list
-                ListIterator ait = new ListIterator( (Pair) arg, true);
+                ListIterator ait = new ListIterator( (List) arg, true);
 
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
@@ -654,15 +657,15 @@ public final class System
      * Creates a new environment for all variables defined within body
      * to hold Undefined values.
      */
-    static Environment createScanOutDefineEnv(Pair body, Environment env) throws
+    static Environment createScanOutDefineEnv(List body, Environment env) throws
         GleamException {
-        Pair varList = EmptyList.value;
+        List varList = EmptyList.value;
         ListIterator it = new ListIterator(body);
         /* do a scan out for each body part,
          * appending variables found into varList
          */
         while (it.hasNext()) {
-            Pair partialList = internalScanOut(it.next());
+            List partialList = internalScanOut(it.next());
             ListIterator it2 = new ListIterator(partialList);
             while (it2.hasNext()) {
                 Entity var = it2.next();
@@ -675,46 +678,43 @@ public final class System
         else {
             Environment retVal = new Environment(env);
             // iterate on varList, binding each var to Undefined
-            gleam.util.Log.record(FINE, "Scanned out: ");
+            gleam.util.Log.enter(FINE, "Scanned out: ");
             ListIterator vit = new ListIterator(varList);
             while (vit.hasNext()) {
                 Symbol var = (Symbol) vit.next();
                 retVal.define(var, Undefined.value);
-                gleam.util.Log.record(FINE, "variable", var);
+                gleam.util.Log.enter(FINE, "variable", var);
             }
-            gleam.util.Log.record(FINE, "...end of scan-out");
+            gleam.util.Log.enter(FINE, "...end of scan-out");
             return retVal;
         }
     }
 
-    private static Pair internalScanOut(Entity bodyPart) throws
-        GleamException {
-        Pair retVal = EmptyList.value;
-        if (! (bodyPart instanceof Pair))
+    private static List internalScanOut(Entity bodyPart)
+            throws GleamException {
+        List retVal = EmptyList.value;
+        if (! (bodyPart instanceof List))
             return retVal;
 
-        Pair bpAsPair = (Pair) bodyPart;
+        List bpAsPair = (List) bodyPart;
 
-        if (bpAsPair.car == Symbol.DEFINE) {
-            Entity obj = ( (Pair) bpAsPair.cdr).car;
+        if (bpAsPair.getCar() == Symbol.DEFINE) {
+            Entity obj = ((List) bpAsPair.getCdr()).getCar();
             if (obj instanceof Symbol) {
                 retVal = new Pair(obj, retVal);
             }
-            else if (obj instanceof Pair) {
-                retVal = new Pair(
-                    ( (Pair) obj).car, retVal);
+            else if (obj instanceof List) {
+                retVal = new Pair(((List) obj).getCar(), retVal);
             }
         }
-        else if (bpAsPair.car == Symbol.BEGIN) {
-            ListIterator it = new ListIterator( (Pair) bpAsPair.cdr);
+        else if (bpAsPair.getCar() == Symbol.BEGIN) {
+            ListIterator it = new ListIterator( (List) bpAsPair.getCdr());
             while (it.hasNext()) {
-                Pair is = internalScanOut(it.next());
+                List is = internalScanOut(it.next());
                 if (is != EmptyList.value) {
-                    ListIterator it2
-                        = new ListIterator(is);
+                    ListIterator it2 = new ListIterator(is);
                     while (it2.hasNext()) {
-                        retVal = new Pair(
-                            it2.next(), retVal);
+                        retVal = new Pair(it2.next(), retVal);
                     }
                 }
             }

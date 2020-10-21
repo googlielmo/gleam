@@ -26,17 +26,19 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
 /**
  * The Scheme undefined value (a singleton).
  * Creation date: (07/nov/2001 23.40.59)
  */
-public final class Undefined extends Entity {
+public final class Undefined extends AbstractEntity {
 
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
-    
+
     /** the Undefined singleton */
     protected static final Undefined value = new Undefined();
 
@@ -45,15 +47,25 @@ public final class Undefined extends Entity {
     }
 
     /**
-     * Factory method
+     * Get the only value
      */
-    public static Undefined makeUndefined() {
+    public static Undefined value() {
+        return value;
+    }
+
+    /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    protected Object readResolve()
+    {
+        Log.enter(Log.Level.FINE, "readResolve() called! (Undefined)"); //DEBUG
         return value;
     }
 
     /**
      * Evaluates this object in the given environment.
      */
+    @Override
     public Entity eval(Environment env, Continuation cont)
         throws GleamException
     {
@@ -61,19 +73,10 @@ public final class Undefined extends Entity {
     }
 
     /**
-     * Prevents the release of multiple instances upon deserialization.
-     */
-    protected java.lang.Object readResolve()
-        throws java.io.ObjectStreamException
-    {
-//      java.lang.System.out.println("readResolve() called! (Undefined)"); //DEBUG
-        return value;
-    }
-
-    /**
      * Writes the undefined value
      */
+    @Override
     public void write(java.io.PrintWriter out) {
-        out.write("#<?>");
+        out.write("#<undefined>");
     }
 }

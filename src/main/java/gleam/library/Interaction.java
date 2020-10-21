@@ -26,11 +26,20 @@
 
 package gleam.library;
 
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.GleamException;
+import gleam.lang.MutableString;
 import gleam.lang.Number;
+import gleam.lang.Real;
+import gleam.lang.Symbol;
 import gleam.lang.System;
 import gleam.lang.Void;
-import gleam.lang.*;
 import gleam.util.Log;
+import gleam.util.Log.Level;
+
+import java.util.Set;
 
 /**
  * INTERACTION -- GLEAM-SPECIFIC
@@ -61,6 +70,7 @@ public final class Interaction {
         "Gives a short help on a primitive, e.g. (help if)",
         null /* doc strings */ ) {
     private static final int helpColumnWidth = 15;
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -71,54 +81,51 @@ public final class Interaction {
                 throw new GleamException(this, "invalid argument", arg1);
             }
 
-            String pname = ((Symbol)arg1).toString();
+            String pname = arg1.toString();
             String doc = System.getHelpDocumentation(pname);
             if (doc != null) {
                 System.getCout().print(doc);
-                System.getCout().newline();
             }
             else {
                 System.getCout().print("No documentation available for ");
-                System.getCout().print(((Symbol)arg1).toString());
+                System.getCout().print(arg1.toString());
                 System.getCout().print(". Try (help).");
-                System.getCout().newline();
             }
-            return Void.makeVoid();
+            System.getCout().newline();
+            return Void.value();
         }
 
-        // no args: print short comments on all primitives      
+        // no args: print short comments on all primitives
         // prepare filler for first column
-        char chars[] = new char[helpColumnWidth];
+        char[] chars = new char[helpColumnWidth];
         java.util.Arrays.fill(chars, ' ');
         StringBuffer spc = new StringBuffer();
         spc.append(chars);
-        
+
         System.getCout().print("Available primitives:\n\n");
-        java.util.Set nameset = System.getHelpNames();
-        java.util.Iterator nameit = nameset.iterator();
-        while (nameit.hasNext()) {
-            StringBuffer pname = new StringBuffer((String) nameit.next());
+        Set<String> nameset = System.getHelpNames();
+        for (String s : nameset) {
+            StringBuffer pname = new StringBuffer(s);
             String doc = System.getHelpComment(pname.toString());
             if (doc != null) {
-                if (pname.length() < helpColumnWidth ) {
+                if (pname.length() < helpColumnWidth) {
                     pname.append(spc.subSequence(0, helpColumnWidth - pname.length()));
                 }
                 System.getCout().print(pname.toString());
                 System.getCout().print(" ");
                 System.getCout().print(doc);
-                System.getCout().newline();
             }
             else {
                 System.getCout().print("No documentation available ");
                 System.getCout().print("(but it should be!). ");
                 System.getCout().print("Please report to Gleam developers.");
-                System.getCout().newline();
             }
+            System.getCout().newline();
         }
         System.getCout().newline();
         System.getCout().print("Special variable __errobj contains last offending object after an error.");
         System.getCout().newline();
-        return Void.makeVoid();
+        return Void.value();
     }},
 
     /**
@@ -130,6 +137,7 @@ public final class Interaction {
         1, 1, /* min, max no. of arguments */
         "Sets verbosity level: 0=off, 1=standard ... 5=pedantic",
         "E.g. (set-verbosity! 2)" /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
@@ -137,11 +145,13 @@ public final class Interaction {
             throw new GleamException(this, "invalid argument", arg1);
         }
         double v = ((Number)arg1).getDoubleValue();
-        if (v < 0.0 || v > 5.0) {
-            throw new GleamException(this, "invalid argument (should be between 0 and 5)", arg1);
+        if (v < Level.ALL.getValue() || v > Level.ERROR.getValue()) {
+            throw new GleamException(this,
+                    "invalid argument (should be between "+ Level.ALL +" and " + Level.ERROR +")",
+                    arg1);
         }
-        gleam.util.Log.setLevel(6 - (int) v);
-        return Void.makeVoid();
+        Log.setLevel(Level.OFF.getValue() - (int) v);
+        return Void.value();
     }},
 
     /**
@@ -152,10 +162,10 @@ public final class Interaction {
         Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 0, /* min, max no. of arguments */
         "Returns current verbosity level", null /* doc strings */ ) {
+    @Override
     public Entity apply0(Environment env, Continuation cont)
-        throws GleamException
     {
-        return new Real(6 - gleam.util.Log.getLevel());
+        return new Real(Level.OFF.getValue() - Log.getLevelValue());
     }},
 
     /**
@@ -167,23 +177,24 @@ public final class Interaction {
         1, 1, /* min, max no. of arguments */
         "Saves current session environment, e.g. (save-session \"file\")",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
         if (arg1 instanceof MutableString) {
             try {
                 java.io.FileOutputStream
-                    f = new java.io.FileOutputStream(((MutableString)arg1).toString());
+                    f = new java.io.FileOutputStream(arg1.toString());
                 java.io.ObjectOutput
                     s = new java.io.ObjectOutputStream(f);
                 s.writeObject(env.getInterpreter().getSessionEnv());
-                return Void.makeVoid();
+                return Void.value();
             }
             catch (java.io.FileNotFoundException e) {
                 throw new GleamException(this, "file not found", arg1);
             }
             catch (java.io.IOException e) {
-                Log.record(e);
+                Log.error(e);
                 throw new GleamException(this, "I/O error", arg1);
             }
         }
@@ -201,33 +212,34 @@ public final class Interaction {
         1, 1, /* min, max no. of arguments */
         "Loads a session environment, e.g. (load-session \"file\")",
         null /* doc strings */ ) {
+    @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
         if (arg1 instanceof MutableString) {
             try {
                 java.io.FileInputStream
-                    f = new java.io.FileInputStream(((MutableString)arg1).toString());
+                    f = new java.io.FileInputStream(arg1.toString());
                 java.io.ObjectInputStream
                     s = new java.io.ObjectInputStream(f);
                 Environment glob = (Environment) s.readObject();
                 env.getInterpreter().setSessionEnv(glob);
-                return Void.makeVoid();
+                return Void.value();
             }
             catch (java.io.FileNotFoundException e) {
-                Log.record(e);
+                Log.error(e);
                 throw new GleamException(this, "file not found", arg1);
             }
             catch (java.io.IOException e) {
-                Log.record(e);
+                Log.error(e);
                 throw new GleamException(this, "I/O error", arg1);
             }
-            catch (java.lang.ClassNotFoundException e) {
-                Log.record(e);
+            catch (ClassNotFoundException e) {
+                Log.error(e);
                 throw new GleamException(this, "class not found", arg1);
             }
-            catch (java.lang.ClassCastException e) {
-                Log.record(e);
+            catch (ClassCastException e) {
+                Log.error(e);
                 throw new GleamException(this, "invalid class", arg1);
             }
         }
@@ -235,7 +247,6 @@ public final class Interaction {
             throw new GleamException(this, "invalid argument", arg1);
         }
     }},
-    
-    }; // primitives
 
+    }; // primitives
 }

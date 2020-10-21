@@ -44,9 +44,14 @@ public class EvalAction extends Action {
     private Environment env;
 
     /** Creates a new instance of this action */
-    public EvalAction(Environment env, Action parent) {
+    public EvalAction(Environment env, Action next) {
         this.env = env;
-        this.parent = parent;
+        this.next = next;
+    }
+
+    /** Creates a new instance of this action */
+    public EvalAction(Environment env) {
+        this(env, null);
     }
 
     /**
@@ -56,9 +61,9 @@ public class EvalAction extends Action {
      * @return the result of the evaluation
      * @throws gleam.lang.GleamException in case of errors
      */
+    @Override
     Entity invoke(Entity arg, Continuation cont) throws GleamException {
-        cont.action = parent;
+        cont.head = next;
         return arg.eval(env, cont);
     }
-    
 }

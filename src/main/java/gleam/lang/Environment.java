@@ -26,15 +26,15 @@
 
 package gleam.lang;
 
-import java.util.Map;
 import java.util.HashMap;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Constituent part of Scheme environment
  *
  */
-public class Environment extends Entity
+public class Environment extends AbstractEntity
 {
     /**
      * serialVersionUID
@@ -48,22 +48,20 @@ public class Environment extends Entity
     private transient Interpreter intp;
 
     /** Association function: symbol --> location */
-    private Map assoc;
+    private Map<Symbol, Location> assoc;
 
     /** Constructor */
-    public Environment(Environment p)
+    public Environment(Environment parent)
     {
-        parent = p;
-        if (p != null) intp = p.intp;
-        assoc = new HashMap();
+        this.parent = parent;
+        if (parent != null) intp = parent.intp;
+        this.assoc = new HashMap<Symbol, Location>();
     }
 
     /**
-     * Returns the current interpreter
      * @return the current interpreter
      */
     public Interpreter getInterpreter() {
-        //return intp;
         return intp;
     }
 
@@ -76,7 +74,7 @@ public class Environment extends Entity
      */
     public synchronized void define(Symbol s, Entity v)
     {
-        java.lang.Object loc;
+        Object loc;
         if ((loc = assoc.get(s)) != null) {
             ((Location) loc).set(v);
         }
@@ -88,15 +86,31 @@ public class Environment extends Entity
     /**
      * Gives the Location for the specified variable.
      *
-     * @param s Symbol
+     * @param s Symbol a variable name
      * @return Location
-     * @throws gleam.lang.GleamException 
+     * @throws UnboundVariableException if the variable is unbound
      * @see Location
      */
     public Location getLocation(Symbol s)
-        throws GleamException
+        throws UnboundVariableException
     {
-        java.lang.Object o;
+        Location location = getLocationOrNull(s);
+        if (location != null)
+            return location;
+        throw new UnboundVariableException(s);
+    }
+
+    /**
+     * Gives the Location for the specified variable, or null
+     * if unbound.
+     *
+     * @param s Symbol a variable name
+     * @return Location or null
+     * @see Location
+     */
+    Location getLocationOrNull(Symbol s)
+    {
+        Object o;
         Environment e = this;
         while (e != null) {
             o = e.assoc.get(s);
@@ -108,7 +122,7 @@ public class Environment extends Entity
             }
         }
         // so it is unbound...
-        throw new GleamException("Unbound variable: " + s.value, s);
+        return null;
     }
 
     /**
@@ -117,28 +131,16 @@ public class Environment extends Entity
      * environments, up to the topmost (global) environment.
      *
      * @param s Symbol
-     * @throws gleam.lang.GleamException 
      * @return Entity
      */
     public Entity lookup(Symbol s)
         throws GleamException
     {
-        java.lang.Object o;
-        Environment f = this;
-        while (f != null) {
-            o = f.assoc.get(s);
-            if (o == null) {
-                f = f.parent;
-            }
-            else {
-                return ((Location) o).get();
-            }
-        }
-        // so it is unbound...
-        throw new GleamException("Unbound variable: " + s.value, s);
+        return getLocation(s).get();
     }
 
     /** Writes this environment */
+    @Override
     public void write(java.io.PrintWriter out)
     {
         out.write("#<environment>");
@@ -149,13 +151,12 @@ public class Environment extends Entity
         OutputPort out = System.getCout();
         out.print("--------------- "+this.toString());
         out.newline();
-        for (Iterator iter = assoc.keySet().iterator(); iter.hasNext(); ) {
-            Symbol s = (Symbol) iter.next();
-            Location l = (Location) assoc.get(s);
+        for (Symbol s : assoc.keySet()) {
+            Location l = assoc.get(s);
 
             out.write(s);
-            out.print("\t"+s.toString());
-            out.print("\t"+l.get().toString());
+            out.print("\t" + s.toString());
+            out.print("\t" + l.get().toString());
             out.newline();
         }
         if (this.parent != null) {

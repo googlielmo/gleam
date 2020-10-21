@@ -8,6 +8,9 @@ welcome to redistribute it under certain conditions; see LICENSE.TXT.
 TO DO:
 ------
 
+Remove System.isKeyword(). Move analyzeSpecialForm() and optimizeSpecialForm()
+to specific subclasses of SyntaxProcedure, where they belong.
+
 Use Java 5 generics where possible (?)
 
 Implement as many primitives as possible in Scheme
@@ -19,7 +22,7 @@ Implement as many primitives as possible in Scheme
 
 A rewriting system for patterns (...)
 
-Check tail-call optimizations
+Test fully: tail-call optimizations
 
 rewriter? type function
 
@@ -40,9 +43,9 @@ ListIterator
 
 A compiler!
 
-(UNSURE) refactor ArgumentList into two classes: EvaluatedArguments and 
+(UNSURE) refactor ArgumentList into two classes: EvaluatedArguments and
 UnevaluatedArguments, so that special forms and rewriters use the latter (with a
-different implementation that does not have to convert args from Java lists to 
+different implementation that does not have to convert args from Java lists to
 Scheme lists)
 
 (UNSURE) refactor all continuations and the "return null" convention.
@@ -76,7 +79,7 @@ A proposal for a Java FFI:
         (java-method (set! (i 'int) (obj $Object)) ...) )
 
 
-Explicit first-class environments, with primitives: 
+Explicit first-class environments, with primitives:
     make-environment [done]
     call-with-current-environment [?]
     current-environment [done]
@@ -84,20 +87,3 @@ Explicit first-class environments, with primitives:
     environment? [done]
     defined?
     ...
-
-
---------------------------------------------------------------------------------
-
-DONE:
------
-
-toString for Entities (so that display() can use it)
-    [NOTE: the reverse is now true]
-
-Object has a new name: Entity
-
-For syntax-rewriter: introduce a new "Eval" action, make "rewrite" put a new 
-Expression action in the continuation, followed by an Eval action, so that
-after the execution of the rewriter the Eval action gets the resulting expanded
-expression, and evaluates it.
-
