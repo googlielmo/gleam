@@ -86,7 +86,7 @@ public final class Symbols {
     @Override
     public Entity apply0(Environment env, Continuation cont)
     {
-        return Symbol.makeUninternedSymbol("__S"+(gencount.getAndIncrement()));
+        return Symbol.makeUninternedSymbol("__S" + (gencount.getAndIncrement()));
     }},
 
     }; // primitives

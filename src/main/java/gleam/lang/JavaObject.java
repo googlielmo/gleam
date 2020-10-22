@@ -40,6 +40,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 
 /**
  * A Java object.
@@ -143,12 +144,17 @@ public class JavaObject extends AbstractEntity {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
         if (!(obj instanceof JavaObject))
             return false;
         JavaObject javaObject = (JavaObject) obj;
-        return value == null ?
-                javaObject.value == null :
-                this.value.equals(((JavaObject) obj).value);
+        return Objects.equals(value, javaObject.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 
     public boolean eq_p(JavaObject obj) {

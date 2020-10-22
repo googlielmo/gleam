@@ -60,6 +60,7 @@ public final class Boolean extends AbstractEntity
     /**
      * Static factory.
      */
+    @SuppressWarnings("BooleanParameter")
     public static Boolean makeBoolean(boolean b)
     {
         if (b)

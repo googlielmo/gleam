@@ -251,12 +251,12 @@ public class Pair extends AbstractEntity implements List {
         while (rest != EmptyList.value) {
             if (rest instanceof List) {
                 // this is a proper list
-                Pair restAsPair = (Pair) rest;
-                rest = new Pair(restAsPair.getCar(), restAsPair.getCdr());
+                List restAsList = (List) rest;
+                rest = new Pair(restAsList.getCar(), restAsList.getCdr());
                 restParent.setCdr(rest);
-                restParent = restAsPair;
-                restAsPair.setCar(restAsPair.getCar().optimize(env));
-                rest = restAsPair.getCdr();
+                restParent = restAsList;
+                restAsList.setCar(restAsList.getCar().optimize(env));
+                rest = restAsList.getCdr();
             }
             else {
                 /* this is an improper list
