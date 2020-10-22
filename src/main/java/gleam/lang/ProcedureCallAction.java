@@ -33,8 +33,8 @@ public class ProcedureCallAction extends Action {
      */
     private static final long serialVersionUID = 1L;
 
-    private ArgumentList arglist;
-    private Environment env;
+    private final ArgumentList arglist;
+    private final Environment env;
 
     /** Creates a new instance of this action */
     public ProcedureCallAction(ArgumentList arglist, Environment env, Action next) {
@@ -62,7 +62,6 @@ public class ProcedureCallAction extends Action {
                       "procedure call: operator is not a procedure",
                       arg);
         }
-        return operator.apply((List) arglist.getArguments(), env, cont);
+        return operator.apply(arglist.getArguments(), env, cont);
     }
-
 }

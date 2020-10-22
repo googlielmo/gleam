@@ -37,7 +37,7 @@ public class MutableString extends AbstractEntity {
     private static final long serialVersionUID = 1L;
 
     /** The current string value. */
-    StringBuffer value;
+    final StringBuffer value;
 
     /**
      * Creates a new Scheme string.

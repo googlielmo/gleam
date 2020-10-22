@@ -49,9 +49,9 @@ public final class Strings {
      * It is used by static initializers in gleam.lang.System to populate
      * the three initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * string?
      * Tests if argument is a string
      */

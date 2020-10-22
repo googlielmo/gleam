@@ -41,6 +41,7 @@ import gleam.lang.GleamException;
 import gleam.lang.JavaObject;
 import gleam.lang.ListIterator;
 import gleam.lang.MutableString;
+import gleam.lang.Number;
 import gleam.lang.Real;
 import gleam.lang.Symbol;
 import gleam.lang.Void;
@@ -49,6 +50,7 @@ import gleam.util.Log;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -67,9 +69,9 @@ public class JavaInterface {
      * It is used by static initializers in gleam.lang.System to populate
      * the initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * new
      */
     new Primitive( "new",
@@ -90,8 +92,8 @@ public class JavaInterface {
         if (!it.hasNext()) {
             return new JavaObject(className);
         }
-        List<Class<?>> argClasses = new ArrayList<Class<?>>();
-        List<Object> argObjects = new ArrayList<Object>();
+        List<Class<?>> argClasses = new ArrayList<>();
+        Collection<Object> argObjects = new ArrayList<>();
         while (it.hasNext()) {
             Entity arg = it.next();
             argClasses.add(getJavaClass(arg));
@@ -100,7 +102,7 @@ public class JavaInterface {
         return new JavaObject(className, argClasses.toArray(new Class<?>[0]), argObjects.toArray());
     }},
 
-    /**
+    /*
      * call
      */
     new Primitive( "call",
@@ -121,8 +123,8 @@ public class JavaInterface {
         if (!(object instanceof JavaObject)) {
             throw new GleamException(this, "wrong argument type, should be a Java object", object);
         }
-        List<Class<?>> argClasses = new ArrayList<Class<?>>();
-        List<Object> argObjects = new ArrayList<Object>();
+        List<Class<?>> argClasses = new ArrayList<>();
+        Collection<Object> argObjects = new ArrayList<>();
         while (it.hasNext()) {
             Entity arg = it.next();
             argClasses.add(getJavaClass(arg));
@@ -131,7 +133,7 @@ public class JavaInterface {
         return call((JavaObject) object, (Symbol) methodName, argClasses.toArray(new Class<?>[0]), argObjects.toArray());
     }},
 
-    /**
+    /*
      * class-of
      */
     new Primitive( "class-of",
@@ -221,7 +223,7 @@ public class JavaInterface {
         }
         else if (arg instanceof Real)
         {
-            return ((Real) arg).getDoubleValue();
+            return ((Number) arg).getDoubleValue();
         }
         else
             throw new GleamException("cannot obtain the Java Object for a Gleam entity", arg);

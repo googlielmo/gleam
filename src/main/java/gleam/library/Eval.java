@@ -44,6 +44,7 @@ public final class Eval {
     /**
      * Can't instantiate this class
      */
+    @SuppressWarnings("unused")
     private Eval() {
     }
 
@@ -52,9 +53,9 @@ public final class Eval {
      * It is used by static initializers in gleam.lang.System to populate
      * the initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * eval
      * Evaluates an expression in an environment
      */
@@ -81,7 +82,7 @@ public final class Eval {
         return null;
     }},
 
-    /**
+    /*
      * null-environment
      * Returns the null environment
      */
@@ -110,7 +111,7 @@ public final class Eval {
         }
     }},
 
-    /**
+    /*
      * scheme-report-environment
      * Returns the scheme-report environment
      */
@@ -139,7 +140,7 @@ public final class Eval {
         }
     }},
 
-    /**
+    /*
      * interaction-environment
      * Returns the interaction environment
      */
@@ -154,7 +155,7 @@ public final class Eval {
         return gleam.lang.System.getInteractionEnv();
     }},
 
-    /**
+    /*
      * current-environment
      * Returns the current environment
      */
@@ -168,7 +169,7 @@ public final class Eval {
         return env;
     }},
 
-    /**
+    /*
      * in-environment
      * Returns the current environment
      */
@@ -186,7 +187,7 @@ public final class Eval {
         return null;
     }},
 
-    /**
+    /*
      * make-environment
      * Returns a new environment
      */
@@ -200,7 +201,7 @@ public final class Eval {
         return new Environment(env);
     }},
 
-    /**
+    /*
      * environment?
      * Returns a new environment
      */

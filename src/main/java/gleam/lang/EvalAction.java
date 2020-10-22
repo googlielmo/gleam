@@ -41,7 +41,7 @@ public class EvalAction extends Action {
      */
     private static final long serialVersionUID = 1L;
 
-    private Environment env;
+    private final Environment env;
 
     /** Creates a new instance of this action */
     public EvalAction(Environment env, Action next) {

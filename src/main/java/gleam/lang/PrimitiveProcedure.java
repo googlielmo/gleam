@@ -28,6 +28,8 @@ package gleam.lang;
 
 import gleam.library.Primitive;
 
+import java.util.Iterator;
+
 /**
  * Scheme primitive library procedure.
  */
@@ -38,7 +40,7 @@ public class PrimitiveProcedure extends Procedure
      */
     private static final long serialVersionUID = 1L;
 
-    protected Primitive value;
+    protected final Primitive value;
 
     /**
      * PrimitiveProcedure
@@ -89,7 +91,7 @@ public class PrimitiveProcedure extends Procedure
     }
 
     private void checkNumArgs(List args) throws GleamException {
-        ListIterator it = new ListIterator(args);
+        Iterator<Entity> it = new ListIterator(args);
         int i;
         for (i = 0; i < value.minArgs; ++i) {
             if (!it.hasNext()) {

@@ -43,25 +43,26 @@ public final class Symbols {
     /**
      * Can't instantiate this class
      */
+    @SuppressWarnings("unused")
     private Symbols() {
     }
 
     /**
      * Counter used by generate-symbol
      */
-    private static AtomicInteger gencount = new AtomicInteger(0);
+    private static final AtomicInteger gencount = new AtomicInteger(0);
 
     /**
      * This array contains definitions of primitives.
      * It is used by static initializers in gleam.lang.System to populate
      * the three initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
-     * symbol?
-     * Tests if argument is a symbol
-     */
+            /*
+              symbol?
+              Tests if argument is a symbol
+             */
     new Primitive( "symbol?",
         Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
@@ -73,7 +74,7 @@ public final class Symbols {
         return Boolean.makeBoolean(arg1 instanceof Symbol);
     }},
 
-    /**
+    /*
      * generate-symbol
      * Generates a fresh uninterned symbol
      */
@@ -89,5 +90,4 @@ public final class Symbols {
     }},
 
     }; // primitives
-
 }

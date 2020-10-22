@@ -132,10 +132,8 @@ public class Continuation extends Procedure
      *
      * @param body Pair
      * @param env Environment
-     * @return Action
      */
-    public void addCommandSequenceActions(List body, Environment env)
-            throws GleamException
+    public void addCommandSequenceActions(Iterable<Entity> body, Environment env)
     {
         Action currAction = beginSequence();
         for (Entity expr : body) {

@@ -39,6 +39,13 @@ import java.util.logging.Logger;
  * Logging utility class for Gleam.
  */
 public class Log {
+
+    static final int JUL_THRESHOLD_ALL = 1000;
+    static final int JUL_THRESHOLD_WARNING = 900;
+    static final int JUL_THRESHOLD_INFO = 800;
+    static final int JUL_THRESHOLD_CONFIG = 700;
+    static final int JUL_THRESHOLD_FINE = 500;
+
     /**
      * Level<BR>
      * <code>
@@ -166,15 +173,15 @@ public class Log {
 
         if (level.intValue() == Integer.MAX_VALUE) {
             n = Level.OFF.getValue();
-        } else if (level.intValue() >= 1000) {
+        } else if (level.intValue() >= JUL_THRESHOLD_ALL) {
             n = Level.ERROR.getValue();
-        } else if (level.intValue() >= 900) {
+        } else if (level.intValue() >= JUL_THRESHOLD_WARNING) {
             n = Level.WARNING.getValue();
-        } else if (level.intValue() >= 800) {
+        } else if (level.intValue() >= JUL_THRESHOLD_INFO) {
             n = Level.INFO.getValue();
-        } else if (level.intValue() >= 700) {
+        } else if (level.intValue() >= JUL_THRESHOLD_CONFIG) {
             n = Level.CONFIG.getValue();
-        } else if (level.intValue() >= 500) {
+        } else if (level.intValue() >= JUL_THRESHOLD_FINE) {
             n = Level.FINE.getValue();
         } else {
             n = Level.ALL.getValue();

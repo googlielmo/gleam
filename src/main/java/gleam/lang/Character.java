@@ -36,7 +36,7 @@ public final class Character extends AbstractEntity
      */
     private static final long serialVersionUID = 1L;
 
-    protected char value;
+    protected final char value;
 
     /**
      * Constructor

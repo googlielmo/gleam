@@ -51,9 +51,9 @@ public final class SystemInterface {
      * It is used by static initializers in gleam.lang.System to populate
      * the three initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * load
      * Loads and executes an external source file
      */

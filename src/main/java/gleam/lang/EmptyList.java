@@ -34,7 +34,6 @@ package gleam.lang;
 
 import gleam.util.Log;
 
-import java.io.PrintWriter;
 import java.util.Iterator;
 
 /**

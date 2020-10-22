@@ -33,7 +33,6 @@ import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
 import gleam.lang.List;
-import gleam.lang.Pair;
 import gleam.lang.Procedure;
 import gleam.lang.ProcedureCallAction;
 
@@ -53,9 +52,9 @@ public final class ControlFeatures {
      * It is used by static initializers in gleam.lang.System to populate
      * the three initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * procedure?
      * Tests if argument is a procedure
      */
@@ -70,7 +69,7 @@ public final class ControlFeatures {
         return Boolean.makeBoolean(arg1 instanceof Procedure);
     }},
 
-    /**
+    /*
      * call-with-current-continuation
      */
     new Primitive( "call-with-current-continuation",
@@ -95,7 +94,7 @@ public final class ControlFeatures {
         }
     }},
 
-    /**
+    /*
      * apply
      */
     new Primitive( "apply",
@@ -112,8 +111,7 @@ public final class ControlFeatures {
 
         if (args instanceof List) {
             /* create a new procedure call with the given arguments. */
-            ArgumentList argList = new ArgumentList((List) args);
-            cont.begin(new ProcedureCallAction(argList, env));
+            cont.begin(new ProcedureCallAction(new ArgumentList((List) args), env));
             return proc;
         }
 

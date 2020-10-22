@@ -132,6 +132,7 @@ public class Pair extends AbstractEntity implements List {
     /**
      * Evaluates the procedure call this pair stands for.
      */
+    @SuppressWarnings("UnusedAssignment")
     @Override
     public Entity eval(Environment env, Continuation cont)
         throws GleamException
@@ -152,8 +153,8 @@ public class Pair extends AbstractEntity implements List {
                 // special procedure call
                 // don't evaluate arguments at all!
                 cont
-                        .begin(new ExpressionAction(operator, env))
-                        .andThen(new ProcedureCallAction(new ArgumentList((List) this.getCdr()), env));
+                    .begin(new ExpressionAction(operator, env))
+                    .andThen(new ProcedureCallAction(new ArgumentList((List) this.getCdr()), env));
 
                 return null;
             }
@@ -179,8 +180,7 @@ public class Pair extends AbstractEntity implements List {
                     .andThen(new ExpressionAction(nextArg, env))
                     .andThen(new ObtainArgumentAction(argList, argidx++));
         }
-        argList.ensureSize(argidx);
-        action
+        action = action
                 .andThen(new ExpressionAction(operator, env))
                 .andThen(new ProcedureCallAction(argList, env));
 

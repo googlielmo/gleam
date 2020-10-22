@@ -42,10 +42,10 @@ public class ExpressionAction extends Action {
     private static final long serialVersionUID = 1L;
 
     /** the expression to evaluate */
-    private Entity expr;
+    private final Entity expr;
 
     /** the environment in which to evaluate the expression */
-    private Environment env;
+    private final Environment env;
 
     /** Creates a new instance of this action */
     public ExpressionAction(Entity expr, Environment env, Action next) {

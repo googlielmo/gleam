@@ -37,7 +37,7 @@ public class Real extends Number
     private static final long serialVersionUID = 1L;
 
     /** the value */
-    private double value;
+    private final double value;
 
     public Real(double n)
     {

@@ -44,7 +44,7 @@ public final class Symbol extends AbstractEntity
     /**
      * The unique symbol table
      */
-    static Map<String, Symbol> symtable = new HashMap<String, Symbol>(512);
+    static final Map<String, Symbol> symtable = new HashMap<>(512);
 
     /*
      * common symbols (some are keywords, some are not)
@@ -81,12 +81,12 @@ public final class Symbol extends AbstractEntity
     /**
      * String representation
      */
-    String value;
+    final String value;
 
     /**
      * Interned?
      */
-    boolean interned;
+    final boolean interned;
 
     /**
      * Can't instantiate directly.

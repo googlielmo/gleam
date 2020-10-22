@@ -37,7 +37,7 @@ public class InputPort extends Port
     private static final long serialVersionUID = 1L;
 
     java.io.Reader value;
-    private transient Reader gleamReader;
+    private final transient Reader gleamReader;
 
     public InputPort(String name)
         throws java.io.FileNotFoundException

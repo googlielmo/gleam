@@ -26,17 +26,22 @@
 
 package gleam.lang;
 
+import java.util.ArrayList;
+
+/**
+ * A list of arguments for a procedure.
+ */
 public class ArgumentList implements java.io.Serializable {
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
 
-    private java.util.ArrayList<Entity> listArgs;
-    private List pairArgs;
+    private final java.util.ArrayList<Entity> listArgs;
+    private final List pairArgs;
 
     public ArgumentList() {
-        this.listArgs = new java.util.ArrayList<Entity>();
+        this.listArgs = new java.util.ArrayList<>();
         this.pairArgs = null;
     }
 
@@ -45,12 +50,24 @@ public class ArgumentList implements java.io.Serializable {
         this.pairArgs = args;
     }
 
-    public void set(int index, Entity obj) {
-        ensureSize(index+1);
-        listArgs.set(index, obj);
+    /**
+     * Sets the value for an argument at a given index
+     * @param index the index in this list
+     * @param value the value for the argument
+     */
+    public void set(int index, Entity value) {
+        assert listArgs != null : "set called on immutable ArgumentList";
+        ensureSize(listArgs, index+1);
+        listArgs.set(index, value);
     }
 
-    void ensureSize(int size) {
+    /**
+     * Ensure argument list has at least <code>size</code> elements.
+     * Grow the list with Undefined values if necessary.
+     * @param listArgs the argument list
+     * @param size minimum needed size
+     */
+    private void ensureSize(ArrayList<Entity> listArgs, int size) {
         int missing = size - listArgs.size();
         listArgs.ensureCapacity(size);
         for (int i = 0 ; i < missing; ++i) {
@@ -59,22 +76,17 @@ public class ArgumentList implements java.io.Serializable {
     }
 
     /**
-     * getArguments
-     *
-     * @return Pair
+     * @return List the list of arguments
      */
-    public Entity getArguments() {
-        if (pairArgs != null)
-            return pairArgs;
-        else
-            return j2g(listArgs);
+    public List getArguments() {
+        return null == listArgs ? pairArgs : j2g(listArgs);
     }
 
-    private Entity j2g(java.util.List<Entity> lst) {
+    private List j2g(java.util.List<Entity> lst) {
         if (lst.size() == 0)
             return EmptyList.value();
 
-        Entity p = EmptyList.value();
+        List p = EmptyList.value();
         for (int i = lst.size() - 1; i >= 0; --i) {
             p = new Pair(lst.get(i), p);
         }

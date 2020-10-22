@@ -53,9 +53,9 @@ public final class PairsAndLists {
      * It is used by static initializers in gleam.lang.System to populate
      * the three initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * car
      * Takes the first element of a pair.
      */
@@ -76,7 +76,7 @@ public final class PairsAndLists {
         }
     }},
 
-    /**
+    /*
      * cdr
      * Takes the second element of a pair.
      */
@@ -97,7 +97,7 @@ public final class PairsAndLists {
         }
     }},
 
-    /**
+    /*
      * cons
      * Creates a new pair.
      */
@@ -111,7 +111,7 @@ public final class PairsAndLists {
         return new Pair(first, second);
     }},
 
-    /**
+    /*
      * list
      * Creates a new list from its arguments.
      */
@@ -122,7 +122,6 @@ public final class PairsAndLists {
         null /* doc strings */ ) {
     @Override
     public Entity applyN(List args, Environment env, Continuation cont)
-        throws GleamException
     {
         // TODO: investigate: could we simply return list?
         ListIterator it = new ListIterator(args);
@@ -139,7 +138,7 @@ public final class PairsAndLists {
         return l;
     }},
 
-    /**
+    /*
      * pair?
      * Tests if argument is a pair
      */
@@ -150,10 +149,10 @@ public final class PairsAndLists {
         "E.g. (pair? (cons 1 2)) => #t" /* doc strings */ ) {
     @Override
     public Entity apply1(Entity obj, Environment env, Continuation cont) {
-        return Boolean.makeBoolean((obj instanceof Pair) && !(obj instanceof EmptyList));
+        return Boolean.makeBoolean(obj instanceof Pair);
     }},
 
-    /**
+    /*
      * null?
      * Tests if argument is the empty list
      */
@@ -167,7 +166,7 @@ public final class PairsAndLists {
         return Boolean.makeBoolean(obj instanceof EmptyList);
     }},
 
-    /**
+    /*
      * set-car!
      * store an object in the car field of a pair.
      */
@@ -187,7 +186,7 @@ public final class PairsAndLists {
         return Void.value();
     }},
 
-    /**
+    /*
      * set-cdr!
      * store an object in the cdr field of a pair.
      */

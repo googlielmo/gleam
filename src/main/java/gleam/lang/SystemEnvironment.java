@@ -42,7 +42,7 @@ public final class SystemEnvironment extends Environment
     static final int R5RS = 1;
     static final int NULL = 0;
 
-    int kind;
+    final int kind;
 
     /** Constructor */
     SystemEnvironment(Environment p, int kind)

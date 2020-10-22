@@ -43,7 +43,7 @@ public final class Boolean extends AbstractEntity
     private static final long serialVersionUID = 1L;
 
     /** the truth value of this object */
-    protected boolean value;
+    protected final boolean value;
 
     /** the one and only #t */
     static public final Boolean trueValue = new Boolean(true);

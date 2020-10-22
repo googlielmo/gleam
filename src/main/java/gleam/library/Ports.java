@@ -43,6 +43,7 @@ public final class Ports {
     /**
      * Can't instantiate this class
      */
+    @SuppressWarnings("unused")
     private Ports() {
     }
 
@@ -51,9 +52,9 @@ public final class Ports {
      * It is used by static initializers in gleam.lang.System to populate
      * the three initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * port?
      * Tests if argument is a port
      */
@@ -67,7 +68,7 @@ public final class Ports {
         return Boolean.makeBoolean(obj instanceof Port);
     }},
 
-    /**
+    /*
      * input-port?
      * Tests if argument is an input port
      */
@@ -81,7 +82,7 @@ public final class Ports {
         return Boolean.makeBoolean(obj instanceof InputPort);
     }},
 
-    /**
+    /*
      * output-port?
      * Tests if argument is an output port
      */
@@ -95,7 +96,7 @@ public final class Ports {
         return Boolean.makeBoolean(obj instanceof OutputPort);
     }},
 
-    /**
+    /*
      * current-input-port
      * Returns the current input port
      */
@@ -109,7 +110,7 @@ public final class Ports {
         return gleam.lang.System.getCin();
     }},
 
-    /**
+    /*
      * current-output-port
      * Returns the current output port
      */

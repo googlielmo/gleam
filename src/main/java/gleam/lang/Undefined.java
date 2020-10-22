@@ -56,6 +56,7 @@ public final class Undefined extends AbstractEntity {
     /**
      * Prevents the release of multiple instances upon deserialization.
      */
+    @SuppressWarnings("SameReturnValue")
     protected Object readResolve()
     {
         Log.enter(Log.Level.FINE, "readResolve() called! (Undefined)"); //DEBUG

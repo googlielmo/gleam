@@ -47,6 +47,7 @@ import gleam.lang.List;
  * or VAR_ARGS). Missing arguments will be represented by null values if minArgs
  * is less than maxArgs.
  */
+@SuppressWarnings("SameReturnValue")
 public abstract class Primitive implements java.io.Serializable {
     /**
      * serialVersionUID
@@ -54,21 +55,21 @@ public abstract class Primitive implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
     /** primitive name, as used in programs, e.g. "car" */
-    private String name;
+    private final String name;
     /** definition environment, one of NULL_ENV, R5RS_ENV, INTR_ENV */
-    public int definitionEnv;
+    public final int definitionEnv;
     /** true if this primitive defines a syntax keyword, false otherwise */
-    public boolean keyword;
+    public final boolean keyword;
     /** minimum no. of arguments */
-    public int minArgs;
+    public final int minArgs;
     /** maximum no. of arguments, or VAR_ARGS for a variable number */
-    public int maxArgs;
+    public final int maxArgs;
 
     // documentation fields
     /** a short note about this primitive */
-    public transient String comment;
+    public final transient String comment;
     /** an optional longer documentation note */
-    public transient String documentation;
+    public final transient String documentation;
 
     // constant values for keyword field
     /** binding for a language keyword */
@@ -115,6 +116,7 @@ public abstract class Primitive implements java.io.Serializable {
      * @throws gleam.lang.GleamException if any error is signaled during
      * the execution of this primitive
      */
+    @SuppressWarnings("unused")
     public Entity apply0(Environment env, Continuation cont) throws GleamException
     {
         throw new GleamException(this, "apply0 not implemented", null);
@@ -204,7 +206,7 @@ public abstract class Primitive implements java.io.Serializable {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(name);
         sb.append(":");
         sb.append(minArgs);

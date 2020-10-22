@@ -32,6 +32,7 @@ import gleam.lang.Eof;
 import gleam.lang.GleamException;
 import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
+import gleam.lang.List;
 import gleam.lang.MutableString;
 import gleam.lang.OutputPort;
 import gleam.lang.Pair;
@@ -52,16 +53,16 @@ public class Gleam
     private static final String RELEASE="1.1-SNAPSHOT";
 
     // Dump env symbol (for debugging)
-    private static final Symbol cEnv = Symbol.makeSymbol("!e");
+    private static final Entity cEnv = Symbol.makeSymbol("!e");
 
     // Help symbol
-    private static final Symbol cHelp = Symbol.makeSymbol("!h");
+    private static final Entity cHelp = Symbol.makeSymbol("!h");
 
     // Quit symbol
-    private static final Symbol cQuit = Symbol.makeSymbol("!q");
+    private static final Entity cQuit = Symbol.makeSymbol("!q");
 
     // '(help)
-    public static final Pair CALL_HELP = new Pair(Symbol.HELP, EmptyList.value());
+    public static final Entity CALL_HELP = new Pair(Symbol.HELP, EmptyList.value());
 
     /**
      * Entry point for the Gleam interactive interpreter
@@ -96,7 +97,7 @@ public class Gleam
         Entity prompt = new MutableString("> ");
         Entity result;
 
-        for(;;)
+        while (true)
         {
             try {
                 // get session environment for execution
