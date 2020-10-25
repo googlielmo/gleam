@@ -52,7 +52,7 @@ public class JavaObject extends AbstractEntity {
      */
     private static final long serialVersionUID = 1L;
 
-    protected Object value;
+    private final Object value;
 
     /** Creates a new instance of JavaObject */
     public JavaObject() {
@@ -64,7 +64,6 @@ public class JavaObject extends AbstractEntity {
     }
 
     public JavaObject(Symbol s) throws GleamException {
-        value = null;
         String className = s.toString();
         try {
             value = Class.forName(className).getConstructor().newInstance();
@@ -93,7 +92,6 @@ public class JavaObject extends AbstractEntity {
     }
 
     public JavaObject(Symbol s, Class<?>[] classes, Object[] objects) throws GleamException {
-        value = null;
         String className = s.toString();
         try {
             value = Class.forName(className).getConstructor(classes).newInstance(objects);

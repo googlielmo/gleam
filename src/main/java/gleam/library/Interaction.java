@@ -39,6 +39,8 @@ import gleam.lang.Void;
 import gleam.util.Log;
 import gleam.util.Log.Level;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutput;
 import java.util.Set;
 
 /**
@@ -183,11 +185,9 @@ public final class Interaction {
         throws GleamException
     {
         if (arg1 instanceof MutableString) {
-            try {
-                java.io.FileOutputStream
-                    f = new java.io.FileOutputStream(arg1.toString());
-                java.io.ObjectOutput
-                    s = new java.io.ObjectOutputStream(f);
+            try (FileOutputStream f = new java.io.FileOutputStream(arg1.toString());
+                 ObjectOutput s = new java.io.ObjectOutputStream(f))
+            {
                 s.writeObject(env.getInterpreter().getSessionEnv());
                 return Void.value();
             }

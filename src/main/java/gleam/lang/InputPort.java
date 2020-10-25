@@ -26,45 +26,56 @@
 
 package gleam.lang;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 /**
  * Scheme input port.
  */
 public class InputPort extends Port
 {
-    /**
-     * serialVersionUID
-     */
     private static final long serialVersionUID = 1L;
 
-    java.io.Reader value;
-    private final transient Reader gleamReader;
+    private final String fileName;
+
+    private java.io.Reader reader;
+
+    private transient Reader gleamReader;
 
     public InputPort(String name)
         throws java.io.FileNotFoundException
     {
-        this( new java.io.BufferedReader(
-                new java.io.InputStreamReader(
-                    new java.io.FileInputStream(name) )));
+        this.fileName = name;
+        openFile(name);
     }
 
     public InputPort(java.io.Reader reader) {
-        this.value = reader;
-        this.gleamReader = new Reader(value);
+        this.fileName = null;
+        this.reader = reader;
+        this.gleamReader = new Reader(reader);
+    }
+
+    private void openFile(String name) throws FileNotFoundException {
+        reader =  new BufferedReader(
+                new java.io.InputStreamReader(
+                        new java.io.FileInputStream(name)));
+        gleamReader = new Reader(reader);
     }
 
     @Override
     public void close()
         throws java.io.IOException
     {
-        if (value != null) {
-            value.close();
+        if (isOpen()) {
+            reader.close();
         }
-        value = null;
+        reader = null;
     }
 
     @Override
     public boolean isOpen() {
-        return null != value;
+        return null != gleamReader;
     }
 
     /**
@@ -73,11 +84,15 @@ public class InputPort extends Port
     public Entity read()
         throws GleamException
     {
-        Entity retVal = gleamReader.read();
-        if (retVal == null)
-            return Eof.value;
+        if (isOpen()) {
+            Entity retVal = gleamReader.read();
+            if (retVal == null)
+                return Eof.value;
+            else
+                return retVal;
+        }
         else
-            return retVal;
+            throw new GleamException("InputPort not open");
     }
 
     /**
@@ -89,5 +104,19 @@ public class InputPort extends Port
         out.print("#<input-port>");
     }
 
-}
+    private void writeObject(java.io.ObjectOutputStream out)
+            throws IOException
+    {
+        out.defaultWriteObject();
+    }
 
+    private void readObject(java.io.ObjectInputStream in)
+            throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        if (fileName != null)
+            openFile(fileName);
+        else
+            gleamReader = null;
+    }
+}

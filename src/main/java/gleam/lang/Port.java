@@ -31,6 +31,8 @@ package gleam.lang;
  */
 public abstract class Port extends AbstractEntity
 {
+    private static final long serialVersionUID = 1L;
+
     /** close the port */
     public abstract void close()
         throws java.io.IOException;
@@ -38,4 +40,3 @@ public abstract class Port extends AbstractEntity
     /** checks if port is open */
     public abstract boolean isOpen();
 }
-

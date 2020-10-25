@@ -48,7 +48,7 @@ public final class Symbol extends AbstractEntity
 
     /*
      * common symbols (some are keywords, some are not)
-     * defined here as constants just for convenience
+     * defined here as constants for convenience
      */
     public final static Symbol QUOTE = makeSymbol("quote");
     public final static Symbol LAMBDA = makeSymbol("lambda");

@@ -146,7 +146,9 @@ public class Environment extends AbstractEntity
     }
 
     // DEBUG
-    public void dump() {
+    public void dump()
+            throws GleamException
+    {
         OutputPort out = System.getCout();
         out.print("--------------- "+this.toString());
         out.newline();
