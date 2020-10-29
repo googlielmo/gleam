@@ -51,9 +51,9 @@ public final class Input {
      * It is used by static initializers in gleam.lang.System to populate
      * the three initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * eof-object?
      * Tests if argument is an EOF object
      */
@@ -68,7 +68,7 @@ public final class Input {
         return Boolean.makeBoolean(arg1 instanceof Eof);
     }},
 
-    /**
+    /*
      * read
      * Reads an object
      */

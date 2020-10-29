@@ -32,6 +32,8 @@
 
 package gleam.lang;
 
+import java.io.PrintWriter;
+
 /**
  * Specialized version of primitive procedure, with
  * different rules for parameter evaluation.
@@ -54,7 +56,8 @@ public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject 
     }
 
     @Override
-    public void write(java.io.PrintWriter out) {
+    public void write(PrintWriter out)
+    {
         out.write("#<syntax-procedure "+ value.getName() + ">");
     }
 

@@ -1,5 +1,7 @@
 package gleam.lang;
 
+import java.io.PrintWriter;
+
 public interface Entity extends java.io.Serializable {
 
     /**
@@ -38,12 +40,12 @@ public interface Entity extends java.io.Serializable {
      *
      * @param out PrintWriter
      */
-    void write(java.io.PrintWriter out);
+    void write(PrintWriter out);
 
     /**
      * Writes this entity in human-readable form
      *
      * @param out PrintWriter
      */
-    void display(java.io.PrintWriter out);
+    void display(PrintWriter out);
 }

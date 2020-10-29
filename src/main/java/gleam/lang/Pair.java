@@ -26,9 +26,13 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
+import java.io.PrintWriter;
 import java.util.Iterator;
 
 import static gleam.util.Log.Level.INFO;
+import static gleam.util.Log.Level.WARNING;
 
 /**
  * The Scheme pair, also known as <i>cons</i>.
@@ -132,6 +136,7 @@ public class Pair extends AbstractEntity implements List {
     /**
      * Evaluates the procedure call this pair stands for.
      */
+    @SuppressWarnings("UnusedAssignment")
     @Override
     public Entity eval(Environment env, Continuation cont)
         throws GleamException
@@ -152,8 +157,8 @@ public class Pair extends AbstractEntity implements List {
                 // special procedure call
                 // don't evaluate arguments at all!
                 cont
-                        .begin(new ExpressionAction(operator, env))
-                        .andThen(new ProcedureCallAction(new ArgumentList((List) this.getCdr()), env));
+                    .begin(new ExpressionAction(operator, env))
+                    .andThen(new ProcedureCallAction(new ArgumentList((List) this.getCdr()), env));
 
                 return null;
             }
@@ -179,8 +184,7 @@ public class Pair extends AbstractEntity implements List {
                     .andThen(new ExpressionAction(nextArg, env))
                     .andThen(new ObtainArgumentAction(argList, argidx++));
         }
-        argList.ensureSize(argidx);
-        action
+        action = action
                 .andThen(new ExpressionAction(operator, env))
                 .andThen(new ProcedureCallAction(argList, env));
 
@@ -251,12 +255,12 @@ public class Pair extends AbstractEntity implements List {
         while (rest != EmptyList.value) {
             if (rest instanceof List) {
                 // this is a proper list
-                Pair restAsPair = (Pair) rest;
-                rest = new Pair(restAsPair.getCar(), restAsPair.getCdr());
+                List restAsList = (List) rest;
+                rest = new Pair(restAsList.getCar(), restAsList.getCdr());
                 restParent.setCdr(rest);
-                restParent = restAsPair;
-                restAsPair.setCar(restAsPair.getCar().optimize(env));
-                rest = restAsPair.getCdr();
+                restParent = restAsList;
+                restAsList.setCar(restAsList.getCar().optimize(env));
+                rest = restAsList.getCdr();
             }
             else {
                 /* this is an improper list
@@ -274,7 +278,7 @@ public class Pair extends AbstractEntity implements List {
      * Writes this pair.
      */
     @Override
-    public void write(java.io.PrintWriter out) {
+    public void write(PrintWriter out) {
         if (getCar() == Symbol.QUOTE
                 && !(getCdr() instanceof EmptyList)
                 && getCdr() instanceof Pair
@@ -310,8 +314,10 @@ public class Pair extends AbstractEntity implements List {
             while (current.getCdr() instanceof Pair && !(current.getCdr() instanceof EmptyList)) {
                 current = (Pair) current.getCdr();
                 out.print(" ");
-                if ((current.getCar() == null))
+                if ((current.getCar() == null)) {
                     out.print("ERROR");
+                    Log.enter(WARNING, "null car", current);
+                }
                 else
                     current.getCar().write(out);
             }

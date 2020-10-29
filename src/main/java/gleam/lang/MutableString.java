@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import java.io.PrintWriter;
+
 /**
  * Scheme mutable string.
  * Creation date: (28/10/2001 12.22.48)
@@ -37,7 +39,7 @@ public class MutableString extends AbstractEntity {
     private static final long serialVersionUID = 1L;
 
     /** The current string value. */
-    StringBuffer value;
+    final StringBuffer value;
 
     /**
      * Creates a new Scheme string.
@@ -60,7 +62,8 @@ public class MutableString extends AbstractEntity {
      * Writes a Scheme string.
      */
     @Override
-    public void write(java.io.PrintWriter out) {
+    public void write(PrintWriter out)
+    {
         out.print("\"");
         for (int i = 0; i < value.length(); ++i) {
             switch (value.charAt(i)) {

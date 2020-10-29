@@ -26,8 +26,8 @@
 
 package gleam.lang;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -48,14 +48,14 @@ public class Environment extends AbstractEntity
     private transient Interpreter intp;
 
     /** Association function: symbol --> location */
-    private Map<Symbol, Location> assoc;
+    private final Map<Symbol, Location> assoc;
 
     /** Constructor */
     public Environment(Environment parent)
     {
         this.parent = parent;
         if (parent != null) intp = parent.intp;
-        this.assoc = new HashMap<Symbol, Location>();
+        this.assoc = new HashMap<>();
     }
 
     /**
@@ -74,9 +74,9 @@ public class Environment extends AbstractEntity
      */
     public synchronized void define(Symbol s, Entity v)
     {
-        Object loc;
+        Location loc;
         if ((loc = assoc.get(s)) != null) {
-            ((Location) loc).set(v);
+            loc.set(v);
         }
         else{
             assoc.put(s, new Location(v));
@@ -110,15 +110,15 @@ public class Environment extends AbstractEntity
      */
     Location getLocationOrNull(Symbol s)
     {
-        Object o;
+        Location loc;
         Environment e = this;
         while (e != null) {
-            o = e.assoc.get(s);
-            if (o == null) {
+            loc = e.assoc.get(s);
+            if (loc == null) {
                 e = e.parent;
             }
             else {
-                return (Location) o;
+                return loc;
             }
         }
         // so it is unbound...
@@ -141,13 +141,15 @@ public class Environment extends AbstractEntity
 
     /** Writes this environment */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.write("#<environment>");
     }
 
     // DEBUG
-    public void dump() {
+    public void dump()
+            throws GleamException
+    {
         OutputPort out = System.getCout();
         out.print("--------------- "+this.toString());
         out.newline();

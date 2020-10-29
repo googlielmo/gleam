@@ -52,9 +52,9 @@ public final class Numbers {
      * It is used by static initializers in gleam.lang.System to populate
      * the initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * -
      * Implements the minus operator.
      */
@@ -85,7 +85,7 @@ public final class Numbers {
         return new Real(result);
     }},
 
-    /**
+    /*
      * +
      * Implements the plus operator.
      */
@@ -106,7 +106,7 @@ public final class Numbers {
         return new Real(result);
     }},
 
-    /**
+    /*
      * /
      * Implements the division operator.
      */
@@ -127,7 +127,7 @@ public final class Numbers {
         return new Real(result);
     }},
 
-    /**
+    /*
      * *
      * Implements the multiplication operator.
      */
@@ -148,7 +148,7 @@ public final class Numbers {
         return new Real(result);
     }},
 
-    /**
+    /*
      * =
      * Implements the equals operator.
      */
@@ -176,7 +176,7 @@ public final class Numbers {
         return Boolean.makeBoolean(retVal);
     }},
 
-    /**
+    /*
      * &gt;=
      * Implements the greater than or equals operator.
      */
@@ -204,7 +204,7 @@ public final class Numbers {
         return Boolean.makeBoolean(retVal);
     }},
 
-    /**
+    /*
      * &lt;=
      * Implements the less than or equals operator.
      */
@@ -232,7 +232,7 @@ public final class Numbers {
         return Boolean.makeBoolean(retVal);
     }},
 
-    /**
+    /*
      * &gt;
      * Implements the greater than operator.
      */
@@ -260,7 +260,7 @@ public final class Numbers {
         return Boolean.makeBoolean(retVal);
     }},
 
-    /**
+    /*
      * &lt;
      * Implements the less than operator.
      */
@@ -288,7 +288,7 @@ public final class Numbers {
         return Boolean.makeBoolean(retVal);
     }},
 
-    /**
+    /*
      * number?
      * Tests if argument is a number
      */

@@ -28,6 +28,8 @@ package gleam.lang;
 
 import gleam.util.Log;
 
+import java.io.PrintWriter;
+
 import static gleam.util.Log.Level.FINE;
 import static gleam.util.Log.Level.WARNING;
 
@@ -63,9 +65,9 @@ public class Closure extends Procedure
      * constructor, or externally by the interpreter and passed on
      * to a new constructor.
      */
-    protected Entity param;
-    protected List body;
-    protected Environment definitionEnv;
+    protected final Entity param;
+    protected final List body;
+    protected final Environment definitionEnv;
 
     /**
      * Constructor.
@@ -88,7 +90,7 @@ public class Closure extends Procedure
         Entity currparam = param;
         List prev = null;
         boolean dotparam = false;
-        gleam.util.Log.enter(FINE, "apply: ARGS = ", (Entity) args);
+        gleam.util.Log.enter(FINE, "apply: ARGS = ", args);
 
         /* bind actual arguments to formals (long)
          */
@@ -163,7 +165,7 @@ public class Closure extends Procedure
      * Writes a Closure
      */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.write("#<procedure");
         if (Log.getLevelValue() < Log.Level.INFO.getValue()) {

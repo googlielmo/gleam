@@ -26,35 +26,43 @@
 
 package gleam.lang;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 /**
  * Scheme output port object.
  */
 public class OutputPort extends Port
 {
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
-    private java.io.PrintWriter out;
+    private final String fileName;
 
-    /**
-     * creates an output port to a file
-     */
-    public OutputPort(String name)
-        throws java.io.IOException
-    {
-        this.out = new java.io.PrintWriter(
-                new java.io.BufferedWriter(
-                    new java.io.FileWriter(name)));
-    }
+    private transient java.io.PrintWriter out;
 
     /**
      * creates an output port to a java.io.PrintWriter object
      */
     public OutputPort(java.io.PrintWriter out)
     {
+        this.fileName = null;
         this.out = out;
+    }
+
+    /**
+     * creates an output port to a file
+     */
+    public OutputPort(String fileName)
+        throws java.io.IOException
+    {
+        this.fileName = fileName;
+        openFile(fileName);
+    }
+
+    private void openFile(String name) throws IOException {
+        this.out = new java.io.PrintWriter(
+                new java.io.BufferedWriter(
+                    new java.io.FileWriter(name)));
     }
 
     /**
@@ -79,8 +87,11 @@ public class OutputPort extends Port
     /**
      * prints object in machine-readable form
      */
-    public void write(Entity obj) {
-        obj.write(out);
+    public void write(Entity obj) throws GleamException {
+        if (isOpen())
+            obj.write(out);
+        else
+            throw new GleamException("OutputPort not open");
     }
 
     /**
@@ -133,10 +144,24 @@ public class OutputPort extends Port
      * Writes this port
      */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.print("#<output-port>");
     }
 
-}
+    private void writeObject(java.io.ObjectOutputStream out)
+            throws IOException
+    {
+        out.defaultWriteObject();
+    }
 
+    private void readObject(java.io.ObjectInputStream in)
+            throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        if (this.fileName != null)
+            openFile(this.fileName);
+        else
+            out = null;
+    }
+}

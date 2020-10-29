@@ -8,10 +8,10 @@ welcome to redistribute it under certain conditions; see LICENSE.TXT.
 TO DO:
 ------
 
+Rework serialization for I/O ports (use append write for output files, etc.)
+
 Remove System.isKeyword(). Move analyzeSpecialForm() and optimizeSpecialForm()
 to specific subclasses of SyntaxProcedure, where they belong.
-
-Use Java 5 generics where possible (?)
 
 Implement as many primitives as possible in Scheme
     list
@@ -56,7 +56,7 @@ because eval of (func...) puts func in continuation and returns null!
 --------------------------------------------------------------------------------
 
 PARTLY DONE:
--------------
+------------
 
 Eval/Apply on java.lang.Objects for full Java integration OR java-object wrapper
 
@@ -87,3 +87,4 @@ Explicit first-class environments, with primitives:
     environment? [done]
     defined?
     ...
+

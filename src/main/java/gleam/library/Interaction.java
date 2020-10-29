@@ -39,6 +39,8 @@ import gleam.lang.Void;
 import gleam.util.Log;
 import gleam.util.Log.Level;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutput;
 import java.util.Set;
 
 /**
@@ -50,6 +52,7 @@ public final class Interaction {
     /**
      * Can't instantiate this class
      */
+    @SuppressWarnings("unused")
     private Interaction() {
     }
 
@@ -58,9 +61,9 @@ public final class Interaction {
      * It is used by static initializers in gleam.lang.System to populate
      * the initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * help
      * Gives help on primitives.
      */
@@ -99,13 +102,13 @@ public final class Interaction {
         // prepare filler for first column
         char[] chars = new char[helpColumnWidth];
         java.util.Arrays.fill(chars, ' ');
-        StringBuffer spc = new StringBuffer();
+        StringBuilder spc = new StringBuilder();
         spc.append(chars);
 
         System.getCout().print("Available primitives:\n\n");
         Set<String> nameset = System.getHelpNames();
         for (String s : nameset) {
-            StringBuffer pname = new StringBuffer(s);
+            StringBuilder pname = new StringBuilder(s);
             String doc = System.getHelpComment(pname.toString());
             if (doc != null) {
                 if (pname.length() < helpColumnWidth) {
@@ -128,7 +131,7 @@ public final class Interaction {
         return Void.value();
     }},
 
-    /**
+    /*
      * set-verbosity!
      * Sets gleam runtime support verbosity (1..5)
      */
@@ -154,7 +157,7 @@ public final class Interaction {
         return Void.value();
     }},
 
-    /**
+    /*
      * verbosity
      * Gets gleam runtime support verbosity (1..5)
      */
@@ -168,7 +171,7 @@ public final class Interaction {
         return new Real(Level.OFF.getValue() - Log.getLevelValue());
     }},
 
-    /**
+    /*
      * save-session
      * Saves the session environment.
      */
@@ -182,11 +185,9 @@ public final class Interaction {
         throws GleamException
     {
         if (arg1 instanceof MutableString) {
-            try {
-                java.io.FileOutputStream
-                    f = new java.io.FileOutputStream(arg1.toString());
-                java.io.ObjectOutput
-                    s = new java.io.ObjectOutputStream(f);
+            try (FileOutputStream f = new java.io.FileOutputStream(arg1.toString());
+                 ObjectOutput s = new java.io.ObjectOutputStream(f))
+            {
                 s.writeObject(env.getInterpreter().getSessionEnv());
                 return Void.value();
             }
@@ -203,7 +204,7 @@ public final class Interaction {
         }
     }},
 
-    /**
+    /*
      * load-session
      * Loads the session environment.
      */

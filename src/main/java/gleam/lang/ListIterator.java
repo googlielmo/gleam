@@ -33,10 +33,12 @@ import java.util.NoSuchElementException;
  * List read/write iterator.
  */
 public class ListIterator implements Iterator<Entity> {
+
+    private final boolean allowImproper;
+
+    private boolean isImproper;
     private List pair;
     private List restPair;
-    private boolean allowImproper;
-    private boolean isImproper;
 
     /**
      * Creates an iterator over a proper list.
@@ -112,7 +114,7 @@ public class ListIterator implements Iterator<Entity> {
         }
         if (restPair == null) {
             throw new GleamException(
-                "No current value to replace", (Entity) pair);
+                "No current value to replace", pair);
         }
         if (isImproper && pair == EmptyList.value) {
             restPair.setCdr(newArg);
@@ -134,7 +136,7 @@ public class ListIterator implements Iterator<Entity> {
      * Returns the remaining portion of the list as a Pair.
      */
     public Entity rest() {
-        return (Entity) pair;
+        return pair;
     }
 }
 

@@ -38,10 +38,11 @@ import static gleam.util.Log.Level.FINE;
 /**
  * The Gleam Scheme Interpreter
  */
+@SuppressWarnings("unused")
 public class Interpreter {
 
     /** the current program continuation */
-    Continuation cont;
+    final Continuation cont;
 
     /** the accumulator register */
     Entity accum;

@@ -32,6 +32,8 @@ package gleam.lang;
  * Created on October 26, 2001, 9:27 PM
  */
 
+import java.io.PrintWriter;
+
 /**
  * Scheme boolean.
  */
@@ -43,7 +45,7 @@ public final class Boolean extends AbstractEntity
     private static final long serialVersionUID = 1L;
 
     /** the truth value of this object */
-    protected boolean value;
+    protected final boolean value;
 
     /** the one and only #t */
     static public final Boolean trueValue = new Boolean(true);
@@ -60,6 +62,7 @@ public final class Boolean extends AbstractEntity
     /**
      * Static factory.
      */
+    @SuppressWarnings("BooleanParameter")
     public static Boolean makeBoolean(boolean b)
     {
         if (b)
@@ -72,7 +75,7 @@ public final class Boolean extends AbstractEntity
      * Writes a boolean.
      */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.print(value ? "#t" : "#f");
     }

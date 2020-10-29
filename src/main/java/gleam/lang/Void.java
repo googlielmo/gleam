@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import java.io.PrintWriter;
+
 /**
  * The Scheme void value (a singleton).
  * Creation date: (31/10/01 23.06.59)
@@ -63,7 +65,8 @@ public final class Void extends AbstractEntity {
      * Writes the void value.
      */
     @Override
-    public void write(java.io.PrintWriter out) {
+    public void write(PrintWriter out)
+    {
         out.write("#<void>");
     }
 }

@@ -28,6 +28,8 @@ package gleam.lang;
 
 import gleam.util.Log;
 
+import java.io.PrintWriter;
+
 /**
  * The Scheme undefined value (a singleton).
  * Creation date: (07/nov/2001 23.40.59)
@@ -56,6 +58,7 @@ public final class Undefined extends AbstractEntity {
     /**
      * Prevents the release of multiple instances upon deserialization.
      */
+    @SuppressWarnings("SameReturnValue")
     protected Object readResolve()
     {
         Log.enter(Log.Level.FINE, "readResolve() called! (Undefined)"); //DEBUG
@@ -76,7 +79,8 @@ public final class Undefined extends AbstractEntity {
      * Writes the undefined value
      */
     @Override
-    public void write(java.io.PrintWriter out) {
+    public void write(PrintWriter out)
+    {
         out.write("#<undefined>");
     }
 }

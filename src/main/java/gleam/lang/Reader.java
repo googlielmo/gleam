@@ -36,7 +36,7 @@ import static gleam.util.Log.Level.FINE;
  */
 class Reader {
 
-    protected StreamTokenizer tkzr;
+    protected final StreamTokenizer tkzr;
 
     /**
      * Creates a new reader from an input stream.
@@ -94,7 +94,7 @@ class Reader {
 
         Pair ins = l; // which cons are we inserting stuff into?
 
-        for(;;) {
+        while (true) {
             t = readToken();
             if (t == null) {
                 throw new GleamException("read: unterminated list");
@@ -157,23 +157,22 @@ class Reader {
         if (t.equals("")) {
             return readObject(); // special case for unquote/unquote-splicing
         }
-        if (t.equals("(")) {
-            Pair l = new Pair(EmptyList.value, EmptyList.value);
-            return readList(l);
-        }
-        else if (t.equals("'")) { // quote
-            Entity quotedobj = readObject();
-            return new Pair(Symbol.QUOTE, new Pair(quotedobj, EmptyList.value));
-        }
-        else if (t.equals("`")) { // semiquote
-            Entity quotedobj = readObject();
-            return new Pair(Symbol.QUASIQUOTE, new Pair(quotedobj, EmptyList.value));
-        }
-        else if (t.equals(")")) { // extra parens
-            throw new GleamException("read: unexpected \")\"");
-        }
-        else {
-            return readOthers(t);
+        switch (t) {
+            case "(":
+                Pair l = new Pair(EmptyList.value, EmptyList.value);
+                return readList(l);
+            case "'": { // quote
+                Entity quotedobj = readObject();
+                return new Pair(Symbol.QUOTE, new Pair(quotedobj, EmptyList.value));
+            }
+            case "`": { // semiquote
+                Entity quotedobj = readObject();
+                return new Pair(Symbol.QUASIQUOTE, new Pair(quotedobj, EmptyList.value));
+            }
+            case ")":  // extra parens
+                throw new GleamException("read: unexpected \")\"");
+            default:
+                return readOthers(t);
         }
     }
 

@@ -40,7 +40,7 @@ public class UnboundVariableException extends GleamException {
      *
      * @param symbol the unbound symbol
      */
-    public UnboundVariableException(Symbol symbol) {
+    public UnboundVariableException(Entity symbol) {
         super("Unbound variable: " + symbol, symbol);
     }
 }

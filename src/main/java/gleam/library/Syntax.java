@@ -58,7 +58,7 @@ public final class Syntax {
      * It is used by static initializers in gleam.lang.System to populate
      * the three initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
 //  /**
 //   *
@@ -221,7 +221,7 @@ public final class Syntax {
         "Sequential execution, e.g. (begin (first-step) (second-step))",
         null /* doc strings */ ) {
     @Override
-    public Entity applyN(List args, Environment env, Continuation cont) throws GleamException {
+    public Entity applyN(List args, Environment env, Continuation cont) {
         // equivalent to the body of a procedure with no arguments
         cont.addCommandSequenceActions(args, env);
         return null;
@@ -352,5 +352,4 @@ public final class Syntax {
     },
 
     }; // primitives
-
 }

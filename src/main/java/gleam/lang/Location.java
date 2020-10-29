@@ -32,6 +32,8 @@
 
 package gleam.lang;
 
+import java.io.PrintWriter;
+
 /**
  * A location object, which gives compiled (constant-time) read/write access to
  * a variable. Locations are used in compiled Scheme code to avoid interpreted
@@ -77,7 +79,8 @@ public final class Location extends AbstractEntity
      * Writes this location
      */
     @Override
-    public void write(java.io.PrintWriter out) {
+    public void write(PrintWriter out)
+    {
         out.write("#<location of ");
         value.write(out);
         out.write(">");

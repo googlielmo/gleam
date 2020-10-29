@@ -40,6 +40,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 
 /**
  * A Java object.
@@ -51,7 +52,7 @@ public class JavaObject extends AbstractEntity {
      */
     private static final long serialVersionUID = 1L;
 
-    protected Object value;
+    private final Object value;
 
     /** Creates a new instance of JavaObject */
     public JavaObject() {
@@ -63,7 +64,6 @@ public class JavaObject extends AbstractEntity {
     }
 
     public JavaObject(Symbol s) throws GleamException {
-        value = null;
         String className = s.toString();
         try {
             value = Class.forName(className).getConstructor().newInstance();
@@ -92,7 +92,6 @@ public class JavaObject extends AbstractEntity {
     }
 
     public JavaObject(Symbol s, Class<?>[] classes, Object[] objects) throws GleamException {
-        value = null;
         String className = s.toString();
         try {
             value = Class.forName(className).getConstructor(classes).newInstance(objects);
@@ -143,12 +142,17 @@ public class JavaObject extends AbstractEntity {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
         if (!(obj instanceof JavaObject))
             return false;
         JavaObject javaObject = (JavaObject) obj;
-        return value == null ?
-                javaObject.value == null :
-                this.value.equals(((JavaObject) obj).value);
+        return Objects.equals(value, javaObject.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 
     public boolean eq_p(JavaObject obj) {

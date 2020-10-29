@@ -32,6 +32,8 @@ package gleam.lang;
  * Created on October 26, 2001, 9:01 PM
  */
 
+import java.io.PrintWriter;
+
 /**
  * Scheme continuation, representing the "next things to do" for a procedure,
  * or the future execution path in a Gleam program.
@@ -132,10 +134,8 @@ public class Continuation extends Procedure
      *
      * @param body Pair
      * @param env Environment
-     * @return Action
      */
-    public void addCommandSequenceActions(List body, Environment env)
-            throws GleamException
+    public void addCommandSequenceActions(Iterable<Entity> body, Environment env)
     {
         Action currAction = beginSequence();
         for (Entity expr : body) {
@@ -180,7 +180,8 @@ public class Continuation extends Procedure
      * Writes this continuation.
      */
     @Override
-    public void write(java.io.PrintWriter out) {
+    public void write(PrintWriter out)
+    {
         out.write("#<continuation>");
     }
 }

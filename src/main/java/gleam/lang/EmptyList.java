@@ -87,7 +87,7 @@ public final class EmptyList extends AbstractEntity implements List {
      * Writes the empty list value.
      */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.print("()");
     }

@@ -28,6 +28,7 @@ package gleam.lang;
 
 import gleam.util.Log;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,11 +45,11 @@ public final class Symbol extends AbstractEntity
     /**
      * The unique symbol table
      */
-    static Map<String, Symbol> symtable = new HashMap<String, Symbol>(512);
+    static final Map<String, Symbol> symtable = new HashMap<>(512);
 
     /*
      * common symbols (some are keywords, some are not)
-     * defined here as constants just for convenience
+     * defined here as constants for convenience
      */
     public final static Symbol QUOTE = makeSymbol("quote");
     public final static Symbol LAMBDA = makeSymbol("lambda");
@@ -81,12 +82,12 @@ public final class Symbol extends AbstractEntity
     /**
      * String representation
      */
-    String value;
+    final String value;
 
     /**
      * Interned?
      */
-    boolean interned;
+    final boolean interned;
 
     /**
      * Can't instantiate directly.
@@ -178,7 +179,7 @@ public final class Symbol extends AbstractEntity
 
     /** Writes this symbol */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.write(value);
     }

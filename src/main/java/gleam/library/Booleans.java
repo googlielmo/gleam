@@ -48,9 +48,9 @@ public final class Booleans {
      * It is used by static initializers in gleam.lang.System to populate
      * the three initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * boolean?
      * Tests if argument is a boolean
      */
@@ -65,7 +65,7 @@ public final class Booleans {
         return Boolean.makeBoolean(arg1 instanceof Boolean);
     }},
 
-    /**
+    /*
      * not
      * Logical Not operator
      */

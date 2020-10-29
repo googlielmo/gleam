@@ -43,8 +43,7 @@ public final class Vectors {
      * It is used by static initializers in gleam.lang.System to populate
      * the three initial environments.
      */
-    public static Primitive[] primitives = {
-        
-    }; // primitives
+    public static final Primitive[] primitives = {
 
+    }; // primitives
 }

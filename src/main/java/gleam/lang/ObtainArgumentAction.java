@@ -33,8 +33,8 @@ public class ObtainArgumentAction extends Action {
      */
     private static final long serialVersionUID = 1L;
 
-    private ArgumentList arglist;
-    private int argumentIndex;
+    private final ArgumentList arglist;
+    private final int argumentIndex;
 
     /** Creates a new instance of this action */
     public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Action next) {

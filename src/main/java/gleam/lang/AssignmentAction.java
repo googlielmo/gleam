@@ -42,10 +42,10 @@ public class AssignmentAction extends Action {
     private static final long serialVersionUID = 1L;
 
     /** environment */
-    protected Environment env;
+    protected final Environment env;
 
     /** the symbol to assign to */
-    protected Symbol symbol;
+    protected final Symbol symbol;
 
     /** Creates a new AssignmentAction */
     public AssignmentAction(Symbol symbol, Environment env, Action next) {

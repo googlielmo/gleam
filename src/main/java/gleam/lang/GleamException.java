@@ -68,6 +68,7 @@ public class GleamException extends Exception
      *
      * @return Entity the error value.
      */
+    @SuppressWarnings("unused")
     public Entity value() {
         return errobj;
     }

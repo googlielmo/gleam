@@ -51,9 +51,9 @@ public final class Output {
      * It is used by static initializers in gleam.lang.System to populate
      * the initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * display
      * Displays an object
      */
@@ -91,7 +91,7 @@ public final class Output {
         }
     }},
 
-    /**
+    /*
      * write
      * Writes an object
      */
@@ -129,7 +129,7 @@ public final class Output {
         }
     }},
 
-    /**
+    /*
      * newline
      * Writes an end of line
      */

@@ -47,9 +47,9 @@ public final class Equivalence {
      * It is used by static initializers in gleam.lang.System to populate
      * the three initial environments.
      */
-    public static Primitive[] primitives = {
+    public static final Primitive[] primitives = {
 
-    /**
+    /*
      * eq?
      * Compares arguments by address.
      */
@@ -69,9 +69,9 @@ public final class Equivalence {
             return Boolean.makeBoolean(arg1 == arg2);
     }},
 
-    /**
+    /*
      * eqv?
-     * Compares arguments by address or value.
+     * Compares arguments by value or address.
      */
     new Primitive( "eqv?",
         Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */

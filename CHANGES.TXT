@@ -1,3 +1,11 @@
+2020-10-22
+
+    Migrate to Java 8
+    - use generics
+    - make List an Iterable, use enhanced `for` on lists
+    - use switch for Strings
+    - improve readability
+
 2020-10-10
 
     Removed some redundant code and clarified comments
