@@ -28,6 +28,8 @@ package gleam.lang;
 
 import gleam.util.Log;
 
+import java.io.PrintWriter;
+
 import static gleam.util.Log.Level.FINE;
 import static gleam.util.Log.Level.WARNING;
 
@@ -163,7 +165,7 @@ public class Closure extends Procedure
      * Writes a Closure
      */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.write("#<procedure");
         if (Log.getLevelValue() < Log.Level.INFO.getValue()) {

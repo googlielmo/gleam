@@ -26,9 +26,13 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
+import java.io.PrintWriter;
 import java.util.Iterator;
 
 import static gleam.util.Log.Level.INFO;
+import static gleam.util.Log.Level.WARNING;
 
 /**
  * The Scheme pair, also known as <i>cons</i>.
@@ -274,7 +278,7 @@ public class Pair extends AbstractEntity implements List {
      * Writes this pair.
      */
     @Override
-    public void write(java.io.PrintWriter out) {
+    public void write(PrintWriter out) {
         if (getCar() == Symbol.QUOTE
                 && !(getCdr() instanceof EmptyList)
                 && getCdr() instanceof Pair
@@ -310,8 +314,10 @@ public class Pair extends AbstractEntity implements List {
             while (current.getCdr() instanceof Pair && !(current.getCdr() instanceof EmptyList)) {
                 current = (Pair) current.getCdr();
                 out.print(" ");
-                if ((current.getCar() == null))
+                if ((current.getCar() == null)) {
                     out.print("ERROR");
+                    Log.enter(WARNING, "null car", current);
+                }
                 else
                     current.getCar().write(out);
             }

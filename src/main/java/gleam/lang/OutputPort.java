@@ -27,6 +27,7 @@
 package gleam.lang;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Scheme output port object.
@@ -143,7 +144,7 @@ public class OutputPort extends Port
      * Writes this port
      */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.print("#<output-port>");
     }

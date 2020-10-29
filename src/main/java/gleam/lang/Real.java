@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import java.io.PrintWriter;
+
 /**
  * Scheme double precision numerical object.
  */
@@ -80,7 +82,7 @@ public class Real extends Number
      * Writes a real
      */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.print(value);
     }

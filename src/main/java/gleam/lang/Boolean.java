@@ -32,6 +32,8 @@ package gleam.lang;
  * Created on October 26, 2001, 9:27 PM
  */
 
+import java.io.PrintWriter;
+
 /**
  * Scheme boolean.
  */
@@ -73,7 +75,7 @@ public final class Boolean extends AbstractEntity
      * Writes a boolean.
      */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.print(value ? "#t" : "#f");
     }

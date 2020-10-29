@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import java.io.PrintWriter;
+
 /**
  * Scheme character.
  */
@@ -48,7 +50,7 @@ public final class Character extends AbstractEntity
 
     /** Writes this character */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         if (value == '\n') {
             out.print("#\\newline");

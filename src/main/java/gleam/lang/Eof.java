@@ -28,6 +28,8 @@ package gleam.lang;
 
 import gleam.util.Log;
 
+import java.io.PrintWriter;
+
 /**
  * The EOF value (a singleton).
  */
@@ -64,7 +66,8 @@ public final class Eof extends AbstractEntity {
      * Writes the Eof value (nothing).
      */
     @Override
-    public void write(java.io.PrintWriter out) {
+    public void write(PrintWriter out)
+    {
         //out.write("#<eof>");
     }
 }

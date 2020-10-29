@@ -28,6 +28,7 @@ package gleam.lang;
 
 import gleam.util.Log;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -178,7 +179,7 @@ public final class Symbol extends AbstractEntity
 
     /** Writes this symbol */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.write(value);
     }

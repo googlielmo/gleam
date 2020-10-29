@@ -29,6 +29,7 @@ package gleam.lang;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Scheme input port.
@@ -99,7 +100,7 @@ public class InputPort extends Port
      * Writes a port
      */
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.print("#<input-port>");
     }

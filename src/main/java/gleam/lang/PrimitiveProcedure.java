@@ -28,6 +28,7 @@ package gleam.lang;
 
 import gleam.library.Primitive;
 
+import java.io.PrintWriter;
 import java.util.Iterator;
 
 /**
@@ -85,7 +86,7 @@ public class PrimitiveProcedure extends Procedure
     }
 
     @Override
-    public void write(java.io.PrintWriter out)
+    public void write(PrintWriter out)
     {
         out.write("#<primitive-procedure "+ value.toString() + ">");
     }
