@@ -69,7 +69,7 @@ public final class SystemInterface {
         try {
             MutableString filename = (MutableString) arg1;
             InputPort iport = new InputPort(filename.toString());
-            env.getInterpreter().load(iport, env);
+            iport.load(env);
             return Void.value();
         }
         catch (ClassCastException e) {

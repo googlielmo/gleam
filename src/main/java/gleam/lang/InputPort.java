@@ -120,4 +120,9 @@ public class InputPort extends Port
         else
             gleamReader = null;
     }
+
+    public void load(Environment env)
+            throws GleamException {
+        Interpreter.getInterpreter().load(this, env);
+    }
 }

@@ -34,8 +34,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static gleam.util.Log.Level.FINE;
+import static gleam.lang.SystemEnvironment.Kind.*;
 import static gleam.util.Log.Level.ERROR;
+import static gleam.util.Log.Level.FINE;
 
 /**
  * Scheme runtime support.
@@ -51,13 +52,13 @@ public final class System
     private static final Collection<Symbol> kwSet = new HashSet<>();
 
     /** the null environment, as defined in r5rs */
-    private static Environment nullEnv = null;
+    private static final Environment nullEnv = new SystemEnvironment(NULL);
 
     /** the scheme-report environment, as defined in r5rs */
-    private static Environment r5rsEnv = null;
+    private static final Environment r5rsEnv = new SystemEnvironment(nullEnv, R5RS);
 
     /** the interaction environment, as defined in r5rs */
-    private static Environment intrEnv = null;
+    private static final Environment intrEnv = new SystemEnvironment(r5rsEnv, INTR);
 
     /** the current-input-port */
     private static InputPort cin = null;
@@ -135,21 +136,6 @@ public final class System
      */
     private static void createInitialEnvironments() {
         try {
-            /*
-             * define null environment
-             */
-            nullEnv = new SystemEnvironment(null, SystemEnvironment.NULL);
-
-            /*
-             * define scheme-report environment
-             */
-            r5rsEnv = new SystemEnvironment(nullEnv, SystemEnvironment.R5RS);
-
-            /*
-             * define interaction environment
-             */
-            intrEnv = new SystemEnvironment(r5rsEnv, SystemEnvironment.INTR);
-
             /*
              * import primitives
              */

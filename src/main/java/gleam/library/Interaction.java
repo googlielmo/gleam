@@ -30,6 +30,7 @@ import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
+import gleam.lang.Interpreter;
 import gleam.lang.MutableString;
 import gleam.lang.Number;
 import gleam.lang.Real;
@@ -39,7 +40,10 @@ import gleam.lang.Void;
 import gleam.util.Log;
 import gleam.util.Log.Level;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.util.Set;
 
@@ -185,10 +189,10 @@ public final class Interaction {
         throws GleamException
     {
         if (arg1 instanceof MutableString) {
-            try (FileOutputStream f = new java.io.FileOutputStream(arg1.toString());
-                 ObjectOutput s = new java.io.ObjectOutputStream(f))
+            try (FileOutputStream fos = new java.io.FileOutputStream(arg1.toString());
+                 ObjectOutput output = new java.io.ObjectOutputStream(fos))
             {
-                s.writeObject(env.getInterpreter().getSessionEnv());
+                output.writeObject(Interpreter.getInterpreter().getSessionEnv());
                 return Void.value();
             }
             catch (java.io.FileNotFoundException e) {
@@ -218,13 +222,11 @@ public final class Interaction {
         throws GleamException
     {
         if (arg1 instanceof MutableString) {
-            try {
-                java.io.FileInputStream
-                    f = new java.io.FileInputStream(arg1.toString());
-                java.io.ObjectInputStream
-                    s = new java.io.ObjectInputStream(f);
-                Environment glob = (Environment) s.readObject();
-                env.getInterpreter().setSessionEnv(glob);
+            try (FileInputStream fis = new FileInputStream(arg1.toString());
+                 ObjectInput input = new ObjectInputStream(fis))
+            {
+                Environment newEnv = (Environment) input.readObject();
+                Interpreter.getInterpreter().setSessionEnv(newEnv);
                 return Void.value();
             }
             catch (java.io.FileNotFoundException e) {

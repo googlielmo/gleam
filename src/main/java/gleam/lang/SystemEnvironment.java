@@ -28,6 +28,8 @@ package gleam.lang;
 
 import gleam.util.Log;
 
+import java.io.PrintWriter;
+
 /**
  * Specialization of Environment with special serialization rules.
  */
@@ -38,17 +40,31 @@ public final class SystemEnvironment extends Environment
      */
     private static final long serialVersionUID = 1L;
 
-    static final int INTR = 2;
-    static final int R5RS = 1;
-    static final int NULL = 0;
+    enum Kind {
+        INTR,
+        R5RS,
+        NULL;
+    }
 
-    final int kind;
+    final Kind kind;
 
     /** Constructor */
-    SystemEnvironment(Environment p, int kind)
+    SystemEnvironment(Kind kind)
+    {
+        this(null, kind);
+    }
+
+    SystemEnvironment(Environment p, Kind kind)
     {
         super(p);
         this.kind = kind;
+    }
+
+    /** Writes this environment */
+    @Override
+    public void write(PrintWriter out)
+    {
+        out.write(String.format("#<system-environment: %s>", kind));
     }
 
     /** avoids to serialize data of system environments */

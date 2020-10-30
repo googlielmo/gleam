@@ -33,6 +33,8 @@
 
 package gleam.lang;
 
+import gleam.util.Log;
+
 import static gleam.util.Log.Level.FINE;
 
 /**
@@ -40,6 +42,20 @@ import static gleam.util.Log.Level.FINE;
  */
 @SuppressWarnings("unused")
 public class Interpreter {
+
+    private static ThreadLocal<Interpreter> interpreterThreadLocal =
+            new ThreadLocal<>();
+
+    public static Interpreter getInterpreter()
+            throws GleamException
+    {
+        if (interpreterThreadLocal.get() == null) {
+            Interpreter interpreter = new Interpreter();
+            Log.enter(FINE, String.format("created Interpreter %s", interpreter));
+            interpreterThreadLocal.set(interpreter);
+        }
+        return interpreterThreadLocal.get();
+    }
 
     /** the current program continuation */
     final Continuation cont;
@@ -51,7 +67,7 @@ public class Interpreter {
      * the session (top-level) environment;
      * can be changed by the application.
      */
-    Environment sesnEnv = null;
+    private Environment sesnEnv = null;
 
     /**
      * true if bootstrap code already loaded
@@ -62,11 +78,11 @@ public class Interpreter {
      * Creates a new instance of Interpreter
      * @throws gleam.lang.GleamException on any error
      */
-    public Interpreter() throws GleamException {
+    private Interpreter() throws GleamException {
         cont = new Continuation();
         accum = Void.value;
         /* define session environment */
-        setSessionEnv(new Environment(null));
+        setSessionEnv(new Environment());
         bootstrap();
     }
 
@@ -90,7 +106,7 @@ public class Interpreter {
      * @throws gleam.lang.GleamException on any error
      */
     public Entity eval(java.io.Reader reader) throws GleamException {
-        load(new InputPort(reader), sesnEnv);
+        load(new InputPort(reader), getSessionEnv());
         return accum;
     }
 
@@ -116,7 +132,6 @@ public class Interpreter {
      * @param cont the new current continuation for this <CODE>Interpreter</CODE>
      */
     public void replaceContinuation(Continuation cont) {
-        // in-place copy
         this.cont.head = cont.head;
     }
 
@@ -158,7 +173,7 @@ public class Interpreter {
      *  raised, the loading / execution operation will terminate,
      *  leaving the environment in a possibly modified state
      */
-    public void load(InputPort reader, Environment env) throws GleamException {
+    void load(InputPort reader, Environment env) throws GleamException {
         // read
         Entity obj, val;
         while ((obj = reader.read()) != Eof.value()) {
@@ -183,7 +198,7 @@ public class Interpreter {
             // FIXME the bootstrap takes place in the interaction environment
             // instead of r5rs, which is against the standard, but we need make-rewriter.
             // We should solve this problem, maybe using set! on preallocated r5rs names
-            load(bootstrap, gleam.lang.System.getInteractionEnv());
+            load(bootstrap, System.getInteractionEnv());
             bootstrapped = true;
         }
     }
@@ -194,8 +209,8 @@ public class Interpreter {
      */
     public void setSessionEnv(Environment env) {
         sesnEnv = env;
-        sesnEnv.setInterpreter(this);
-        // force link to interaction env
+
+        // link to interaction env
         sesnEnv.parent = System.getInteractionEnv();
     }
 
@@ -216,6 +231,6 @@ public class Interpreter {
      *  name
      */
     public void bind(String name, Object object) {
-        sesnEnv.define(Symbol.makeSymbol(name), new JavaObject(object));
+        getSessionEnv().define(Symbol.makeSymbol(name), new JavaObject(object));
     }
 }

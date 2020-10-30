@@ -44,29 +44,15 @@ public class Environment extends AbstractEntity
     /** Parent environment */
     Environment parent;
 
-    /** Interpreter */
-    private transient Interpreter intp;
-
     /** Association function: symbol --> location */
-    private final Map<Symbol, Location> assoc;
+    private final Map<Symbol, Location> assoc = new HashMap<>();
 
     /** Constructor */
+    Environment() {}
+
     public Environment(Environment parent)
     {
         this.parent = parent;
-        if (parent != null) intp = parent.intp;
-        this.assoc = new HashMap<>();
-    }
-
-    /**
-     * @return the current interpreter
-     */
-    public Interpreter getInterpreter() {
-        return intp;
-    }
-
-    void setInterpreter(Interpreter interpreter) {
-        this.intp = interpreter;
     }
 
     /**
@@ -95,9 +81,11 @@ public class Environment extends AbstractEntity
         throws UnboundVariableException
     {
         Location location = getLocationOrNull(s);
-        if (location != null)
-            return location;
-        throw new UnboundVariableException(s);
+        if (location == null) {
+            throw new UnboundVariableException(s);
+        }
+
+        return location;
     }
 
     /**
@@ -121,6 +109,7 @@ public class Environment extends AbstractEntity
                 return loc;
             }
         }
+
         // so it is unbound...
         return null;
     }

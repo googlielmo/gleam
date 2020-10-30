@@ -32,7 +32,6 @@ import gleam.lang.Eof;
 import gleam.lang.GleamException;
 import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
-import gleam.lang.List;
 import gleam.lang.MutableString;
 import gleam.lang.OutputPort;
 import gleam.lang.Pair;
@@ -81,7 +80,7 @@ public class Gleam
 
         try {
             out.print("Bootstrapping... ");
-            intp = new Interpreter();
+            intp = Interpreter.getInterpreter();
             out.println("OK");
         } catch (GleamException e) {
             Log.error(e);
@@ -110,7 +109,7 @@ public class Gleam
                 Entity obj = r.read();
                 if (obj == cEnv) {
                     session.dump();
-                    break;
+                    continue;
                 }
 
                 if (obj == Eof.value() || obj == cQuit) {

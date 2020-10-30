@@ -37,6 +37,8 @@ import gleam.util.Log;
 import java.io.PrintWriter;
 import java.util.Iterator;
 
+import static gleam.util.Log.Level.FINE;
+
 /**
  * This class represents the distinct type of the Scheme empty list.
  * There is only one instance of this class, i.e. the empty list itself '().
@@ -68,7 +70,7 @@ public final class EmptyList extends AbstractEntity implements List {
      */
     protected Object readResolve()
     {
-        Log.enter(Log.Level.FINE, "readResolve() called! (EmptyList)"); //DEBUG
+        Log.enter(FINE, "readResolve() called! (EmptyList)"); //DEBUG
         return value;
     }
 
