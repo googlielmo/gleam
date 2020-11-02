@@ -90,7 +90,6 @@ public class Closure extends Procedure
         Entity currparam = param;
         List prev = null;
         boolean dotparam = false;
-        gleam.util.Log.enter(FINE, "apply: ARGS = ", args);
 
         /* bind actual arguments to formals (long)
          */

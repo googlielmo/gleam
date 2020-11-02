@@ -101,31 +101,19 @@ public final class Output {
         "Writes an object in machine-readable form, e.g. (write \"hello\")",
         null /* doc strings */ ) {
     @Override
-    public Entity apply2(Entity obj, Entity obj2, Environment env, Continuation cont)
+    public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
         throws GleamException
     {
-        OutputPort out;
-
         // get output port, if present
-        if (obj2 != null) {
-            if (obj2 instanceof OutputPort) {
-                out = (OutputPort) obj2;
-            }
-            else {
-                throw new GleamException(this, "not an output port", obj2);
-            }
-        }
-        else {
-            out = System.getCout();
-        }
+        OutputPort oport = getOutputPort(this, arg2);
 
         // print object
-        if (out.isOpen()) {
-            out.write(obj);
+        if (oport.isOpen()) {
+            oport.write(arg1);
             return Void.value();
         }
         else {
-            throw new GleamException(this, "closed output port", out);
+            throw new GleamException(this, "closed output port", oport);
         }
     }},
 
@@ -142,18 +130,7 @@ public final class Output {
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
-        OutputPort oport;
-        if (arg1 != null) {
-            if (arg1 instanceof OutputPort) {
-                oport = (OutputPort) arg1;
-            }
-            else {
-                throw new GleamException(this, "not an output port", arg1);
-            }
-        }
-        else {
-            oport = gleam.lang.System.getCout();
-        }
+        OutputPort oport = getOutputPort(this, arg1);
 
         if (oport.isOpen()) {
             oport.newline();
@@ -164,6 +141,46 @@ public final class Output {
         }
     }},
 
+    /*
+     * newline
+     * Writes an end of line
+     */
+    new Primitive( "flush",
+            Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+            0, 1, /* min, max no. of arguments */
+            "Flushes the current or specified output port",
+            null /* doc strings */ ) {
+        @Override
+        public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                throws GleamException
+        {
+            OutputPort oport = getOutputPort(this, arg1);
+
+            if (oport.isOpen()) {
+                oport.flush();
+                return Void.value();
+            }
+            else {
+                throw new GleamException(this, "closed output port", oport);
+            }
+        }
+    },
+
     }; // primitives
 
+    private static OutputPort getOutputPort(Primitive primitive, Entity entity) throws GleamException {
+        OutputPort oport;
+        if (entity != null) {
+            if (entity instanceof OutputPort) {
+                oport = (OutputPort) entity;
+            }
+            else {
+                throw new GleamException(primitive, "not an output port", entity);
+            }
+        }
+        else {
+            oport = System.getCout();
+        }
+        return oport;
+    }
 }
