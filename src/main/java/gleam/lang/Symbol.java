@@ -51,33 +51,33 @@ public final class Symbol extends AbstractEntity
      * common symbols (some are keywords, some are not)
      * defined here as constants for convenience
      */
-    public final static Symbol QUOTE = makeSymbol("quote");
-    public final static Symbol LAMBDA = makeSymbol("lambda");
-    public final static Symbol SET = makeSymbol("set!");
+    public final static Symbol AND = makeSymbol("and");
+    public final static Symbol APPEND = makeSymbol("append");
+    public final static Symbol ARROW = makeSymbol("=>");
     public final static Symbol BEGIN = makeSymbol("begin");
-    public final static Symbol LET = makeSymbol("let");
-    public final static Symbol LETSTAR = makeSymbol("let*");
-    public final static Symbol LETREC = makeSymbol("letrec");
-    public final static Symbol DO = makeSymbol("do");
+    public final static Symbol CALL_CC = makeSymbol("call/cc");
+    public final static Symbol CALL_WITH_CURRENT_CONTINUATION = makeSymbol("call-with-current-continuation");
+    public final static Symbol CASE = makeSymbol("case");
+    public final static Symbol COND = makeSymbol("cond");
+    public final static Symbol CONS = makeSymbol("cons");
+    public final static Symbol DEFINE = makeSymbol("define");
     public final static Symbol DELAY = makeSymbol("delay");
+    public final static Symbol DO = makeSymbol("do");
+    public final static Symbol ELSE = makeSymbol("else");
+    public final static Symbol ERROBJ = makeSymbol("__errobj");
+    public final static Symbol HELP = makeSymbol("help");
+    public final static Symbol IF = makeSymbol("if");
+    public final static Symbol LAMBDA = makeSymbol("lambda");
+    public final static Symbol LET = makeSymbol("let");
+    public final static Symbol LETREC = makeSymbol("letrec");
+    public final static Symbol LETSTAR = makeSymbol("let*");
+    public final static Symbol LIST = makeSymbol("list");
+    public final static Symbol OR = makeSymbol("or");
     public final static Symbol QUASIQUOTE = makeSymbol("quasiquote");
+    public final static Symbol QUOTE = makeSymbol("quote");
+    public final static Symbol SET = makeSymbol("set!");
     public final static Symbol UNQUOTE = makeSymbol("unquote");
     public final static Symbol UNQUOTE_SPLICING = makeSymbol("unquote-splicing");
-    public final static Symbol DEFINE = makeSymbol("define");
-    public final static Symbol IF = makeSymbol("if");
-    public final static Symbol COND = makeSymbol("cond");
-    public final static Symbol CASE = makeSymbol("case");
-    public final static Symbol ELSE = makeSymbol("else");
-    public final static Symbol ARROW = makeSymbol("=>");
-    public final static Symbol AND = makeSymbol("and");
-    public final static Symbol OR = makeSymbol("or");
-    public final static Symbol CONS = makeSymbol("cons");
-    public final static Symbol LIST = makeSymbol("list");
-    public final static Symbol APPEND = makeSymbol("append");
-    public final static Symbol ERROBJ = makeSymbol("__errobj");
-    public final static Symbol CALL_WITH_CURRENT_CONTINUATION = makeSymbol("call-with-current-continuation");
-    public final static Symbol CALL_CC = makeSymbol("call/cc");
-    public final static Symbol HELP = makeSymbol("help");
 
     /**
      * String representation
@@ -142,7 +142,6 @@ public final class Symbol extends AbstractEntity
     {
         return new Symbol(s, false);
     }
-
 
     /**
      * Prevents the release of multiple instances upon deserialization.
