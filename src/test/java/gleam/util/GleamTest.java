@@ -1,13 +1,8 @@
 package gleam.util;
 
-import gleam.lang.Entity;
-import gleam.lang.Environment;
-import gleam.lang.Eof;
 import gleam.lang.GleamException;
 import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
-import gleam.lang.OutputPort;
-import gleam.lang.System;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,20 +16,20 @@ public class GleamTest {
     @Test
     public void test()
             throws GleamException {
-        String testFile = "/tests.scm";
-        Interpreter intp = Interpreter.getInterpreter();
 
-        runFile(testFile, intp);
+        runTestFile("/tests.scm");
     }
 
-    private void runFile(String testFile, Interpreter intp)
+    private void runTestFile(String testFile)
             throws GleamException {
-        InputStream inputStream = getClass().getResourceAsStream(testFile);
-        assertNotNull(String.format("test file %s not found", testFile), inputStream);
-        InputPort tests =
-                new gleam.lang.InputPort(
-                        new java.io.InputStreamReader(inputStream));
+        Interpreter intp;
         try {
+            intp = Interpreter.getInterpreter();
+            InputStream inputStream = getClass().getResourceAsStream(testFile);
+            assertNotNull(String.format("test file %s not found", testFile), inputStream);
+            InputPort tests =
+                    new gleam.lang.InputPort(
+                            new java.io.InputStreamReader(inputStream));
             tests.load(intp.getSessionEnv());
         } catch (GleamException e) {
             Log.error(e);
