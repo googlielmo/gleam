@@ -55,7 +55,7 @@ public class PrimitiveProcedure extends Procedure
         throws GleamException
     {
         if (value.maxArgs < 0 || value.maxArgs > 3) {
-            if (value.minArgs >= 0 && value.maxArgs >= 0) {
+            if (value.minArgs >= 0 || value.maxArgs >= 0) {
                 checkNumArgs(arg);
             }
             return value.applyN(arg, env, cont);
@@ -98,6 +98,7 @@ public class PrimitiveProcedure extends Procedure
             if (!it.hasNext()) {
                 throw new GleamException(value, "too few arguments", args);
             }
+            it.next();
         }
         if (value.maxArgs > 0) {
             while (it.hasNext()) {
