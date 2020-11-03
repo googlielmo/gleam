@@ -47,6 +47,13 @@ public class Interpreter {
     private static ThreadLocal<Interpreter> interpreterThreadLocal =
             new ThreadLocal<>();
 
+    /**
+     * Gets a per-thread Interpreter.
+     * Creates and bootstraps a new one the first one it's invoked from a given thread.
+     * @return a Gleam Scheme Interpreter
+     *
+     * @throws GleamException in case of error
+     */
     public static Interpreter getInterpreter()
             throws GleamException
     {
@@ -112,7 +119,8 @@ public class Interpreter {
     }
 
     /**
-     * Evaluates a Gleam Scheme entity in a given environment
+     * Evaluates a Gleam Scheme entity as code in a given environment.
+     *
      * @param expr the <CODE>gleam.lang.Entity</CODE> corresponding to a
      *  Scheme expression to evaluate
      * @param env the environment of evaluation
@@ -120,7 +128,7 @@ public class Interpreter {
      * @return the value of the expression
      */
     public Entity eval(Entity expr, Environment env) throws GleamException {
-        expr = expr.analyze().optimize(env);
+        expr = expr.analyze(env).optimize(env);
         cont.begin(new ExpressionAction(expr, env, null));
         execute();
         return accum;

@@ -77,7 +77,7 @@ public final class Eval {
         catch (ClassCastException e) {
             throw new GleamException(this, "not an environment", arg2);
         }
-        arg1 = arg1.analyze().optimize(eval_env);
+        arg1 = arg1.analyze(env).optimize(eval_env);
         cont.begin(new ExpressionAction(arg1, eval_env, null));
         return null;
     }},

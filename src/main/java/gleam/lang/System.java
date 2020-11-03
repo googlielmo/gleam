@@ -35,8 +35,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static gleam.lang.SystemEnvironment.Kind.*;
-import static gleam.util.Log.Level.ERROR;
-import static gleam.util.Log.Level.FINE;
+import static gleam.util.Log.Level.*;
 
 /**
  * Scheme runtime support.
@@ -229,7 +228,7 @@ public final class System
     /**
      * Determines if a given symbol is a keyword.
      */
-    static boolean isKeyword(Symbol s) {
+    private static boolean isKeyword(Symbol s) {
         return kwSet.contains(s);
     }
 
@@ -245,14 +244,14 @@ public final class System
      * Performs syntactic analysis of special forms.
      * Creation date: (02/11/2001 12.34.35)
      */
-    public static void analyzeSpecialForm(List form) throws GleamException {
+    public static void analyzeSpecialForm(List form, Environment env) throws GleamException {
         ListIterator it = new ListIterator(form);
         if (!it.hasNext()) {
             throw new GleamException("invalid special form", form);
         }
         // analyze operator itself
         Entity op = it.next();
-        it.replace(op.analyze());
+        it.replace(op.analyze(env));
 
         // Variable for form arguments
         Entity arg;
@@ -261,7 +260,7 @@ public final class System
         if (op == Symbol.AND || op == Symbol.OR || op == Symbol.HELP) {
             // analyze arguments
             while (it.hasNext()) {
-                it.replace(it.next().analyze());
+                it.replace(it.next().analyze(env));
             }
             return;
         }
@@ -269,7 +268,7 @@ public final class System
         // Other special forms have at least an argument, so check for it
         if (!it.hasNext()) {
             throw new GleamException(
-                    "invalid special form: too few arguments", form);
+                    String.format("invalid special form %s: too few arguments", op.toString()), form);
         }
         arg = it.next();
 
@@ -284,7 +283,7 @@ public final class System
             // analyze param list
             if (arg == EmptyList.value || isVariable(arg)) {
                 // ok
-                it.replace(arg.analyze());
+                it.replace(arg.analyze(env));
             }
             else if (arg instanceof List) {
                 // iterate over (possibly improper) list
@@ -304,7 +303,7 @@ public final class System
                                 form);
                     }
                     paramSet.add(param);
-                    ait.replace(pobj.analyze());
+                    ait.replace(pobj.analyze(env));
                 }
             }
             else {
@@ -319,23 +318,23 @@ public final class System
             }
             while (it.hasNext()) {
                 Entity bodyPart = it.next();
-                it.replace(bodyPart.analyze());
+                it.replace(bodyPart.analyze(env));
             }
         }
         else if (op == Symbol.IF) {
             // analyze condition
-            it.replace(arg.analyze());
+            it.replace(arg.analyze(env));
             if (!it.hasNext()) {
                 throw new GleamException(
                         "if: missing consequence", form);
             }
             // analyze consequence
             arg = it.next();
-            it.replace(arg.analyze());
+            it.replace(arg.analyze(env));
             if (it.hasNext()) {
                 // analyze alternative
                 arg = it.next();
-                it.replace(arg.analyze());
+                it.replace(arg.analyze(env));
                 if (it.hasNext()) {
                     throw new GleamException(
                             "if: too many arguments", form);
@@ -352,10 +351,10 @@ public final class System
                 throw new GleamException(
                         "set!: missing assignment value", form);
             }
-            it.replace(arg.analyze());
+            it.replace(arg.analyze(env));
             // analyze assigned value
             arg = it.next();
-            it.replace(arg.analyze());
+            it.replace(arg.analyze(env));
             if (it.hasNext()) {
                 throw new GleamException(
                         "set!: too many assignment values",
@@ -364,22 +363,22 @@ public final class System
         }
         else if (op == Symbol.BEGIN) {
             // begin is followed by one or more expressions
-            it.replace(arg.analyze());
+            it.replace(arg.analyze(env));
             while (it.hasNext()) {
-                it.replace(it.next().analyze());
+                it.replace(it.next().analyze(env));
             }
         }
-//      else if (op == Symbol.COND) {
-//      }
+        else if (op == Symbol.COND) {
+        }
         else if (op == Symbol.CASE) {
         }
-//      else if (op == Symbol.LET || op == Symbol.LETSTAR || op == Symbol.LETREC) {
-//      }
+        else if (op == Symbol.LET || op == Symbol.LETSTAR || op == Symbol.LETREC) {
+        }
         else if (op == Symbol.DO) {
         }
         else if (op == Symbol.DELAY) {
             // delay wants one expression
-            it.replace(arg.analyze());
+            it.replace(arg.analyze(env));
             if (it.hasNext()) {
                 throw new GleamException(
                         "delay: too many arguments", form);
@@ -394,7 +393,7 @@ public final class System
             }
             else if (isVariable(arg)) {
                 isFunction = false;
-                it.replace(arg.analyze());
+                it.replace(arg.analyze(env));
             }
             else if (arg instanceof List) {
                 isFunction = true;
@@ -432,7 +431,7 @@ public final class System
                     else {
                         fname = false;
                     }
-                    ait.replace(pobj.analyze());
+                    ait.replace(pobj.analyze(env));
                 }
             }
             else {
@@ -447,7 +446,7 @@ public final class System
                         form);
             }
             Entity v = it.next();
-            it.replace(v.analyze());
+            it.replace(v.analyze(env));
             if (it.hasNext() && !isFunction) {
                 throw new GleamException(
                         "define: too many definition values",
@@ -455,11 +454,12 @@ public final class System
             }
             else while (it.hasNext()) {
                 Entity bodyPart = it.next();
-                it.replace(bodyPart.analyze());
+                it.replace(bodyPart.analyze(env));
             }
         }
         else {
-            gleam.util.Log.enter(FINE, "analyzeSpecialForm: not a special form");
+            gleam.util.Log.enter(WARNING,
+                    String.format("analyzeSpecialForm: unknown or not implemented %s", op.toString()));
         }
     }
 
@@ -722,5 +722,27 @@ public final class System
         }
         //
         return retVal;
+    }
+
+    /**
+     * Checks if a symbol stands for the name of a special form in a given environment.
+     *
+     * @param symbol
+     * @param env
+     * @return
+     * @throws GleamException
+     */
+    public static boolean isSpecialForm(Symbol symbol, Environment env) throws GleamException {
+        Location location = env.getLocationOrNull(symbol);
+        boolean isSyntaxProcedure = false;
+        boolean isSyntaxRewriter = false;
+        if (location != null) {
+            //return location.get() instanceof SyntaxProcedure;
+            isSyntaxProcedure = location.get() instanceof SyntaxProcedure;
+            isSyntaxRewriter = location.get() instanceof SyntaxRewriter;
+        }
+        boolean isKeyword = isKeyword(symbol);
+
+        return isKeyword && (isSyntaxProcedure || isSyntaxRewriter);
     }
 }

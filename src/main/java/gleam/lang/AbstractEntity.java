@@ -49,9 +49,10 @@ public abstract class AbstractEntity
 
     /**
      * Performs syntax analysis on this entity.
+     * @param env
      */
     @Override
-    public Entity analyze()
+    public Entity analyze(Environment env)
         throws GleamException
     {
         // default: analyzing an entity yields the same entity

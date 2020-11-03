@@ -35,7 +35,7 @@ package gleam.lang;
 import java.io.PrintWriter;
 
 /**
- * Specialized version of primitive procedure, with
+ * A special form, or a specialized version of primitive procedure, with
  * different rules for parameter evaluation.
  * It is assumed that procedures of this class may take
  * their arguments without following the standard

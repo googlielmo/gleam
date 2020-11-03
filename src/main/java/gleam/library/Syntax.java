@@ -34,8 +34,8 @@ import gleam.lang.Environment;
 import gleam.lang.ExpressionAction;
 import gleam.lang.GleamException;
 import gleam.lang.IfAction;
-import gleam.lang.ListIterator;
 import gleam.lang.List;
+import gleam.lang.ListIterator;
 import gleam.lang.Pair;
 import gleam.lang.Symbol;
 import gleam.lang.SyntaxRewriter;
@@ -59,15 +59,6 @@ public final class Syntax {
      * the three initial environments.
      */
     public static final Primitive[] primitives = {
-
-//  /**
-//   *
-//   */
-//  new Primitive( "",
-//      Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
-//      0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-//      null, null /* doc strings */ ) {
-//  },
 
     /**
      * quote
@@ -257,7 +248,6 @@ public final class Syntax {
         null, null /* doc strings */ ) {
     },
 
-
     /**
      * quasiquote
      * @todo implementation
@@ -277,7 +267,6 @@ public final class Syntax {
         +"is equivalent to ,@x." /* doc strings */ ) {
     },
 
-
     /**
      * else
      * @todo implementation
@@ -296,6 +285,36 @@ public final class Syntax {
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
+    },
+
+    /**
+     * let
+     * @todo implementation
+     */
+    new Primitive( "let",
+            Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+            1, Primitive.VAR_ARGS, /* min, max no. of arguments */
+            null, null /* doc strings */ ) {
+    },
+
+    /**
+     * let*
+     * @todo implementation
+     */
+    new Primitive( "let*",
+            Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+            1, Primitive.VAR_ARGS, /* min, max no. of arguments */
+            null, null /* doc strings */ ) {
+    },
+
+    /**
+     * cond
+     * @todo implementation
+     */
+    new Primitive( "cond",
+            Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+            1, Primitive.VAR_ARGS, /* min, max no. of arguments */
+            null, null /* doc strings */ ) {
     },
 
     /**

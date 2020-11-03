@@ -71,7 +71,7 @@ public class ExpressionInEnvironmentAction extends Action {
             throw new GleamException("not an environment", newEnv);
         }
         Environment evalEnv = (Environment) newEnv;
-        expr = expr.analyze().optimize(evalEnv);
+        expr = expr.analyze(evalEnv).optimize(evalEnv);
         return expr.eval(evalEnv, cont);
     }
 }

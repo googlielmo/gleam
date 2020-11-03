@@ -19,10 +19,11 @@ public interface Entity extends java.io.Serializable {
     /**
      * Performs syntax analysis on this entity.
      *
+     * @param env Environment
      * @return Entity
      * @throws GleamException in case of syntax error
      */
-    Entity analyze()
+    Entity analyze(Environment env)
                 throws GleamException;
 
     /**

@@ -82,16 +82,16 @@ public class Pair extends AbstractEntity implements List {
      * Performs syntax analysis on this pair.
      */
     @Override
-    public Entity analyze()
+    public Entity analyze(Environment env)
         throws GleamException
     {
         if (!analyzed) {
-            if (getCar() instanceof Symbol && System.isKeyword((Symbol) getCar())) {
+            if (getCar() instanceof Symbol && System.isSpecialForm((Symbol) getCar(), env)) {
                 /* we have a special form, so let's
                  * perform syntax analysis
                  * -- may change car, cdr
                  */
-                System.analyzeSpecialForm(this);
+                System.analyzeSpecialForm(this, env);
                 analyzed = true;
                 return this;
             }
@@ -99,7 +99,7 @@ public class Pair extends AbstractEntity implements List {
             /* we have a procedure application
              * first car, then cdr
              */
-            setCar(getCar().analyze());
+            setCar(getCar().analyze(env));
 
             /* now process rest of the list (i.e. the form arguments)
              *
@@ -115,7 +115,7 @@ public class Pair extends AbstractEntity implements List {
                     // this is a proper list
                     List restAsPair = (List) rest;
                     restParent = restAsPair;
-                    restAsPair.setCar(restAsPair.getCar().analyze());
+                    restAsPair.setCar(restAsPair.getCar().analyze(env));
                     rest = restAsPair.getCdr();
                 } else {
                     /* this is an improper list
@@ -124,7 +124,7 @@ public class Pair extends AbstractEntity implements List {
                      * analyze cdr in place
                      */
                     gleam.util.Log.enter(INFO, "dotted pair in analyze... check for correctness");
-                    restParent.setCdr(rest.analyze());
+                    restParent.setCdr(rest.analyze(env));
                     break;
                 }
             }
@@ -209,7 +209,7 @@ public class Pair extends AbstractEntity implements List {
         throws GleamException
     {
         /* first check for special forms */
-        if (getCar() instanceof Symbol && System.isKeyword( (Symbol) getCar())) {
+        if (getCar() instanceof Symbol && System.isSpecialForm( (Symbol) getCar(), env)) {
             // we have a special form, so let's perform
             // specific optimization
             // -- may change retVal.{car|cdr}
