@@ -157,11 +157,11 @@ public final class System
             importPrimitives(gleam.library.Vectors.primitives);
 
             /*
-             * add special symbols to interaction environment
+             * define special symbols
              */
-            intrEnv.define(Symbol.ERROBJ, Void.value);
-            intrEnv.define(Symbol.CALL_CC, r5rsEnv.lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
-            intrEnv.define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
+            r5rsEnv.define(Symbol.ERROBJ, Void.value);
+            r5rsEnv.define(Symbol.CALL_CC, r5rsEnv.lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
+            r5rsEnv.define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
 
         }
         catch (GleamException e) {

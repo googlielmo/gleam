@@ -250,7 +250,6 @@ public final class Syntax {
 
     /**
      * quasiquote
-     * @todo implementation
      */
     new Primitive( "quasiquote",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
@@ -289,7 +288,6 @@ public final class Syntax {
 
     /**
      * let
-     * @todo implementation
      */
     new Primitive( "let",
             Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
@@ -309,7 +307,6 @@ public final class Syntax {
 
     /**
      * cond
-     * @todo implementation
      */
     new Primitive( "cond",
             Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
@@ -319,7 +316,6 @@ public final class Syntax {
 
     /**
      * unquote
-     * @todo implementation
      */
     new Primitive( "unquote",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
@@ -329,7 +325,6 @@ public final class Syntax {
 
     /**
      * unquote-splicing
-     * @todo implementation
      */
     new Primitive( "unquote-splicing",
         Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
@@ -341,7 +336,7 @@ public final class Syntax {
      * make-rewriter
      */
     new Primitive( "make-rewriter",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Makes a syntax rewriter, e.g. (make-rewriter (lambda (exp) ...))",
         null /* doc strings */ ) {
