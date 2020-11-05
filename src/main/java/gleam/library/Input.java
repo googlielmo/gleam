@@ -33,6 +33,7 @@ import gleam.lang.Environment;
 import gleam.lang.Eof;
 import gleam.lang.GleamException;
 import gleam.lang.InputPort;
+import gleam.lang.Interpreter;
 
 /**
  * Input
@@ -87,7 +88,7 @@ public final class Input {
                 iport = (InputPort) arg1;
             }
             else {
-                iport = gleam.lang.System.getCin();
+                iport = Interpreter.getInterpreter().getCin();
             }
             if (iport.isOpen()) {
                 return iport.read();

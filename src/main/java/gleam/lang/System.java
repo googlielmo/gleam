@@ -59,12 +59,6 @@ public final class System
     /** the interaction environment, as defined in r5rs */
     private static final Environment intrEnv = new SystemEnvironment(r5rsEnv, INTR);
 
-    /** the current-input-port */
-    private static InputPort cin = null;
-
-    /** the current-output-port */
-    private static OutputPort cout = null;
-
     /** the short-help map */
     private static final HashMap<String, String> helpComment
             = new HashMap<>();
@@ -75,19 +69,7 @@ public final class System
 
     // static initializer, executed once after loading class
     static {
-        bindIOPorts();
         createInitialEnvironments();
-    }
-
-    /**
-     * binds current I/O ports to system standard I/O
-     */
-    private static void bindIOPorts() {
-        cin = new InputPort(new java.io.BufferedReader(
-                new java.io.InputStreamReader(
-                        java.lang.System.in)));
-        cout = new OutputPort(new java.io.PrintWriter(
-                java.lang.System.out, true));
     }
 
     /**
@@ -203,26 +185,6 @@ public final class System
 
     public static Environment getSchemeReportEnv() {
         return r5rsEnv;
-    }
-
-    /** Sets current-input-port */
-    public static void setCin(InputPort newcin) {
-        cin = newcin;
-    }
-
-    /** Sets current-output-port */
-    public static void setCout(OutputPort newcout) {
-        cout = newcout;
-    }
-
-    /** Gets current-input-port */
-    public static InputPort getCin() {
-        return cin;
-    }
-
-    /** Gets current-output-port */
-    public static OutputPort getCout() {
-        return cout;
     }
 
     /**
@@ -737,9 +699,9 @@ public final class System
         boolean isSyntaxProcedure = false;
         boolean isSyntaxRewriter = false;
         if (location != null) {
-            //return location.get() instanceof SyntaxProcedure;
-            isSyntaxProcedure = location.get() instanceof SyntaxProcedure;
-            isSyntaxRewriter = location.get() instanceof SyntaxRewriter;
+            Entity proc = location.get();
+            isSyntaxProcedure = proc instanceof SyntaxProcedure;
+            isSyntaxRewriter = proc instanceof SyntaxRewriter;
         }
         boolean isKeyword = isKeyword(symbol);
 

@@ -36,7 +36,6 @@ import gleam.lang.MutableString;
 import gleam.lang.OutputPort;
 import gleam.lang.Pair;
 import gleam.lang.Symbol;
-import gleam.lang.System;
 import gleam.lang.Void;
 import gleam.util.Log;
 
@@ -90,8 +89,8 @@ public class Gleam
 
         gleam.lang.Environment session;
 
-        InputPort r = System.getCin();
-        OutputPort w = System.getCout();
+        InputPort r = intp.getCin();
+        OutputPort w = intp.getCout();
 
         Entity prompt = new MutableString("> ");
         Entity result;

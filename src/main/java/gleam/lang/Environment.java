@@ -139,7 +139,7 @@ public class Environment extends AbstractEntity
     public void dump()
             throws GleamException
     {
-        OutputPort out = System.getCout();
+        OutputPort out = Interpreter.getInterpreter().getCout();
         out.print("--------------- "+this.toString());
         out.newline();
         for (Symbol s : assoc.keySet()) {

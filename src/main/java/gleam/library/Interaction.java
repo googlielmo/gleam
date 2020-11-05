@@ -33,6 +33,7 @@ import gleam.lang.GleamException;
 import gleam.lang.Interpreter;
 import gleam.lang.MutableString;
 import gleam.lang.Number;
+import gleam.lang.OutputPort;
 import gleam.lang.Real;
 import gleam.lang.Symbol;
 import gleam.lang.System;
@@ -81,6 +82,7 @@ public final class Interaction {
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
+        OutputPort cout = Interpreter.getInterpreter().getCout();
         if (arg1 != null) {
             // we have an explicit argument,
             // so print full documentation
@@ -91,14 +93,14 @@ public final class Interaction {
             String pname = arg1.toString();
             String doc = System.getHelpDocumentation(pname);
             if (doc != null) {
-                System.getCout().print(doc);
+                cout.print(doc);
             }
             else {
-                System.getCout().print("No documentation available for ");
-                System.getCout().print(arg1.toString());
-                System.getCout().print(". Try (help).");
+                cout.print("No documentation available for ");
+                cout.print(arg1.toString());
+                cout.print(". Try (help).");
             }
-            System.getCout().newline();
+            cout.newline();
             return Void.value();
         }
 
@@ -109,7 +111,7 @@ public final class Interaction {
         StringBuilder spc = new StringBuilder();
         spc.append(chars);
 
-        System.getCout().print("Available primitives:\n\n");
+        cout.print("Available primitives:\n\n");
         Set<String> nameset = System.getHelpNames();
         for (String s : nameset) {
             StringBuilder pname = new StringBuilder(s);
@@ -118,20 +120,20 @@ public final class Interaction {
                 if (pname.length() < helpColumnWidth) {
                     pname.append(spc.subSequence(0, helpColumnWidth - pname.length()));
                 }
-                System.getCout().print(pname.toString());
-                System.getCout().print(" ");
-                System.getCout().print(doc);
+                cout.print(pname.toString());
+                cout.print(" ");
+                cout.print(doc);
             }
             else {
-                System.getCout().print("No documentation available ");
-                System.getCout().print("(but it should be!). ");
-                System.getCout().print("Please report to Gleam developers.");
+                cout.print("No documentation available ");
+                cout.print("(but it should be!). ");
+                cout.print("Please report to Gleam developers.");
             }
-            System.getCout().newline();
+            cout.newline();
         }
-        System.getCout().newline();
-        System.getCout().print("Special variable __errobj contains last offending object after an error.");
-        System.getCout().newline();
+        cout.newline();
+        cout.print("Special variable __errobj contains last offending object after an error.");
+        cout.newline();
         return Void.value();
     }},
 

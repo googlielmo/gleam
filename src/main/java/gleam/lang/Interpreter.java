@@ -47,23 +47,11 @@ public class Interpreter {
     private static ThreadLocal<Interpreter> interpreterThreadLocal =
             new ThreadLocal<>();
 
-    /**
-     * Gets a per-thread Interpreter.
-     * Creates and bootstraps a new one the first one it's invoked from a given thread.
-     * @return a Gleam Scheme Interpreter
-     *
-     * @throws GleamException in case of error
-     */
-    public static Interpreter getInterpreter()
-            throws GleamException
-    {
-        if (interpreterThreadLocal.get() == null) {
-            Interpreter interpreter = new Interpreter();
-            Log.enter(FINE, String.format("created Interpreter %s", interpreter));
-            interpreterThreadLocal.set(interpreter);
-        }
-        return interpreterThreadLocal.get();
-    }
+    /** the current-input-port */
+    private InputPort cin = null;
+
+    /** the current-output-port */
+    private OutputPort cout = null;
 
     /** the current program continuation */
     final Continuation cont;
@@ -90,8 +78,41 @@ public class Interpreter {
         cont = new Continuation();
         accum = Void.value;
         /* define session environment */
+        bindIOPorts();
         setSessionEnv(new Environment());
-        bootstrap();
+    }
+
+
+    /**
+     * binds current I/O ports to system standard I/O
+     */
+    private void bindIOPorts() {
+        cin = new InputPort(new java.io.BufferedReader(
+                new java.io.InputStreamReader(
+                        java.lang.System.in)));
+        cout = new OutputPort(new java.io.PrintWriter(
+                java.lang.System.out, true));
+    }
+
+
+    /**
+     * Gets a per-thread Interpreter.
+     * Creates and bootstraps a new one the first one it's invoked from a given thread.
+     * @return a Gleam Scheme Interpreter
+     *
+     * @throws GleamException in case of error
+     */
+    public static Interpreter getInterpreter()
+            throws GleamException
+    {
+        if (interpreterThreadLocal.get() == null) {
+            Interpreter interpreter = new Interpreter();
+            interpreterThreadLocal.set(interpreter);
+            Log.enter(FINE, String.format("created Interpreter %s", interpreter));
+            interpreter.bootstrap();
+            Log.enter(FINE, String.format("bootstrapped Interpreter %s", interpreter));
+        }
+        return interpreterThreadLocal.get();
     }
 
     /**
@@ -238,5 +259,25 @@ public class Interpreter {
      */
     public void bind(String name, Object object) {
         getSessionEnv().define(Symbol.makeSymbol(name), new JavaObject(object));
+    }
+
+    /** Sets current-input-port */
+    public void setCin(InputPort newcin) {
+        cin = newcin;
+    }
+
+    /** Sets current-output-port */
+    public void setCout(OutputPort newcout) {
+        cout = newcout;
+    }
+
+    /** Gets current-input-port */
+    public InputPort getCin() {
+        return cin;
+    }
+
+    /** Gets current-output-port */
+    public OutputPort getCout() {
+        return cout;
     }
 }

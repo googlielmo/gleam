@@ -30,7 +30,9 @@ import gleam.lang.Boolean;
 import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
+import gleam.lang.GleamException;
 import gleam.lang.InputPort;
+import gleam.lang.Interpreter;
 import gleam.lang.OutputPort;
 import gleam.lang.Port;
 
@@ -106,8 +108,10 @@ public final class Ports {
         "Returns the current input port",
         null /* doc strings */ ) {
     @Override
-    public Entity apply0(Environment env, Continuation cont) {
-        return gleam.lang.System.getCin();
+    public Entity apply0(Environment env, Continuation cont)
+            throws GleamException
+    {
+        return Interpreter.getInterpreter().getCin();
     }},
 
     /*
@@ -120,8 +124,10 @@ public final class Ports {
         "Returns the current output port",
         null /* doc strings */ ) {
     @Override
-    public Entity apply0(Environment env, Continuation cont) {
-        return gleam.lang.System.getCout();
+    public Entity apply0(Environment env, Continuation cont)
+            throws GleamException
+    {
+        return Interpreter.getInterpreter().getCout();
     }},
 
     };
