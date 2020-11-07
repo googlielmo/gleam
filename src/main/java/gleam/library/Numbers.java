@@ -36,6 +36,8 @@ import gleam.lang.ListIterator;
 import gleam.lang.Number;
 import gleam.lang.Real;
 
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * Primitive operator and procedure implementation library.
  */
@@ -59,7 +61,7 @@ public final class Numbers {
      * Implements the minus operator.
      */
     new Primitive( "-",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Difference, e.g. (- 7 3); Also negation, e.g. (- x)",
         null /* doc strings */ ) {
@@ -90,7 +92,7 @@ public final class Numbers {
      * Implements the plus operator.
      */
     new Primitive( "+",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Addition, e.g (+ 1 2)",
         null /* doc strings */ ) {
@@ -111,7 +113,7 @@ public final class Numbers {
      * Implements the division operator.
      */
     new Primitive( "/",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Division, e.g. (/ 42 7)",
         null /* doc strings */ ) {
@@ -132,7 +134,7 @@ public final class Numbers {
      * Implements the multiplication operator.
      */
     new Primitive( "*",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Multiplication, e.g. (* 7 9)",
         null /* doc strings */ ) {
@@ -153,7 +155,7 @@ public final class Numbers {
      * Implements the equals operator.
      */
     new Primitive( "=",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Equals comparison, e.g. (= 1 1)",
         null /* doc strings */ ) {
@@ -181,7 +183,7 @@ public final class Numbers {
      * Implements the greater than or equals operator.
      */
     new Primitive( ">=",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Greater-than-or-equals comparison, e.g. (>= 1 2)",
         null /* doc strings */ ) {
@@ -209,7 +211,7 @@ public final class Numbers {
      * Implements the less than or equals operator.
      */
     new Primitive( "<=",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Less-than-or-equals comparison, e.g. (<= 1 2)",
         null /* doc strings */ ) {
@@ -237,7 +239,7 @@ public final class Numbers {
      * Implements the greater than operator.
      */
     new Primitive( ">",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Greater-than comparison, e.g. (> 1 2)",
         null /* doc strings */ ) {
@@ -265,7 +267,7 @@ public final class Numbers {
      * Implements the less than operator.
      */
     new Primitive( "<",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Less-than comparison, e.g. (< 1 2)",
         null /* doc strings */ ) {
@@ -293,7 +295,7 @@ public final class Numbers {
      * Tests if argument is a number
      */
     new Primitive( "number?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a number, false otherwise",
         "E.g. (number? 3) => #t" /* doc strings */ ) {

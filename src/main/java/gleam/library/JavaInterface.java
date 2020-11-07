@@ -53,6 +53,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static gleam.lang.Environment.Kind.INTERACTION_ENV;
+
 /**
  * JAVA INTERFACE
  */
@@ -75,7 +77,7 @@ public class JavaInterface {
      * new
      */
     new Primitive( "new",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Makes a new Java object, e.g. (new 'java.util.Date)",
         null /* doc strings */ ) {
@@ -106,7 +108,7 @@ public class JavaInterface {
      * call
      */
     new Primitive( "call",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Calls a method on a Java object",
         "E.g. (call 'length (new 'java.lang.String \"test\")) => 4" /* doc strings */ ) {
@@ -137,10 +139,10 @@ public class JavaInterface {
      * class-of
      */
     new Primitive( "class-of",
-            Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
-            1, 1, /* min, max no. of arguments */
-            "Returns the class of its argument",
-            "E.g. (class-of (new 'java.lang.String \"test\")) => class java.lang.String" /* doc strings */ ) {
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Returns the class of its argument",
+        "E.g. (class-of (new 'java.lang.String \"test\")) => class java.lang.String" /* doc strings */ ) {
     @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
     {

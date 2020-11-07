@@ -32,6 +32,8 @@ import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
 
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * CHARACTERS
  * Primitive operator and procedure implementation library.
@@ -56,7 +58,7 @@ public final class Characters {
      * Tests if argument is a character
      */
     new Primitive( "char?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a character, false otherwise",
         "E.g. (char? #\\a) => #t" /* doc strings */ ) {

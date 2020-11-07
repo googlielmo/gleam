@@ -35,6 +35,9 @@ import gleam.lang.ExpressionInEnvironmentAction;
 import gleam.lang.GleamException;
 import gleam.lang.Number;
 
+import static gleam.lang.Environment.Kind.INTERACTION_ENV;
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * EVAL
  * Primitive operator and procedure implementation library.
@@ -60,7 +63,7 @@ public final class Eval {
      * Evaluates an expression in an environment
      */
     new Primitive( "eval",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 2, /* min, max no. of arguments */
         "Evaluates an expression in a given environment",
         "E.g. (eval '(+ 1 2) (interaction-environment)) => 3" /* doc strings */ ) {
@@ -87,7 +90,7 @@ public final class Eval {
      * Returns the null environment
      */
     new Primitive( "null-environment",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns the null environment",
         "A scheme-report version number must be specified, e.g. (null-environment 5). "
@@ -116,7 +119,7 @@ public final class Eval {
      * Returns the scheme-report environment
      */
     new Primitive( "scheme-report-environment",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns the scheme-report environment",
         "A scheme-report version number must be specified, e.g. (scheme-report-environment 5). "
@@ -145,7 +148,7 @@ public final class Eval {
      * Returns the interaction environment
      */
     new Primitive( "interaction-environment",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 0, /* min, max no. of arguments */
         "Returns the interaction (top-level) environment",
         null /* doc strings */ ) {
@@ -160,7 +163,7 @@ public final class Eval {
      * Returns the current environment
      */
     new Primitive( "current-environment",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 0, /* min, max no. of arguments */
         "Returns the current environment",
         null /* doc strings */ ) {
@@ -174,7 +177,7 @@ public final class Eval {
      * Returns the current environment
      */
     new Primitive( "in-environment",
-        Primitive.INTR_ENV, Primitive.KEYWORD, /* environment, type */
+        INTERACTION_ENV, Primitive.KEYWORD, /* environment, type */
         2, 2, /* min, max no. of arguments */
         "Evaluates an expression in a given environment",
         "E.g. (in-environment (scheme-report-environment 5) (+ 1 2)) => 3" /* doc strings */ ) {
@@ -192,7 +195,7 @@ public final class Eval {
      * Returns a new environment
      */
     new Primitive( "make-environment",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 0, /* min, max no. of arguments */
         "Creates a new environment",
         "E.g. (in-environment (make-environment) (begin (define a 7) a)) => 7" /* doc strings */ ) {
@@ -206,7 +209,7 @@ public final class Eval {
      * Returns a new environment
      */
     new Primitive( "environment?",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is an environment, false otherwise",
         "E.g. (environment? (scheme-report-environment 5)) => #t" /* doc strings */ ) {

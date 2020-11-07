@@ -37,6 +37,8 @@ import gleam.lang.List;
 import gleam.lang.Pair;
 import gleam.lang.Void;
 
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * PAIRS AND LISTS
  * Primitive operator and procedure implementation library.
@@ -60,7 +62,7 @@ public final class PairsAndLists {
      * Takes the first element of a pair.
      */
     new Primitive( "car",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Gets first object in a pair, e.g. (car (list 1 2 3))",
         null /* doc strings */ ) {
@@ -81,7 +83,7 @@ public final class PairsAndLists {
      * Takes the second element of a pair.
      */
     new Primitive( "cdr",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Gets second object in a pair, e.g. (cdr (list 1 2 3))",
         null /* doc strings */ ) {
@@ -102,7 +104,7 @@ public final class PairsAndLists {
      * Creates a new pair.
      */
     new Primitive( "cons",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, 2, /* min, max no. of arguments */
         "Creates a new pair, e.g. (cons 1 (cons 2 '(3)))",
         null /* doc strings */ ) {
@@ -116,7 +118,7 @@ public final class PairsAndLists {
      * Creates a new list from its arguments.
      */
     new Primitive( "list",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Creates a new list from its arguments, e.g. (list 1 2 3)",
         null /* doc strings */ ) {
@@ -143,7 +145,7 @@ public final class PairsAndLists {
      * Tests if argument is a pair
      */
     new Primitive( "pair?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a pair, false otherwise",
         "E.g. (pair? (cons 1 2)) => #t" /* doc strings */ ) {
@@ -157,7 +159,7 @@ public final class PairsAndLists {
      * Tests if argument is the empty list
      */
     new Primitive( "null?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is the empty list, false otherwise",
         "E.g. (null? '()) => #t" /* doc strings */ ) {
@@ -171,7 +173,7 @@ public final class PairsAndLists {
      * store an object in the car field of a pair.
      */
     new Primitive( "set-car!",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, 2, /* min, max no. of arguments */
         "Sets car field in a pair, e.g. (set-car! my-pair 1)",
         null /* doc strings */ ) {
@@ -191,7 +193,7 @@ public final class PairsAndLists {
      * store an object in the cdr field of a pair.
      */
     new Primitive( "set-cdr!",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, 2, /* min, max no. of arguments */
         "Sets cdr field in a pair, e.g. (set-cdr! my-pair 2)",
         null /* doc strings */ ) {

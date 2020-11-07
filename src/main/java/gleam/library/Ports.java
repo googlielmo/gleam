@@ -36,6 +36,8 @@ import gleam.lang.Interpreter;
 import gleam.lang.OutputPort;
 import gleam.lang.Port;
 
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * Ports
  * Primitive operator and procedure implementation library.
@@ -61,7 +63,7 @@ public final class Ports {
      * Tests if argument is a port
      */
     new Primitive( "port?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a port, false otherwise",
         "E.g. (port? (current-input-port)) => #t" /* doc strings */ ) {
@@ -75,7 +77,7 @@ public final class Ports {
      * Tests if argument is an input port
      */
     new Primitive( "input-port?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is an input port, false otherwise",
         "E.g. (input-port? (current-input-port)) => #t" /* doc strings */ ) {
@@ -89,7 +91,7 @@ public final class Ports {
      * Tests if argument is an output port
      */
     new Primitive( "output-port?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is an output port, false otherwise",
         "E.g. (output-port? (current-input-port)) => #f" /* doc strings */ ) {
@@ -103,7 +105,7 @@ public final class Ports {
      * Returns the current input port
      */
     new Primitive( "current-input-port",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 0, /* min, max no. of arguments */
         "Returns the current input port",
         null /* doc strings */ ) {
@@ -119,7 +121,7 @@ public final class Ports {
      * Returns the current output port
      */
     new Primitive( "current-output-port",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 0, /* min, max no. of arguments */
         "Returns the current output port",
         null /* doc strings */ ) {

@@ -75,8 +75,7 @@ public final class EmptyList extends AbstractEntity implements List {
     }
 
     /**
-     * Evaluates the empty list, thus resulting in an error.
-     * The empty combination is an error in Scheme, see r5rs.
+     * The empty combination is an error in Scheme.
      */
     @Override
     public Entity eval(Environment env, Continuation cont)

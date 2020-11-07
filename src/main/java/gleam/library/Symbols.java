@@ -34,6 +34,9 @@ import gleam.lang.Symbol;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static gleam.lang.Environment.Kind.INTERACTION_ENV;
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * SYMBOLS
  * Primitive operator and procedure implementation library.
@@ -64,7 +67,7 @@ public final class Symbols {
               Tests if argument is a symbol
              */
     new Primitive( "symbol?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a symbol, false otherwise",
         "E.g. (symbol? 'sym) => #t" /* doc strings */ ) {
@@ -79,7 +82,7 @@ public final class Symbols {
      * Generates a fresh uninterned symbol
      */
     new Primitive( "generate-symbol",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 0, /* min, max no. of arguments */
         "Makes a new symbol, e.g. (generate-symbol)",
         null /* doc strings */ ) {

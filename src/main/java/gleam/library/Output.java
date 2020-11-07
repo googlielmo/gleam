@@ -34,6 +34,8 @@ import gleam.lang.Interpreter;
 import gleam.lang.OutputPort;
 import gleam.lang.Void;
 
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * Output
  * Primitive operator and procedure implementation library.
@@ -58,7 +60,7 @@ public final class Output {
      * Displays an object
      */
     new Primitive( "display",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 2, /* min, max no. of arguments */
         "Writes an object in human-readable form, e.g. (display \"hello\")",
         null /* doc strings */ ) {
@@ -96,7 +98,7 @@ public final class Output {
      * Writes an object
      */
     new Primitive( "write",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 2, /* min, max no. of arguments */
         "Writes an object in machine-readable form, e.g. (write \"hello\")",
         null /* doc strings */ ) {
@@ -122,7 +124,7 @@ public final class Output {
      * Writes an end of line
      */
     new Primitive( "newline",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 1, /* min, max no. of arguments */
         "Writes an end of line to the current or specified output port",
         null /* doc strings */ ) {
@@ -146,10 +148,10 @@ public final class Output {
      * Writes an end of line
      */
     new Primitive( "flush",
-            Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
-            0, 1, /* min, max no. of arguments */
-            "Flushes the current or specified output port",
-            null /* doc strings */ ) {
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+        0, 1, /* min, max no. of arguments */
+        "Flushes the current or specified output port",
+        null /* doc strings */ ) {
         @Override
         public Entity apply1(Entity arg1, Environment env, Continuation cont)
                 throws GleamException

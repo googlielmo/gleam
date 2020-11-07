@@ -38,6 +38,7 @@ import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
 import gleam.lang.List;
+import gleam.lang.SystemEnvironment;
 
 /**
  * A primitive procedure of the language.
@@ -56,8 +57,8 @@ public abstract class Primitive implements java.io.Serializable {
 
     /** primitive name, as used in programs, e.g. "car" */
     private final String name;
-    /** definition environment, one of NULL_ENV, R5RS_ENV, INTR_ENV */
-    public final int definitionEnv;
+    /** definition environment */
+    public final Environment.Kind definitionEnv;
     /** true if this primitive defines a syntax keyword, false otherwise */
     public final boolean keyword;
     /** minimum no. of arguments */
@@ -81,15 +82,7 @@ public abstract class Primitive implements java.io.Serializable {
     /** constant to signal a variable (unlimited) number of arguments */
     public static final int VAR_ARGS = -1;
 
-    // constant values for definitionEnv field
-    /** the null environment */
-    public static final int NULL_ENV = 0; //
-    /** the r5rs environment */
-    public static final int R5RS_ENV = 1; //
-    /** the interaction environment */
-    public static final int INTR_ENV = 2; //
-
-    Primitive(String name, int definitionEnv, boolean keyword, int minArgs, int maxArgs, String comment, String documentation){
+    Primitive(String name, Environment.Kind definitionEnv, boolean keyword, int minArgs, int maxArgs, String comment, String documentation){
         this.name = name;
         this.definitionEnv = definitionEnv;
         this.keyword = keyword;

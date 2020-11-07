@@ -48,6 +48,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.util.Set;
 
+import static gleam.lang.Environment.Kind.INTERACTION_ENV;
+
 /**
  * INTERACTION -- GLEAM-SPECIFIC
  * Primitive operator and procedure implementation library.
@@ -73,7 +75,7 @@ public final class Interaction {
      * Gives help on primitives.
      */
     new Primitive( "help",
-        Primitive.INTR_ENV, Primitive.KEYWORD, /* environment, type */
+        INTERACTION_ENV, Primitive.KEYWORD, /* environment, type */
         0, 1, /* min, max no. of arguments */
         "Gives a short help on a primitive, e.g. (help if)",
         null /* doc strings */ ) {
@@ -142,7 +144,7 @@ public final class Interaction {
      * Sets gleam runtime support verbosity (1..5)
      */
     new Primitive( "set-verbosity!",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Sets verbosity level: 0=off, 1=standard ... 5=pedantic",
         "E.g. (set-verbosity! 2)" /* doc strings */ ) {
@@ -168,7 +170,7 @@ public final class Interaction {
      * Gets gleam runtime support verbosity (1..5)
      */
     new Primitive( "verbosity",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 0, /* min, max no. of arguments */
         "Returns current verbosity level", null /* doc strings */ ) {
     @Override
@@ -182,7 +184,7 @@ public final class Interaction {
      * Saves the session environment.
      */
     new Primitive( "save-session",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Saves current session environment, e.g. (save-session \"file\")",
         null /* doc strings */ ) {
@@ -215,7 +217,7 @@ public final class Interaction {
      * Loads the session environment.
      */
     new Primitive( "load-session",
-        Primitive.INTR_ENV, Primitive.IDENTIFIER, /* environment, type */
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Loads a session environment, e.g. (load-session \"file\")",
         null /* doc strings */ ) {

@@ -32,6 +32,8 @@ import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.JavaObject;
 
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * Primitive operator and procedure implementation library.
  */
@@ -54,7 +56,7 @@ public final class Equivalence {
      * Compares arguments by address.
      */
     new Primitive( "eq?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, 2, /* min, max no. of arguments */
         "True if two objects are the same in memory, false otherwise",
         "E.g. (eq? 'a 'a) => #t, but (eq? (list 'a) (list 'a)) => #f" /* doc strings */ ) {
@@ -74,7 +76,7 @@ public final class Equivalence {
      * Compares arguments by value or address.
      */
     new Primitive( "eqv?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, 2, /* min, max no. of arguments */
         "True if two objects have equivalent values, false otherwise",
         "E.g. (eqv? 10 10) => #t" /* doc strings */ ) {

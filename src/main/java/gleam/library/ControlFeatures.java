@@ -36,6 +36,8 @@ import gleam.lang.List;
 import gleam.lang.Procedure;
 import gleam.lang.ProcedureCallAction;
 
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * CONTROL FEATURES
  * Primitive operator and procedure implementation library.
@@ -59,7 +61,7 @@ public final class ControlFeatures {
      * Tests if argument is a procedure
      */
     new Primitive( "procedure?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a procedure, false otherwise",
         "E.g. (procedure? cons) => #t" /* doc strings */ ) {
@@ -73,7 +75,7 @@ public final class ControlFeatures {
      * call-with-current-continuation
      */
     new Primitive( "call-with-current-continuation",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Calls a procedure with an escape procedure arg.",
         "Also known as call/cc, this operator is both unusual and powerful.\n"+
@@ -98,7 +100,7 @@ public final class ControlFeatures {
      * apply
      */
     new Primitive( "apply",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, 2, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
     @Override

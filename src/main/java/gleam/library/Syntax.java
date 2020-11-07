@@ -42,6 +42,8 @@ import gleam.lang.SyntaxRewriter;
 import gleam.lang.Undefined;
 import gleam.lang.Void;
 
+import static gleam.lang.Environment.Kind.*;
+
 /**
  * Primitive operator and procedure implementation library.
  */
@@ -65,7 +67,7 @@ public final class Syntax {
      * Returns its argument without evaluation.
      */
     new Primitive( "quote",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Gives its argument unevaluated, e.g. (quote x); 'x",
         null /* doc strings */ ) {
@@ -79,7 +81,7 @@ public final class Syntax {
      * Defines a new binding in the environment.
      */
     new Primitive( "define",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Variable or procedure definition, e.g. (define (inc x) (+ x 1))",
         "Can be used at top-level to create a new global variable, "
@@ -140,7 +142,7 @@ public final class Syntax {
      * Creates a new procedure.
      */
     new Primitive( "lambda",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         2, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Creates a procedure, e.g. (lambda (x) (+ x 1))",
         null /* doc strings */ ) {
@@ -161,7 +163,7 @@ public final class Syntax {
      * Conditional expression.
      */
     new Primitive( "if",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         2, 3, /* min, max no. of arguments */
         "Conditional evaluation, e.g. (if (eqv? 1 0) 'hmm 'ok)",
         null /* doc strings */ ) {
@@ -182,7 +184,7 @@ public final class Syntax {
      * Assigns a value to a variable
      */
     new Primitive( "set!",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         2, 2, /* min, max no. of arguments */
         "Variable assignment, e.g. (set! x 11)",
         "The variable must be already bound, e.g. with define" /* doc strings */ ) {
@@ -207,7 +209,7 @@ public final class Syntax {
      * The result of the last evaluation is returned.
      */
     new Primitive( "begin",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Sequential execution, e.g. (begin (first-step) (second-step))",
         null /* doc strings */ ) {
@@ -223,7 +225,7 @@ public final class Syntax {
      * @todo implementation
      */
     new Primitive( "case",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
     },
@@ -233,7 +235,7 @@ public final class Syntax {
      * @todo implementation
      */
     new Primitive( "do",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
     },
@@ -243,7 +245,7 @@ public final class Syntax {
      * @todo implementation
      */
     new Primitive( "delay",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
     },
@@ -252,7 +254,7 @@ public final class Syntax {
      * quasiquote
      */
     new Primitive( "quasiquote",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Gives its argument almost unevaluated, e.g. (quasiquote x); `x",
         "If a comma appears within the argument, the expression following the "
@@ -271,7 +273,7 @@ public final class Syntax {
      * @todo implementation
      */
     new Primitive( "else",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
     },
@@ -281,7 +283,7 @@ public final class Syntax {
      * @todo implementation
      */
     new Primitive( "=>",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
     },
@@ -290,7 +292,7 @@ public final class Syntax {
      * let
      */
     new Primitive( "let",
-            Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
             1, Primitive.VAR_ARGS, /* min, max no. of arguments */
             null, null /* doc strings */ ) {
     },
@@ -300,7 +302,7 @@ public final class Syntax {
      * @todo implementation
      */
     new Primitive( "let*",
-            Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
             1, Primitive.VAR_ARGS, /* min, max no. of arguments */
             null, null /* doc strings */ ) {
     },
@@ -309,7 +311,7 @@ public final class Syntax {
      * cond
      */
     new Primitive( "cond",
-            Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
             1, Primitive.VAR_ARGS, /* min, max no. of arguments */
             null, null /* doc strings */ ) {
     },
@@ -318,7 +320,7 @@ public final class Syntax {
      * unquote
      */
     new Primitive( "unquote",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
     },
@@ -327,7 +329,7 @@ public final class Syntax {
      * unquote-splicing
      */
     new Primitive( "unquote-splicing",
-        Primitive.NULL_ENV, Primitive.KEYWORD, /* environment, type */
+        NULL_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
         null, null /* doc strings */ ) {
     },
@@ -336,7 +338,7 @@ public final class Syntax {
      * make-rewriter
      */
     new Primitive( "make-rewriter",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Makes a syntax rewriter, e.g. (make-rewriter (lambda (exp) ...))",
         null /* doc strings */ ) {
@@ -359,7 +361,7 @@ public final class Syntax {
      * @todo implementation
      */
     new Primitive( "rewrite1",
-        Primitive.INTR_ENV, Primitive.KEYWORD, /* environment, type */
+        INTERACTION_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Rewrites an expression applying a syntax rewriter at most once",
         null /* doc strings */ ) {

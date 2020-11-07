@@ -38,15 +38,9 @@ public final class SystemEnvironment extends Environment
     /**
      * serialVersionUID
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
-    enum Kind {
-        INTR,
-        R5RS,
-        NULL;
-    }
-
-    final Kind kind;
+    private final Kind kind;
 
     /** Constructor */
     SystemEnvironment(Kind kind)
@@ -79,11 +73,11 @@ public final class SystemEnvironment extends Environment
     {
         Log.enter(Log.Level.FINE, "readResolve() called! (SystemEnvironment)"); //DEBUG
         switch (kind) {
-            case INTR:
+            case INTERACTION_ENV:
                 return System.getInteractionEnv();
-            case R5RS:
+            case REPORT_ENV:
                 return System.getSchemeReportEnv();
-            case NULL:
+            case NULL_ENV:
                 return System.getNullEnv();
             default:
                 throw new java.io.InvalidObjectException("Unknown kind of SystemEnvironment");

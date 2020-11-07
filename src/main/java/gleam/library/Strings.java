@@ -32,6 +32,8 @@ import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.MutableString;
 
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * STRINGS
  * Primitive operator and procedure implementation library.
@@ -56,7 +58,7 @@ public final class Strings {
      * Tests if argument is a string
      */
     new Primitive( "string?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a string, false otherwise",
         "E.g. (string? \"hello\") => #t" /* doc strings */ ) {

@@ -35,6 +35,8 @@ import gleam.lang.GleamException;
 import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
 
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * Input
  * Primitive operator and procedure implementation library.
@@ -59,7 +61,7 @@ public final class Input {
      * Tests if argument is an EOF object
      */
     new Primitive( "eof-object?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Input.gleam_eof_object_p",
         "Returns true if argument is the EOF object, false otherwise" /* doc strings */ ) {
@@ -74,7 +76,7 @@ public final class Input {
      * Reads an object
      */
     new Primitive( "read",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         0, 1, /* min, max no. of arguments */
         "Reads an object from the current or specified input port",
         null /* doc strings */ ) {

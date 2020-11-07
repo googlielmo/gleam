@@ -34,6 +34,8 @@ import gleam.lang.InputPort;
 import gleam.lang.MutableString;
 import gleam.lang.Void;
 
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * SystemInterface
  * Primitive operator and procedure implementation library.
@@ -58,7 +60,7 @@ public final class SystemInterface {
      * Loads and executes an external source file
      */
     new Primitive( "load",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Loads and executes a source file",
         null /* doc strings */ ) {

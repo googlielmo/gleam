@@ -44,7 +44,7 @@ import static gleam.util.Log.Level.FINE;
 @SuppressWarnings("unused")
 public class Interpreter {
 
-    private static ThreadLocal<Interpreter> interpreterThreadLocal =
+    private static final ThreadLocal<Interpreter> interpreterThreadLocal =
             new ThreadLocal<>();
 
     /** the current-input-port */

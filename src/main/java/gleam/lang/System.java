@@ -34,7 +34,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static gleam.lang.SystemEnvironment.Kind.*;
+import static gleam.lang.Environment.Kind.*;
 import static gleam.util.Log.Level.*;
 
 /**
@@ -51,13 +51,13 @@ public final class System
     private static final Collection<Symbol> kwSet = new HashSet<>();
 
     /** the null environment, as defined in r5rs */
-    private static final Environment nullEnv = new SystemEnvironment(NULL);
+    private static final Environment nullEnv = new SystemEnvironment(NULL_ENV);
 
     /** the scheme-report environment, as defined in r5rs */
-    private static final Environment r5rsEnv = new SystemEnvironment(nullEnv, R5RS);
+    private static final Environment reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
 
     /** the interaction environment, as defined in r5rs */
-    private static final Environment intrEnv = new SystemEnvironment(r5rsEnv, INTR);
+    private static final Environment interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
 
     /** the short-help map */
     private static final HashMap<String, String> helpComment
@@ -79,14 +79,15 @@ public final class System
         Environment instEnv;
         for (Primitive primitive : primitives) {
             switch (primitive.definitionEnv) {
-                case Primitive.NULL_ENV:
+                case NULL_ENV:
                     instEnv = nullEnv;
                     break;
-                case Primitive.R5RS_ENV:
-                    instEnv = r5rsEnv;
+                case REPORT_ENV:
+                    instEnv = reportEnv;
                     break;
+                case INTERACTION_ENV:
                 default:
-                    instEnv = intrEnv;
+                    instEnv = interactionEnv;
             }
             installPrimitive(instEnv, primitive);
         }
@@ -113,7 +114,7 @@ public final class System
     }
 
     /**
-     * Creates the three initial environments (null, r5rs, interaction).
+     * Creates the three initial environments (null, report, interaction).
      */
     private static void createInitialEnvironments() {
         try {
@@ -141,9 +142,9 @@ public final class System
             /*
              * define special symbols
              */
-            r5rsEnv.define(Symbol.ERROBJ, Void.value);
-            r5rsEnv.define(Symbol.CALL_CC, r5rsEnv.lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
-            r5rsEnv.define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
+            reportEnv.define(Symbol.ERROBJ, Void.value);
+            reportEnv.define(Symbol.CALL_CC, reportEnv.lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
+            reportEnv.define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
 
         }
         catch (GleamException e) {
@@ -176,7 +177,7 @@ public final class System
     }
 
     public static Environment getInteractionEnv() {
-        return intrEnv;
+        return interactionEnv;
     }
 
     public static Environment getNullEnv() {
@@ -184,7 +185,7 @@ public final class System
     }
 
     public static Environment getSchemeReportEnv() {
-        return r5rsEnv;
+        return reportEnv;
     }
 
     /**

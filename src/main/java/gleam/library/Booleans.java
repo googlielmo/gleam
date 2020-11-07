@@ -31,6 +31,8 @@ import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
 
+import static gleam.lang.Environment.Kind.REPORT_ENV;
+
 /**
  * BOOLEANS
  * Primitive operator and procedure implementation library.
@@ -55,7 +57,7 @@ public final class Booleans {
      * Tests if argument is a boolean
      */
     new Primitive( "boolean?",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is a boolean, false otherwise",
         "E.g. (boolean? #f) => #t" /* doc strings */ ) {
@@ -70,7 +72,7 @@ public final class Booleans {
      * Logical Not operator
      */
     new Primitive( "not",
-        Primitive.R5RS_ENV, Primitive.IDENTIFIER, /* environment, type */
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
         "Returns true if argument is false, false otherwise",
         "E.g. (not #f) => #t" /* doc strings */ ) {

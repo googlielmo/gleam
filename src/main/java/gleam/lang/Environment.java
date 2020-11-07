@@ -41,6 +41,12 @@ public class Environment extends AbstractEntity
      */
     private static final long serialVersionUID = 1L;
 
+    public static enum Kind {
+        NULL_ENV,
+        REPORT_ENV,
+        INTERACTION_ENV;
+    }
+
     /** Parent environment */
     Environment parent;
 
@@ -134,8 +140,8 @@ public class Environment extends AbstractEntity
     {
         out.write("#<environment>");
     }
-
     // DEBUG
+
     public void dump()
             throws GleamException
     {
