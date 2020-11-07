@@ -1,6 +1,13 @@
+2020-10-21
+
+    Migrated to Java 1.6: Generics, @Override, List is now an Iterable.
+    Refactored and cleaned up Java code.
+    Fix: dirty continuation after error in repl.
+    New primitive 'class-of' returns java.lang.Class of argument.
+
 2020-10-10
 
-    Removed some redundant code and clarified comments
+    Removed some redundant code and clarified comments.
 
 2020-06-21
 
