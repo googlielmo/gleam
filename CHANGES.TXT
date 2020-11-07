@@ -1,10 +1,20 @@
+2020-11-07
+
+    Add native (scheme) tests.
+    Per-interpreter I/O.
+    Bootstrap in Report Environment.
+    Extend analyze() to redefined syntax.
+
 2020-10-22
 
-    Migrate to Java 8
-    - use generics
-    - make List an Iterable, use enhanced `for` on lists
-    - use switch for Strings
-    - improve readability
+    Migrate to Java 8: Use switch for strings.
+
+2020-10-21
+
+    Migrated to Java 1.6: Generics, @Override, List is now an Iterable.
+    Refactored and cleaned up Java code.
+    Fix: dirty continuation after error in repl.
+    New primitive 'class-of' returns java.lang.Class of argument.
 
 2020-10-10
 

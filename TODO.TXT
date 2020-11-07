@@ -13,13 +13,6 @@ Rework serialization for I/O ports (use append write for output files, etc.)
 Remove System.isKeyword(). Move analyzeSpecialForm() and optimizeSpecialForm()
 to specific subclasses of SyntaxProcedure, where they belong.
 
-Implement as many primitives as possible in Scheme
-    list
-    append
-    null?
-    pair? (?)
-    ...
-
 A rewriting system for patterns (...)
 
 Test fully: tail-call optimizations
@@ -88,3 +81,11 @@ Explicit first-class environments, with primitives:
     defined?
     ...
 
+Use Java 5 generics where possible
+
+Implement as many primitives as possible in Scheme
+    list
+    append
+    null?
+    pair? (?)
+    ...
