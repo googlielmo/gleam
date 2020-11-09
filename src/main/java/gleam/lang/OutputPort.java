@@ -164,4 +164,8 @@ public class OutputPort extends Port
         else
             out = null;
     }
+
+    public void printf(String format, Object... args) {
+        this.print(String.format(format, args));
+    }
 }
