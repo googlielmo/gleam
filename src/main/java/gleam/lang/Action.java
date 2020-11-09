@@ -43,7 +43,8 @@ package gleam.lang;
  * non tail-recursive languages. When continuations are captured and
  * re-used, their actions may end up being arranged as a proper tree.
  */
-public abstract class Action implements java.io.Serializable {
+public abstract class Action implements java.io.Serializable
+{
     /** the next action to execute, this creates a tree structure */
     Action next;
 
@@ -75,4 +76,22 @@ public abstract class Action implements java.io.Serializable {
     abstract Entity invoke(Entity arg, Continuation cont)
         throws gleam.lang.GleamException;
 
+    protected interface Printer
+    {
+        void print(OutputPort port);
+    }
+
+    protected void trace(Printer doo)
+            throws GleamException
+    {
+        Interpreter intp = Interpreter.getInterpreter();
+        if (intp.traceEnabled()) {
+            OutputPort cout = intp.getCout();
+
+            String actionName = this.getClass().getSimpleName().replace("Action", "");
+            cout.printf("%s ", actionName);
+
+            doo.print(cout);
+        }
+    }
 }

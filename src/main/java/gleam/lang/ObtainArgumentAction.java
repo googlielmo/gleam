@@ -49,11 +49,13 @@ public class ObtainArgumentAction extends Action {
     }
 
     @Override
-    Entity invoke(Entity arg, Continuation cont) {
+    Entity invoke(Entity arg, Continuation cont)
+            throws GleamException
+    {
         cont.head = next;
         // arg is already evaluated
         arglist.set(argumentIndex, arg);
+        trace(out -> out.printf("[%s] <- %s\n", argumentIndex, arg.toWriteFormat()));
         return arg;
     }
-
 }

@@ -70,6 +70,7 @@ public class ExpressionAction extends Action {
     {
         cont.head = next;
         // note: ignore arg
+        trace(out -> out.printf("%s\n", expr.toWriteFormat()));
         return expr.eval(env, cont);
     }
 }

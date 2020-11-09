@@ -25,6 +25,7 @@ public class GleamTest {
         Interpreter intp;
         try {
             intp = Interpreter.getInterpreter();
+            intp.traceOff();
             InputStream inputStream = getClass().getResourceAsStream(testFile);
             assertNotNull(String.format("test file %s not found", testFile), inputStream);
             InputPort tests =

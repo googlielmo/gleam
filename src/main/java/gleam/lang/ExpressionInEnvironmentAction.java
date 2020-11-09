@@ -72,6 +72,7 @@ public class ExpressionInEnvironmentAction extends Action {
         }
         Environment evalEnv = (Environment) newEnv;
         expr = expr.analyze(evalEnv).optimize(evalEnv);
+        trace(out -> out.printf("%s\n", expr.toWriteFormat()));
         return expr.eval(evalEnv, cont);
     }
 }

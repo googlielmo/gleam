@@ -64,6 +64,7 @@ public class EvalAction extends Action {
     @Override
     Entity invoke(Entity arg, Continuation cont) throws GleamException {
         cont.head = next;
+        trace(out -> out.printf("%s\n", arg.toWriteFormat()));
         return arg.eval(env, cont);
     }
 }

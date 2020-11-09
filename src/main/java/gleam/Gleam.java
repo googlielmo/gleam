@@ -59,6 +59,12 @@ public class Gleam
     // Quit symbol
     private static final Entity cQuit = Symbol.makeSymbol("!q");
 
+    // Trace on symbol
+    private static final Entity cTron = Symbol.makeSymbol("!tron");
+
+    // Trace off symbol
+    private static final Entity cTroff = Symbol.makeSymbol("!troff");
+
     // '(help)
     public static final Entity CALL_HELP = new Pair(Symbol.HELP, EmptyList.value());
 
@@ -72,8 +78,8 @@ public class Gleam
         PrintStream out = java.lang.System.out;
         String version = Gleam.class.getPackage().getImplementationVersion();
 
-        out.println("Welcome to Gleam, release " + (version != null ? version : RELEASE));
-        out.println("(c) 2001-2008 Guglielmo Nigri <guglielmonigri@yahoo.it>.");
+        out.printf("Welcome to Gleam, release %s\n", version != null ? version : RELEASE);
+        out.println("(c) 2001-2020 Guglielmo Nigri <guglielmonigri@yahoo.it>.");
         out.println("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are");
         out.println("welcome to redistribute it under certain conditions; see LICENSE.TXT.");
 
@@ -106,17 +112,25 @@ public class Gleam
                 w.flush();
 
                 Entity obj = r.read();
+
                 if (obj == cEnv) {
                     session.dump();
                     continue;
                 }
-
-                if (obj == Eof.value() || obj == cQuit) {
+                else if (obj == Eof.value() || obj == cQuit) {
                     out.println("Bye.");
                     break;
                 }
-
-                if (obj == cHelp) {
+                else if (obj == cTron) {
+                    intp.traceOn();
+                    continue;
+                }
+                else if (obj == cTroff) {
+                    intp.traceOff();
+                    continue;
+                }
+                else if (obj == cHelp) {
+                    out.print("Enable trace with !tron, disable with !troff.\n\n");
                     obj = CALL_HELP;
                 }
 

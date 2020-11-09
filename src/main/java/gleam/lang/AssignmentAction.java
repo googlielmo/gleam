@@ -64,6 +64,7 @@ public class AssignmentAction extends Action {
     Entity invoke(Entity arg, Continuation cont) throws GleamException {
         cont.head = next;
         env.getLocation(symbol).set(arg);
+        trace(out -> out.printf("%s <- %s\n", symbol.toWriteFormat(), arg.toWriteFormat()));
         return Void.value;
     }
 }

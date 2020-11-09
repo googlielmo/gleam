@@ -47,23 +47,25 @@ public class Interpreter {
     private static final ThreadLocal<Interpreter> interpreterThreadLocal =
             new ThreadLocal<>();
 
+    /** the program continuation */
+    private final Continuation cont;
+
     /** the current-input-port */
     private InputPort cin = null;
 
     /** the current-output-port */
     private OutputPort cout = null;
 
-    /** the current program continuation */
-    final Continuation cont;
-
     /** the accumulator register */
-    Entity accum;
+    private Entity accum;
 
     /**
      * the session (top-level) environment;
      * can be changed by the application.
      */
     private Environment sesnEnv = null;
+
+    private boolean traceEnabled = false;
 
     /**
      * true if bootstrap code already loaded
@@ -279,5 +281,17 @@ public class Interpreter {
     /** Gets current-output-port */
     public OutputPort getCout() {
         return cout;
+    }
+
+    public boolean traceEnabled() {
+        return traceEnabled;
+    }
+
+    public void traceOn() {
+        traceEnabled = true;
+    }
+
+    public void traceOff() {
+        traceEnabled = false;
     }
 }
