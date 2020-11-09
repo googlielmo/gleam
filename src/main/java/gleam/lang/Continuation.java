@@ -32,11 +32,11 @@ package gleam.lang;
  * Created on October 26, 2001, 9:01 PM
  */
 
-import gleam.util.Log;
+import gleam.util.Logger;
 
 import java.io.PrintWriter;
 
-import static gleam.util.Log.Level.FINE;
+import static gleam.util.Logger.Level.FINE;
 
 /**
  * Scheme continuation, representing the "next things to do" for a procedure,
@@ -167,7 +167,7 @@ public class Continuation extends Procedure
         if (args != EmptyList.value) {
             if (args.getCdr() == EmptyList.value) {
                 // replace continuation
-                Log.enter(FINE, "apply: current env is", env);
+                Logger.enter(FINE, "apply: current env is", env);
                 Interpreter.getInterpreter().replaceContinuation(this);
                 // return argument (it's already evaluated)
                 return args.getCar();

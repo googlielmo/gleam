@@ -33,10 +33,10 @@
 
 package gleam.lang;
 
-import gleam.util.Log;
+import gleam.util.Logger;
 
-import static gleam.util.Log.Level.CONFIG;
-import static gleam.util.Log.Level.FINE;
+import static gleam.util.Logger.Level.CONFIG;
+import static gleam.util.Logger.Level.FINE;
 
 /**
  * The Gleam Scheme Interpreter
@@ -108,9 +108,9 @@ public class Interpreter {
         if (interpreterThreadLocal.get() == null) {
             Interpreter interpreter = new Interpreter();
             interpreterThreadLocal.set(interpreter);
-            Log.enter(FINE, String.format("created Interpreter %s", interpreter));
+            Logger.enter(FINE, String.format("created Interpreter %s", interpreter));
             interpreter.bootstrap();
-            Log.enter(FINE, String.format("bootstrapped Interpreter %s", interpreter));
+            Logger.enter(FINE, String.format("bootstrapped Interpreter %s", interpreter));
         }
         return interpreterThreadLocal.get();
     }
@@ -208,9 +208,9 @@ public class Interpreter {
         Entity obj, val;
         while ((obj = reader.read()) != Eof.value()) {
             // eval
-            Log.enter(CONFIG, "load: read object", obj);
+            Logger.enter(CONFIG, "load: read object", obj);
             val = eval(obj, env);
-            Log.enter(CONFIG, "load: result is", val);
+            Logger.enter(CONFIG, "load: result is", val);
         }
     }
 

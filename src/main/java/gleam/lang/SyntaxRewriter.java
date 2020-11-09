@@ -26,7 +26,7 @@
 
 package gleam.lang;
 
-import gleam.util.Log;
+import gleam.util.Logger;
 
 import java.io.PrintWriter;
 
@@ -55,7 +55,7 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
     @Override
     public void write(PrintWriter out) {
         out.write("#<syntax-rewriter");
-        if (Log.getLevelValue() < Log.Level.INFO.getValue()) {
+        if (Logger.getLevelValue() < Logger.Level.INFO.getValue()) {
             out.write(" ");
             new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
         }

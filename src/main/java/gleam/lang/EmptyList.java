@@ -32,12 +32,12 @@ package gleam.lang;
  * Created on October 24, 2001, 1:55 AM
  */
 
-import gleam.util.Log;
+import gleam.util.Logger;
 
 import java.io.PrintWriter;
 import java.util.Iterator;
 
-import static gleam.util.Log.Level.FINE;
+import static gleam.util.Logger.Level.FINE;
 
 /**
  * This class represents the distinct type of the Scheme empty list.
@@ -70,7 +70,7 @@ public final class EmptyList extends AbstractEntity implements List {
      */
     protected Object readResolve()
     {
-        Log.enter(FINE, "readResolve() called! (EmptyList)"); //DEBUG
+        Logger.enter(FINE, "readResolve() called! (EmptyList)"); //DEBUG
         return value;
     }
 

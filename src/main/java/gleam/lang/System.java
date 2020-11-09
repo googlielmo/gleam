@@ -27,6 +27,7 @@
 package gleam.lang;
 
 import gleam.library.Primitive;
+import gleam.util.Logger;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static gleam.lang.Environment.Kind.*;
-import static gleam.util.Log.Level.*;
+import static gleam.util.Logger.Level.*;
 
 /**
  * Scheme runtime support.
@@ -149,7 +150,7 @@ public final class System
         }
         catch (GleamException e) {
             // should never happen
-            gleam.util.Log.enter(ERROR,
+            Logger.enter(ERROR,
                     "Internal error during environment initialization: "
                             + e.getMessage());
         }
@@ -421,7 +422,7 @@ public final class System
             }
         }
         else {
-            gleam.util.Log.enter(WARNING,
+            Logger.enter(WARNING,
                     String.format("analyzeSpecialForm: unknown or not implemented %s", op.toString()));
         }
     }
@@ -641,14 +642,14 @@ public final class System
         else {
             Environment retVal = new Environment(env);
             // iterate on varList, binding each var to Undefined
-            gleam.util.Log.enter(FINE, "Scanned out: ");
+            Logger.enter(FINE, "Scanned out: ");
             ListIterator vit = new ListIterator(varList);
             while (vit.hasNext()) {
                 Symbol var = (Symbol) vit.next();
                 retVal.define(var, Undefined.value);
-                gleam.util.Log.enter(FINE, "variable", var);
+                Logger.enter(FINE, "variable", var);
             }
-            gleam.util.Log.enter(FINE, "...end of scan-out");
+            Logger.enter(FINE, "...end of scan-out");
             return retVal;
         }
     }

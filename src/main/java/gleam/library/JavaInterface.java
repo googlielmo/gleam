@@ -45,7 +45,7 @@ import gleam.lang.Number;
 import gleam.lang.Real;
 import gleam.lang.Symbol;
 import gleam.lang.Void;
-import gleam.util.Log;
+import gleam.util.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -173,19 +173,19 @@ public class JavaInterface {
             }
             return getEntityFromObject(retVal);
         } catch (SecurityException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("call: SecurityException: " + ex.getMessage(), methodName);
         } catch (IllegalArgumentException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("call: IllegalArgumentException: " + ex.getMessage(), methodName);
         } catch (NoSuchMethodException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("call: NoSuchMethodException: " + ex.getMessage(), methodName);
         } catch (IllegalAccessException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("call: IllegalAccessException: " + ex.getMessage(), methodName);
         } catch (InvocationTargetException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("call: InvocationTargetException: " + ex.getMessage(), methodName);
         }
     }

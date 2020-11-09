@@ -26,9 +26,11 @@
 
 package gleam.lang;
 
+import gleam.util.Logger;
+
 import java.io.StreamTokenizer;
 
-import static gleam.util.Log.Level.FINE;
+import static gleam.util.Logger.Level.FINE;
 
 /**
  * Scheme reader (lexical analyzer & parser).
@@ -184,7 +186,7 @@ class Reader {
         && !t.equals("-")
         && !t.equals("...")) {
             try {
-                gleam.util.Log.enter(FINE, "readOthers: interpreting '" + t + "' as a number");
+                Logger.enter(FINE, "readOthers: interpreting '" + t + "' as a number");
                 return new Real(Double.parseDouble(t));
             }
             catch (NumberFormatException e) {
@@ -201,7 +203,7 @@ class Reader {
         }
         else if (t.startsWith("\"")) {
             // it is a string
-            gleam.util.Log.enter(FINE, "readOthers: interpreting '" + t + "' as a string");
+            Logger.enter(FINE, "readOthers: interpreting '" + t + "' as a string");
             return new MutableString(t.substring(1));
         }
         else if (t.equalsIgnoreCase("#f")) {
@@ -226,7 +228,7 @@ class Reader {
         }
         else {
             // it is a symbol
-            gleam.util.Log.enter(FINE, "readOthers: interpreting '" + t + "' as a symbol");
+            Logger.enter(FINE, "readOthers: interpreting '" + t + "' as a symbol");
             return Symbol.makeSymbol(t);
         }
     }
@@ -263,7 +265,7 @@ class Reader {
         }
 
         if (retVal != null)
-            gleam.util.Log.enter(FINE, "TOKEN="+retVal);
+            Logger.enter(FINE, "TOKEN="+retVal);
 
         return retVal;
     }

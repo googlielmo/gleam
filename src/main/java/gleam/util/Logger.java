@@ -27,7 +27,6 @@
 package gleam.util;
 
 import java.util.logging.ConsoleHandler;
-import java.util.logging.Logger;
 
 /*
  * Log.java
@@ -38,13 +37,15 @@ import java.util.logging.Logger;
 /**
  * Logging utility class for Gleam.
  */
-public class Log {
+public class Logger {
 
-    static final int JUL_THRESHOLD_ALL = 1000;
-    static final int JUL_THRESHOLD_WARNING = 900;
-    static final int JUL_THRESHOLD_INFO = 800;
-    static final int JUL_THRESHOLD_CONFIG = 700;
-    static final int JUL_THRESHOLD_FINE = 500;
+    private static final int JUL_THRESHOLD_ALL = 1000;
+    private static final int JUL_THRESHOLD_WARNING = 900;
+    private static final int JUL_THRESHOLD_INFO = 800;
+    private static final int JUL_THRESHOLD_CONFIG = 700;
+    private static final int JUL_THRESHOLD_FINE = 500;
+
+    private static final ThreadLocal<java.util.logging.Logger> loggerThreadLocal = new ThreadLocal<>();
 
     /**
      * Level<BR>
@@ -78,24 +79,10 @@ public class Log {
         }
     }
 
-    /* Using java.util.logging */
-    final static Logger logger;
-
-    static {
-        logger = Logger.getLogger("gleam");
-        if (logger.getHandlers().length == 0) {
-            logger.setUseParentHandlers(false);
-            final ConsoleHandler consoleHandler = new ConsoleHandler();
-            consoleHandler.setLevel(java.util.logging.Level.ALL);
-            logger.addHandler(consoleHandler);
-        }
-        logger.setLevel(java.util.logging.Level.INFO);
-    }
-
     /**
      * Can't instantiate this class
      */
-    private Log() {
+    private Logger() {
     }
 
     /**
@@ -106,7 +93,7 @@ public class Log {
      * @see Level
      */
     public static void setLevel(int level) {
-        logger.setLevel(getLoggingLevel(level));
+        getJulLogger().setLevel(getLoggingLevel(level));
     }
 
     /**
@@ -117,14 +104,14 @@ public class Log {
      * @see Level
      */
     public static void setLevel(Level level) {
-        logger.setLevel(getLoggingLevel(level.getValue()));
+        getJulLogger().setLevel(getLoggingLevel(level.getValue()));
     }
 
     /**
      * @return the current level
      */
     public static int getLevelValue() {
-        return getLevelValue(logger.getLevel());
+        return getLevelValue(getJulLogger().getLevel());
     }
 
     /**
@@ -193,7 +180,7 @@ public class Log {
      * Logs a message, respecting current level.
      */
     public static void enter(int level, String message) {
-        logger.log(getLoggingLevel(level), message);
+        getJulLogger().log(getLoggingLevel(level), message);
     }
 
     /**
@@ -207,7 +194,7 @@ public class Log {
      * Logs a message and an Entity, respecting current level.
      */
     public static void enter(int level, String message, gleam.lang.Entity obj) {
-        logger.log(getLoggingLevel(level), message + " " + obj.toString());
+        getJulLogger().log(getLoggingLevel(level), message + " " + obj.toString());
     }
 
     /**
@@ -223,6 +210,21 @@ public class Log {
      * @param ex Throwable
      */
     public static void error(Throwable ex) {
-        logger.log(java.util.logging.Level.WARNING, "", ex);
+        getJulLogger().log(java.util.logging.Level.WARNING, "", ex);
+    }
+
+    private static java.util.logging.Logger getJulLogger() {
+        if (loggerThreadLocal.get() == null) {
+            java.util.logging.Logger logger = java.util.logging.Logger.getLogger("gleam");
+            if (logger.getHandlers().length == 0) {
+                logger.setUseParentHandlers(false);
+                final ConsoleHandler consoleHandler = new ConsoleHandler();
+                consoleHandler.setLevel(java.util.logging.Level.ALL);
+                logger.addHandler(consoleHandler);
+            }
+            logger.setLevel(java.util.logging.Level.INFO);
+            loggerThreadLocal.set(logger);
+        }
+        return loggerThreadLocal.get();
     }
 }

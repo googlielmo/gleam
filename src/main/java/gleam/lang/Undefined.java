@@ -26,7 +26,7 @@
 
 package gleam.lang;
 
-import gleam.util.Log;
+import gleam.util.Logger;
 
 import java.io.PrintWriter;
 
@@ -61,7 +61,7 @@ public final class Undefined extends AbstractEntity {
     @SuppressWarnings("SameReturnValue")
     protected Object readResolve()
     {
-        Log.enter(Log.Level.FINE, "readResolve() called! (Undefined)"); //DEBUG
+        Logger.enter(Logger.Level.FINE, "readResolve() called! (Undefined)"); //DEBUG
         return value;
     }
 

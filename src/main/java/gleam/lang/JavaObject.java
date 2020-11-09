@@ -33,7 +33,7 @@
 
 package gleam.lang;
 
-import gleam.util.Log;
+import gleam.util.Logger;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -68,25 +68,25 @@ public class JavaObject extends AbstractEntity {
         try {
             value = Class.forName(className).getConstructor().newInstance();
         } catch (SecurityException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
         } catch (IllegalArgumentException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
         } catch (NoSuchMethodException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
         } catch (InvocationTargetException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
         } catch (InstantiationException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
         } catch (ClassNotFoundException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
         } catch (IllegalAccessException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
         }
     }
@@ -96,25 +96,25 @@ public class JavaObject extends AbstractEntity {
         try {
             value = Class.forName(className).getConstructor(classes).newInstance(objects);
         } catch (SecurityException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
         } catch (IllegalArgumentException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
         } catch (NoSuchMethodException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
         } catch (InvocationTargetException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
         } catch (InstantiationException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
         } catch (ClassNotFoundException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
         } catch (IllegalAccessException ex) {
-            Log.error(ex);
+            Logger.error(ex);
             throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
         }
     }

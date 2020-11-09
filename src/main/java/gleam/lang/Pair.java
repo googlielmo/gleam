@@ -26,13 +26,13 @@
 
 package gleam.lang;
 
-import gleam.util.Log;
+import gleam.util.Logger;
 
 import java.io.PrintWriter;
 import java.util.Iterator;
 
-import static gleam.util.Log.Level.INFO;
-import static gleam.util.Log.Level.WARNING;
+import static gleam.util.Logger.Level.INFO;
+import static gleam.util.Logger.Level.WARNING;
 
 /**
  * The Scheme pair, also known as <i>cons</i>.
@@ -123,7 +123,7 @@ public class Pair extends AbstractEntity implements List {
                      *
                      * analyze cdr in place
                      */
-                    gleam.util.Log.enter(INFO, "dotted pair in analyze... check for correctness");
+                    Logger.enter(INFO, "dotted pair in analyze... check for correctness");
                     restParent.setCdr(rest.analyze(env));
                     break;
                 }
@@ -266,7 +266,7 @@ public class Pair extends AbstractEntity implements List {
                 /* this is an improper list
                  * (not necessarily an error: e.g., lambda)
                  */
-                gleam.util.Log.enter(INFO, "dotted pair in optimize... check for correctness");
+                Logger.enter(INFO, "dotted pair in optimize... check for correctness");
                 restParent.setCdr(rest.optimize(env));
                 break;
             }
@@ -316,7 +316,7 @@ public class Pair extends AbstractEntity implements List {
                 out.print(" ");
                 if ((current.getCar() == null)) {
                     out.print("ERROR");
-                    Log.enter(WARNING, "null car", current);
+                    Logger.enter(WARNING, "null car", current);
                 }
                 else
                     current.getCar().write(out);

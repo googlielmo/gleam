@@ -37,7 +37,7 @@ import gleam.lang.OutputPort;
 import gleam.lang.Pair;
 import gleam.lang.Symbol;
 import gleam.lang.Void;
-import gleam.util.Log;
+import gleam.util.Logger;
 
 import java.io.PrintStream;
 
@@ -82,7 +82,7 @@ public class Gleam
             intp = Interpreter.getInterpreter();
             out.println("OK");
         } catch (GleamException e) {
-            Log.error(e);
+            Logger.error(e);
             java.lang.System.exit(1);
         }
         out.print("Type !h for help, !q to quit.\n\n");
@@ -133,7 +133,7 @@ public class Gleam
             }
             catch (Exception e){
                 out.println("*** Uncaught Exception: " + e.getMessage());
-                Log.error(e);
+                Logger.error(e);
                 intp.clearContinuation();
             }
         }

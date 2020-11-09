@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import java.io.InputStream;
 
-import static gleam.util.Log.Level.*;
+import static gleam.util.Logger.Level.WARNING;
 import static org.junit.Assert.assertNotNull;
 
 public class GleamTest {
@@ -32,8 +32,8 @@ public class GleamTest {
                             new java.io.InputStreamReader(inputStream));
             tests.load(intp.getSessionEnv());
         } catch (GleamException e) {
-            Log.error(e);
-            Log.enter(WARNING, "__errobj:", e.value());
+            Logger.error(e);
+            Logger.enter(WARNING, "__errobj:", e.value());
             Assert.fail(String.format("GleamException: %s", e.getMessage()));
         }
     }

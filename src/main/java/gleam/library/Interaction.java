@@ -38,8 +38,8 @@ import gleam.lang.Real;
 import gleam.lang.Symbol;
 import gleam.lang.System;
 import gleam.lang.Void;
-import gleam.util.Log;
-import gleam.util.Log.Level;
+import gleam.util.Logger;
+import gleam.util.Logger.Level;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -161,7 +161,7 @@ public final class Interaction {
                     "invalid argument (should be between "+ Level.ALL +" and " + Level.ERROR +")",
                     arg1);
         }
-        Log.setLevel(Level.OFF.getValue() - (int) v);
+        Logger.setLevel(Level.OFF.getValue() - (int) v);
         return Void.value();
     }},
 
@@ -176,7 +176,7 @@ public final class Interaction {
     @Override
     public Entity apply0(Environment env, Continuation cont)
     {
-        return new Real(Level.OFF.getValue() - Log.getLevelValue());
+        return new Real(Level.OFF.getValue() - Logger.getLevelValue());
     }},
 
     /*
@@ -203,7 +203,7 @@ public final class Interaction {
                 throw new GleamException(this, "file not found", arg1);
             }
             catch (java.io.IOException e) {
-                Log.error(e);
+                Logger.error(e);
                 throw new GleamException(this, "I/O error", arg1);
             }
         }
@@ -234,19 +234,19 @@ public final class Interaction {
                 return Void.value();
             }
             catch (java.io.FileNotFoundException e) {
-                Log.error(e);
+                Logger.error(e);
                 throw new GleamException(this, "file not found", arg1);
             }
             catch (java.io.IOException e) {
-                Log.error(e);
+                Logger.error(e);
                 throw new GleamException(this, "I/O error", arg1);
             }
             catch (ClassNotFoundException e) {
-                Log.error(e);
+                Logger.error(e);
                 throw new GleamException(this, "class not found", arg1);
             }
             catch (ClassCastException e) {
-                Log.error(e);
+                Logger.error(e);
                 throw new GleamException(this, "invalid class", arg1);
             }
         }

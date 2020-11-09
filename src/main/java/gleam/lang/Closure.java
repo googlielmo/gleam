@@ -26,12 +26,11 @@
 
 package gleam.lang;
 
-import gleam.util.Log;
+import gleam.util.Logger;
 
 import java.io.PrintWriter;
 
-import static gleam.util.Log.Level.FINE;
-import static gleam.util.Log.Level.WARNING;
+import static gleam.util.Logger.Level.WARNING;
 
 /**
  * Scheme closure, a procedure with a definition environment.
@@ -112,7 +111,7 @@ public class Closure extends Procedure
                             localenv.define((Symbol)p, obj);
                         }
                         else {
-                            Log.enter(WARNING, "apply: param is not a symbol");
+                            Logger.enter(WARNING, "apply: param is not a symbol");
                         }
                         // next param, please
                         currparam = ((Pair) currparam).getCdr();
@@ -167,7 +166,7 @@ public class Closure extends Procedure
     public void write(PrintWriter out)
     {
         out.write("#<procedure");
-        if (Log.getLevelValue() < Log.Level.INFO.getValue()) {
+        if (Logger.getLevelValue() < Logger.Level.INFO.getValue()) {
             out.write(" ");
             new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
         }

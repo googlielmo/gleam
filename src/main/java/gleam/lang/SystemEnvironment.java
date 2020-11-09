@@ -26,7 +26,7 @@
 
 package gleam.lang;
 
-import gleam.util.Log;
+import gleam.util.Logger;
 
 import java.io.PrintWriter;
 
@@ -71,7 +71,7 @@ public final class SystemEnvironment extends Environment
     protected Object readResolve()
         throws java.io.ObjectStreamException
     {
-        Log.enter(Log.Level.FINE, "readResolve() called! (SystemEnvironment)"); //DEBUG
+        Logger.enter(Logger.Level.FINE, "readResolve() called! (SystemEnvironment)"); //DEBUG
         switch (kind) {
             case INTERACTION_ENV:
                 return System.getInteractionEnv();
