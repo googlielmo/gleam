@@ -49,4 +49,21 @@ public interface Entity extends java.io.Serializable {
      * @param out PrintWriter
      */
     void display(PrintWriter out);
+
+    /**
+     * Returns a representation of this entity,
+     * in the same format as a call to 'write' would produce.
+     *
+     * @return a string representation of the entity.
+     */
+    String toWriteFormat();
+
+    /**
+     * Returns a representation of this entity,
+     * in the same format as a call to 'display' would produce.
+     *
+     * @return a string representation of the entity.
+     */
+    @Override
+    String toString();
 }

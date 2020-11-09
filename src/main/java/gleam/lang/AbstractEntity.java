@@ -81,8 +81,8 @@ public abstract class AbstractEntity
     }
 
     /**
-     * Returns a string representation of this entity, the same as 'display'
-     * produces.
+     * Returns a representation of this entity,
+     * in the same format as a call to 'display' would produce.
      *
      * @return a string representation of the entity.
      */
@@ -90,6 +90,19 @@ public abstract class AbstractEntity
     public String toString() {
         StringWriter sw;
         display(new PrintWriter(sw = new StringWriter()));
+        return sw.toString();
+    }
+
+    /**
+     * Returns a representation of this entity,
+     * in the same format as a call to 'write' would produce.
+     *
+     * @return a string representation of the entity.
+     */
+    @Override
+    public String toWriteFormat() {
+        StringWriter sw;
+        write(new PrintWriter(sw = new StringWriter()));
         return sw.toString();
     }
 }
