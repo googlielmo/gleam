@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2020 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -63,8 +63,8 @@ public final class Input {
     new Primitive( "eof-object?",
         REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         1, 1, /* min, max no. of arguments */
-        "Input.gleam_eof_object_p",
-        "Returns true if argument is the EOF object, false otherwise" /* doc strings */ ) {
+        "Returns true if argument is the EOF object, false otherwise",
+        null /* doc strings */ ) {
     @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
     {
