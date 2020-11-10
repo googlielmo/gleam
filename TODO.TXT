@@ -8,9 +8,16 @@ welcome to redistribute it under certain conditions; see LICENSE.TXT.
 TO DO:
 ------
 
+"readline" in the REPL: use Jline?
+
+Save typed expressions in the REPL:
+    (save-history "name") also (history) similar to bash
+
+Move away from Java serialization -> Json? XML? S-expressions?
+
 Rework serialization for I/O ports (use append write for output files, etc.)
 
-Remove System.isKeyword(). Move analyzeSpecialForm() and optimizeSpecialForm()
+Move analyzeSpecialForm() and optimizeSpecialForm()
 to specific subclasses of SyntaxProcedure, where they belong.
 
 A rewriting system for patterns (...)
@@ -41,9 +48,7 @@ UnevaluatedArguments, so that special forms and rewriters use the latter (with a
 different implementation that does not have to convert args from Java lists to
 Scheme lists)
 
-(UNSURE) refactor all continuations and the "return null" convention.
-E.g. gleam_and loops and that is not correct --> NPE in (and (func arg1 arg2) 1)
-because eval of (func...) puts func in continuation and returns null!
+(UNSURE) refactor continuations and the "return null" convention.
 
 
 --------------------------------------------------------------------------------
@@ -89,3 +94,5 @@ Implement as many primitives as possible in Scheme
     null?
     pair? (?)
     ...
+
+Remove System.isKeyword().

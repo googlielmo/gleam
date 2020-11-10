@@ -1,3 +1,8 @@
+2020-11-09
+
+    Trace actions in the REPL: enable with !tron, disable with !troff.
+    Per-thread logger.
+
 2020-11-07
 
     Add native (scheme) tests.
