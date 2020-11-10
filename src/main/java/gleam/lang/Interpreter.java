@@ -33,10 +33,17 @@
 
 package gleam.lang;
 
+import gleam.library.Primitive;
 import gleam.util.Logger;
 
-import static gleam.util.Logger.Level.CONFIG;
-import static gleam.util.Logger.Level.FINE;
+import java.io.FileDescriptor;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
+import static gleam.util.Logger.Level.*;
 
 /**
  * The Gleam Scheme Interpreter
@@ -44,8 +51,20 @@ import static gleam.util.Logger.Level.FINE;
 @SuppressWarnings("unused")
 public class Interpreter {
 
-    private static final ThreadLocal<Interpreter> interpreterThreadLocal =
-            new ThreadLocal<>();
+    private static final ThreadLocal<Interpreter> interpreterThreadLocal = new ThreadLocal<>();
+
+    /** the keyword set */
+    private static final Collection<Symbol> kwSet = new HashSet<>();
+
+    /** the short-help map */
+    private static final HashMap<String, String> helpComment = new HashMap<>();
+
+    /** the long-help map */
+    private static final HashMap<String, String> helpDocumentation = new HashMap<>();
+
+    static {
+        createInitialEnvironments();
+    }
 
     /** the program continuation */
     private final Continuation cont;
@@ -84,6 +103,117 @@ public class Interpreter {
         setSessionEnv(new Environment());
     }
 
+    /**
+     * Imports primitives
+     */
+    private static void importPrimitives(Primitive[] primitives) {
+        Environment instEnv;
+        for (Primitive primitive : primitives) {
+            switch (primitive.definitionEnv) {
+                case NULL_ENV:
+                    instEnv = SystemEnvironment.getNullEnv();
+                    break;
+
+                case REPORT_ENV:
+                    instEnv = SystemEnvironment.getSchemeReportEnv();
+                    break;
+
+                case INTERACTION_ENV:
+                default:
+                    instEnv = SystemEnvironment.getInteractionEnv();
+            }
+            installPrimitive(instEnv, primitive);
+        }
+    }
+
+    /**
+     * Installs a primitive in an environment
+     * @param env the environment
+     * @param primitive the primitive
+     */
+    private static void installPrimitive(Environment env, Primitive primitive) {
+        Symbol name = Symbol.makeSymbol(primitive.getName());
+        Procedure proc = primitive.keyword ? new SyntaxProcedure(primitive) : new PrimitiveProcedure(primitive);
+        env.define(name, proc);
+
+        if (primitive.keyword)
+            kwSet.add(name);
+
+        if (primitive.comment != null)
+            helpComment.put(primitive.getName(), primitive.comment);
+
+        if (primitive.documentation != null)
+            helpDocumentation.put(primitive.getName(), primitive.documentation);
+    }
+
+    /**
+     * Creates the three initial environments (null, report, interaction).
+     */
+    static void createInitialEnvironments() {
+        try {
+            /*
+             * import primitives
+             */
+            importPrimitives(gleam.library.Booleans.primitives);
+            importPrimitives(gleam.library.Characters.primitives);
+            importPrimitives(gleam.library.ControlFeatures.primitives);
+            importPrimitives(gleam.library.Equivalence.primitives);
+            importPrimitives(gleam.library.Eval.primitives);
+            importPrimitives(gleam.library.Input.primitives);
+            importPrimitives(gleam.library.Interaction.primitives);
+            importPrimitives(gleam.library.JavaInterface.primitives);
+            importPrimitives(gleam.library.Numbers.primitives);
+            importPrimitives(gleam.library.Output.primitives);
+            importPrimitives(gleam.library.PairsAndLists.primitives);
+            importPrimitives(gleam.library.Ports.primitives);
+            importPrimitives(gleam.library.Strings.primitives);
+            importPrimitives(gleam.library.Symbols.primitives);
+            importPrimitives(gleam.library.Syntax.primitives);
+            importPrimitives(gleam.library.SystemInterface.primitives);
+            importPrimitives(gleam.library.Vectors.primitives);
+
+            /*
+             * define special symbols
+             */
+            SystemEnvironment.getSchemeReportEnv().define(Symbol.ERROBJ, Void.value);
+            SystemEnvironment.getSchemeReportEnv().define(Symbol.CALL_CC, SystemEnvironment.getSchemeReportEnv().lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
+            SystemEnvironment.getSchemeReportEnv().define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
+        }
+        catch (GleamException e) {
+            // should never happen
+            Logger.enter(ERROR,
+                    "Internal error during environment initialization: "
+                            + e.getMessage());
+        }
+    }
+
+    /**
+     * Gets the comment string for a procedure
+     */
+    public static String getHelpComment(String name) {
+        return helpComment.get(name);
+    }
+
+    /**
+     * Gets the comment string for a procedure
+     */
+    public static String getHelpDocumentation(String name) {
+        return helpDocumentation.get(name);
+    }
+
+    /**
+     * Gets the set of help-enabled procedures
+     */
+    public static Set<String> getHelpNames() {
+        return new TreeSet<>(helpDocumentation.keySet());
+    }
+
+    /**
+     * Determines if a given symbol is a keyword.
+     */
+    static boolean isKeyword(Symbol s) {
+        return kwSet.contains(s);
+    }
 
     /**
      * binds current I/O ports to system standard I/O
@@ -96,7 +226,6 @@ public class Interpreter {
         boolean isConsole = java.lang.System.console() != null;
         cout = new OutputPort(java.lang.System.out, isConsole);
     }
-
 
     /**
      * Gets a per-thread Interpreter.
@@ -126,7 +255,8 @@ public class Interpreter {
      *  raised, the loading / execution operation will terminate,
      *  leaving the session environment in a possibly modified state
      */
-    public Entity eval(String expr) throws GleamException {
+    public Entity eval(String expr) throws GleamException
+    {
         return eval(new java.io.StringReader(expr));
     }
 
@@ -137,7 +267,8 @@ public class Interpreter {
      * @return the return value of the program
      * @throws gleam.lang.GleamException on any error
      */
-    public Entity eval(java.io.Reader reader) throws GleamException {
+    public Entity eval(java.io.Reader reader) throws GleamException
+    {
         load(new InputPort(reader), getSessionEnv());
         return accum;
     }
@@ -151,7 +282,8 @@ public class Interpreter {
      * @throws gleam.lang.GleamException on any error
      * @return the value of the expression
      */
-    public Entity eval(Entity expr, Environment env) throws GleamException {
+    public Entity eval(Entity expr, Environment env) throws GleamException
+    {
         expr = expr.analyze(env).optimize(env);
         cont.begin(new ExpressionAction(expr, env, null));
         execute();
@@ -164,14 +296,16 @@ public class Interpreter {
      * Equivalent to a <CODE>goto</CODE> instruction.
      * @param cont the new current continuation for this <CODE>Interpreter</CODE>
      */
-    public void replaceContinuation(Continuation cont) {
+    public void replaceContinuation(Continuation cont)
+    {
         this.cont.head = cont.head;
     }
 
     /**
      * Clears up the current continuation, e.g., after an error.
      */
-    public void clearContinuation() {
+    public void clearContinuation()
+    {
         this.cont.clear();
     }
 
@@ -185,7 +319,8 @@ public class Interpreter {
      * actions to execute.
      * @throws gleam.lang.GleamException on any error
      */
-    private void execute() throws GleamException {
+    private void execute() throws GleamException
+    {
         Action currentAction = cont.head;
         Entity tmp;
         while (currentAction != null) {
@@ -206,7 +341,8 @@ public class Interpreter {
      *  raised, the loading / execution operation will terminate,
      *  leaving the environment in a possibly modified state
      */
-    void load(InputPort reader, Environment env) throws GleamException {
+    public void load(InputPort reader, Environment env) throws GleamException
+    {
         // read
         Entity obj, val;
         while ((obj = reader.read()) != Eof.value()) {
@@ -221,14 +357,15 @@ public class Interpreter {
      * Loads and executes the bootstrap code for the Gleam Scheme Interpreter.
      * @throws gleam.lang.GleamException on any error
      */
-    private synchronized void bootstrap() throws GleamException {
+    private synchronized void bootstrap() throws GleamException
+    {
         if (!bootstrapped) {
             gleam.lang.InputPort bootstrap =
                 new gleam.lang.InputPort(
                     new java.io.BufferedReader(
                         new java.io.InputStreamReader(
                             getClass().getResourceAsStream("/bootstrap.scm"))));
-            load(bootstrap, System.getSchemeReportEnv());
+            load(bootstrap, SystemEnvironment.getSchemeReportEnv());
             bootstrapped = true;
         }
     }
@@ -237,18 +374,20 @@ public class Interpreter {
      * Sets the current session environment.
      * @param env the new session environment
      */
-    public void setSessionEnv(Environment env) {
+    public void setSessionEnv(Environment env)
+    {
         sesnEnv = env;
 
         // link to interaction env
-        sesnEnv.parent = System.getInteractionEnv();
+        sesnEnv.parent = SystemEnvironment.getInteractionEnv();
     }
 
     /**
      * Gets the current session environment
      * @return the current session environment
      */
-    public Environment getSessionEnv() {
+    public Environment getSessionEnv()
+    {
         return sesnEnv;
     }
 
@@ -284,14 +423,19 @@ public class Interpreter {
         return cout;
     }
 
+    /**
+     * @return true if trace is enabled
+     */
     public boolean traceEnabled() {
         return traceEnabled;
     }
 
+    /** enables trace */
     public void traceOn() {
         traceEnabled = true;
     }
 
+    /** disables trace */
     public void traceOff() {
         traceEnabled = false;
     }

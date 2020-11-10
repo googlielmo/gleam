@@ -26,16 +26,11 @@
 
 package gleam.lang;
 
-import gleam.library.Primitive;
 import gleam.util.Logger;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
 
-import static gleam.lang.Environment.Kind.*;
 import static gleam.util.Logger.Level.*;
 
 /**
@@ -47,154 +42,6 @@ public final class System
     /** can't instantiate this class */
     @SuppressWarnings("unused")
     private System() {}
-
-    /** the keyword set */
-    private static final Collection<Symbol> kwSet = new HashSet<>();
-
-    /** the null environment, as defined in r5rs */
-    private static final Environment nullEnv = new SystemEnvironment(NULL_ENV);
-
-    /** the scheme-report environment, as defined in r5rs */
-    private static final Environment reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
-
-    /** the interaction environment, as defined in r5rs */
-    private static final Environment interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
-
-    /** the short-help map */
-    private static final HashMap<String, String> helpComment
-            = new HashMap<>();
-
-    /** the long-help map */
-    private static final HashMap<String, String> helpDocumentation
-            = new HashMap<>();
-
-    // static initializer, executed once after loading class
-    static {
-        createInitialEnvironments();
-    }
-
-    /**
-     * Imports primitives
-     */
-    private static void importPrimitives(Primitive[] primitives) {
-        Environment instEnv;
-        for (Primitive primitive : primitives) {
-            switch (primitive.definitionEnv) {
-                case NULL_ENV:
-                    instEnv = nullEnv;
-                    break;
-                case REPORT_ENV:
-                    instEnv = reportEnv;
-                    break;
-                case INTERACTION_ENV:
-                default:
-                    instEnv = interactionEnv;
-            }
-            installPrimitive(instEnv, primitive);
-        }
-    }
-
-    /**
-     * Installs a primitive in an environment
-     * @param env the environment
-     * @param primitive the primitive
-     */
-    private static void installPrimitive(Environment env, Primitive primitive) {
-        Symbol name = Symbol.makeSymbol(primitive.getName());
-        Procedure proc = primitive.keyword ? new SyntaxProcedure(primitive) : new PrimitiveProcedure(primitive);
-        env.define(name, proc);
-
-        if (primitive.keyword)
-            kwSet.add(name);
-
-        if (primitive.comment != null)
-            helpComment.put(primitive.getName(), primitive.comment);
-
-        if (primitive.documentation != null)
-            helpDocumentation.put(primitive.getName(), primitive.documentation);
-    }
-
-    /**
-     * Creates the three initial environments (null, report, interaction).
-     */
-    private static void createInitialEnvironments() {
-        try {
-            /*
-             * import primitives
-             */
-            importPrimitives(gleam.library.Booleans.primitives);
-            importPrimitives(gleam.library.Characters.primitives);
-            importPrimitives(gleam.library.ControlFeatures.primitives);
-            importPrimitives(gleam.library.Equivalence.primitives);
-            importPrimitives(gleam.library.Eval.primitives);
-            importPrimitives(gleam.library.Input.primitives);
-            importPrimitives(gleam.library.Interaction.primitives);
-            importPrimitives(gleam.library.JavaInterface.primitives);
-            importPrimitives(gleam.library.Numbers.primitives);
-            importPrimitives(gleam.library.Output.primitives);
-            importPrimitives(gleam.library.PairsAndLists.primitives);
-            importPrimitives(gleam.library.Ports.primitives);
-            importPrimitives(gleam.library.Strings.primitives);
-            importPrimitives(gleam.library.Symbols.primitives);
-            importPrimitives(gleam.library.Syntax.primitives);
-            importPrimitives(gleam.library.SystemInterface.primitives);
-            importPrimitives(gleam.library.Vectors.primitives);
-
-            /*
-             * define special symbols
-             */
-            reportEnv.define(Symbol.ERROBJ, Void.value);
-            reportEnv.define(Symbol.CALL_CC, reportEnv.lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
-            reportEnv.define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
-
-        }
-        catch (GleamException e) {
-            // should never happen
-            Logger.enter(ERROR,
-                    "Internal error during environment initialization: "
-                            + e.getMessage());
-        }
-    }
-
-    /**
-     * Gets the comment string for a procedure
-     */
-    public static String getHelpComment(String name) {
-        return helpComment.get(name);
-    }
-
-    /**
-     * Gets the comment string for a procedure
-     */
-    public static String getHelpDocumentation(String name) {
-        return helpDocumentation.get(name);
-    }
-
-    /**
-     * Gets the set of help-enabled procedures
-     */
-    public static Set<String> getHelpNames() {
-        return new TreeSet<>(helpDocumentation.keySet());
-    }
-
-    public static Environment getInteractionEnv() {
-        return interactionEnv;
-    }
-
-    public static Environment getNullEnv() {
-        return nullEnv;
-    }
-
-    public static Environment getSchemeReportEnv() {
-        return reportEnv;
-    }
-
-    /**
-     * Determines if a given symbol is a keyword.
-     */
-    private static boolean isKeyword(Symbol s) {
-        return kwSet.contains(s);
-    }
 
     /**
      * Determines if a given object is a variable.
@@ -705,7 +552,7 @@ public final class System
             isSyntaxProcedure = proc instanceof SyntaxProcedure;
             isSyntaxRewriter = proc instanceof SyntaxRewriter;
         }
-        boolean isKeyword = isKeyword(symbol);
+        boolean isKeyword = Interpreter.isKeyword(symbol);
 
         return isKeyword && (isSyntaxProcedure || isSyntaxRewriter);
     }

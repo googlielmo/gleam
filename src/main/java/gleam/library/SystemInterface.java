@@ -31,6 +31,7 @@ import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
 import gleam.lang.InputPort;
+import gleam.lang.Interpreter;
 import gleam.lang.MutableString;
 import gleam.lang.Void;
 
@@ -71,7 +72,7 @@ public final class SystemInterface {
         try {
             MutableString filename = (MutableString) arg1;
             InputPort iport = new InputPort(filename.toString());
-            iport.load(env);
+            Interpreter.getInterpreter().load(iport, env);
             return Void.value();
         }
         catch (ClassCastException e) {

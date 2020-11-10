@@ -156,7 +156,7 @@
 
 (assert "tail recursion (slow)"
     'done
-    (loop 1000000)
+    (loop 2000000)
 )
 
 ;;;
@@ -173,7 +173,7 @@
     ((call/cc (lambda (x) (set! con1 x) (if param display write)) ) "salut")
 )
 
-(assert-output "zzz"
+(assert-output "call/cc with display"
     "salut"
     (con1 display))
 

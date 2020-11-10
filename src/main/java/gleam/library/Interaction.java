@@ -36,7 +36,6 @@ import gleam.lang.Number;
 import gleam.lang.OutputPort;
 import gleam.lang.Real;
 import gleam.lang.Symbol;
-import gleam.lang.System;
 import gleam.lang.Void;
 import gleam.util.Logger;
 import gleam.util.Logger.Level;
@@ -93,7 +92,7 @@ public final class Interaction {
             }
 
             String pname = arg1.toString();
-            String doc = System.getHelpDocumentation(pname);
+            String doc = Interpreter.getHelpDocumentation(pname);
             if (doc != null) {
                 cout.print(doc);
             }
@@ -114,10 +113,10 @@ public final class Interaction {
         spc.append(chars);
 
         cout.print("Available primitives:\n\n");
-        Set<String> nameset = System.getHelpNames();
+        Set<String> nameset = Interpreter.getHelpNames();
         for (String s : nameset) {
             StringBuilder pname = new StringBuilder(s);
-            String doc = System.getHelpComment(pname.toString());
+            String doc = Interpreter.getHelpComment(pname.toString());
             if (doc != null) {
                 if (pname.length() < helpColumnWidth) {
                     pname.append(spc.subSequence(0, helpColumnWidth - pname.length()));

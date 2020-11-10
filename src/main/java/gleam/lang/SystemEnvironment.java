@@ -30,6 +30,8 @@ import gleam.util.Logger;
 
 import java.io.PrintWriter;
 
+import static gleam.lang.Environment.Kind.*;
+
 /**
  * Specialization of Environment with special serialization rules.
  */
@@ -39,6 +41,15 @@ public final class SystemEnvironment extends Environment
      * serialVersionUID
      */
     private static final long serialVersionUID = 2L;
+
+    /** the null environment, as defined in r5rs */
+    private static final Environment nullEnv = new SystemEnvironment(NULL_ENV);
+
+    /** the scheme-report environment, as defined in r5rs */
+    private static final Environment reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
+
+    /** the interaction environment, as defined in r5rs */
+    private static final Environment interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
 
     private final Kind kind;
 
@@ -52,6 +63,21 @@ public final class SystemEnvironment extends Environment
     {
         super(p);
         this.kind = kind;
+    }
+
+    public static Environment getNullEnv()
+    {
+        return nullEnv;
+    }
+
+    public static Environment getSchemeReportEnv()
+    {
+        return reportEnv;
+    }
+
+    public static Environment getInteractionEnv()
+    {
+        return interactionEnv;
     }
 
     /** Writes this environment */
@@ -69,18 +95,18 @@ public final class SystemEnvironment extends Environment
 
     /** resolve environment as correct system environment on deserialization */
     protected Object readResolve()
-        throws java.io.ObjectStreamException
-    {
+            throws java.io.ObjectStreamException {
         Logger.enter(Logger.Level.FINE, "readResolve() called! (SystemEnvironment)"); //DEBUG
         switch (kind) {
-            case INTERACTION_ENV:
-                return System.getInteractionEnv();
-            case REPORT_ENV:
-                return System.getSchemeReportEnv();
             case NULL_ENV:
-                return System.getNullEnv();
+                return nullEnv;
+
+            case REPORT_ENV:
+                return reportEnv;
+
+            case INTERACTION_ENV:
             default:
-                throw new java.io.InvalidObjectException("Unknown kind of SystemEnvironment");
+                return interactionEnv;
         }
     }
 }

@@ -31,7 +31,7 @@ public class GleamTest {
             InputPort tests =
                     new gleam.lang.InputPort(
                             new java.io.InputStreamReader(inputStream));
-            tests.load(intp.getSessionEnv());
+            intp.load(tests, intp.getSessionEnv());
         } catch (GleamException e) {
             Logger.error(e);
             Logger.enter(WARNING, "__errobj:", e.value());

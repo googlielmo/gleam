@@ -34,6 +34,7 @@ import gleam.lang.ExpressionAction;
 import gleam.lang.ExpressionInEnvironmentAction;
 import gleam.lang.GleamException;
 import gleam.lang.Number;
+import gleam.lang.SystemEnvironment;
 
 import static gleam.lang.Environment.Kind.INTERACTION_ENV;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
@@ -103,7 +104,7 @@ public final class Eval {
         try {
             version = (Number) arg1;
             if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
-                return gleam.lang.System.getNullEnv();
+                return SystemEnvironment.getNullEnv();
             }
             else {
                 throw new GleamException(this, "version not supported", version);
@@ -132,7 +133,7 @@ public final class Eval {
         try {
             version = (Number) arg1;
             if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
-                return gleam.lang.System.getSchemeReportEnv();
+                return SystemEnvironment.getSchemeReportEnv();
             }
             else {
                 throw new GleamException(this, "version not supported", version);
@@ -155,7 +156,7 @@ public final class Eval {
     @Override
     public Entity apply0(Environment env, Continuation cont)
     {
-        return gleam.lang.System.getInteractionEnv();
+        return SystemEnvironment.getInteractionEnv();
     }},
 
     /*
