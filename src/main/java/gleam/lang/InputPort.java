@@ -27,6 +27,7 @@
 package gleam.lang;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,7 +35,7 @@ import java.io.PrintWriter;
 /**
  * Scheme input port.
  */
-public class InputPort extends Port
+public class InputPort extends Port implements Closeable
 {
     private static final long serialVersionUID = 1L;
 
@@ -51,31 +52,46 @@ public class InputPort extends Port
         openFile(name);
     }
 
-    public InputPort(java.io.Reader reader) {
+    public InputPort(java.io.Reader reader)
+    {
         this.fileName = null;
         this.reader = reader;
         this.gleamReader = new Reader(reader);
     }
 
-    private void openFile(String name) throws FileNotFoundException {
+    private void openFile(String name)
+            throws FileNotFoundException
+    {
         reader =  new BufferedReader(
                 new java.io.InputStreamReader(
                         new java.io.FileInputStream(name)));
         gleamReader = new Reader(reader);
     }
 
+    /**
+     * Close this InputPort
+     * @throws java.io.IOException
+     */
     @Override
     public void close()
         throws java.io.IOException
     {
         if (isOpen()) {
-            reader.close();
+            gleamReader = null;
         }
-        reader = null;
+        if (reader != null) {
+            reader.close();
+            reader = null;
+        }
     }
 
+    /**
+     * @return  <code>true</code> if this InputPort is open,
+     *          <code>false</code> otherwise
+     */
     @Override
-    public boolean isOpen() {
+    public boolean isOpen()
+    {
         return null != gleamReader;
     }
 
@@ -121,8 +137,8 @@ public class InputPort extends Port
             gleamReader = null;
     }
 
-    public void load(Environment env)
-            throws GleamException {
-        Interpreter.getInterpreter().load(this, env);
+    @Override
+    public Kind getKind() {
+        return Kind.TEXTUAL;
     }
 }

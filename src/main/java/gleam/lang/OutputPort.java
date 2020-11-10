@@ -26,27 +26,40 @@
 
 package gleam.lang;
 
+import gleam.util.Logger;
+
+import java.io.Closeable;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.Flushable;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.SyncFailedException;
 
 /**
  * Scheme output port object.
  */
-public class OutputPort extends Port
+public class OutputPort extends Port implements Closeable, Flushable
 {
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 3L;
 
     private final String fileName;
+
+    private final boolean isConsole;
 
     private transient java.io.PrintWriter out;
 
     /**
-     * creates an output port to a java.io.PrintWriter object
+     * creates an output port from a java.io.PrintStream object.
+     *
+     * @param out a PrintStream
+     * @param isConsole true if this is the system Console
      */
-    public OutputPort(java.io.PrintWriter out)
+    public OutputPort(java.io.PrintStream out, boolean isConsole)
     {
-        this.fileName = null;
-        this.out = out;
+        this(new PrintWriter(out), isConsole);
     }
 
     /**
@@ -56,13 +69,22 @@ public class OutputPort extends Port
         throws java.io.IOException
     {
         this.fileName = fileName;
+        this.isConsole = false;
         openFile(fileName);
     }
 
+    /**
+     * creates an output port to a file
+     */
+    OutputPort(PrintWriter printWriter, boolean isConsole) {
+        this.fileName = null;
+        this.out = printWriter;
+        this.isConsole = isConsole;
+    }
+
     private void openFile(String name) throws IOException {
-        this.out = new java.io.PrintWriter(
-                new java.io.BufferedWriter(
-                    new java.io.FileWriter(name)));
+        FileOutputStream stream = new FileOutputStream(name);
+        this.out = new java.io.PrintWriter(stream, true);
     }
 
     /**
@@ -116,14 +138,18 @@ public class OutputPort extends Port
      */
     public void newline() {
         out.println();
-        out.flush();
+        flush();
     }
 
     /**
      * flushes buffer
      */
+    @Override
     public void flush() {
         out.flush();
+        if (isConsole) {
+            java.lang.System.console().flush();
+        }
     }
 
     /**
@@ -149,12 +175,33 @@ public class OutputPort extends Port
         out.print("#<output-port>");
     }
 
+    // serialization
+    /**
+     * Outputs a printf-style formatted string.
+     *
+     * @param format the format String
+     * @param args argument list
+     * @see java.util.Formatter printf-style format strings
+     */
+    public void printf(String format, Object... args) {
+        out.printf(format, args);
+    }
+
+    /**
+     * which kind of port
+     */
+    @Override
+    public Kind getKind() {
+        return Kind.TEXTUAL;
+    }
+
     private void writeObject(java.io.ObjectOutputStream out)
             throws IOException
     {
         out.defaultWriteObject();
     }
 
+    // serialization
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException
     {
@@ -163,9 +210,5 @@ public class OutputPort extends Port
             openFile(this.fileName);
         else
             out = null;
-    }
-
-    public void printf(String format, Object... args) {
-        this.print(String.format(format, args));
     }
 }

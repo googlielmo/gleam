@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import java.io.Flushable;
+
 /**
  * Abstract Port object.
  */
@@ -33,10 +35,18 @@ public abstract class Port extends AbstractEntity
 {
     private static final long serialVersionUID = 1L;
 
+    public static enum Kind {
+        TEXTUAL,
+        BINARY
+    }
+
     /** close the port */
     public abstract void close()
         throws java.io.IOException;
 
     /** checks if port is open */
     public abstract boolean isOpen();
+
+    /** which kind of port */
+    public abstract Kind getKind();
 }

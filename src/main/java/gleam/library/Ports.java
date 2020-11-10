@@ -101,6 +101,38 @@ public final class Ports {
     }},
 
     /*
+     * textual-port?
+     * Tests if argument is a textual port
+     */
+    new Primitive( "textual-port?",
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Returns true if argument is a textual port, false otherwise",
+        "E.g. (textual-port? (current-input-port)) => #t" /* doc strings */ ) {
+    @Override
+    public Entity apply1(Entity obj, Environment env, Continuation cont) {
+        return Boolean.makeBoolean(
+                obj instanceof Port
+                        && ((Port) obj).getKind() == Port.Kind.TEXTUAL);
+    }},
+
+    /*
+     * binary-port?
+     * Tests if argument is a binary port
+     */
+    new Primitive( "binary-port?",
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Returns true if argument is a binary port, false otherwise",
+        "E.g. (binary-port? (current-input-port)) => #f" /* doc strings */ ) {
+    @Override
+    public Entity apply1(Entity obj, Environment env, Continuation cont) {
+        return Boolean.makeBoolean(
+                obj instanceof Port
+                        && ((Port) obj).getKind() == Port.Kind.BINARY);
+    }},
+
+    /*
      * current-input-port
      * Returns the current input port
      */

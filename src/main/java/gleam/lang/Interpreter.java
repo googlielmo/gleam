@@ -88,12 +88,13 @@ public class Interpreter {
     /**
      * binds current I/O ports to system standard I/O
      */
-    private void bindIOPorts() {
+    private void bindIOPorts()
+    {
         cin = new InputPort(new java.io.BufferedReader(
                 new java.io.InputStreamReader(
                         java.lang.System.in)));
-        cout = new OutputPort(new java.io.PrintWriter(
-                java.lang.System.out, true));
+        boolean isConsole = java.lang.System.console() != null;
+        cout = new OutputPort(java.lang.System.out, isConsole);
     }
 
 
