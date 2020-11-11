@@ -26,6 +26,7 @@
 
 package gleam.lang;
 
+import gleam.library.Primitive;
 import gleam.util.Logger;
 
 import java.util.Collection;
@@ -40,22 +41,37 @@ import static gleam.util.Logger.Level.*;
 public final class System
 {
     /** can't instantiate this class */
-    @SuppressWarnings("unused")
     private System() {}
 
     /**
-     * Determines if a given object is a variable.
-     * An object is a variable iff it is a symbol.
+     * Checks if a symbol stands for the name of a special form in a given environment.
+     *
+     * @param symbol the Symbol to check
+     * @param env the Environment
+     * @return true is symbol represents a special form
+     * @throws GleamException in case of error
      */
-    static boolean isVariable(Entity s) {
-        return s instanceof Symbol;
+    public static boolean isSpecialForm(Symbol symbol, Environment env) throws GleamException {
+        Location location = env.getLocationOrNull(symbol);
+        boolean isSyntaxProcedure = false;
+        boolean isSyntaxRewriter = false;
+        if (location != null) {
+            Entity proc = location.get();
+            isSyntaxProcedure = proc instanceof SyntaxProcedure;
+            isSyntaxRewriter = proc instanceof SyntaxRewriter;
+        }
+        boolean isKeyword = Interpreter.isKeyword(symbol);
+
+        return isKeyword && (isSyntaxProcedure || isSyntaxRewriter);
     }
 
     /**
      * Performs syntactic analysis of special forms.
      * Creation date: (02/11/2001 12.34.35)
      */
-    public static void analyzeSpecialForm(List form, Environment env) throws GleamException {
+    public static void analyzeSpecialForm(List form, Environment env)
+            throws GleamException
+    {
         ListIterator it = new ListIterator(form);
         if (!it.hasNext()) {
             throw new GleamException("invalid special form", form);
@@ -275,39 +291,6 @@ public final class System
     }
 
     /**
-     * Deep clones a list
-     *
-     * @param list List
-     * @return List
-     */
-    private static List cloneList(List list)
-            throws GleamException {
-
-        if (list == EmptyList.value())
-            return list;
-
-        return new Pair(
-                clone(list.getCar()),
-                clone(list.getCdr()));
-    }
-
-    /**
-     * Deep clones an entity.
-     * Pairs are cloned as new Pairs, every other value is unchanged in the clone.
-     *
-     * @param entity an Entity
-     * @return the cloned entity
-     */
-    private static Entity clone(Entity entity)
-            throws GleamException {
-
-        if (entity instanceof List)
-            return cloneList((List) entity);
-
-        return entity;
-    }
-
-    /**
      * Performs optimization of special forms.
      * Creation date: (14/11/2001 02.19.35)
      */
@@ -464,41 +447,36 @@ public final class System
     }
 
     /**
-     * Creates a new environment for all variables defined within body
-     * to hold Undefined values.
+     * Deep clones a list
+     *
+     * @param list List
+     * @return List
      */
-    static Environment createScanOutDefineEnv(List body, Environment env)
-            throws GleamException
-    {
-        List varList = EmptyList.value;
-        ListIterator it = new ListIterator(body);
-        /* do a scan out for each body part,
-         * appending variables found into varList
-         */
-        while (it.hasNext()) {
-            List partialList = internalScanOut(it.next());
-            ListIterator it2 = new ListIterator(partialList);
-            while (it2.hasNext()) {
-                Entity var = it2.next();
-                varList = new Pair(var, varList);
-            }
-        }
-        if (varList == EmptyList.value) {
-            return env;
-        }
-        else {
-            Environment retVal = new Environment(env);
-            // iterate on varList, binding each var to Undefined
-            Logger.enter(FINE, "Scanned out: ");
-            ListIterator vit = new ListIterator(varList);
-            while (vit.hasNext()) {
-                Symbol var = (Symbol) vit.next();
-                retVal.define(var, Undefined.value);
-                Logger.enter(FINE, "variable", var);
-            }
-            Logger.enter(FINE, "...end of scan-out");
-            return retVal;
-        }
+    private static List cloneList(List list)
+            throws GleamException {
+
+        if (list == EmptyList.value())
+            return list;
+
+        return new Pair(
+                clone(list.getCar()),
+                clone(list.getCdr()));
+    }
+
+    /**
+     * Deep clones an entity.
+     * Pairs are cloned as new Pairs, every other value is unchanged in the clone.
+     *
+     * @param entity an Entity
+     * @return the cloned entity
+     */
+    private static Entity clone(Entity entity)
+            throws GleamException {
+
+        if (entity instanceof List)
+            return cloneList((List) entity);
+
+        return entity;
     }
 
     private static List internalScanOut(Entity bodyPart)
@@ -536,24 +514,48 @@ public final class System
     }
 
     /**
-     * Checks if a symbol stands for the name of a special form in a given environment.
-     *
-     * @param symbol
-     * @param env
-     * @return
-     * @throws GleamException
+     * Determines if a given object is a variable.
+     * An object is a variable iff it is a symbol.
      */
-    public static boolean isSpecialForm(Symbol symbol, Environment env) throws GleamException {
-        Location location = env.getLocationOrNull(symbol);
-        boolean isSyntaxProcedure = false;
-        boolean isSyntaxRewriter = false;
-        if (location != null) {
-            Entity proc = location.get();
-            isSyntaxProcedure = proc instanceof SyntaxProcedure;
-            isSyntaxRewriter = proc instanceof SyntaxRewriter;
-        }
-        boolean isKeyword = Interpreter.isKeyword(symbol);
+    static boolean isVariable(Entity s) {
+        return s instanceof Symbol;
+    }
 
-        return isKeyword && (isSyntaxProcedure || isSyntaxRewriter);
+    /**
+     * Creates a new environment for all variables defined within body
+     * to hold Undefined values.
+     */
+    static Environment createScanOutDefineEnv(List body, Environment env)
+            throws GleamException
+    {
+        List varList = EmptyList.value;
+        ListIterator it = new ListIterator(body);
+        /* do a scan out for each body part,
+         * appending variables found into varList
+         */
+        while (it.hasNext()) {
+            List partialList = internalScanOut(it.next());
+            ListIterator it2 = new ListIterator(partialList);
+            while (it2.hasNext()) {
+                Entity var = it2.next();
+                varList = new Pair(var, varList);
+            }
+        }
+        if (varList == EmptyList.value) {
+            return env;
+        }
+        else {
+            Environment retVal = new Environment(env);
+            // iterate on varList, binding each var to Undefined
+            Logger.enter(FINE, "Scanned out: ");
+            ListIterator vit = new ListIterator(varList);
+            while (vit.hasNext()) {
+                Symbol var = (Symbol) vit.next();
+                retVal.define(var, Undefined.value);
+                Logger.enter(FINE, "variable", var);
+            }
+            Logger.enter(FINE, "...end of scan-out");
+            return retVal;
+        }
     }
 }

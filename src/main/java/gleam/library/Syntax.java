@@ -347,11 +347,13 @@ public final class Syntax {
         // evaluate argument: must be a function of exactly one argument
         // obj = obj.eval(env, cont);
         if (!(obj instanceof Closure)) {
-            throw new GleamException(this, "argument must be a function of one argument", obj);
+            throw new GleamException(this, "argument must be a function taking one argument", obj);
         }
         else {
             Closure closure = (Closure) obj;
-            // TODO: check closure arity == 1 // FIXME ?
+            if (closure.getMaxArity() != 1) {
+                throw new GleamException(this, "argument must be a function taking one argument", obj);
+            }
             return new SyntaxRewriter(closure);
         }
     }},

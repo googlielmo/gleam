@@ -172,4 +172,23 @@ public class Closure extends Procedure
         }
         out.write(">");
     }
+
+    /**
+     * @return the max number of arguments for this closure, or -1 in case of var args
+     * @throws GleamException in case of errors
+     */
+    public int getMaxArity()
+            throws GleamException
+    {
+        int count = 0;
+        Entity currParam = param;
+        while (currParam instanceof Pair) {
+            count++;
+            currParam = ((List) currParam).getCdr();
+        }
+        if (currParam instanceof Symbol) {
+            return -1;
+        }
+        return count;
+    }
 }

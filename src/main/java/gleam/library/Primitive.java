@@ -48,7 +48,6 @@ import gleam.lang.SystemEnvironment;
  * or VAR_ARGS). Missing arguments will be represented by null values if minArgs
  * is less than maxArgs.
  */
-@SuppressWarnings("SameReturnValue")
 public abstract class Primitive implements java.io.Serializable {
     /**
      * serialVersionUID
@@ -82,7 +81,14 @@ public abstract class Primitive implements java.io.Serializable {
     /** constant to signal a variable (unlimited) number of arguments */
     public static final int VAR_ARGS = -1;
 
-    Primitive(String name, Environment.Kind definitionEnv, boolean keyword, int minArgs, int maxArgs, String comment, String documentation){
+    Primitive(String name,
+              Environment.Kind definitionEnv,
+              boolean keyword,
+              int minArgs,
+              int maxArgs,
+              String comment,
+              String documentation)
+    {
         this.name = name;
         this.definitionEnv = definitionEnv;
         this.keyword = keyword;
@@ -189,7 +195,8 @@ public abstract class Primitive implements java.io.Serializable {
      * Gets the name of this Primitive.
      * @return a String holding the name of this Primitive.
      */
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
