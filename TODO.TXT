@@ -8,6 +8,10 @@ welcome to redistribute it under certain conditions; see LICENSE.TXT.
 TO DO:
 ------
 
+String-based I/O ports
+
+Binary files
+
 "readline" in the REPL: use Jline?
 
 Save typed expressions in the REPL:
