@@ -62,7 +62,7 @@ public final class Numbers {
      */
     new Primitive( "-",
         REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        1, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Difference, e.g. (- 7 3); Also negation, e.g. (- x)",
         null /* doc strings */ ) {
     @Override
@@ -72,9 +72,7 @@ public final class Numbers {
         double result = 0.0;
         ListIterator it = new ListIterator(args);
         // first assume unary minus
-        if (it.hasNext()) {
-            result -= getNumberArgument(this, it.next());
-        }
+        result -= getNumberArgument(this, it.next());
         /* if it is a real difference make sign adjustment and
          * subtract remaining arguments
          */
@@ -114,7 +112,7 @@ public final class Numbers {
      */
     new Primitive( "/",
         REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+        1, Primitive.VAR_ARGS, /* min, max no. of arguments */
         "Division, e.g. (/ 42 7)",
         null /* doc strings */ ) {
     @Override
@@ -123,8 +121,23 @@ public final class Numbers {
     {
         double result = 1.0;
         ListIterator it = new ListIterator(args);
+        // first assume inverse
+        double next = getNumberArgument(this, it.next());
+        if (next == 0.0) {
+            throw new GleamException("/: division by zero");
+        }
+        if (!it.hasNext()) {
+            result /= next;
+        } else {
+            // it is a division, adjust result and divide remaining arguments
+            result = next;
+        }
         while (it.hasNext()) {
-            result /= getNumberArgument(this, it.next());
+            next = getNumberArgument(this, it.next());
+            if (next == 0.0) {
+                throw new GleamException("/: division by zero");
+            }
+            result /= next;
         }
         return new Real(result);
     }},
