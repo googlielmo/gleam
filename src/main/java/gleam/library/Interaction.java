@@ -195,7 +195,7 @@ public final class Interaction {
             try (FileOutputStream fos = new java.io.FileOutputStream(arg1.toString());
                  ObjectOutput output = new java.io.ObjectOutputStream(fos))
             {
-                output.writeObject(Interpreter.getSessionEnv());
+                output.writeObject(Interpreter.getSessionEnv(env));
                 return Void.value();
             }
             catch (java.io.FileNotFoundException e) {
@@ -229,7 +229,7 @@ public final class Interaction {
                  ObjectInput input = new ObjectInputStream(fis))
             {
                 Environment newEnv = (Environment) input.readObject();
-                Interpreter.setSessionEnv(newEnv);
+                Interpreter.setSessionEnv(env, newEnv);
                 return Void.value();
             }
             catch (java.io.FileNotFoundException e) {

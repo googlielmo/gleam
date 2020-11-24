@@ -36,23 +36,22 @@ package gleam.lang;
 import gleam.library.Primitive;
 import gleam.util.Logger;
 
-import java.nio.LongBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static gleam.lang.Environment.Kind.*;
-import static gleam.util.Logger.Level.*;
+import static gleam.util.Logger.Level.ERROR;
+import static gleam.util.Logger.Level.FINE;
 
 /**
  * The Gleam Scheme Interpreter
  */
-@SuppressWarnings("unused")
 public class Interpreter {
+
+    static final Symbol INTERPRETER_SYMBOL = Symbol.makeUninternedSymbol("__intp__");
 
     /** the keyword set */
     private static final Collection<Symbol> kwSet = new HashSet<>();
@@ -63,24 +62,32 @@ public class Interpreter {
     /** the long-help map */
     private static final HashMap<String, String> helpDocumentation = new HashMap<>();
 
-    /** the null environment, as defined in r5rs */
-    final static Environment nullEnv = new SystemEnvironment(NULL_ENV);
-
-    /** the scheme-report environment, as defined in r5rs */
-    final static Environment reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
-
-    /** the interaction environment, as defined in r5rs */
-    final static Environment interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
-
     private static final Logger.Level DEFAULT = FINE;
 
     private static boolean traceEnabled = false;
 
-    static {
-        createInitialEnvironments();
-    }
+    /**
+     * true if bootstrap code already loaded
+     */
+    private static boolean bootstrapped = false;
+
     /** the program continuation */
     private final Continuation cont;
+
+    /** the null environment, as defined in r5rs */
+    private final Environment nullEnv;
+
+    /** the scheme-report environment, as defined in r5rs */
+    private final Environment reportEnv;
+
+    /** the interaction environment, as defined in r5rs */
+    private final Environment interactionEnv;
+
+    {
+        nullEnv = new SystemEnvironment(NULL_ENV);
+        reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
+        interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
+    }
 
     /** the current-input-port */
     private InputPort cin = null;
@@ -95,29 +102,130 @@ public class Interpreter {
      * the session (top-level) environment;
      * can be changed by the application.
      */
-    private static Environment sesnEnv = null;
+    private Environment sesnEnv = null;
 
     /**
-     * true if bootstrap code already loaded
-     */
-    private static boolean bootstrapped = false;
-
-    /**
-     * Creates a new instance of Interpreter
+     * Private constructor
      * @throws gleam.lang.GleamException on any error
      */
     private Interpreter() throws GleamException {
+        initEnvironments();
+        bindIOPorts();
         cont = new Continuation();
         accum = Void.value;
-        /* define session environment */
-        bindIOPorts();
-        setSessionEnv(Environment.newEnvironment(cin, cout));
+        setSessionEnv(interactionEnv, Environment.newEnvironment(cin, cout));
+    }
+
+    public static Environment getSessionEnv(Environment env)
+            throws GleamException
+    {
+        return env.getInterpreter().getSessionEnv();
+    }
+
+    public static Entity getNullEnv(Environment env)
+            throws GleamException
+    {
+        return env.getInterpreter().getNullEnv();
+    }
+
+    public static Entity getSchemeReportEnv(Environment env)
+            throws GleamException
+    {
+        return env.getInterpreter().getSchemeReportEnv();
+    }
+
+    public static Entity getInteractionEnv(Environment env)
+            throws GleamException
+    {
+        return env.getInterpreter().getInteractionEnv();
+    }
+
+    /**
+     * Gets the comment string for a procedure
+     */
+    public static String getHelpComment(String name) {
+        return helpComment.get(name);
+    }
+
+    /**
+     * Gets the comment string for a procedure
+     */
+    public static String getHelpDocumentation(String name) {
+        return helpDocumentation.get(name);
+    }
+
+    /**
+     * Gets the set of help-enabled procedures
+     */
+    public static Set<String> getHelpNames() {
+        return new TreeSet<>(helpDocumentation.keySet());
+    }
+
+    /**
+     * Determines if a given symbol is a keyword.
+     */
+    static boolean isKeyword(Symbol s) {
+        return kwSet.contains(s);
+    }
+
+    /**
+     * Creates and bootstraps a new Interpreter.
+     * @return a Gleam Scheme Interpreter
+     *
+     * @throws GleamException in case of error
+     */
+    public static Interpreter newInterpreter()
+            throws GleamException
+    {
+        Interpreter interpreter = new Interpreter();
+        Logger.enter(DEFAULT, String.format("created Interpreter %s", interpreter));
+        interpreter.bootstrap();
+        Logger.enter(DEFAULT, String.format("bootstrapped Interpreter %s", interpreter));
+
+        return interpreter;
+    }
+
+    public static void addForEval(Entity expr, Environment env, Continuation cont) throws GleamException
+    {
+        expr = expr.analyze(env).optimize(env);
+        cont.begin(new ExpressionAction(expr, env, null));
+    }
+
+    /**
+     * Sets the current session environment.
+     * @param currentEnv the current environment
+     * @param newSessionEnv the new session environment
+     */
+    public static void setSessionEnv(Environment currentEnv, Environment newSessionEnv)
+            throws GleamException
+    {
+        Interpreter intp = currentEnv.getInterpreter();
+        intp.sesnEnv = newSessionEnv;
+        // link to interaction env
+        intp.sesnEnv.parent = intp.getInteractionEnv();
+    }
+
+    /**
+     * @return true if trace is enabled
+     */
+    public static boolean traceEnabled() {
+        return traceEnabled;
+    }
+
+    /** enables trace */
+    public static void traceOn() {
+        traceEnabled = true;
+    }
+
+    /** disables trace */
+    public static void traceOff() {
+        traceEnabled = false;
     }
 
     /**
      * Imports primitives
      */
-    private static void importPrimitives(Primitive[] primitives) {
+    private void importPrimitives(Primitive[] primitives) {
         Environment instEnv;
         for (Primitive primitive : primitives) {
             switch (primitive.definitionEnv) {
@@ -142,7 +250,7 @@ public class Interpreter {
      * @param env the environment
      * @param primitive the primitive
      */
-    private static void installPrimitive(Environment env, Primitive primitive) {
+    private void installPrimitive(Environment env, Primitive primitive) {
         Symbol name = Symbol.makeSymbol(primitive.getName());
         Procedure proc = primitive.keyword ? new SyntaxProcedure(primitive) : new PrimitiveProcedure(primitive);
         env.define(name, proc);
@@ -158,9 +266,10 @@ public class Interpreter {
     }
 
     /**
-     * Creates the three initial environments (null, report, interaction).
+     * Initialize the three initial environments (null, report, interaction).
      */
-    static void createInitialEnvironments() {
+    private void initEnvironments() {
+        nullEnv.define(INTERPRETER_SYMBOL, new JavaObject(this));
         try {
             /*
              * import primitives
@@ -198,45 +307,17 @@ public class Interpreter {
         }
     }
 
-    /**
-     * Gets the comment string for a procedure
-     */
-    public static String getHelpComment(String name) {
-        return helpComment.get(name);
-    }
-
-    /**
-     * Gets the comment string for a procedure
-     */
-    public static String getHelpDocumentation(String name) {
-        return helpDocumentation.get(name);
-    }
-
-    /**
-     * Gets the set of help-enabled procedures
-     */
-    public static Set<String> getHelpNames() {
-        return new TreeSet<>(helpDocumentation.keySet());
-    }
-
-    /**
-     * Determines if a given symbol is a keyword.
-     */
-    static boolean isKeyword(Symbol s) {
-        return kwSet.contains(s);
-    }
-
-    public static Environment getNullEnv()
+    public Environment getNullEnv()
     {
         return nullEnv;
     }
 
-    public static Environment getSchemeReportEnv()
+    public Environment getSchemeReportEnv()
     {
         return reportEnv;
     }
 
-    public static Environment getInteractionEnv()
+    public Environment getInteractionEnv()
     {
         return interactionEnv;
     }
@@ -257,23 +338,6 @@ public class Interpreter {
         getSchemeReportEnv().setOut(cout);
         getInteractionEnv().setIn(cin);
         getInteractionEnv().setOut(cout);
-    }
-
-    /**
-     * Creates and bootstraps a new Interpreter.
-     * @return a Gleam Scheme Interpreter
-     *
-     * @throws GleamException in case of error
-     */
-    public static Interpreter newInterpreter()
-            throws GleamException
-    {
-        Interpreter interpreter = new Interpreter();
-        Logger.enter(DEFAULT, String.format("created Interpreter %s", interpreter));
-        interpreter.bootstrap();
-        Logger.enter(DEFAULT, String.format("bootstrapped Interpreter %s", interpreter));
-
-        return interpreter;
     }
 
     /**
@@ -317,12 +381,6 @@ public class Interpreter {
         cont.begin(new ExpressionAction(expr, env, null));
         execute();
         return accum;
-    }
-
-    public static void addForEval(Entity expr, Environment env, Continuation cont) throws GleamException
-    {
-        expr = expr.analyze(env).optimize(env);
-        cont.begin(new ExpressionAction(expr, env, null));
     }
 
     /**
@@ -406,22 +464,10 @@ public class Interpreter {
     }
 
     /**
-     * Sets the current session environment.
-     * @param env the new session environment
-     */
-    public static void setSessionEnv(Environment env)
-    {
-        sesnEnv = env;
-
-        // link to interaction env
-        sesnEnv.parent = getInteractionEnv();
-    }
-
-    /**
      * Gets the current session environment
      * @return the current session environment
      */
-    public static Environment getSessionEnv()
+    public Environment getSessionEnv()
     {
         return sesnEnv;
     }
@@ -438,19 +484,14 @@ public class Interpreter {
         getSessionEnv().define(Symbol.makeSymbol(name), new JavaObject(object));
     }
 
-    /** Sets current-input-port */
-    public void setCin(InputPort newcin) {
-        cin = newcin;
-    }
-
-    /** Sets current-output-port */
-    public void setCout(OutputPort newcout) {
-        cout = newcout;
-    }
-
     /** Gets current-input-port */
     public InputPort getCin() {
         return cin;
+    }
+
+    /** Sets current-input-port */
+    public void setCin(InputPort newcin) {
+        cin = newcin;
     }
 
     /** Gets current-output-port */
@@ -458,38 +499,8 @@ public class Interpreter {
         return cout;
     }
 
-    /**
-     * @return true if trace is enabled
-     */
-    public static boolean traceEnabled() {
-        return traceEnabled;
+    /** Sets current-output-port */
+    public void setCout(OutputPort newcout) {
+        cout = newcout;
     }
-
-    /** enables trace */
-    public static void traceOn() {
-        traceEnabled = true;
-    }
-
-    /** disables trace */
-    public static void traceOff() {
-        traceEnabled = false;
-    }
-
-//    /** resolve environment as correct system environment on deserialization */
-//    protected Object readResolve()
-//            throws java.io.ObjectStreamException {
-//        Logger.enter(Logger.Level.FINE, "readResolve() called! (Interpreter)"); //DEBUG
-//        switch (kind) {
-//            case NULL_ENV:
-//                return Interpreter.nullEnv;
-//
-//            case REPORT_ENV:
-//                return Interpreter.reportEnv;
-//
-//            case INTERACTION_ENV:
-//            default:
-//                return Interpreter.interactionEnv;
-//        }
-//    }
-
 }

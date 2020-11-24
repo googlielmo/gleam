@@ -41,6 +41,11 @@ public class Environment extends AbstractEntity
      */
     private static final long serialVersionUID = 1L;
 
+    Interpreter getInterpreter() throws GleamException {
+        JavaObject j = (JavaObject) this.lookup(Interpreter.INTERPRETER_SYMBOL);
+        return (Interpreter) j.getObjectValue();
+    }
+
     public static enum Kind {
         NULL_ENV,
         REPORT_ENV,

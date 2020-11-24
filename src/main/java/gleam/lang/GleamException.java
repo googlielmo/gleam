@@ -57,9 +57,6 @@ public class GleamException extends Exception
         super(message);
         errobj = (value != null) ? value : Void.value;
 
-        if (Interpreter.getInteractionEnv() != null)
-            Interpreter.getInteractionEnv().define(Symbol.ERROBJ, errobj);
-
         Logger.enter(FINE, "Generated GleamException: " + message);
     }
 

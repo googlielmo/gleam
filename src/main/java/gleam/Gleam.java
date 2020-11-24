@@ -142,6 +142,7 @@ public class Gleam
                 w.newline();
             }
             catch (GleamException e) {
+                intp.getInteractionEnv().define(Symbol.ERROBJ, e.value());
                 out.println("*** " + e.getMessage());
                 intp.clearContinuation();
             }

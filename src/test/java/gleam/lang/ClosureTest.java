@@ -29,21 +29,24 @@ package gleam.lang;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class ClosureTest extends TestCase {
 
-    public void testGetMaxArity_EmptyList() throws GleamException {
+    public void testGetMaxArity_EmptyList() throws GleamException, IOException {
         Closure c1 = getClosureWithParams(EmptyList.value());
         Assert.assertEquals(0, c1.getMaxArity());
     }
 
-    public void testGetMaxArity_OneParam() throws GleamException {
+    public void testGetMaxArity_OneParam() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         EmptyList nil = EmptyList.value();
         Closure c1 = getClosureWithParams(new Pair(a, nil));
         Assert.assertEquals(1, c1.getMaxArity());
     }
 
-    public void testGetMaxArity_ManyParams() throws GleamException {
+    public void testGetMaxArity_ManyParams() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
@@ -55,7 +58,7 @@ public class ClosureTest extends TestCase {
         Assert.assertEquals(3, c1.getMaxArity());
     }
 
-    public void testGetMaxArity_ManyParamsAndRest() throws GleamException {
+    public void testGetMaxArity_ManyParamsAndRest() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
@@ -66,18 +69,18 @@ public class ClosureTest extends TestCase {
         Assert.assertEquals(-1, c1.getMaxArity());
     }
 
-    public void testGetMaxArity_RestOnly() throws GleamException {
+    public void testGetMaxArity_RestOnly() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         EmptyList nil = EmptyList.value();
         Closure c1 = getClosureWithParams(a);
         Assert.assertEquals(-1, c1.getMaxArity());
     }
 
-    private Closure getClosureWithParams(Entity value) {
+    private Closure getClosureWithParams(Entity value) throws IOException {
         return new Closure(value,
                 EmptyList.value(),
                 Environment.newEnvironment(
-                        Interpreter.getInteractionEnv().getIn(),
-                        Interpreter.getInteractionEnv().getOut()));
+                        new InputPort(new InputStreamReader(java.lang.System.in)),
+                        new OutputPort(java.lang.System.out, false)));
     }
 }
