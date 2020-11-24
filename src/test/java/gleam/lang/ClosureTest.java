@@ -74,6 +74,10 @@ public class ClosureTest extends TestCase {
     }
 
     private Closure getClosureWithParams(Entity value) {
-        return new Closure(value, EmptyList.value(), new Environment());
+        return new Closure(value,
+                EmptyList.value(),
+                Environment.newEnvironment(
+                        Interpreter.getInteractionEnv().getIn(),
+                        Interpreter.getInteractionEnv().getOut()));
     }
 }

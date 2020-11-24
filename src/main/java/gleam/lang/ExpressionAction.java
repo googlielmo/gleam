@@ -44,14 +44,10 @@ public class ExpressionAction extends Action {
     /** the expression to evaluate */
     private final Entity expr;
 
-    /** the environment in which to evaluate the expression */
-    private final Environment env;
-
     /** Creates a new instance of this action */
     public ExpressionAction(Entity expr, Environment env, Action next) {
+        super(env, next);
         this.expr = expr;
-        this.env = env;
-        this.next = next;
     }
 
     /** Creates a new instance of this action */
@@ -70,7 +66,7 @@ public class ExpressionAction extends Action {
     {
         cont.head = next;
         // note: ignore arg
-        trace(out -> out.printf("%s\n", expr.toWriteFormat()));
+        trace(out -> out.printf("%s\n", expr.toWriteFormat()), env);
         return expr.eval(env, cont);
     }
 }

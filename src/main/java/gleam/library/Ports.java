@@ -145,7 +145,7 @@ public final class Ports {
     public Entity apply0(Environment env, Continuation cont)
             throws GleamException
     {
-        return Interpreter.getInterpreter().getCin();
+        return env.getIn();
     }},
 
     /*
@@ -161,7 +161,7 @@ public final class Ports {
     public Entity apply0(Environment env, Continuation cont)
             throws GleamException
     {
-        return Interpreter.getInterpreter().getCout();
+        return env.getOut();
     }},
 
     };

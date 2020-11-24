@@ -31,21 +31,22 @@ public class ObtainArgumentAction extends Action {
     /**
      * serialVersionUID
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     private final ArgumentList arglist;
+
     private final int argumentIndex;
 
     /** Creates a new instance of this action */
-    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Action next) {
+    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Environment env, Action next) {
+        super(env, next);
         this.arglist = arglist;
         this.argumentIndex = argumentIndex;
-        this.next = next;
     }
 
     /** Creates a new instance of this action */
-    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex) {
-        this(arglist, argumentIndex, null);
+    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Environment env) {
+        this(arglist, argumentIndex, env, null);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class ObtainArgumentAction extends Action {
         cont.head = next;
         // arg is already evaluated
         arglist.set(argumentIndex, arg);
-        trace(out -> out.printf("[%s] <- %s\n", argumentIndex, arg.toWriteFormat()));
+        trace(out -> out.printf("[%s] <- %s\n", argumentIndex, arg.toWriteFormat()), env);
         return arg;
     }
 }

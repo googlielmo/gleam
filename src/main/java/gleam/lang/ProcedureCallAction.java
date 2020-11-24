@@ -31,16 +31,14 @@ public class ProcedureCallAction extends Action {
     /**
      * serialVersionUID
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     private final ArgumentList arglist;
-    private final Environment env;
 
     /** Creates a new instance of this action */
     public ProcedureCallAction(ArgumentList arglist, Environment env, Action next) {
+        super(env, next);
         this.arglist = arglist;
-        this.env = env;
-        this.next = next;
     }
 
     /** Creates a new instance of this action */
@@ -62,7 +60,7 @@ public class ProcedureCallAction extends Action {
                       "procedure call: operator is not a procedure",
                       arg);
         }
-        trace(out -> out.printf("%s\n", arg.toWriteFormat()));
+        trace(out -> out.printf("%s\n", arg.toWriteFormat()), env);
         return operator.apply(arglist.getArguments(), env, cont);
     }
 }

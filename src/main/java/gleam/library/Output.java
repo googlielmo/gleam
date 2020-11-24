@@ -80,7 +80,7 @@ public final class Output {
             }
         }
         else {
-            out = Interpreter.getInterpreter().getCout();
+            out = env.getOut();
         }
 
         // print object
@@ -107,7 +107,7 @@ public final class Output {
         throws GleamException
     {
         // get output port, if present
-        OutputPort oport = getOutputPort(this, arg2);
+        OutputPort oport = getOutputPort(this, env, arg2);
 
         // print object
         if (oport.isOpen()) {
@@ -132,7 +132,7 @@ public final class Output {
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
-        OutputPort oport = getOutputPort(this, arg1);
+        OutputPort oport = getOutputPort(this, env, arg1);
 
         if (oport.isOpen()) {
             oport.newline();
@@ -156,7 +156,7 @@ public final class Output {
         public Entity apply1(Entity arg1, Environment env, Continuation cont)
                 throws GleamException
         {
-            OutputPort oport = getOutputPort(this, arg1);
+            OutputPort oport = getOutputPort(this, env, arg1);
 
             if (oport.isOpen()) {
                 oport.flush();
@@ -170,7 +170,7 @@ public final class Output {
 
     }; // primitives
 
-    private static OutputPort getOutputPort(Primitive primitive, Entity entity) throws GleamException {
+    private static OutputPort getOutputPort(Primitive primitive, Environment env, Entity entity) throws GleamException {
         OutputPort oport;
         if (entity != null) {
             if (entity instanceof OutputPort) {
@@ -181,7 +181,7 @@ public final class Output {
             }
         }
         else {
-            oport = Interpreter.getInterpreter().getCout();
+            oport = env.getOut();
         }
         return oport;
     }

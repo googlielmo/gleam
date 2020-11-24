@@ -26,11 +26,15 @@
 
 package gleam.lang;
 
+import gleam.util.Logger;
+
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import static gleam.util.Logger.Level.FINE;
 
 /**
  * Scheme input port.
@@ -140,5 +144,16 @@ public class InputPort extends Port implements Closeable
     @Override
     public Kind getKind() {
         return Kind.TEXTUAL;
+    }
+
+    public void loadForEval(Environment env, Continuation cont) throws GleamException {
+        // read
+        Entity obj;
+        while ((obj = this.read()) != Eof.value()) {
+            // eval
+            Logger.enter(FINE, "loadForEval: read object", obj);
+            Interpreter.addForEval(obj, env, cont);
+        }
+
     }
 }

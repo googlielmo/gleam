@@ -26,11 +26,7 @@
 
 package gleam.lang;
 
-import gleam.util.Logger;
-
 import java.io.PrintWriter;
-
-import static gleam.lang.Environment.Kind.*;
 
 /**
  * Specialization of Environment with special serialization rules.
@@ -40,16 +36,7 @@ public final class SystemEnvironment extends Environment
     /**
      * serialVersionUID
      */
-    private static final long serialVersionUID = 2L;
-
-    /** the null environment, as defined in r5rs */
-    private static final Environment nullEnv = new SystemEnvironment(NULL_ENV);
-
-    /** the scheme-report environment, as defined in r5rs */
-    private static final Environment reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
-
-    /** the interaction environment, as defined in r5rs */
-    private static final Environment interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
+    private static final long serialVersionUID = 3L;
 
     private final Kind kind;
 
@@ -59,25 +46,10 @@ public final class SystemEnvironment extends Environment
         this(null, kind);
     }
 
-    SystemEnvironment(Environment p, Kind kind)
+    SystemEnvironment(Environment parent, Kind kind)
     {
-        super(p);
+        super(parent);
         this.kind = kind;
-    }
-
-    public static Environment getNullEnv()
-    {
-        return nullEnv;
-    }
-
-    public static Environment getSchemeReportEnv()
-    {
-        return reportEnv;
-    }
-
-    public static Environment getInteractionEnv()
-    {
-        return interactionEnv;
     }
 
     /** Writes this environment */
@@ -91,22 +63,5 @@ public final class SystemEnvironment extends Environment
     protected Entity writeReplace()
     {
         return new SystemEnvironment(null, kind);
-    }
-
-    /** resolve environment as correct system environment on deserialization */
-    protected Object readResolve()
-            throws java.io.ObjectStreamException {
-        Logger.enter(Logger.Level.FINE, "readResolve() called! (SystemEnvironment)"); //DEBUG
-        switch (kind) {
-            case NULL_ENV:
-                return nullEnv;
-
-            case REPORT_ENV:
-                return reportEnv;
-
-            case INTERACTION_ENV:
-            default:
-                return interactionEnv;
-        }
     }
 }

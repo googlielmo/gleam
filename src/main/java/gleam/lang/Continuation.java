@@ -54,7 +54,7 @@ public class Continuation extends Procedure
     /**
      * Dummy action used as anchor to add actions
      */
-    private static final Action DUMMY_ACTION = new Action() {
+    private static final Action DUMMY_ACTION = new Action(null, null) {
         @Override
         Entity invoke(Entity arg, Continuation cont) throws GleamException {
             throw new GleamException("internal error: dummy action invoked");
@@ -167,8 +167,7 @@ public class Continuation extends Procedure
         if (args != EmptyList.value) {
             if (args.getCdr() == EmptyList.value) {
                 // replace continuation
-                Logger.enter(FINE, "apply: current env is", env);
-                Interpreter.getInterpreter().replaceContinuation(this);
+                cont.replaceContinuation(this);
                 // return argument (it's already evaluated)
                 return args.getCar();
             }
@@ -179,6 +178,10 @@ public class Continuation extends Procedure
         else {
             throw new GleamException("continuation: too few arguments", args);
         }
+    }
+
+    private void replaceContinuation(Continuation continuation) {
+        this.head = continuation.head;
     }
 
     /**

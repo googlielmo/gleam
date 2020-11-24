@@ -83,7 +83,7 @@ public final class Interaction {
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
-        OutputPort cout = Interpreter.getInterpreter().getCout();
+        OutputPort cout = env.getOut();
         if (arg1 != null) {
             // we have an explicit argument,
             // so print full documentation
@@ -195,7 +195,7 @@ public final class Interaction {
             try (FileOutputStream fos = new java.io.FileOutputStream(arg1.toString());
                  ObjectOutput output = new java.io.ObjectOutputStream(fos))
             {
-                output.writeObject(Interpreter.getInterpreter().getSessionEnv());
+                output.writeObject(Interpreter.getSessionEnv());
                 return Void.value();
             }
             catch (java.io.FileNotFoundException e) {
@@ -229,7 +229,7 @@ public final class Interaction {
                  ObjectInput input = new ObjectInputStream(fis))
             {
                 Environment newEnv = (Environment) input.readObject();
-                Interpreter.getInterpreter().setSessionEnv(newEnv);
+                Interpreter.setSessionEnv(newEnv);
                 return Void.value();
             }
             catch (java.io.FileNotFoundException e) {

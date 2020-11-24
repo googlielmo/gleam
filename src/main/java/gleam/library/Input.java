@@ -90,7 +90,7 @@ public final class Input {
                 iport = (InputPort) arg1;
             }
             else {
-                iport = Interpreter.getInterpreter().getCin();
+                iport = env.getIn();
             }
             if (iport.isOpen()) {
                 return iport.read();

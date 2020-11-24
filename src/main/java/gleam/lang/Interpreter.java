@@ -36,13 +36,16 @@ package gleam.lang;
 import gleam.library.Primitive;
 import gleam.util.Logger;
 
-import java.io.FileDescriptor;
+import java.nio.LongBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
+import static gleam.lang.Environment.Kind.*;
 import static gleam.util.Logger.Level.*;
 
 /**
@@ -50,8 +53,6 @@ import static gleam.util.Logger.Level.*;
  */
 @SuppressWarnings("unused")
 public class Interpreter {
-
-    private static final ThreadLocal<Interpreter> interpreterThreadLocal = new ThreadLocal<>();
 
     /** the keyword set */
     private static final Collection<Symbol> kwSet = new HashSet<>();
@@ -62,10 +63,22 @@ public class Interpreter {
     /** the long-help map */
     private static final HashMap<String, String> helpDocumentation = new HashMap<>();
 
+    /** the null environment, as defined in r5rs */
+    final static Environment nullEnv = new SystemEnvironment(NULL_ENV);
+
+    /** the scheme-report environment, as defined in r5rs */
+    final static Environment reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
+
+    /** the interaction environment, as defined in r5rs */
+    final static Environment interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
+
+    private static final Logger.Level DEFAULT = FINE;
+
+    private static boolean traceEnabled = false;
+
     static {
         createInitialEnvironments();
     }
-
     /** the program continuation */
     private final Continuation cont;
 
@@ -82,9 +95,7 @@ public class Interpreter {
      * the session (top-level) environment;
      * can be changed by the application.
      */
-    private Environment sesnEnv = null;
-
-    private boolean traceEnabled = false;
+    private static Environment sesnEnv = null;
 
     /**
      * true if bootstrap code already loaded
@@ -100,7 +111,7 @@ public class Interpreter {
         accum = Void.value;
         /* define session environment */
         bindIOPorts();
-        setSessionEnv(new Environment());
+        setSessionEnv(Environment.newEnvironment(cin, cout));
     }
 
     /**
@@ -111,16 +122,16 @@ public class Interpreter {
         for (Primitive primitive : primitives) {
             switch (primitive.definitionEnv) {
                 case NULL_ENV:
-                    instEnv = SystemEnvironment.getNullEnv();
+                    instEnv = getNullEnv();
                     break;
 
                 case REPORT_ENV:
-                    instEnv = SystemEnvironment.getSchemeReportEnv();
+                    instEnv = getSchemeReportEnv();
                     break;
 
                 case INTERACTION_ENV:
                 default:
-                    instEnv = SystemEnvironment.getInteractionEnv();
+                    instEnv = getInteractionEnv();
             }
             installPrimitive(instEnv, primitive);
         }
@@ -175,9 +186,9 @@ public class Interpreter {
             /*
              * define special symbols
              */
-            SystemEnvironment.getSchemeReportEnv().define(Symbol.ERROBJ, Void.value);
-            SystemEnvironment.getSchemeReportEnv().define(Symbol.CALL_CC, SystemEnvironment.getSchemeReportEnv().lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
-            SystemEnvironment.getSchemeReportEnv().define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
+            getSchemeReportEnv().define(Symbol.ERROBJ, Void.value);
+            getSchemeReportEnv().define(Symbol.CALL_CC, getSchemeReportEnv().lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
+            getSchemeReportEnv().define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
         }
         catch (GleamException e) {
             // should never happen
@@ -215,6 +226,21 @@ public class Interpreter {
         return kwSet.contains(s);
     }
 
+    public static Environment getNullEnv()
+    {
+        return nullEnv;
+    }
+
+    public static Environment getSchemeReportEnv()
+    {
+        return reportEnv;
+    }
+
+    public static Environment getInteractionEnv()
+    {
+        return interactionEnv;
+    }
+
     /**
      * binds current I/O ports to system standard I/O
      */
@@ -225,26 +251,29 @@ public class Interpreter {
                         java.lang.System.in)));
         boolean isConsole = java.lang.System.console() != null;
         cout = new OutputPort(java.lang.System.out, isConsole);
+        getNullEnv().setIn(cin);
+        getNullEnv().setOut(cout);
+        getSchemeReportEnv().setIn(cin);
+        getSchemeReportEnv().setOut(cout);
+        getInteractionEnv().setIn(cin);
+        getInteractionEnv().setOut(cout);
     }
 
     /**
-     * Gets a per-thread Interpreter.
-     * Creates and bootstraps a new one the first one it's invoked from a given thread.
+     * Creates and bootstraps a new Interpreter.
      * @return a Gleam Scheme Interpreter
      *
      * @throws GleamException in case of error
      */
-    public static Interpreter getInterpreter()
+    public static Interpreter newInterpreter()
             throws GleamException
     {
-        if (interpreterThreadLocal.get() == null) {
-            Interpreter interpreter = new Interpreter();
-            interpreterThreadLocal.set(interpreter);
-            Logger.enter(FINE, String.format("created Interpreter %s", interpreter));
-            interpreter.bootstrap();
-            Logger.enter(FINE, String.format("bootstrapped Interpreter %s", interpreter));
-        }
-        return interpreterThreadLocal.get();
+        Interpreter interpreter = new Interpreter();
+        Logger.enter(DEFAULT, String.format("created Interpreter %s", interpreter));
+        interpreter.bootstrap();
+        Logger.enter(DEFAULT, String.format("bootstrapped Interpreter %s", interpreter));
+
+        return interpreter;
     }
 
     /**
@@ -288,6 +317,12 @@ public class Interpreter {
         cont.begin(new ExpressionAction(expr, env, null));
         execute();
         return accum;
+    }
+
+    public static void addForEval(Entity expr, Environment env, Continuation cont) throws GleamException
+    {
+        expr = expr.analyze(env).optimize(env);
+        cont.begin(new ExpressionAction(expr, env, null));
     }
 
     /**
@@ -347,9 +382,9 @@ public class Interpreter {
         Entity obj, val;
         while ((obj = reader.read()) != Eof.value()) {
             // eval
-            Logger.enter(CONFIG, "load: read object", obj);
+            Logger.enter(FINE, "load: read object", obj);
             val = eval(obj, env);
-            Logger.enter(CONFIG, "load: result is", val);
+            Logger.enter(FINE, "load: result is", val);
         }
     }
 
@@ -365,7 +400,7 @@ public class Interpreter {
                     new java.io.BufferedReader(
                         new java.io.InputStreamReader(
                             getClass().getResourceAsStream("/bootstrap.scm"))));
-            load(bootstrap, SystemEnvironment.getSchemeReportEnv());
+            load(bootstrap, getSchemeReportEnv());
             bootstrapped = true;
         }
     }
@@ -374,19 +409,19 @@ public class Interpreter {
      * Sets the current session environment.
      * @param env the new session environment
      */
-    public void setSessionEnv(Environment env)
+    public static void setSessionEnv(Environment env)
     {
         sesnEnv = env;
 
         // link to interaction env
-        sesnEnv.parent = SystemEnvironment.getInteractionEnv();
+        sesnEnv.parent = getInteractionEnv();
     }
 
     /**
      * Gets the current session environment
      * @return the current session environment
      */
-    public Environment getSessionEnv()
+    public static Environment getSessionEnv()
     {
         return sesnEnv;
     }
@@ -426,17 +461,35 @@ public class Interpreter {
     /**
      * @return true if trace is enabled
      */
-    public boolean traceEnabled() {
+    public static boolean traceEnabled() {
         return traceEnabled;
     }
 
     /** enables trace */
-    public void traceOn() {
+    public static void traceOn() {
         traceEnabled = true;
     }
 
     /** disables trace */
-    public void traceOff() {
+    public static void traceOff() {
         traceEnabled = false;
     }
+
+//    /** resolve environment as correct system environment on deserialization */
+//    protected Object readResolve()
+//            throws java.io.ObjectStreamException {
+//        Logger.enter(Logger.Level.FINE, "readResolve() called! (Interpreter)"); //DEBUG
+//        switch (kind) {
+//            case NULL_ENV:
+//                return Interpreter.nullEnv;
+//
+//            case REPORT_ENV:
+//                return Interpreter.reportEnv;
+//
+//            case INTERACTION_ENV:
+//            default:
+//                return Interpreter.interactionEnv;
+//        }
+//    }
+
 }

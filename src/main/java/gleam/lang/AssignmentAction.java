@@ -39,19 +39,15 @@ public class AssignmentAction extends Action {
     /**
      * serialVersionUID
      */
-    private static final long serialVersionUID = 1L;
-
-    /** environment */
-    protected final Environment env;
+    private static final long serialVersionUID = 2L;
 
     /** the symbol to assign to */
     protected final Symbol symbol;
 
     /** Creates a new AssignmentAction */
     public AssignmentAction(Symbol symbol, Environment env, Action next) {
+        super(env, next);
         this.symbol = symbol;
-        this.env = env;
-        this.next = next;
     }
 
     /** Creates a new AssignmentAction */
@@ -64,7 +60,7 @@ public class AssignmentAction extends Action {
     Entity invoke(Entity arg, Continuation cont) throws GleamException {
         cont.head = next;
         env.getLocation(symbol).set(arg);
-        trace(out -> out.printf("%s <- %s\n", symbol.toWriteFormat(), arg.toWriteFormat()));
+        trace(out -> out.printf("%s <- %s\n", symbol.toWriteFormat(), arg.toWriteFormat()), env);
         return Void.value;
     }
 }

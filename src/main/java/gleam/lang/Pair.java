@@ -182,7 +182,7 @@ public class Pair extends AbstractEntity implements List {
             Entity nextArg = it.next();
             action = action
                     .andThen(new ExpressionAction(nextArg, env))
-                    .andThen(new ObtainArgumentAction(argList, argidx++));
+                    .andThen(new ObtainArgumentAction(argList, argidx++, env));
         }
         action = action
                 .andThen(new ExpressionAction(operator, env))

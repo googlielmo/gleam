@@ -85,7 +85,7 @@ public class Gleam
 
         try {
             out.print("Bootstrapping... ");
-            intp = Interpreter.getInterpreter();
+            intp = Interpreter.newInterpreter();
             out.println("OK");
         } catch (GleamException e) {
             Logger.error(e);

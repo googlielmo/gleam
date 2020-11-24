@@ -53,12 +53,47 @@ public class Environment extends AbstractEntity
     /** Association function: symbol --> location */
     private final Map<Symbol, Location> assoc = new HashMap<>();
 
+    transient private InputPort in;
+
+    transient private OutputPort out;
+
     /** Constructor */
-    Environment() {}
+    private Environment(InputPort in, OutputPort out) {
+        this.parent = null;
+        this.in = in;
+        this.out = out;
+    }
+
+    public static Environment newEnvironment(InputPort in, OutputPort out) {
+        return new Environment(in, out);
+    }
 
     public Environment(Environment parent)
     {
         this.parent = parent;
+        if (parent == null) {
+            this.in = null;
+            this.out = null;
+        } else {
+            this.in = parent.in;
+            this.out = parent.out;
+        }
+    }
+
+    public InputPort getIn() {
+        return in;
+    }
+
+    public void setIn(InputPort in) {
+        this.in = in;
+    }
+
+    public OutputPort getOut() {
+        return out;
+    }
+
+    public void setOut(OutputPort out) {
+        this.out = out;
     }
 
     /**
@@ -145,17 +180,18 @@ public class Environment extends AbstractEntity
     public void dump()
             throws GleamException
     {
-        OutputPort out = Interpreter.getInterpreter().getCout();
-        out.print("--------------- "+this.toString());
-        out.newline();
+        if (out == null) {
+            throw new GleamException("OutputPort null in Environment");
+        }
+        out.printf("/——————————————— Environment %s --\\ \n", this);
+        out.printf("|——————————————— In  :       %s \n", in);
+        out.printf("|——————————————— Out :       %s \n", out);
+        out.printf("| \n");
         for (Symbol s : assoc.keySet()) {
             Location l = assoc.get(s);
-
-            out.write(s);
-            out.print("\t" + s.toString());
-            out.print("\t" + l.get().toString());
-            out.newline();
+            out.printf("|       %s\t: %s\n", s.toString(), l.get().toString());
         }
+        out.printf("\\—————————————————————————————————————————————/\n");
         if (this.parent != null) {
             parent.dump();
         }

@@ -45,8 +45,16 @@ package gleam.lang;
  */
 public abstract class Action implements java.io.Serializable
 {
+    /** the environment in which to execute this action */
+    Environment env;
+
     /** the next action to execute, this creates a tree structure */
     Action next;
+
+    Action(Environment env, Action next) {
+        this.env = env;
+        this.next = next;
+    }
 
     /**
      * Appends a new action after this one, so that the given action be
@@ -81,12 +89,11 @@ public abstract class Action implements java.io.Serializable
         void print(OutputPort port);
     }
 
-    protected void trace(Printer doo)
+    protected void trace(Printer doo, Environment env)
             throws GleamException
     {
-        Interpreter intp = Interpreter.getInterpreter();
-        if (intp.traceEnabled()) {
-            OutputPort cout = intp.getCout();
+        if (Interpreter.traceEnabled()) {
+            OutputPort cout = env.getOut();
 
             String actionName = this.getClass().getSimpleName().replace("Action", "");
             cout.printf("%s ", actionName);

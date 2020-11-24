@@ -39,20 +39,16 @@ public class IfAction extends Action {
     /**
      * serialVersionUID
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     /** consequent, alternate parts of the if command */
     protected final Entity consequent, alternate;
 
-    /** environment */
-    protected final Environment env;
-
     /** Creates a new IfAction */
     public IfAction(Entity consequent, Entity alternate, Environment env, Action next) {
+        super(env, next);
         this.consequent = consequent;
         this.alternate = alternate;
-        this.env = env;
-        this.next = next;
     }
 
     /** Creates a new IfAction */

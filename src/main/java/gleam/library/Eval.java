@@ -33,8 +33,8 @@ import gleam.lang.Environment;
 import gleam.lang.ExpressionAction;
 import gleam.lang.ExpressionInEnvironmentAction;
 import gleam.lang.GleamException;
+import gleam.lang.Interpreter;
 import gleam.lang.Number;
-import gleam.lang.SystemEnvironment;
 
 import static gleam.lang.Environment.Kind.INTERACTION_ENV;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
@@ -104,7 +104,7 @@ public final class Eval {
         try {
             version = (Number) arg1;
             if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
-                return SystemEnvironment.getNullEnv();
+                return Interpreter.getNullEnv();
             }
             else {
                 throw new GleamException(this, "version not supported", version);
@@ -133,7 +133,7 @@ public final class Eval {
         try {
             version = (Number) arg1;
             if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
-                return SystemEnvironment.getSchemeReportEnv();
+                return Interpreter.getSchemeReportEnv();
             }
             else {
                 throw new GleamException(this, "version not supported", version);
@@ -156,7 +156,7 @@ public final class Eval {
     @Override
     public Entity apply0(Environment env, Continuation cont)
     {
-        return SystemEnvironment.getInteractionEnv();
+        return Interpreter.getInteractionEnv();
     }},
 
     /*
@@ -186,7 +186,7 @@ public final class Eval {
     public Entity apply2(Entity argEnv, Entity argExpr, Environment env, Continuation cont) {
         cont
                 .begin(new ExpressionAction(argEnv, env))         // 1) evaluate environment expr
-                .andThen(new ExpressionInEnvironmentAction(argExpr)); // 2) evaluate expr in that env
+                .andThen(new ExpressionInEnvironmentAction(argExpr, env)); // 2) evaluate expr in that env
 
         return null;
     }},

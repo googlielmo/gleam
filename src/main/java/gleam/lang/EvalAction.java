@@ -39,14 +39,11 @@ public class EvalAction extends Action {
     /**
      * serialVersionUID
      */
-    private static final long serialVersionUID = 1L;
-
-    private final Environment env;
+    private static final long serialVersionUID = 2L;
 
     /** Creates a new instance of this action */
     public EvalAction(Environment env, Action next) {
-        this.env = env;
-        this.next = next;
+        super(env, next);
     }
 
     /** Creates a new instance of this action */
@@ -64,7 +61,7 @@ public class EvalAction extends Action {
     @Override
     Entity invoke(Entity arg, Continuation cont) throws GleamException {
         cont.head = next;
-        trace(out -> out.printf("%s\n", arg.toWriteFormat()));
+        trace(out -> out.printf("%s\n", arg.toWriteFormat()), env);
         return arg.eval(env, cont);
     }
 }

@@ -39,20 +39,19 @@ public class ExpressionInEnvironmentAction extends Action {
     /**
      * serialVersionUID
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     /** the expression to evaluate */
     private Entity expr;
 
     /** Creates a new instance of this action */
-    public ExpressionInEnvironmentAction(Entity expr, Action next) {
-        this.expr = expr;
-        this.next = next;
+    public ExpressionInEnvironmentAction(Entity expr, Environment env, Action next) {
+        super(env, next);
     }
 
     /** Creates a new instance of this action */
-    public ExpressionInEnvironmentAction(Entity expr) {
-        this(expr, null);
+    public ExpressionInEnvironmentAction(Entity expr, Environment env) {
+        this(expr, env, null);
     }
 
     /**
@@ -72,7 +71,7 @@ public class ExpressionInEnvironmentAction extends Action {
         }
         Environment evalEnv = (Environment) newEnv;
         expr = expr.analyze(evalEnv).optimize(evalEnv);
-        trace(out -> out.printf("%s\n", expr.toWriteFormat()));
+        trace(out -> out.printf("%s\n", expr.toWriteFormat()), env);
         return expr.eval(evalEnv, cont);
     }
 }
