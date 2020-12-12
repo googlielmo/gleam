@@ -38,7 +38,7 @@ import gleam.util.Log;
 public class Gleam
 {
     // Gleam release number
-    private static final String RELEASE="1.0.0";
+    private static final String RELEASE="1.0.1";
 
     // Dump env symbol (for debugging)
     private static final Symbol cEnv = Symbol.makeSymbol("!e");

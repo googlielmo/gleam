@@ -1,4 +1,8 @@
-2002-06-21
+2020-12-12
+
+    Backport '/' bug fix.
+
+2020-06-21
 
     Reworked Readme. Added Code of Conduct and Contributing docs.
 
