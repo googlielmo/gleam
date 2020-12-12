@@ -48,7 +48,7 @@ import java.io.PrintStream;
 public class Gleam
 {
     // Gleam release number
-    private static final String RELEASE="1.1-SNAPSHOT";
+    private static final String RELEASE="1.2-SNAPSHOT";
 
     // Dump env symbol (for debugging)
     private static final Entity cEnv = Symbol.makeSymbol("!e");
