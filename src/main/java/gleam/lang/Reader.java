@@ -103,10 +103,26 @@ class Reader {
             }
 
             if (t.equals(")")) {
-                return endList(first, ins);
+                if (first) {
+                    return EmptyList.value;
+                }
+                else {
+                    return l;
+                }
             }
             else if (t.equals(".")) {
-                seendot = dottedPair(first, seendot, ins);
+                if (!seendot) {
+                    if (first) {
+                        throw new GleamException("read: at least one datum must precede \".\"");
+                    }
+                    else {
+                        ins.setCdr(readObject());
+                        seendot = true;
+                    }
+                }
+                else {
+                    throw new GleamException("read: more than one \".\" in a list");
+                }
             }
             else if (!seendot) {
                 tkzr.pushBack();
@@ -115,45 +131,15 @@ class Reader {
                     ins.setCar(readObject());
                 }
                 else {
-                    ins = readCons(ins);
+                    Pair nextcons = new Pair(readObject(), EmptyList.value);
+                    ins.setCdr(nextcons);
+                    ins = nextcons;
                 }
             }
             else {
                 throw new GleamException("read: missing \")\"");
             }
         }
-    }
-
-    private Entity endList(boolean first, Pair pair) {
-        if (first) {
-            return EmptyList.value;
-        }
-        else {
-            return pair;
-        }
-    }
-
-    private boolean dottedPair(boolean first, boolean seendot, Pair pair) throws GleamException, java.io.IOException {
-        if (!seendot) {
-            if (first) {
-                throw new GleamException("read: at least one datum must precede \".\"");
-            }
-            else {
-                pair.setCdr(readObject());
-                seendot = true;
-            }
-        }
-        else {
-            throw new GleamException("read: more than one \".\" in a list");
-        }
-        return seendot;
-    }
-
-    private Pair readCons(Pair ins) throws GleamException, java.io.IOException {
-        Pair nextcons = new Pair(readObject(), EmptyList.value);
-        ins.setCdr(nextcons);
-        ins = nextcons;
-        return ins;
     }
 
     private Entity readObject()
@@ -177,19 +163,19 @@ class Reader {
             case "(":
                 Pair l = new Pair(EmptyList.value, EmptyList.value);
                 return readList(l);
-            case "'": // quote
-                return readQuotedObj(readObject(), Symbol.QUOTE);
-            case "`": // semiquote
-                return readQuotedObj(readObject(), Symbol.QUASIQUOTE);
+            case "'": { // quote
+                Entity quotedobj = readObject();
+                return new Pair(Symbol.QUOTE, new Pair(quotedobj, EmptyList.value));
+            }
+            case "`": { // semiquote
+                Entity quotedobj = readObject();
+                return new Pair(Symbol.QUASIQUOTE, new Pair(quotedobj, EmptyList.value));
+            }
             case ")":  // extra parens
                 throw new GleamException("read: unexpected \")\"");
             default:
                 return readOthers(t);
         }
-    }
-
-    private Entity readQuotedObj(Entity entity, Symbol quote) {
-        return new Pair(quote, new Pair(entity, EmptyList.value));
     }
 
     private Entity readOthers(String t)
@@ -200,7 +186,7 @@ class Reader {
         && !t.equals("-")
         && !t.equals("...")) {
             try {
-                logToken(t, "number");
+                Logger.enter(FINE, "readOthers: interpreting '" + t + "' as a number");
                 return new Real(Double.parseDouble(t));
             }
             catch (NumberFormatException e) {
@@ -208,14 +194,16 @@ class Reader {
             }
         }
         else if (t.startsWith(",@")) {
-            return readQuotedObj(readObject(t.substring(2)), Symbol.UNQUOTE_SPLICING);
+            Entity unquotedobj = readObject(t.substring(2));
+            return new Pair(Symbol.UNQUOTE_SPLICING, new Pair(unquotedobj, EmptyList.value));
         }
         else if (t.startsWith(",")) {
-            return readQuotedObj(readObject(t.substring(1)), Symbol.UNQUOTE);
+            Entity unquotedobj = readObject(t.substring(1));
+            return new Pair(Symbol.UNQUOTE, new Pair(unquotedobj, EmptyList.value));
         }
         else if (t.startsWith("\"")) {
             // it is a string
-            logToken(t, "string");
+            Logger.enter(FINE, "readOthers: interpreting '" + t + "' as a string");
             return new MutableString(t.substring(1));
         }
         else if (t.equalsIgnoreCase("#f")) {
@@ -225,32 +213,24 @@ class Reader {
             return Boolean.trueValue;
         }
         else if (t.startsWith("#\\")) {
-            return getCharacter(t);
+            // poor man's character parser
+            String charstring = t.substring(2);
+            if (charstring.equalsIgnoreCase("space")) {
+                return new Character(' ');
+            }
+            else if (charstring.equalsIgnoreCase("newline")) {
+                return new Character('\n');
+            }
+            else if (charstring.length() == 1) {
+                return new Character(charstring.charAt(0));
+            }
+            else throw new GleamException("read: invalid character");
         }
         else {
             // it is a symbol
-            logToken(t, "symbol");
+            Logger.enter(FINE, "readOthers: interpreting '" + t + "' as a symbol");
             return Symbol.makeSymbol(t);
         }
-    }
-
-    private void logToken(String token, String s) {
-        Logger.enter(FINE, "readOthers: interpreting '" + token + "' as a " +s);
-    }
-
-    private Character getCharacter(String t) throws GleamException {
-        // poor man's character parser
-        String charstring = t.substring(2);
-        if (charstring.equalsIgnoreCase("space")) {
-            return new Character(' ');
-        }
-        else if (charstring.equalsIgnoreCase("newline")) {
-            return new Character('\n');
-        }
-        else if (charstring.length() == 1) {
-            return new Character(charstring.charAt(0));
-        }
-        else throw new GleamException("read: invalid character");
     }
 
     /**
