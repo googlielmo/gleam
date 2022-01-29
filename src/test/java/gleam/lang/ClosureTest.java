@@ -28,50 +28,81 @@ package gleam.lang;
 
 import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class ClosureTest extends TestCase {
+public class ClosureTest {
 
-    public void testGetMaxArity_EmptyList() throws GleamException, IOException {
+    @Test
+    public void getMaxArity_EmptyList() throws GleamException, IOException {
         Closure c1 = getClosureWithParams(EmptyList.value());
         Assert.assertEquals(0, c1.getMaxArity());
     }
 
-    public void testGetMaxArity_OneParam() throws GleamException, IOException {
+    @Test
+    public void getMaxArity_OneParam() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         EmptyList nil = EmptyList.value();
         Closure c1 = getClosureWithParams(new Pair(a, nil));
         Assert.assertEquals(1, c1.getMaxArity());
     }
 
-    public void testGetMaxArity_ManyParams() throws GleamException, IOException {
+    @Test
+    public void getMaxArity_TwoParams() throws GleamException, IOException {
+        Symbol a = Symbol.makeSymbol("a");
+        Symbol b = Symbol.makeSymbol("b");
+        EmptyList nil = EmptyList.value();
+        Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, nil)));
+        Assert.assertEquals(2, c1.getMaxArity());
+    }
+
+    @Test
+    public void getMaxArity_ThreeParams() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
         EmptyList nil = EmptyList.value();
-        Closure c1 = getClosureWithParams(
-                new Pair(a,
-                        new Pair(b,
-                                new Pair(c, nil))));
+        Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, nil))));
         Assert.assertEquals(3, c1.getMaxArity());
     }
 
-    public void testGetMaxArity_ManyParamsAndRest() throws GleamException, IOException {
+    @Test
+    public void getMaxArity_FourParams() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
+        Symbol d = Symbol.makeSymbol("d");
         EmptyList nil = EmptyList.value();
-        Closure c1 = getClosureWithParams(
-                new Pair(a,
-                        new Pair(b, c)));
+        Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, new Pair(d, nil)))));
+        Assert.assertEquals(4, c1.getMaxArity());
+    }
+
+    @Test
+    public void getMaxArity_FiveParams() throws GleamException, IOException {
+        Symbol a = Symbol.makeSymbol("a");
+        Symbol b = Symbol.makeSymbol("b");
+        Symbol c = Symbol.makeSymbol("c");
+        Symbol d = Symbol.makeSymbol("d");
+        Symbol e = Symbol.makeSymbol("e");
+        EmptyList nil = EmptyList.value();
+        Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, new Pair(d, new Pair(e, nil))))));
+        Assert.assertEquals(5, c1.getMaxArity());
+    }
+
+    @Test
+    public void getMaxArity_TwoParamsAndRest() throws GleamException, IOException {
+        Symbol a = Symbol.makeSymbol("a");
+        Symbol b = Symbol.makeSymbol("b");
+        Symbol c = Symbol.makeSymbol("rest");
+        Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, c)));
         Assert.assertEquals(-1, c1.getMaxArity());
     }
 
-    public void testGetMaxArity_RestOnly() throws GleamException, IOException {
-        Symbol a = Symbol.makeSymbol("a");
-        EmptyList nil = EmptyList.value();
+    @Test
+    public void getMaxArity_RestOnly() throws GleamException, IOException {
+        Symbol a = Symbol.makeSymbol("rest");
         Closure c1 = getClosureWithParams(a);
         Assert.assertEquals(-1, c1.getMaxArity());
     }

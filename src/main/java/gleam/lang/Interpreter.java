@@ -44,8 +44,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static gleam.lang.Environment.Kind.*;
-import static gleam.util.Logger.Level.ERROR;
-import static gleam.util.Logger.Level.FINE;
+import static gleam.util.Logger.Level.*;
 
 /**
  * The Gleam Scheme Interpreter
@@ -63,7 +62,7 @@ public class Interpreter {
     /** the long-help map */
     private static final HashMap<String, String> helpDocumentation = new HashMap<>();
 
-    private static final Logger.Level DEFAULT = FINE;
+    private static final Logger.Level DEFAULT = INFO;
 
     private static boolean traceEnabled = false;
 

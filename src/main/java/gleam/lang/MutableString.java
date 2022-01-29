@@ -27,6 +27,7 @@
 package gleam.lang;
 
 import java.io.PrintWriter;
+import java.util.Objects;
 
 /**
  * Scheme mutable string.
@@ -39,7 +40,7 @@ public class MutableString extends AbstractEntity {
     private static final long serialVersionUID = 1L;
 
     /** The current string value. */
-    final StringBuffer value;
+    final StringBuilder value;
 
     /**
      * Creates a new Scheme string.
@@ -47,7 +48,8 @@ public class MutableString extends AbstractEntity {
      * @param s java.lang.String
      */
     public MutableString(String s) {
-        value = new StringBuffer(s);
+        Objects.requireNonNull(s);
+        value = new StringBuilder(s);
     }
 
     /**
@@ -96,5 +98,19 @@ public class MutableString extends AbstractEntity {
     public void display(java.io.PrintWriter out) {
         out.print(value);
     }
-}
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MutableString that = (MutableString) o;
+        return value.toString().equals(that.toString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(value);
+    }
+}

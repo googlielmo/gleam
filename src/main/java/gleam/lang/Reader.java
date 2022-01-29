@@ -84,7 +84,7 @@ class Reader {
             return o;
         }
         catch (java.io.IOException e) {
-            throw new GleamException("read: I/O Error "+ e.getMessage());
+            throw new GleamException("read: I/O Error " + e.getMessage());
         }
     }
 
@@ -92,7 +92,8 @@ class Reader {
         throws GleamException, java.io.IOException
     {
         String t;
-        boolean first = true, seendot = false;
+        boolean first = true;
+        boolean seendot = false;
 
         Pair ins = l; // which cons are we inserting stuff into?
 
@@ -186,7 +187,7 @@ class Reader {
         && !t.equals("-")
         && !t.equals("...")) {
             try {
-                Logger.enter(FINE, "readOthers: interpreting '" + t + "' as a number");
+                logReadOthers(t, "number");
                 return new Real(Double.parseDouble(t));
             }
             catch (NumberFormatException e) {
@@ -203,7 +204,7 @@ class Reader {
         }
         else if (t.startsWith("\"")) {
             // it is a string
-            Logger.enter(FINE, "readOthers: interpreting '" + t + "' as a string");
+            logReadOthers(t, "string");
             return new MutableString(t.substring(1));
         }
         else if (t.equalsIgnoreCase("#f")) {
@@ -228,7 +229,7 @@ class Reader {
         }
         else {
             // it is a symbol
-            Logger.enter(FINE, "readOthers: interpreting '" + t + "' as a symbol");
+            logReadOthers(t, "symbol");
             return Symbol.makeSymbol(t);
         }
     }
@@ -265,8 +266,12 @@ class Reader {
         }
 
         if (retVal != null)
-            Logger.enter(FINE, "TOKEN="+retVal);
+            Logger.enter(FINE, "TOKEN=" + retVal);
 
         return retVal;
+    }
+
+    void logReadOthers(String token, String type) {
+        Logger.enter(FINE, String.format("readOthers: interpreting '%s' as a %s", token, type));
     }
 }
