@@ -28,129 +28,148 @@ package gleam;
 
 import gleam.lang.EmptyList;
 import gleam.lang.Entity;
+import gleam.lang.Environment;
 import gleam.lang.Eof;
 import gleam.lang.GleamException;
-import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
-import gleam.lang.MutableString;
 import gleam.lang.OutputPort;
 import gleam.lang.Pair;
 import gleam.lang.Symbol;
 import gleam.lang.Void;
 import gleam.util.Logger;
 
-import java.io.PrintStream;
-
-
 /**
  * The Gleam interactive interpreter.
  */
-public class Gleam
-{
+public class Gleam {
+
     // Gleam release number
-    private static final String RELEASE="1.2-SNAPSHOT";
+    static final String RELEASE = "1.2-SNAPSHOT";
 
-    // Dump env symbol (for debugging)
-    private static final Entity cEnv = Symbol.makeSymbol("!e");
-
-    // Help symbol
-    private static final Entity cHelp = Symbol.makeSymbol("!h");
-
-    // Quit symbol
-    private static final Entity cQuit = Symbol.makeSymbol("!q");
-
-    // Trace on symbol
-    private static final Entity cTron = Symbol.makeSymbol("!tron");
-
-    // Trace off symbol
-    private static final Entity cTroff = Symbol.makeSymbol("!troff");
-
-    // '(help)
-    public static final Entity CALL_HELP = new Pair(Symbol.HELP, EmptyList.value());
+    // the interactive prompt
+    static final String PROMPT = "> ";
+    // Quit control symbol
+    static final Symbol C_QUIT = Symbol.makeSymbol("!q");
+    // Dump env control symbol
+    static final String C_ENV = "!e";
+    // Help control symbol
+    static final String C_HELP = "!h";
+    // Trace on control symbol
+    static final String C_TRON = "!tron";
+    // Trace off control symbol
+    static final String C_TROFF = "!troff";
+    // Shortcut for '(help)
+    static final Entity CALL_HELP = new Pair(Symbol.HELP, EmptyList.value());
 
     /**
      * Entry point for the Gleam interactive interpreter
+     *
      * @param args command line arguments
      */
     public static void main(String[] args)
     {
-        Interpreter intp = null;
-        PrintStream out = java.lang.System.out;
-        String version = Gleam.class.getPackage().getImplementationVersion();
+        final Interpreter intp = bootstrap();
+        final Environment session = intp.getSessionEnv();
+        final OutputPort w = intp.getCout();
 
-        out.printf("Welcome to Gleam, release %s\n", version != null ? version : RELEASE);
-        out.println("(c) 2001-2020 Guglielmo Nigri <guglielmonigri@yahoo.it>.");
-        out.println("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are");
-        out.println("welcome to redistribute it under certain conditions; see LICENSE.TXT.");
+        welcome(w);
 
-        try {
-            out.print("Bootstrapping... ");
-            intp = Interpreter.newInterpreter();
-            out.println("OK");
-        } catch (GleamException e) {
-            Logger.error(e);
-            java.lang.System.exit(1);
-        }
-        out.print("Type !h for help, !q to quit.\n\n");
+        Entity obj = Void.value();
 
-        gleam.lang.Environment session;
-
-        InputPort r = intp.getCin();
-        OutputPort w = intp.getCout();
-
-        Entity prompt = new MutableString("> ");
-        Entity result;
-
-        while (true)
-        {
+        // the REPL loop
+        do {
             try {
-                // get session environment for execution
-                session = intp.getSessionEnv();
+                prompt(w, PROMPT);
 
-                // read
-                w.display(prompt);
-                w.flush();
+                if ((obj = readEntity(intp)) != null) {
+                    Entity result = intp.eval(obj, session);
 
-                Entity obj = r.read();
-
-                if (obj == cEnv) {
-                    session.dump();
-                    continue;
+                    if (result != Void.value()) {
+                        w.write(result);
+                    }
+                    w.newline();
                 }
-                else if (obj == Eof.value() || obj == cQuit) {
-                    out.println("Bye.");
-                    break;
-                }
-                else if (obj == cTron) {
-                    intp.traceOn();
-                    continue;
-                }
-                else if (obj == cTroff) {
-                    intp.traceOff();
-                    continue;
-                }
-                else if (obj == cHelp) {
-                    out.print("Enable trace with !tron, disable with !troff.\n\n");
-                    obj = CALL_HELP;
-                }
-
-                // eval
-                result = intp.eval(obj, session);
-
-                // print
-                if (result != Void.value()) w.write(result);
-                w.newline();
-            }
-            catch (GleamException e) {
+            } catch (GleamException e) {
                 intp.getInteractionEnv().define(Symbol.ERROBJ, e.value());
-                out.println("*** " + e.getMessage());
+                w.printf("*** %s\n", e.getMessage());
                 intp.clearContinuation();
-            }
-            catch (Exception e){
-                out.println("*** Uncaught Exception: " + e.getMessage());
+            } catch (Exception e) {
+                w.printf("*** Uncaught Exception: %s\n", e.getMessage());
                 Logger.error(e);
                 intp.clearContinuation();
             }
+        } while (obj != null);
+
+        prompt(w, "Bye!");
+    }
+
+    private static void prompt(OutputPort w, String prompt)
+    {
+        if (w.isConsole()) {
+            w.print(prompt);
+            w.flush();
         }
+    }
+
+    private static Interpreter bootstrap()
+    {
+        final Interpreter intp;
+        try {
+            Logger.enter(Logger.Level.FINE, "Bootstrapping Gleam... ");
+            intp = Interpreter.newInterpreter();
+            Logger.enter(Logger.Level.FINE, "... done");
+        } catch (GleamException e) {
+            Logger.error(e);
+            System.exit(1);
+            return null;
+        }
+        return intp;
+    }
+
+    private static void welcome(OutputPort w)
+    {
+        if (w.isConsole()) {
+            String version = Gleam.class.getPackage().getImplementationVersion();
+            w.printf("Welcome to Gleam, release %s\n", version != null ? version : RELEASE);
+            w.print("(c) 2001-2020 Guglielmo Nigri <guglielmonigri@yahoo.it>.\n");
+            w.print("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are\n");
+            w.print("welcome to redistribute it under certain conditions; see LICENSE.TXT.\n");
+            w.print("Type !h for help, !q to quit.\n\n");
+        }
+    }
+
+    private static Entity readEntity(Interpreter intp) throws GleamException
+    {
+        Entity obj = intp.getCin().read();
+
+        // check for EOF
+        if (obj == Eof.value() || obj == C_QUIT) {
+            return null;
+        }
+
+        // check for control symbols
+        if (obj instanceof Symbol) {
+            switch (obj.toString()) {
+                case C_ENV:
+                    intp.getSessionEnv().dump();
+                    obj = Void.value();
+                    break;
+                case C_TRON:
+                    Interpreter.traceOn();
+                    obj = Void.value();
+                    break;
+                case C_TROFF:
+                    Interpreter.traceOff();
+                    obj = Void.value();
+                    break;
+                case C_HELP:
+                    intp.getCout().print("Enable trace with !tron, disable with !troff.\n\n");
+                    obj = CALL_HELP;
+                    break;
+                default:
+            }
+        }
+
+        return obj;
     }
 }

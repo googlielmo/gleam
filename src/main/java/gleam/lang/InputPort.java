@@ -154,6 +154,5 @@ public class InputPort extends Port implements Closeable
             Logger.enter(FINE, "loadForEval: read object", obj);
             Interpreter.addForEval(obj, env, cont);
         }
-
     }
 }

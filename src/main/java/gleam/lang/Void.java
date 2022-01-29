@@ -70,4 +70,3 @@ public final class Void extends AbstractEntity {
         out.write("#<void>");
     }
 }
-

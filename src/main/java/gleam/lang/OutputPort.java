@@ -26,17 +26,11 @@
 
 package gleam.lang;
 
-import gleam.util.Logger;
-
 import java.io.Closeable;
-import java.io.FileDescriptor;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.Flushable;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.SyncFailedException;
 
 /**
  * Scheme output port object.
@@ -104,6 +98,13 @@ public class OutputPort extends Port implements Closeable, Flushable
     @Override
     public boolean isOpen() {
         return null != out;
+    }
+
+    /**
+     * @return whether this is the system Console
+     */
+    public boolean isConsole() {
+        return isConsole;
     }
 
     /**

@@ -39,6 +39,7 @@ import gleam.util.Logger;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -75,19 +76,13 @@ public class Interpreter {
     private final Continuation cont;
 
     /** the null environment, as defined in r5rs */
-    private final Environment nullEnv;
+    private final Environment nullEnv = new SystemEnvironment(NULL_ENV);
 
     /** the scheme-report environment, as defined in r5rs */
-    private final Environment reportEnv;
+    private final Environment reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
 
     /** the interaction environment, as defined in r5rs */
-    private final Environment interactionEnv;
-
-    {
-        nullEnv = new SystemEnvironment(NULL_ENV);
-        reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
-        interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
-    }
+    private final Environment interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
 
     /** the current-input-port */
     private InputPort cin = null;
@@ -330,8 +325,10 @@ public class Interpreter {
         cin = new InputPort(new java.io.BufferedReader(
                 new java.io.InputStreamReader(
                         java.lang.System.in)));
+
         boolean isConsole = java.lang.System.console() != null;
         cout = new OutputPort(java.lang.System.out, isConsole);
+
         getNullEnv().setIn(cin);
         getNullEnv().setOut(cout);
         getSchemeReportEnv().setIn(cin);
@@ -437,7 +434,8 @@ public class Interpreter {
     public void load(InputPort reader, Environment env) throws GleamException
     {
         // read
-        Entity obj, val;
+        Entity obj;
+        Entity val;
         while ((obj = reader.read()) != Eof.value()) {
             // eval
             Logger.enter(FINE, "load: read object", obj);
@@ -457,7 +455,7 @@ public class Interpreter {
                 new gleam.lang.InputPort(
                     new java.io.BufferedReader(
                         new java.io.InputStreamReader(
-                            getClass().getResourceAsStream("/bootstrap.scm"))));
+                                Objects.requireNonNull(getClass().getResourceAsStream("/bootstrap.scm")))));
             load(bootstrap, getSchemeReportEnv());
             bootstrapped = true;
         }
