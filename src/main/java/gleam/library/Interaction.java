@@ -62,6 +62,8 @@ public final class Interaction {
     private Interaction() {
     }
 
+    public static final String INVALID_ARGUMENT = "invalid argument";
+
     /**
      * This array contains definitions of primitives.
      * It is used by static initializers in gleam.lang.System to populate
@@ -78,7 +80,7 @@ public final class Interaction {
         0, 1, /* min, max no. of arguments */
         "Gives a short help on a primitive, e.g. (help if)",
         null /* doc strings */ ) {
-    private static final int helpColumnWidth = 15;
+    private static final int helpColumnWidth = 19;
     @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
@@ -88,7 +90,7 @@ public final class Interaction {
             // we have an explicit argument,
             // so print full documentation
             if (!(arg1 instanceof Symbol)) {
-                throw new GleamException(this, "invalid argument", arg1);
+                throw new GleamException(this, INVALID_ARGUMENT, arg1);
             }
 
             String pname = arg1.toString();
@@ -152,7 +154,7 @@ public final class Interaction {
         throws GleamException
     {
         if (!(arg1 instanceof Number)) {
-            throw new GleamException(this, "invalid argument", arg1);
+            throw new GleamException(this, INVALID_ARGUMENT, arg1);
         }
         double v = ((Number)arg1).getDoubleValue();
         if (v < Level.ALL.getValue() || v > Level.ERROR.getValue()) {
@@ -207,7 +209,7 @@ public final class Interaction {
             }
         }
         else {
-            throw new GleamException(this, "invalid argument", arg1);
+            throw new GleamException(this, INVALID_ARGUMENT, arg1);
         }
     }},
 
@@ -250,7 +252,7 @@ public final class Interaction {
             }
         }
         else {
-            throw new GleamException(this, "invalid argument", arg1);
+            throw new GleamException(this, INVALID_ARGUMENT, arg1);
         }
     }},
 

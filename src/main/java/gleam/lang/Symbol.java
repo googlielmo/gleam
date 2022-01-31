@@ -51,33 +51,33 @@ public final class Symbol extends AbstractEntity
      * common symbols (some are keywords, some are not)
      * defined here as constants for convenience
      */
-    public final static Symbol AND = makeSymbol("and");
-    public final static Symbol APPEND = makeSymbol("append");
-    public final static Symbol ARROW = makeSymbol("=>");
-    public final static Symbol BEGIN = makeSymbol("begin");
-    public final static Symbol CALL_CC = makeSymbol("call/cc");
-    public final static Symbol CALL_WITH_CURRENT_CONTINUATION = makeSymbol("call-with-current-continuation");
-    public final static Symbol CASE = makeSymbol("case");
-    public final static Symbol COND = makeSymbol("cond");
-    public final static Symbol CONS = makeSymbol("cons");
-    public final static Symbol DEFINE = makeSymbol("define");
-    public final static Symbol DELAY = makeSymbol("delay");
-    public final static Symbol DO = makeSymbol("do");
-    public final static Symbol ELSE = makeSymbol("else");
-    public final static Symbol ERROBJ = makeSymbol("__errobj");
-    public final static Symbol HELP = makeSymbol("help");
-    public final static Symbol IF = makeSymbol("if");
-    public final static Symbol LAMBDA = makeSymbol("lambda");
-    public final static Symbol LET = makeSymbol("let");
-    public final static Symbol LETREC = makeSymbol("letrec");
-    public final static Symbol LETSTAR = makeSymbol("let*");
-    public final static Symbol LIST = makeSymbol("list");
-    public final static Symbol OR = makeSymbol("or");
-    public final static Symbol QUASIQUOTE = makeSymbol("quasiquote");
-    public final static Symbol QUOTE = makeSymbol("quote");
-    public final static Symbol SET = makeSymbol("set!");
-    public final static Symbol UNQUOTE = makeSymbol("unquote");
-    public final static Symbol UNQUOTE_SPLICING = makeSymbol("unquote-splicing");
+    public static final Symbol AND = makeSymbol("and");
+    public static final Symbol APPEND = makeSymbol("append");
+//    public static final Symbol ARROW = makeSymbol("=>");
+    public static final Symbol BEGIN = makeSymbol("begin");
+    public static final Symbol CALL_CC = makeSymbol("call/cc");
+    public static final Symbol CALL_WITH_CURRENT_CONTINUATION = makeSymbol("call-with-current-continuation");
+    public static final Symbol CASE = makeSymbol("case");
+    public static final Symbol COND = makeSymbol("cond");
+    public static final Symbol CONS = makeSymbol("cons");
+    public static final Symbol DEFINE = makeSymbol("define");
+//    public static final Symbol DELAY = makeSymbol("delay"); // TODO implement delay / force
+    public static final Symbol DO = makeSymbol("do");
+    public static final Symbol ELSE = makeSymbol("else");
+    public static final Symbol ERROBJ = makeSymbol("__errobj");
+    public static final Symbol HELP = makeSymbol("help");
+    public static final Symbol IF = makeSymbol("if");
+    public static final Symbol LAMBDA = makeSymbol("lambda");
+    public static final Symbol LET = makeSymbol("let");
+    public static final Symbol LETREC = makeSymbol("letrec");
+    public static final Symbol LETSTAR = makeSymbol("let*");
+    public static final Symbol LIST = makeSymbol("list");
+    public static final Symbol OR = makeSymbol("or");
+    public static final Symbol QUASIQUOTE = makeSymbol("quasiquote");
+    public static final Symbol QUOTE = makeSymbol("quote");
+    public static final Symbol SET = makeSymbol("set!");
+    public static final Symbol UNQUOTE = makeSymbol("unquote");
+    public static final Symbol UNQUOTE_SPLICING = makeSymbol("unquote-splicing");
 
     /**
      * String representation

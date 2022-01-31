@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -138,7 +138,7 @@ public class Gleam {
             w.print("(c) 2001-2020 Guglielmo Nigri <guglielmonigri@yahoo.it>.\n");
             w.print("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are\n");
             w.print("welcome to redistribute it under certain conditions; see LICENSE.TXT.\n");
-            w.print("Type !h for help, !q to quit.\n\n");
+            w.print("\nType !h for help, !q to quit.\n\n");
         }
     }
 

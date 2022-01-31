@@ -102,7 +102,7 @@ public final class ControlFeatures {
     new Primitive( "apply",
         REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
         2, 2, /* min, max no. of arguments */
-        null, null /* doc strings */ ) {
+        "Calls a procedure with arguments, e.g. (apply + 1 2)", null /* doc strings */ ) {
     @Override
     public Entity apply2(Entity proc, Entity args, Environment env, Continuation cont)
         throws GleamException

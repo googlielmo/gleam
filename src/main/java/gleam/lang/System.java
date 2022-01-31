@@ -26,13 +26,13 @@
 
 package gleam.lang;
 
-import gleam.library.Primitive;
 import gleam.util.Logger;
 
 import java.util.Collection;
 import java.util.HashSet;
 
-import static gleam.util.Logger.Level.*;
+import static gleam.util.Logger.Level.FINE;
+import static gleam.util.Logger.Level.WARNING;
 
 /**
  * Scheme runtime support.
@@ -51,7 +51,7 @@ public final class System
      * @return true is symbol represents a special form
      * @throws GleamException in case of error
      */
-    public static boolean isSpecialForm(Symbol symbol, Environment env) throws GleamException {
+    public static boolean isSpecialForm(Symbol symbol, Environment env) {
         Location location = env.getLocationOrNull(symbol);
         boolean isSyntaxProcedure = false;
         boolean isSyntaxRewriter = false;
@@ -203,14 +203,14 @@ public final class System
         }
         else if (op == Symbol.DO) {
         }
-        else if (op == Symbol.DELAY) {
-            // delay wants one expression
-            it.replace(arg.analyze(env));
-            if (it.hasNext()) {
-                throw new GleamException(
-                        "delay: too many arguments", form);
-            }
-        }
+//        else if (op == Symbol.DELAY) {
+//            // delay wants one expression
+//            it.replace(arg.analyze(env));
+//            if (it.hasNext()) {
+//                throw new GleamException(
+//                        "delay: too many arguments", form);
+//            }
+//        }
         else if (op == Symbol.DEFINE) {
             // analyze variable or function
             boolean isFunction;
@@ -383,12 +383,12 @@ public final class System
 //      else if (op == Symbol.LETREC) {
 //          // TODO
 //      }
-        else if (op == Symbol.DO) {
-            // TODO
-        }
-        else if (op == Symbol.DELAY) {
-            // TODO
-        }
+//        else if (op == Symbol.DO) {
+//            // TODO
+//        }
+//        else if (op == Symbol.DELAY) {
+//            // TODO
+//        }
         else if (op == Symbol.QUASIQUOTE) {
             // shall not touch arg, like quote
         }
@@ -537,8 +537,8 @@ public final class System
             List partialList = internalScanOut(it.next());
             ListIterator it2 = new ListIterator(partialList);
             while (it2.hasNext()) {
-                Entity var = it2.next();
-                varList = new Pair(var, varList);
+                Entity v = it2.next();
+                varList = new Pair(v, varList);
             }
         }
         if (varList == EmptyList.value) {
@@ -550,9 +550,9 @@ public final class System
             Logger.enter(FINE, "Scanned out: ");
             ListIterator vit = new ListIterator(varList);
             while (vit.hasNext()) {
-                Symbol var = (Symbol) vit.next();
-                retVal.define(var, Undefined.value);
-                Logger.enter(FINE, "variable", var);
+                Symbol v = (Symbol) vit.next();
+                retVal.define(v, Undefined.value);
+                Logger.enter(FINE, "variable", v);
             }
             Logger.enter(FINE, "...end of scan-out");
             return retVal;

@@ -227,7 +227,7 @@ public final class Syntax {
     new Primitive( "case",
         NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-        null, null /* doc strings */ ) {
+        "See cond", null /* doc strings */ ) {
     },
 
     /**
@@ -237,18 +237,18 @@ public final class Syntax {
     new Primitive( "do",
         NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-        null, null /* doc strings */ ) {
+        "Iteration syntax (not implemented)", null /* doc strings */ ) { // FIXME implement and change doc strings!
     },
 
-    /**
-     * delay
-     * @todo implementation
-     */
-    new Primitive( "delay",
-        NULL_ENV, Primitive.KEYWORD, /* environment, type */
-        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-        null, null /* doc strings */ ) {
-    },
+//    /**
+//     * delay
+//     * @todo implementation
+//     */
+//    new Primitive( "delay",
+//        NULL_ENV, Primitive.KEYWORD, /* environment, type */
+//        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+//        null, null /* doc strings */ ) {
+//    },
 
     /**
      * quasiquote
@@ -275,18 +275,18 @@ public final class Syntax {
     new Primitive( "else",
         NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-        null, null /* doc strings */ ) {
+        "See cond", null /* doc strings */ ) {
     },
 
-    /**
-     * =>
-     * @todo implementation
-     */
-    new Primitive( "=>",
-        NULL_ENV, Primitive.KEYWORD, /* environment, type */
-        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-        null, null /* doc strings */ ) {
-    },
+//    /**
+//     * =>
+//     * @todo implementation
+//     */
+//    new Primitive( "=>",
+//        NULL_ENV, Primitive.KEYWORD, /* environment, type */
+//        0, Primitive.VAR_ARGS, /* min, max no. of arguments */
+//        null, null /* doc strings */ ) {
+//    },
 
     /**
      * let
@@ -294,7 +294,7 @@ public final class Syntax {
     new Primitive( "let",
         NULL_ENV, Primitive.KEYWORD, /* environment, type */
             1, Primitive.VAR_ARGS, /* min, max no. of arguments */
-            null, null /* doc strings */ ) {
+            "Introduce bindings, e.g. (let ((x 2) (y 3)) (* x y))", null /* doc strings */ ) {
     },
 
     /**
@@ -304,7 +304,7 @@ public final class Syntax {
     new Primitive( "let*",
         NULL_ENV, Primitive.KEYWORD, /* environment, type */
             1, Primitive.VAR_ARGS, /* min, max no. of arguments */
-            null, null /* doc strings */ ) {
+            "Introduce bindings sequentially, e.g. (let* ((x 9) (y (+ x 1))) (+ x y))", null /* doc strings */ ) {
     },
 
     /**
@@ -313,7 +313,7 @@ public final class Syntax {
     new Primitive( "cond",
         NULL_ENV, Primitive.KEYWORD, /* environment, type */
             1, Primitive.VAR_ARGS, /* min, max no. of arguments */
-            null, null /* doc strings */ ) {
+            "Conditional, e.g. (cond ((> 3 3) 'greater) ((< 3 3) 'less) (else 'equal))", null /* doc strings */ ) {
     },
 
     /**
@@ -322,7 +322,7 @@ public final class Syntax {
     new Primitive( "unquote",
         NULL_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
-        null, null /* doc strings */ ) {
+        "Or ','. Evaluates an expression inserting its result in a quasiquote template, e.g. `(1 ,(+ 1 1) 3)", null /* doc strings */ ) {
     },
 
     /**
@@ -331,7 +331,7 @@ public final class Syntax {
     new Primitive( "unquote-splicing",
         NULL_ENV, Primitive.KEYWORD, /* environment, type */
         1, 1, /* min, max no. of arguments */
-        null, null /* doc strings */ ) {
+        "Or ',@'. Evaluates a list inserting its elements in a quasiquote template, e.g. `(1 ,@(list 2 3) 4)", null /* doc strings */ ) {
     },
 
     /**
