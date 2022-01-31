@@ -38,6 +38,8 @@ import gleam.lang.Symbol;
 import gleam.lang.Void;
 import gleam.util.Logger;
 
+import static gleam.util.Logger.Level.WARNING;
+
 /**
  * The Gleam interactive interpreter.
  */
@@ -68,6 +70,8 @@ public class Gleam {
      */
     public static void main(String[] args)
     {
+        Logger.setLevel(WARNING);
+
         final Interpreter intp = bootstrap();
         final Environment session = intp.getSessionEnv();
         final OutputPort w = intp.getCout();

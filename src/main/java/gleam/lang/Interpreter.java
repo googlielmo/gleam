@@ -62,8 +62,6 @@ public class Interpreter {
     /** the long-help map */
     private static final HashMap<String, String> helpDocumentation = new HashMap<>();
 
-    private static final Logger.Level DEFAULT = INFO;
-
     private static boolean traceEnabled = false;
 
     /**
@@ -172,9 +170,9 @@ public class Interpreter {
             throws GleamException
     {
         Interpreter interpreter = new Interpreter();
-        Logger.enter(DEFAULT, String.format("created Interpreter %s", interpreter));
+        Logger.enter(Logger.Level.FINE, String.format("created Interpreter %s", interpreter));
         interpreter.bootstrap();
-        Logger.enter(DEFAULT, String.format("bootstrapped Interpreter %s", interpreter));
+        Logger.enter(FINE, String.format("bootstrapped Interpreter %s", interpreter));
 
         return interpreter;
     }
