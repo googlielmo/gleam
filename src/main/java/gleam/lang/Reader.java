@@ -31,6 +31,7 @@ import gleam.util.Logger;
 import java.io.StreamTokenizer;
 
 import static gleam.util.Logger.Level.FINE;
+import static java.io.StreamTokenizer.TT_EOF;
 
 /**
  * Scheme reader (lexical analyzer & parser).
@@ -76,15 +77,53 @@ class Reader {
         throws GleamException
     {
         try {
-            Entity o = null;
-            if (tkzr.nextToken() != StreamTokenizer.TT_EOF) {
-                tkzr.pushBack();
-                o = readObject();
+            if (tkzr.nextToken() == TT_EOF) {
+                return null;
             }
-            return o;
+
+            tkzr.pushBack();
+            return readObject();
         }
         catch (java.io.IOException e) {
             throw new GleamException("read: I/O Error " + e.getMessage());
+        }
+    }
+
+    private Entity readObject()
+            throws GleamException, java.io.IOException
+    {
+        String t = readToken();
+        if (t == null) {
+            throw new GleamException("read: unexpected end of input");
+        }
+
+        return readObject(t);
+    }
+
+    private Entity readObject(String t)
+            throws GleamException, java.io.IOException
+    {
+        if (t.equals("")) {
+            return readObject(); // special case for unquote/unquote-splicing
+        }
+
+        switch (t) {
+            case "(":
+                Pair l = new Pair(EmptyList.value, EmptyList.value);
+                try {
+                    return readList(l);
+                } catch (GleamException e) {
+                    resyncInputAfterError();
+                    throw e;
+                }
+            case "'": // quote
+                return readQuotedObj(readObject(), Symbol.QUOTE);
+            case "`": // semiquote
+                return readQuotedObj(readObject(), Symbol.QUASIQUOTE);
+            case ")":  // extra parens
+                throw new GleamException("read: unexpected \")\"");
+            default:
+                return readOthers(t);
         }
     }
 
@@ -92,10 +131,10 @@ class Reader {
         throws GleamException, java.io.IOException
     {
         String t;
-        boolean first = true;
-        boolean seendot = false;
+        boolean readingCar = true;
+        boolean dotSeen = false;
 
-        Pair ins = l; // which cons are we inserting stuff into?
+        Pair ins = l; // current cons we are inserting stuff into
 
         while (true) {
             t = readToken();
@@ -104,23 +143,24 @@ class Reader {
             }
 
             if (t.equals(")")) {
-                return endList(first, ins);
+                return endList(readingCar, l);
             }
             else if (t.equals(".")) {
-                seendot = dottedPair(first, seendot, ins);
+                dottedPair(readingCar, dotSeen, ins);
+                dotSeen = true;
+                continue;
             }
-            else if (!seendot) {
-                tkzr.pushBack();
-                if (first) {
-                    first = false;
-                    ins.setCar(readObject());
-                }
-                else {
-                    ins = readCons(ins);
-                }
+            else if (dotSeen) {
+                throw new GleamException("read: too many values after \".\"");
+            }
+
+            tkzr.pushBack();
+            if (readingCar) {
+                readingCar = false;
+                ins.setCar(readObject());
             }
             else {
-                throw new GleamException("read: missing \")\"");
+                ins = readCdr(ins);
             }
         }
     }
@@ -141,51 +181,28 @@ class Reader {
             }
             else {
                 pair.setCdr(readObject());
-                seendot = true;
             }
         }
         else {
             throw new GleamException("read: more than one \".\" in a list");
         }
-        return seendot;
+        return true;
     }
 
-    private Pair readCons(Pair ins) throws GleamException, java.io.IOException {
+    private Pair readCdr(Pair ins) throws GleamException, java.io.IOException {
         Pair nextcons = new Pair(readObject(), EmptyList.value);
         ins.setCdr(nextcons);
-        ins = nextcons;
-        return ins;
+        return nextcons;
     }
 
-    private Entity readObject()
-        throws GleamException, java.io.IOException
+    private void resyncInputAfterError() throws java.io.IOException
     {
-        String t = readToken();
-        if (t == null) {
-            throw new GleamException("read: unexpected end of input");
-        }
-
-        return readObject(t);
-    }
-
-    private Entity readObject(String t)
-        throws GleamException, java.io.IOException
-    {
-        if (t.equals("")) {
-            return readObject(); // special case for unquote/unquote-splicing
-        }
-        switch (t) {
-            case "(":
-                Pair l = new Pair(EmptyList.value, EmptyList.value);
-                return readList(l);
-            case "'": // quote
-                return readQuotedObj(readObject(), Symbol.QUOTE);
-            case "`": // semiquote
-                return readQuotedObj(readObject(), Symbol.QUASIQUOTE);
-            case ")":  // extra parens
-                throw new GleamException("read: unexpected \")\"");
-            default:
-                return readOthers(t);
+        // consume all tokens until the next ")"
+        while (true) {
+            String t = readToken();
+            if (t == null || t.equals(")")) {
+                return;
+            }
         }
     }
 
@@ -236,7 +253,7 @@ class Reader {
     }
 
     private void logToken(String token, String s) {
-        Logger.enter(FINE, "readOthers: interpreting '" + token + "' as a " +s);
+        Logger.enter(FINE, String.format("readOthers: interpreting '%s' as a %s", token, s));
     }
 
     private Character getCharacter(String t) throws GleamException {
@@ -264,7 +281,7 @@ class Reader {
         int c = tkzr.nextToken();
 
         switch(tkzr.ttype) {
-            case StreamTokenizer.TT_EOF:
+            case TT_EOF:
                 retVal = null;
                 break;
 
@@ -285,13 +302,6 @@ class Reader {
                 break;
         }
 
-        if (retVal != null)
-            Logger.enter(FINE, "TOKEN=" + retVal);
-
         return retVal;
-    }
-
-    void logReadOthers(String token, String type) {
-        Logger.enter(FINE, String.format("readOthers: interpreting '%s' as a %s", token, type));
     }
 }
