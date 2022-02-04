@@ -214,17 +214,18 @@ public class Logger {
     }
 
     private static java.util.logging.Logger getJulLogger() {
-        if (loggerThreadLocal.get() == null) {
-            java.util.logging.Logger logger = java.util.logging.Logger.getLogger("gleam");
-            if (logger.getHandlers().length == 0) {
-                logger.setUseParentHandlers(false);
-                final ConsoleHandler consoleHandler = new ConsoleHandler();
-                consoleHandler.setLevel(java.util.logging.Level.ALL);
-                logger.addHandler(consoleHandler);
-            }
-            logger.setLevel(java.util.logging.Level.INFO);
-            loggerThreadLocal.set(logger);
+        if (loggerThreadLocal.get() != null)
+            return loggerThreadLocal.get();
+
+        java.util.logging.Logger logger = java.util.logging.Logger.getLogger("gleam");
+        if (logger.getHandlers().length == 0) {
+            logger.setUseParentHandlers(false);
+            final ConsoleHandler consoleHandler = new ConsoleHandler();
+            consoleHandler.setLevel(java.util.logging.Level.ALL);
+            logger.addHandler(consoleHandler);
         }
+        logger.setLevel(java.util.logging.Level.INFO);
+        loggerThreadLocal.set(logger);
         return loggerThreadLocal.get();
     }
 }
