@@ -1,22 +1,22 @@
 package gleam.util;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static gleam.util.Logger.Level.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LoggerTest {
+class LoggerTest {
 
     Logger logger;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         logger = Logger.getLogger();
     }
 
     @Test
-    public void getLevel0() {
+    void getLevel0() {
         // given
         logger.setLevel(0);
         // expected
@@ -24,7 +24,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLevel1() {
+    void getLevel1() {
         // given
         logger.setLevel(1);
         // expected
@@ -32,7 +32,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLevel2() {
+    void getLevel2() {
         // given
         logger.setLevel(2);
         // expected
@@ -40,7 +40,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLevel3() {
+    void getLevel3() {
         // given
         logger.setLevel(3);
         // expected
@@ -48,7 +48,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLevel4() {
+    void getLevel4() {
         // given
         logger.setLevel(4);
         // expected
@@ -56,7 +56,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLevel5() {
+    void getLevel5() {
         // given
         logger.setLevel(5);
         // expected
@@ -64,7 +64,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void getLevel6() {
+    void getLevel6() {
         // given
         logger.setLevel(6);
         // expected
@@ -72,7 +72,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void t1() {
+    void t1() {
         logger.setLevel(2);
         logger.log(1, "1");
         logger.log(2, "2");
@@ -82,7 +82,7 @@ public class LoggerTest {
     }
 
     @Test
-    public void t2() {
+    void t2() {
         logger.setLevel(2);
         logger.log(DEBUG, "1");
         logger.log(CONFIG, "2");

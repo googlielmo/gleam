@@ -2,7 +2,7 @@
  * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
- * under the terms of version 2 of the GNU General Public License as
+ * under the terms of version 2 of the GNU General License as
  * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it would be useful, but
@@ -16,7 +16,7 @@
  * any, provided herein do not apply to combinations of this program with
  * other software, or any other product whatsoever.
  *
- * You should have received a copy of the GNU General Public License along
+ * You should have received a copy of the GNU General License along
  * with this program; if not, write the Free Software Foundation, Inc., 59
  * Temple Place - Suite 330, Boston MA 02111-1307, USA.
  *
@@ -26,19 +26,19 @@
 
 package gleam.lang;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 
-import static org.hamcrest.core.IsInstanceOf.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ReaderTest {
+class ReaderTest {
 
     // lists
 
     @Test
-    public void read_empty_list() throws GleamException
+    void read_empty_list() throws GleamException
     {
         Entity expected = EmptyList.VALUE;
         String expr = "()";
@@ -48,7 +48,7 @@ public class ReaderTest {
     }
 
     @Test
-    public void read_single_element_list() throws GleamException
+    void read_single_element_list() throws GleamException
     {
         Symbol a = Symbol.makeSymbol("a");
         Pair expected = new Pair(a, EmptyList.VALUE);
@@ -56,13 +56,13 @@ public class ReaderTest {
 
         Reader r = getReader(expr);
         Entity actual = r.read();
-        assertThat(actual, instanceOf(Pair.class));
+        assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
         assertTrue(equalPairs(expected, pair));
     }
 
     @Test
-    public void read_two_element_list() throws GleamException
+    void read_two_element_list() throws GleamException
     {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
@@ -71,13 +71,13 @@ public class ReaderTest {
 
         Reader r = getReader(expr);
         Entity actual = r.read();
-        assertThat(actual, instanceOf(Pair.class));
+        assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
         assertTrue(equalPairs(expected, pair));
     }
 
     @Test
-    public void read_three_element_list() throws GleamException
+    void read_three_element_list() throws GleamException
     {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
@@ -87,13 +87,13 @@ public class ReaderTest {
 
         Reader r = getReader(expr);
         Entity actual = r.read();
-        assertThat(actual, instanceOf(Pair.class));
+        assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
         assertTrue(equalPairs(expected, pair));
     }
 
     @Test
-    public void read_list_with_nested_list() throws GleamException
+    void read_list_with_nested_list() throws GleamException
     {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
@@ -103,13 +103,13 @@ public class ReaderTest {
 
         Reader r = getReader(expr);
         Entity actual = r.read();
-        assertThat(actual, instanceOf(Pair.class));
+        assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
         assertTrue(equalPairs(expected, pair));
     }
 
     @Test
-    public void read_two_element_dotted_list() throws GleamException
+    void read_two_element_dotted_list() throws GleamException
     {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
@@ -118,13 +118,13 @@ public class ReaderTest {
 
         Reader r = getReader(expr);
         Entity actual = r.read();
-        assertThat(actual, instanceOf(Pair.class));
+        assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
         assertTrue(equalPairs(expected, pair));
     }
 
     @Test
-    public void read_three_element_dotted_list() throws GleamException
+    void read_three_element_dotted_list() throws GleamException
     {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
@@ -134,7 +134,7 @@ public class ReaderTest {
 
         Reader r = getReader(expr);
         Entity actual = r.read();
-        assertThat(actual, instanceOf(Pair.class));
+        assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
         assertTrue(equalPairs(expected, pair));
     }
@@ -142,7 +142,7 @@ public class ReaderTest {
     // numbers
 
     @Test
-    public void read_number() throws GleamException
+    void read_number() throws GleamException
     {
         Entity expected = new Real(1);
         String expr = "1";
@@ -154,7 +154,7 @@ public class ReaderTest {
     // strings
 
     @Test
-    public void read_string() throws GleamException
+    void read_string() throws GleamException
     {
         Entity expected = new MutableString("hello");
         String expr = "\"hello";
@@ -164,7 +164,7 @@ public class ReaderTest {
     }
 
     @Test
-    public void read_string_with_escaped_quotes() throws GleamException
+    void read_string_with_escaped_quotes() throws GleamException
     {
         Entity expected = new MutableString("\"hello");
         String expr = "\"\\\"hello";
@@ -174,7 +174,7 @@ public class ReaderTest {
     }
 
     @Test
-    public void read_string_with_escaped_backslash() throws GleamException
+    void read_string_with_escaped_backslash() throws GleamException
     {
         Entity expected = new MutableString("\\");
         String expr = "\"\\\\";
@@ -184,7 +184,7 @@ public class ReaderTest {
     }
 
     @Test
-    public void read_string_with_escaped_newline() throws GleamException
+    void read_string_with_escaped_newline() throws GleamException
     {
         Entity expected = new MutableString("\n");
         String expr = "\"\\n";
@@ -194,7 +194,7 @@ public class ReaderTest {
     }
 
     @Test
-    public void read_string_with_escaped_tab() throws GleamException
+    void read_string_with_escaped_tab() throws GleamException
     {
         Entity expected = new MutableString("\t");
         String expr = "\"\\t";
@@ -204,7 +204,7 @@ public class ReaderTest {
     }
 
     @Test
-    public void read_string_with_escaped_backspace() throws GleamException
+    void read_string_with_escaped_backspace() throws GleamException
     {
         Entity expected = new MutableString("\b");
         String expr = "\"\\b";
@@ -214,7 +214,7 @@ public class ReaderTest {
     }
 
     @Test
-    public void read_string_with_escaped_formfeed() throws GleamException
+    void read_string_with_escaped_formfeed() throws GleamException
     {
         Entity expected = new MutableString("\f");
         String expr = "\"\\f";
@@ -224,7 +224,7 @@ public class ReaderTest {
     }
 
     @Test
-    public void read_string_with_escaped_carriage_return() throws GleamException
+    void read_string_with_escaped_carriage_return() throws GleamException
     {
         Entity expected = new MutableString("\r");
         String expr = "\"\\r";
@@ -232,9 +232,6 @@ public class ReaderTest {
         Reader r = getReader(expr);
         assertEquals(expected, r.read());
     }
-
-
-
 
     // utils
 

@@ -26,60 +26,61 @@
 
 package gleam.lang;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class ClosureTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ClosureTest {
 
     @Test
-    public void getMaxArity_EmptyList() throws GleamException, IOException {
+    void getMaxArity_EmptyList() throws GleamException, IOException {
         Closure c1 = getClosureWithParams(EmptyList.VALUE);
-        Assert.assertEquals(0, c1.getMaxArity());
+        assertEquals(0, c1.getMaxArity());
     }
 
     @Test
-    public void getMaxArity_OneParam() throws GleamException, IOException {
+    void getMaxArity_OneParam() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         EmptyList nil = EmptyList.VALUE;
         Closure c1 = getClosureWithParams(new Pair(a, nil));
-        Assert.assertEquals(1, c1.getMaxArity());
+        assertEquals(1, c1.getMaxArity());
     }
 
     @Test
-    public void getMaxArity_TwoParams() throws GleamException, IOException {
+    void getMaxArity_TwoParams() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         EmptyList nil = EmptyList.VALUE;
         Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, nil)));
-        Assert.assertEquals(2, c1.getMaxArity());
+        assertEquals(2, c1.getMaxArity());
     }
 
     @Test
-    public void getMaxArity_ThreeParams() throws GleamException, IOException {
+    void getMaxArity_ThreeParams() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
         EmptyList nil = EmptyList.VALUE;
         Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, nil))));
-        Assert.assertEquals(3, c1.getMaxArity());
+        assertEquals(3, c1.getMaxArity());
     }
 
     @Test
-    public void getMaxArity_FourParams() throws GleamException, IOException {
+    void getMaxArity_FourParams() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
         Symbol d = Symbol.makeSymbol("d");
         EmptyList nil = EmptyList.VALUE;
         Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, new Pair(d, nil)))));
-        Assert.assertEquals(4, c1.getMaxArity());
+        assertEquals(4, c1.getMaxArity());
     }
 
     @Test
-    public void getMaxArity_FiveParams() throws GleamException, IOException {
+    void getMaxArity_FiveParams() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
@@ -87,23 +88,23 @@ public class ClosureTest {
         Symbol e = Symbol.makeSymbol("e");
         EmptyList nil = EmptyList.VALUE;
         Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, new Pair(d, new Pair(e, nil))))));
-        Assert.assertEquals(5, c1.getMaxArity());
+        assertEquals(5, c1.getMaxArity());
     }
 
     @Test
-    public void getMaxArity_TwoParamsAndRest() throws GleamException, IOException {
+    void getMaxArity_TwoParamsAndRest() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("rest");
         Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, c)));
-        Assert.assertEquals(-1, c1.getMaxArity());
+        assertEquals(-1, c1.getMaxArity());
     }
 
     @Test
-    public void getMaxArity_RestOnly() throws GleamException, IOException {
+    void getMaxArity_RestOnly() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("rest");
         Closure c1 = getClosureWithParams(a);
-        Assert.assertEquals(-1, c1.getMaxArity());
+        assertEquals(-1, c1.getMaxArity());
     }
 
     private Closure getClosureWithParams(Entity value) throws IOException {

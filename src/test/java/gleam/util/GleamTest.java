@@ -3,20 +3,20 @@ package gleam.util;
 import gleam.lang.GleamException;
 import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 
 import static gleam.util.Logger.Level.WARNING;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public class GleamTest {
+class GleamTest {
 
     private static final Logger logger = Logger.getLogger();
 
     @Test
-    public void test()
+    void test()
             throws GleamException {
 
         runTestFile("/tests.scm");
@@ -29,7 +29,8 @@ public class GleamTest {
             intp = Interpreter.newInterpreter();
             intp.traceOff();
             InputStream inputStream = getClass().getResourceAsStream(testFile);
-            assertNotNull(String.format("test file %s not found", testFile), inputStream);
+            assertNotNull(inputStream, String.format("test file %s not found", testFile));
+
             InputPort tests =
                     new gleam.lang.InputPort(
                             new java.io.InputStreamReader(inputStream));
@@ -37,7 +38,7 @@ public class GleamTest {
         } catch (GleamException e) {
             logger.warning(e);
             logger.log(WARNING, "__errobj:", e.value());
-            Assert.fail(String.format("GleamException: %s", e.getMessage()));
+            fail(String.format("GleamException: %s", e.getMessage()));
         }
     }
 }
