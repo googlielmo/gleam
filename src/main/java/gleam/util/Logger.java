@@ -316,16 +316,34 @@ public class Logger {
 
         private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z");
 
-        public String format(LogRecord logRecord) {
+        public String format(LogRecord logRecord)
+        {
+            getCallerInfo(logRecord);
             logRecord.setMessage(logRecord.getMessage().replace("\n", "\\\\n"));
             StringBuilder builder = new StringBuilder(1000);
             builder.append(df.format(new Date(logRecord.getMillis()))).append(" - ");
-//            builder.append("[").append(logRecord.getSourceClassName()).append(".");
-//            builder.append(logRecord.getSourceMethodName()).append("] - ");
+            builder.append("[").append(logRecord.getSourceClassName()).append(".");
+            builder.append(logRecord.getSourceMethodName()).append("] - ");
             builder.append("[").append(Level.fromValue(getLevelValue(logRecord.getLevel()))).append("] - ");
             builder.append(formatMessage(logRecord));
             builder.append("\n");
             return builder.toString();
+        }
+
+        private void getCallerInfo(LogRecord logRecord)
+        {
+            boolean loggerFound = false;
+            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            for (StackTraceElement stackTraceElement : stackTrace) {
+                if (stackTraceElement.getClassName().equals(Logger.class.getName())) {
+                    loggerFound = true;
+                }
+                else if (loggerFound) {
+                    logRecord.setSourceClassName(stackTraceElement.getClassName());
+                    logRecord.setSourceMethodName(stackTraceElement.getMethodName());
+                    break;
+                }
+            }
         }
     }
 }
