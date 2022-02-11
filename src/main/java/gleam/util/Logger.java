@@ -26,7 +26,12 @@
 
 package gleam.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.ConsoleHandler;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
 
 /*
  * Log.java
@@ -75,6 +80,15 @@ public class Logger {
         public int getValue() {
             return value;
         }
+
+        public static Level fromValue(int value) {
+            for (Level level : values()) {
+                if (level.getValue() == value) {
+                    return level;
+                }
+            }
+            return null;
+        }
     }
 
     /**
@@ -90,6 +104,7 @@ public class Logger {
             julLogger.setUseParentHandlers(false);
             final ConsoleHandler consoleHandler = new ConsoleHandler();
             consoleHandler.setLevel(java.util.logging.Level.ALL);
+            consoleHandler.setFormatter(new LogFormatter());
             julLogger.addHandler(consoleHandler);
         }
         julLogger.setLevel(java.util.logging.Level.INFO);
@@ -295,5 +310,22 @@ public class Logger {
      */
     public void severe(String message, Throwable ex) {
         julLogger.log(java.util.logging.Level.SEVERE, message, ex);
+    }
+
+    private static class LogFormatter extends Formatter {
+
+        private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z");
+
+        public String format(LogRecord logRecord) {
+            logRecord.setMessage(logRecord.getMessage().replace("\n", "\\\\n"));
+            StringBuilder builder = new StringBuilder(1000);
+            builder.append(df.format(new Date(logRecord.getMillis()))).append(" - ");
+//            builder.append("[").append(logRecord.getSourceClassName()).append(".");
+//            builder.append(logRecord.getSourceMethodName()).append("] - ");
+            builder.append("[").append(Level.fromValue(getLevelValue(logRecord.getLevel()))).append("] - ");
+            builder.append(formatMessage(logRecord));
+            builder.append("\n");
+            return builder.toString();
+        }
     }
 }
