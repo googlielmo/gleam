@@ -34,7 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static gleam.util.Logger.Level.FINE;
+import static gleam.util.Logger.Level.DEBUG;
 
 /**
  * Scheme input port.
@@ -42,6 +42,8 @@ import static gleam.util.Logger.Level.FINE;
 public class InputPort extends Port implements Closeable
 {
     private static final long serialVersionUID = 1L;
+
+    private static final Logger logger = Logger.getLogger();
 
     private final String fileName;
 
@@ -108,7 +110,7 @@ public class InputPort extends Port implements Closeable
         if (isOpen()) {
             Entity retVal = gleamReader.read();
             if (retVal == null)
-                return Eof.value;
+                return Eof.VALUE;
             else
                 return retVal;
         }
@@ -149,9 +151,9 @@ public class InputPort extends Port implements Closeable
     public void loadForEval(Environment env, Continuation cont) throws GleamException {
         // read
         Entity obj;
-        while ((obj = this.read()) != Eof.value()) {
+        while ((obj = this.read()) != Eof.VALUE) {
             // eval
-            Logger.enter(FINE, "loadForEval: read object", obj);
+            logger.log(DEBUG, "loadForEval: read object", obj);
             Interpreter.addForEval(obj, env, cont);
         }
     }

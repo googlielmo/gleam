@@ -71,7 +71,7 @@ public class ArgumentList implements java.io.Serializable {
         int missing = size - listArgs.size();
         listArgs.ensureCapacity(size);
         for (int i = 0 ; i < missing; ++i) {
-            listArgs.add(Undefined.value);
+            listArgs.add(Undefined.VALUE);
         }
     }
 
@@ -83,10 +83,10 @@ public class ArgumentList implements java.io.Serializable {
     }
 
     private List j2g(java.util.List<Entity> lst) {
-        if (lst.size() == 0)
-            return EmptyList.value();
+        if (lst.isEmpty())
+            return EmptyList.VALUE;
 
-        List p = EmptyList.value();
+        List p = EmptyList.VALUE;
         for (int i = lst.size() - 1; i >= 0; --i) {
             p = new Pair(lst.get(i), p);
         }

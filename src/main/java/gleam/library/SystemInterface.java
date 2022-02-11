@@ -34,6 +34,8 @@ import gleam.lang.InputPort;
 import gleam.lang.MutableString;
 import gleam.lang.Void;
 
+import java.io.IOException;
+
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
@@ -68,16 +70,17 @@ public final class SystemInterface {
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
     {
+        MutableString filename;
         try {
-            MutableString filename = (MutableString) arg1;
-            InputPort iport = new InputPort(filename.toString());
-            iport.loadForEval(env, cont);
-            return Void.value();
-        }
-        catch (ClassCastException e) {
+            filename = (MutableString) arg1;
+        } catch (ClassCastException e) {
             throw new GleamException(this, "argument is not a string", arg1);
         }
-        catch (java.io.FileNotFoundException e) {
+        try (InputPort iport = new InputPort(filename.toString())) {
+            iport.loadForEval(env, cont);
+            return Void.VALUE;
+        }
+        catch (IOException e) {
             throw new GleamException(this, "file not found", arg1);
         }
     }},

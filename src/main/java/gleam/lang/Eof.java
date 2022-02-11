@@ -39,36 +39,30 @@ public final class Eof extends AbstractEntity {
      */
     private static final long serialVersionUID = 1L;
 
+    private static final Logger logger = Logger.getLogger();
+
     /** the Eof singleton */
-    static final Eof value = new Eof();
+    public static final Eof VALUE = new Eof();
 
     /** Can't instantiate this class */
     private Eof() {
     }
 
     /**
-     * Get the only value
-     */
-    public static Eof value() {
-        return value;
-    }
-
-    /**
      * Prevents the release of multiple instances upon deserialization.
      */
-    protected Object readResolve()
+    private Object readResolve()
     {
-        Logger.enter(Logger.Level.FINE, "readResolve() called! (Eof)"); //DEBUG
-        return value;
+        logger.debug("readResolve() called! (Eof)");
+        return VALUE;
     }
 
     /**
-     * Writes the Eof value (nothing).
+     * Writes the Eof value.
      */
     @Override
     public void write(PrintWriter out)
     {
-        //out.write("#<eof>");
+        // no output
     }
 }
-

@@ -30,13 +30,15 @@ import gleam.util.Logger;
 
 import java.io.StreamTokenizer;
 
-import static gleam.util.Logger.Level.FINE;
+import static gleam.util.Logger.Level.DEBUG;
 
 /**
  * Scheme reader (lexical analyzer & parser).
  * Implemented as recursive descent.
  */
 class Reader {
+
+    private static final Logger logger = Logger.getLogger();
 
     protected final StreamTokenizer tkzr;
 
@@ -105,7 +107,7 @@ class Reader {
 
             if (t.equals(")")) {
                 if (first) {
-                    return EmptyList.value;
+                    return EmptyList.VALUE;
                 }
                 else {
                     return l;
@@ -132,7 +134,7 @@ class Reader {
                     ins.setCar(readObject());
                 }
                 else {
-                    Pair nextcons = new Pair(readObject(), EmptyList.value);
+                    Pair nextcons = new Pair(readObject(), EmptyList.VALUE);
                     ins.setCdr(nextcons);
                     ins = nextcons;
                 }
@@ -162,15 +164,15 @@ class Reader {
         }
         switch (t) {
             case "(":
-                Pair l = new Pair(EmptyList.value, EmptyList.value);
+                Pair l = new Pair(EmptyList.VALUE, EmptyList.VALUE);
                 return readList(l);
             case "'": { // quote
                 Entity quotedobj = readObject();
-                return new Pair(Symbol.QUOTE, new Pair(quotedobj, EmptyList.value));
+                return new Pair(Symbol.QUOTE, new Pair(quotedobj, EmptyList.VALUE));
             }
             case "`": { // semiquote
                 Entity quotedobj = readObject();
-                return new Pair(Symbol.QUASIQUOTE, new Pair(quotedobj, EmptyList.value));
+                return new Pair(Symbol.QUASIQUOTE, new Pair(quotedobj, EmptyList.VALUE));
             }
             case ")":  // extra parens
                 throw new GleamException("read: unexpected \")\"");
@@ -196,11 +198,11 @@ class Reader {
         }
         else if (t.startsWith(",@")) {
             Entity unquotedobj = readObject(t.substring(2));
-            return new Pair(Symbol.UNQUOTE_SPLICING, new Pair(unquotedobj, EmptyList.value));
+            return new Pair(Symbol.UNQUOTE_SPLICING, new Pair(unquotedobj, EmptyList.VALUE));
         }
         else if (t.startsWith(",")) {
             Entity unquotedobj = readObject(t.substring(1));
-            return new Pair(Symbol.UNQUOTE, new Pair(unquotedobj, EmptyList.value));
+            return new Pair(Symbol.UNQUOTE, new Pair(unquotedobj, EmptyList.VALUE));
         }
         else if (t.startsWith("\"")) {
             // it is a string
@@ -266,12 +268,12 @@ class Reader {
         }
 
         if (retVal != null)
-            Logger.enter(FINE, "TOKEN=" + retVal);
+            logger.log(DEBUG, "TOKEN=" + retVal);
 
         return retVal;
     }
 
     void logReadOthers(String token, String type) {
-        Logger.enter(FINE, String.format("readOthers: interpreting '%s' as a %s", token, type));
+       logger.log(DEBUG, String.format("readOthers: interpreting '%s' as a %s", token, type));
     }
 }

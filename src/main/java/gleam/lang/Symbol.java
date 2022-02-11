@@ -42,6 +42,8 @@ public final class Symbol extends AbstractEntity
      */
     private static final long serialVersionUID = 1L;
 
+    private static final Logger logger = Logger.getLogger();
+
     /**
      * The unique symbol table
      */
@@ -124,15 +126,9 @@ public final class Symbol extends AbstractEntity
     /**
      * Factory method to create and intern a symbol.
      */
-    public synchronized static Symbol makeSymbol(String s)
+    public static synchronized Symbol makeSymbol(String s)
     {
-        Symbol o = symtable.get(s);
-        if (o == null) {
-            o = new Symbol(s);
-            symtable.put(s, o);
-        }
-
-        return o;
+        return symtable.computeIfAbsent(s, Symbol::new);
     }
 
     /**
@@ -146,9 +142,9 @@ public final class Symbol extends AbstractEntity
     /**
      * Prevents the release of multiple instances upon deserialization.
      */
-    protected Object readResolve()
+    private Object readResolve()
     {
-        Logger.enter(Logger.Level.FINE, "readResolve() called! (Symbol)"); //DEBUG
+        logger.log(Logger.Level.DEBUG, "readResolve() called! (Symbol)"); //DEBUG
         if (interned)
             return makeSymbol(value);
         else
@@ -166,7 +162,7 @@ public final class Symbol extends AbstractEntity
             // if unbound, return just the symbol (for syntax rewriters)
             return this;
         }
-        if (loc.get() == Undefined.value) {
+        if (loc.get() == Undefined.VALUE) {
             /* this symbol is a function parameter, so let
              * name resolution take place at run time
              */

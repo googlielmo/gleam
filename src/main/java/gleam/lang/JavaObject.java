@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 /**
@@ -51,6 +50,8 @@ public class JavaObject extends AbstractEntity {
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
+
+    private static final Logger logger = Logger.getLogger();
 
     private final Object value;
 
@@ -65,57 +66,27 @@ public class JavaObject extends AbstractEntity {
 
     public JavaObject(Symbol s) throws GleamException {
         String className = s.toString();
+        Object object = null;
         try {
-            value = Class.forName(className).getConstructor().newInstance();
-        } catch (SecurityException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
-        } catch (IllegalArgumentException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
-        } catch (NoSuchMethodException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
-        } catch (InvocationTargetException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
-        } catch (InstantiationException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
-        } catch (ClassNotFoundException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
-        } catch (IllegalAccessException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
+            object = Class.forName(className).getConstructor().newInstance();
+        } catch (Exception ex) {
+            logger.warning(ex);
+            throw new GleamException("new: " + ex.getMessage(), s);
+        } finally {
+            value = object;
         }
     }
 
     public JavaObject(Symbol s, Class<?>[] classes, Object[] objects) throws GleamException {
         String className = s.toString();
+        Object object = null;
         try {
-            value = Class.forName(className).getConstructor(classes).newInstance(objects);
-        } catch (SecurityException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: SecurityException: "+ex.getMessage(), s);
-        } catch (IllegalArgumentException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: IllegalArgumentException: "+ex.getMessage(), s);
-        } catch (NoSuchMethodException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: NoSuchMethodException: "+ex.getMessage(), s);
-        } catch (InvocationTargetException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: InvocationTargetException: "+ex.getMessage(), s);
-        } catch (InstantiationException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: InstantiationException: "+ex.getMessage(), s);
-        } catch (ClassNotFoundException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: ClassNotFoundException: "+ex.getMessage(), s);
-        } catch (IllegalAccessException ex) {
-            Logger.error(ex);
-            throw new GleamException("new: IllegalAccessException: "+ex.getMessage(), s);
+            object = Class.forName(className).getConstructor(classes).newInstance(objects);
+        } catch (Exception ex) {
+            logger.warning(ex);
+            throw new GleamException("new: " + ex.getMessage(), s);
+        } finally {
+            value = object;
         }
     }
 
@@ -155,7 +126,9 @@ public class JavaObject extends AbstractEntity {
         return Objects.hash(value);
     }
 
-    public boolean eq_p(JavaObject obj) {
+    public boolean eq(JavaObject obj) {
+        if (obj == null)
+            return false;
         return value == obj.value;
     }
 }

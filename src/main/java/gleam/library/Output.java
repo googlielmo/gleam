@@ -30,7 +30,6 @@ import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
-import gleam.lang.Interpreter;
 import gleam.lang.OutputPort;
 import gleam.lang.Void;
 
@@ -47,6 +46,9 @@ public final class Output {
      */
     private Output() {
     }
+
+    private static final String CLOSED_OUTPUT_PORT = "closed output port";
+    private static final String NOT_AN_OUTPUT_PORT = "not an output port";
 
     /**
      * This array contains definitions of primitives.
@@ -76,7 +78,7 @@ public final class Output {
                 out = (OutputPort) obj2;
             }
             else {
-                throw new GleamException(this, "not an output port", obj2);
+                throw new GleamException(this, NOT_AN_OUTPUT_PORT, obj2);
             }
         }
         else {
@@ -86,10 +88,10 @@ public final class Output {
         // print object
         if (out.isOpen()) {
             out.display(obj);
-            return Void.value();
+            return Void.VALUE;
         }
         else {
-            throw new GleamException(this, "closed output port", out);
+            throw new GleamException(this, CLOSED_OUTPUT_PORT, out);
         }
     }},
 
@@ -112,10 +114,10 @@ public final class Output {
         // print object
         if (oport.isOpen()) {
             oport.write(arg1);
-            return Void.value();
+            return Void.VALUE;
         }
         else {
-            throw new GleamException(this, "closed output port", oport);
+            throw new GleamException(this, CLOSED_OUTPUT_PORT, oport);
         }
     }},
 
@@ -136,10 +138,10 @@ public final class Output {
 
         if (oport.isOpen()) {
             oport.newline();
-            return Void.value();
+            return Void.VALUE;
         }
         else {
-            throw new GleamException(this, "closed output port", oport);
+            throw new GleamException(this, CLOSED_OUTPUT_PORT, oport);
         }
     }},
 
@@ -160,10 +162,10 @@ public final class Output {
 
             if (oport.isOpen()) {
                 oport.flush();
-                return Void.value();
+                return Void.VALUE;
             }
             else {
-                throw new GleamException(this, "closed output port", oport);
+                throw new GleamException(this, CLOSED_OUTPUT_PORT, oport);
             }
         }
     },
@@ -177,7 +179,7 @@ public final class Output {
                 oport = (OutputPort) entity;
             }
             else {
-                throw new GleamException(primitive, "not an output port", entity);
+                throw new GleamException(primitive, NOT_AN_OUTPUT_PORT, entity);
             }
         }
         else {

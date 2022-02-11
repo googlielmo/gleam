@@ -47,6 +47,8 @@ public class Pair extends AbstractEntity implements List {
      */
     private static final long serialVersionUID = 1L;
 
+    private static final Logger logger = Logger.getLogger();
+
     private Entity car;
     private Entity cdr;
     boolean analyzed;
@@ -110,7 +112,7 @@ public class Pair extends AbstractEntity implements List {
              */
             Entity rest = getCdr();
             List restParent = this;
-            while (rest != EmptyList.value) {
+            while (rest != EmptyList.VALUE) {
                 if (rest instanceof List) {
                     // this is a proper list
                     List restAsPair = (List) rest;
@@ -123,7 +125,7 @@ public class Pair extends AbstractEntity implements List {
                      *
                      * analyze cdr in place
                      */
-                    Logger.enter(INFO, "dotted pair in analyze... check for correctness");
+                    logger.log(INFO, "dotted pair in analyze... check for correctness");
                     restParent.setCdr(rest.analyze(env));
                     break;
                 }
@@ -252,7 +254,7 @@ public class Pair extends AbstractEntity implements List {
          */
         Entity rest = retVal.getCdr();
         List restParent = retVal;
-        while (rest != EmptyList.value) {
+        while (rest != EmptyList.VALUE) {
             if (rest instanceof List) {
                 // this is a proper list
                 List restAsList = (List) rest;
@@ -266,7 +268,7 @@ public class Pair extends AbstractEntity implements List {
                 /* this is an improper list
                  * (not necessarily an error: e.g., lambda)
                  */
-                Logger.enter(INFO, "dotted pair in optimize... check for correctness");
+                logger.log(INFO, "dotted pair in optimize... check for correctness");
                 restParent.setCdr(rest.optimize(env));
                 break;
             }
@@ -316,7 +318,7 @@ public class Pair extends AbstractEntity implements List {
                 out.print(" ");
                 if ((current.getCar() == null)) {
                     out.print("ERROR");
-                    Logger.enter(WARNING, "null car", current);
+                    logger.log(WARNING, "null car", current);
                 }
                 else
                     current.getCar().write(out);

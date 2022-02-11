@@ -43,6 +43,8 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
      */
     private static final long serialVersionUID = 1L;
 
+    private static final Logger logger = Logger.getLogger();
+
     public SyntaxRewriter(Closure rewriter) {
         super(rewriter.param, rewriter.body, rewriter.definitionEnv);
     }
@@ -55,7 +57,7 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
     @Override
     public void write(PrintWriter out) {
         out.write("#<syntax-rewriter");
-        if (Logger.getLevelValue() < Logger.Level.INFO.getValue()) {
+        if (logger.getLevelValue() < Logger.Level.INFO.getValue()) {
             out.write(" ");
             new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
         }

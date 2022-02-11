@@ -61,7 +61,7 @@ public class ListIterator implements Iterator<Entity> {
      * Determines whether there's another object to retrieve from the list.
      */
     public boolean hasNext() {
-        return pair != EmptyList.value();
+        return pair != EmptyList.VALUE;
     }
 
     /**
@@ -71,36 +71,36 @@ public class ListIterator implements Iterator<Entity> {
      * @throws NoSuchElementException if no next element is available
      */
     @Override
-    public Entity next()
-            throws NoSuchElementException
-    {
-        try {
-            if (isImproper) {
-                Entity retVal = pair.getCdr();
-                pair = EmptyList.value;
-                if (allowImproper) {
-                    return retVal;
-                }
-                else {
-                    throw new ImproperListException(retVal);
-                }
-            } else {
-                Entity retVal = pair.getCar();
-                restPair = pair;
-                if (pair.getCdr() instanceof List) {
-                    pair = (List) pair.getCdr();
-                }
-                else {
-                    isImproper = true;
-                }
-                return retVal;
+    public Entity next() throws NoSuchElementException
+{
+    final Entity retVal;
+    try {
+        if (isImproper) {
+            retVal = pair.getCdr();
+            pair = EmptyList.VALUE;
+            if (!allowImproper) {
+                throw (NoSuchElementException)
+                        new NoSuchElementException("improper list").initCause(new ImproperListException(retVal));
             }
-        } catch (GleamException e) {
-            throw (NoSuchElementException)
-                    new NoSuchElementException("improper list")
-                            .initCause(e);
+        } else {
+            retVal = pair.getCar();
+            restPair = pair;
+            if (pair.getCdr() instanceof List) {
+                pair = (List) pair.getCdr();
+            }
+            else {
+                isImproper = true;
+            }
         }
+    } catch (GleamException e) {
+        throw (NoSuchElementException)
+                new NoSuchElementException().initCause(e);
     }
+    if (retVal == null) {
+        throw new NoSuchElementException("null element");
+    }
+    return retVal;
+}
 
     /**
      * Replaces current value.
@@ -110,13 +110,13 @@ public class ListIterator implements Iterator<Entity> {
         throws GleamException
     {
         if (newArg == null) {
-            throw new GleamException("Unexpectd null");
+            throw new GleamException("Unexpected null");
         }
         if (restPair == null) {
             throw new GleamException(
                 "No current value to replace", pair);
         }
-        if (isImproper && pair == EmptyList.value) {
+        if (isImproper && pair == EmptyList.VALUE) {
             restPair.setCdr(newArg);
         }
         else {
@@ -139,4 +139,3 @@ public class ListIterator implements Iterator<Entity> {
         return pair;
     }
 }
-

@@ -86,4 +86,3 @@ public final class Location extends AbstractEntity
         out.write(">");
     }
 }
-

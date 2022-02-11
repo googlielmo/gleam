@@ -103,7 +103,7 @@ public final class Syntax {
                 }
                 Symbol s = (Symbol) target;
                 // create binding
-                env.define(s, Undefined.value());
+                env.define(s, Undefined.VALUE);
                 // equivalent to set!
                 cont
                         .begin(new ExpressionAction(value, env))
@@ -118,7 +118,7 @@ public final class Syntax {
                 if (rtarget instanceof Symbol) {
                     Symbol s = (Symbol) rtarget;
                     // create binding
-                    env.define(s, Undefined.value());
+                    env.define(s, Undefined.VALUE);
                     // equivalent to set!
                     cont.begin(new AssignmentAction(s, env));
 
@@ -170,7 +170,7 @@ public final class Syntax {
     @Override
     public Entity apply3(Entity test, Entity consequent, Entity alternate, Environment env, Continuation cont) {
         if (alternate == null)
-            alternate = Void.value();
+            alternate = Void.VALUE;
 
         cont
                 .begin(new ExpressionAction(test, env))
@@ -237,7 +237,7 @@ public final class Syntax {
     new Primitive( "do",
         NULL_ENV, Primitive.KEYWORD, /* environment, type */
         0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-        "Iteration syntax (not implemented)", null /* doc strings */ ) { // FIXME implement and change doc strings!
+        "Iteration syntax (not implemented)", null /* doc strings */ ) { // TODO implement and change doc strings
     },
 
 //    /**

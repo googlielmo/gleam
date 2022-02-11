@@ -26,7 +26,6 @@
 
 package gleam.lang;
 
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,14 +36,14 @@ public class ClosureTest {
 
     @Test
     public void getMaxArity_EmptyList() throws GleamException, IOException {
-        Closure c1 = getClosureWithParams(EmptyList.value());
+        Closure c1 = getClosureWithParams(EmptyList.VALUE);
         Assert.assertEquals(0, c1.getMaxArity());
     }
 
     @Test
     public void getMaxArity_OneParam() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
-        EmptyList nil = EmptyList.value();
+        EmptyList nil = EmptyList.VALUE;
         Closure c1 = getClosureWithParams(new Pair(a, nil));
         Assert.assertEquals(1, c1.getMaxArity());
     }
@@ -53,7 +52,7 @@ public class ClosureTest {
     public void getMaxArity_TwoParams() throws GleamException, IOException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
-        EmptyList nil = EmptyList.value();
+        EmptyList nil = EmptyList.VALUE;
         Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, nil)));
         Assert.assertEquals(2, c1.getMaxArity());
     }
@@ -63,7 +62,7 @@ public class ClosureTest {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
-        EmptyList nil = EmptyList.value();
+        EmptyList nil = EmptyList.VALUE;
         Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, nil))));
         Assert.assertEquals(3, c1.getMaxArity());
     }
@@ -74,7 +73,7 @@ public class ClosureTest {
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
         Symbol d = Symbol.makeSymbol("d");
-        EmptyList nil = EmptyList.value();
+        EmptyList nil = EmptyList.VALUE;
         Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, new Pair(d, nil)))));
         Assert.assertEquals(4, c1.getMaxArity());
     }
@@ -86,7 +85,7 @@ public class ClosureTest {
         Symbol c = Symbol.makeSymbol("c");
         Symbol d = Symbol.makeSymbol("d");
         Symbol e = Symbol.makeSymbol("e");
-        EmptyList nil = EmptyList.value();
+        EmptyList nil = EmptyList.VALUE;
         Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, new Pair(d, new Pair(e, nil))))));
         Assert.assertEquals(5, c1.getMaxArity());
     }
@@ -109,9 +108,9 @@ public class ClosureTest {
 
     private Closure getClosureWithParams(Entity value) throws IOException {
         return new Closure(value,
-                EmptyList.value(),
-                Environment.newEnvironment(
-                        new InputPort(new InputStreamReader(java.lang.System.in)),
-                        new OutputPort(java.lang.System.out, false)));
+                           EmptyList.VALUE,
+                           Environment.newEnvironment(
+                                   new InputPort(new InputStreamReader(java.lang.System.in)),
+                                   new OutputPort(java.lang.System.out, false)));
     }
 }

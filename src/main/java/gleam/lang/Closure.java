@@ -43,10 +43,13 @@ public class Closure extends Procedure
      */
     private static final long serialVersionUID = 1L;
 
+    private static final Logger logger = Logger.getLogger();
+
     /* TODO: should implement scan-out of defines, as follows:
      * when a closure is created, a scanOut method should
      * retrieve a proper list of internally defined variables,
-     * i.e. for (lambda (x y)
+     * i.e. the scan out for
+     *          (lambda (x y)
      *            (define a 1)
      *            (define b (foo x y))
      *            (begin
@@ -94,12 +97,12 @@ public class Closure extends Procedure
          */
         try {
             // for each passed arg
-            while (args != EmptyList.value) {
+            while (args != EmptyList.VALUE) {
                 // get next already-evaluated arg
                 Entity obj = args.getCar();
 
                 if (!dotparam) {
-                    if (currparam == EmptyList.value) {
+                    if (currparam == EmptyList.VALUE) {
                         throw new GleamException("apply: too many arguments", this);
                     }
                     else if (currparam instanceof Pair) {
@@ -111,7 +114,7 @@ public class Closure extends Procedure
                             localenv.define((Symbol)p, obj);
                         }
                         else {
-                            Logger.enter(WARNING, "apply: param is not a symbol");
+                            logger.log(WARNING, "apply: param is not a symbol");
                         }
                         // next param, please
                         currparam = ((Pair) currparam).getCdr();
@@ -122,7 +125,7 @@ public class Closure extends Procedure
                         // so we accumulate this and next
                         // parameters in a cons bound to
                         // this param in local env
-                        prev = new Pair(obj, EmptyList.value);
+                        prev = new Pair(obj, EmptyList.VALUE);
                         localenv.define((Symbol) currparam, prev);
                         dotparam = true;
                     }
@@ -132,7 +135,7 @@ public class Closure extends Procedure
                 }
                 else {
                     // accumulate argument
-                    prev.setCdr(new Pair(obj, EmptyList.value));
+                    prev.setCdr(new Pair(obj, EmptyList.VALUE));
                     prev = (List) prev.getCdr();
                 }
                 // next argument, please
@@ -146,9 +149,9 @@ public class Closure extends Procedure
         if (currparam instanceof Symbol && !dotparam) {
             // special case:
             // a "." notation parameter taking the empty list
-            localenv.define((Symbol) currparam, EmptyList.value);
+            localenv.define((Symbol) currparam, EmptyList.VALUE);
         }
-        else if (currparam != EmptyList.value && !dotparam) {
+        else if (currparam != EmptyList.VALUE && !dotparam) {
             throw new GleamException("apply: too few arguments", this);
         }
 
@@ -166,7 +169,7 @@ public class Closure extends Procedure
     public void write(PrintWriter out)
     {
         out.write("#<procedure");
-        if (Logger.getLevelValue() < Logger.Level.INFO.getValue()) {
+        if (logger.getLevelValue() < Logger.Level.INFO.getValue()) {
             out.write(" ");
             new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
         }

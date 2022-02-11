@@ -31,7 +31,7 @@ import gleam.util.Logger;
 import java.util.Collection;
 import java.util.HashSet;
 
-import static gleam.util.Logger.Level.FINE;
+import static gleam.util.Logger.Level.DEBUG;
 import static gleam.util.Logger.Level.WARNING;
 
 /**
@@ -40,6 +40,8 @@ import static gleam.util.Logger.Level.WARNING;
  */
 public final class System
 {
+    private static final Logger logger = Logger.getLogger();
+
     /** can't instantiate this class */
     private System() {}
 
@@ -108,7 +110,7 @@ public final class System
         }
         else if (op == Symbol.LAMBDA) {
             // analyze param list
-            if (arg == EmptyList.value || isVariable(arg)) {
+            if (arg == EmptyList.VALUE || isVariable(arg)) {
                 // ok
                 it.replace(arg.analyze(env));
             }
@@ -201,8 +203,8 @@ public final class System
         }
         else if (op == Symbol.LET || op == Symbol.LETSTAR || op == Symbol.LETREC) {
         }
-        else if (op == Symbol.DO) {
-        }
+//        else if (op == Symbol.DO) {
+//        }
 //        else if (op == Symbol.DELAY) {
 //            // delay wants one expression
 //            it.replace(arg.analyze(env));
@@ -214,7 +216,7 @@ public final class System
         else if (op == Symbol.DEFINE) {
             // analyze variable or function
             boolean isFunction;
-            if (arg == EmptyList.value()) {
+            if (arg == EmptyList.VALUE) {
                 throw new GleamException(
                         "define: invalid function name", form);
             }
@@ -285,8 +287,8 @@ public final class System
             }
         }
         else {
-            Logger.enter(WARNING,
-                    String.format("analyzeSpecialForm: unknown or not implemented %s", op.toString()));
+            logger.log(WARNING,
+                       String.format("analyzeSpecialForm: unknown or not implemented %s", op.toString()));
         }
     }
 
@@ -339,12 +341,12 @@ public final class System
              * for the purpose of optimization only
              */
             Environment paramEnv = new Environment(newEnv);
-            if (arg == EmptyList.value) {
+            if (arg == EmptyList.VALUE) {
                 // ok (but different from Pair below)
             }
             else if (isVariable(arg)) {
                 // ok, but we add it to paramEnv
-                paramEnv.define( (Symbol) arg, Undefined.value);
+                paramEnv.define( (Symbol) arg, Undefined.VALUE);
             }
             else if (arg instanceof List) {
                 // iterate over (possibly improper) list
@@ -352,7 +354,7 @@ public final class System
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
                     paramEnv.define( (Symbol) pobj,
-                            Undefined.value);
+                            Undefined.VALUE);
                 }
             }
             // optimize body in the new param environment
@@ -415,7 +417,7 @@ public final class System
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
                     paramEnv.define( (Symbol) pobj,
-                            Undefined.value);
+                            Undefined.VALUE);
                 }
             }
             /* optimize value or procedure body
@@ -455,7 +457,7 @@ public final class System
     private static List cloneList(List list)
             throws GleamException {
 
-        if (list == EmptyList.value())
+        if (list == EmptyList.VALUE)
             return list;
 
         return new Pair(
@@ -482,7 +484,7 @@ public final class System
     private static List internalScanOut(Entity bodyPart)
             throws GleamException
     {
-        List retVal = EmptyList.value;
+        List retVal = EmptyList.VALUE;
         if (! (bodyPart instanceof List))
             return retVal;
 
@@ -501,7 +503,7 @@ public final class System
             ListIterator it = new ListIterator( (List) bpAsPair.getCdr());
             while (it.hasNext()) {
                 List is = internalScanOut(it.next());
-                if (is != EmptyList.value) {
+                if (is != EmptyList.VALUE) {
                     ListIterator it2 = new ListIterator(is);
                     while (it2.hasNext()) {
                         retVal = new Pair(it2.next(), retVal);
@@ -528,7 +530,7 @@ public final class System
     static Environment createScanOutDefineEnv(List body, Environment env)
             throws GleamException
     {
-        List varList = EmptyList.value;
+        List varList = EmptyList.VALUE;
         ListIterator it = new ListIterator(body);
         /* do a scan out for each body part,
          * appending variables found into varList
@@ -541,20 +543,20 @@ public final class System
                 varList = new Pair(v, varList);
             }
         }
-        if (varList == EmptyList.value) {
+        if (varList == EmptyList.VALUE) {
             return env;
         }
         else {
             Environment retVal = new Environment(env);
             // iterate on varList, binding each var to Undefined
-            Logger.enter(FINE, "Scanned out: ");
+            logger.log(DEBUG, "Scanned out: ");
             ListIterator vit = new ListIterator(varList);
             while (vit.hasNext()) {
                 Symbol v = (Symbol) vit.next();
-                retVal.define(v, Undefined.value);
-                Logger.enter(FINE, "variable", v);
+                retVal.define(v, Undefined.VALUE);
+                logger.log(DEBUG, "variable", v);
             }
-            Logger.enter(FINE, "...end of scan-out");
+            logger.log(DEBUG, "...end of scan-out");
             return retVal;
         }
     }

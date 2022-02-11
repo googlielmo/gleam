@@ -26,7 +26,6 @@
 
 package gleam.lang;
 
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Test;
 
 import java.io.StringReader;
@@ -41,7 +40,7 @@ public class ReaderTest {
     @Test
     public void read_empty_list() throws GleamException
     {
-        Entity expected = EmptyList.value();
+        Entity expected = EmptyList.VALUE;
         String expr = "()";
 
         Reader r = getReader(expr);
@@ -52,7 +51,7 @@ public class ReaderTest {
     public void read_single_element_list() throws GleamException
     {
         Symbol a = Symbol.makeSymbol("a");
-        Pair expected = new Pair(a, EmptyList.value());
+        Pair expected = new Pair(a, EmptyList.VALUE);
         String expr = "(a)";
 
         Reader r = getReader(expr);
@@ -67,7 +66,7 @@ public class ReaderTest {
     {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
-        Pair expected = new Pair(a, new Pair(b, EmptyList.value()));
+        Pair expected = new Pair(a, new Pair(b, EmptyList.VALUE));
         String expr = "(a b)";
 
         Reader r = getReader(expr);
@@ -83,7 +82,7 @@ public class ReaderTest {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
-        Pair expected = new Pair(a, new Pair(b, new Pair(c, EmptyList.value())));
+        Pair expected = new Pair(a, new Pair(b, new Pair(c, EmptyList.VALUE)));
         String expr = "(a b c)";
 
         Reader r = getReader(expr);
@@ -99,7 +98,7 @@ public class ReaderTest {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
-        Pair expected = new Pair(a, new Pair(b, new Pair(c, new Pair(new Pair(Symbol.makeSymbol("d"), EmptyList.value()), EmptyList.value()))));
+        Pair expected = new Pair(a, new Pair(b, new Pair(c, new Pair(new Pair(Symbol.makeSymbol("d"), EmptyList.VALUE), EmptyList.VALUE))));
         String expr = "(a b c (d))";
 
         Reader r = getReader(expr);

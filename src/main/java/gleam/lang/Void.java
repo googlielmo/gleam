@@ -40,25 +40,18 @@ public final class Void extends AbstractEntity {
     private static final long serialVersionUID = 1L;
 
     /** the Void singleton */
-    static final Void value = new Void();
+    public static final Void VALUE = new Void();
 
     /** Can't instantiate this */
     private Void() {
     }
 
     /**
-     * Get the only value
-     */
-    public static Void value() {
-        return value;
-    }
-
-    /**
      * Prevents the release of multiple instances upon deserialization.
      */
-    protected Object readResolve()
+    private Object readResolve()
     {
-        return value;
+        return VALUE;
     }
 
     /**

@@ -93,4 +93,3 @@ public class Real extends Number
         return value;
     }
 }
-

@@ -45,8 +45,6 @@ public class Logger {
     private static final int JUL_THRESHOLD_CONFIG = 700;
     private static final int JUL_THRESHOLD_FINE = 500;
 
-    private static final ThreadLocal<java.util.logging.Logger> loggerThreadLocal = new ThreadLocal<>();
-
     /**
      * Level<BR>
      * <code>
@@ -55,7 +53,7 @@ public class Logger {
      * WARNING, a potential problem<BR>
      * INFO, significant messages<BR>
      * CONFIG, configuration messages<BR>
-     * FINE, tracing information<BR>
+     * DEBUG, tracing information<BR>
      * ALL, all messages<BR>
      * </code>
      */
@@ -65,7 +63,7 @@ public class Logger {
         WARNING(4),
         INFO(3),
         CONFIG(2),
-        FINE(1),
+        DEBUG(1),
         ALL(0);
 
         private final int value;
@@ -80,9 +78,30 @@ public class Logger {
     }
 
     /**
-     * Can't instantiate this class
+     * Can't instantiate this class directly
      */
     private Logger() {
+    }
+
+    private static final java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("gleam");
+
+    static {
+        if (julLogger.getHandlers().length == 0) {
+            julLogger.setUseParentHandlers(false);
+            final ConsoleHandler consoleHandler = new ConsoleHandler();
+            consoleHandler.setLevel(java.util.logging.Level.ALL);
+            julLogger.addHandler(consoleHandler);
+        }
+        julLogger.setLevel(java.util.logging.Level.INFO);
+    }
+
+    private static final Logger theLogger = new Logger();
+
+    /**
+     * Get the Gleam logger
+     */
+    public static Logger getLogger() {
+        return theLogger;
     }
 
     /**
@@ -92,8 +111,8 @@ public class Logger {
      * @param level level value
      * @see Level
      */
-    public static void setLevel(int level) {
-        getJulLogger().setLevel(getLoggingLevel(level));
+    public void setLevel(int level) {
+        julLogger.setLevel(getLoggingLevel(level));
     }
 
     /**
@@ -103,15 +122,15 @@ public class Logger {
      * @param level numeric level value
      * @see Level
      */
-    public static void setLevel(Level level) {
-        getJulLogger().setLevel(getLoggingLevel(level.getValue()));
+    public void setLevel(Level level) {
+        julLogger.setLevel(getLoggingLevel(level.getValue()));
     }
 
     /**
      * @return the current level
      */
-    public static int getLevelValue() {
-        return getLevelValue(getJulLogger().getLevel());
+    public int getLevelValue() {
+        return getLevelValue(julLogger.getLevel());
     }
 
     /**
@@ -169,7 +188,7 @@ public class Logger {
         } else if (level.intValue() >= JUL_THRESHOLD_CONFIG) {
             n = Level.CONFIG.getValue();
         } else if (level.intValue() >= JUL_THRESHOLD_FINE) {
-            n = Level.FINE.getValue();
+            n = Level.DEBUG.getValue();
         } else {
             n = Level.ALL.getValue();
         }
@@ -179,52 +198,102 @@ public class Logger {
     /**
      * Logs a message, respecting current level.
      */
-    public static void enter(int level, String message) {
-        getJulLogger().log(getLoggingLevel(level), message);
+    public void log(int level, String message) {
+        julLogger.log(getLoggingLevel(level), message);
     }
 
     /**
      * Logs a message, respecting current level.
      */
-    public static void enter(Level level, String message) {
-        enter(level.getValue(), message);
+    public void log(Level level, String message) {
+        log(level.getValue(), message);
     }
 
     /**
      * Logs a message and an Entity, respecting current level.
      */
-    public static void enter(int level, String message, gleam.lang.Entity obj) {
-        getJulLogger().log(getLoggingLevel(level), message + " " + obj.toString());
+    public void log(int level, String message, gleam.lang.Entity obj) {
+        julLogger.log(getLoggingLevel(level), () -> message + " " + obj.toString());
     }
 
     /**
      * Logs a message and an Entity, respecting current level.
      */
-    public static void enter(Level level, String message, gleam.lang.Entity obj) {
-        enter(level.getValue(), message, obj);
+    public void log(Level level, String message, gleam.lang.Entity obj) {
+        log(level.getValue(), message, obj);
+    }
+
+    /**
+     * Logs a message at DEBUG level
+     *
+     * @param message the message to log
+     */
+    public void debug(String message) {
+        julLogger.log(java.util.logging.Level.FINE, message);
+    }
+
+    /**
+     * Logs a message at CONFIG level
+     *
+     * @param message the message to log
+     */
+    public void config(String message) {
+        julLogger.log(java.util.logging.Level.CONFIG, message);
+    }
+
+    /**
+     * Logs a message at INFO level
+     *
+     * @param message the message to log
+     */
+    public void info(String message) {
+        julLogger.log(java.util.logging.Level.INFO, message);
     }
 
     /**
      * Logs a Throwable at WARNING level
      *
-     * @param ex Throwable
+     * @param ex Throwable to log
      */
-    public static void error(Throwable ex) {
-        getJulLogger().log(java.util.logging.Level.WARNING, "", ex);
+    public void warning(Throwable ex) {
+        julLogger.log(java.util.logging.Level.WARNING, "", ex);
     }
 
-    private static java.util.logging.Logger getJulLogger() {
-        if (loggerThreadLocal.get() == null) {
-            java.util.logging.Logger logger = java.util.logging.Logger.getLogger("gleam");
-            if (logger.getHandlers().length == 0) {
-                logger.setUseParentHandlers(false);
-                final ConsoleHandler consoleHandler = new ConsoleHandler();
-                consoleHandler.setLevel(java.util.logging.Level.ALL);
-                logger.addHandler(consoleHandler);
-            }
-            logger.setLevel(java.util.logging.Level.INFO);
-            loggerThreadLocal.set(logger);
-        }
-        return loggerThreadLocal.get();
+    /**
+     * Logs a Throwable at WARNING level
+     *
+     * @param message the message to log
+     * @param ex Throwable to log
+     */
+    public void warning(String message, Throwable ex) {
+        julLogger.log(java.util.logging.Level.WARNING, message, ex);
+    }
+
+    /**
+     * Logs a message at SEVERE level
+     *
+     * @param message the message to log
+     */
+    public void severe(String message) {
+        julLogger.log(java.util.logging.Level.SEVERE, message);
+    }
+
+    /**
+     * Logs a Throwable at SEVERE level
+     *
+     * @param ex Throwable to log
+     */
+    public void severe(Throwable ex) {
+        julLogger.log(java.util.logging.Level.SEVERE, "", ex);
+    }
+
+    /**
+     * Logs a Throwable at SEVERE level
+     *
+     * @param message the message to log
+     * @param ex Throwable to log
+     */
+    public void severe(String message, Throwable ex) {
+        julLogger.log(java.util.logging.Level.SEVERE, message, ex);
     }
 }

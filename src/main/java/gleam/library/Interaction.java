@@ -62,6 +62,8 @@ public final class Interaction {
     private Interaction() {
     }
 
+    private static final Logger logger = Logger.getLogger();
+
     public static final String INVALID_ARGUMENT = "invalid argument";
 
     /**
@@ -80,7 +82,7 @@ public final class Interaction {
         0, 1, /* min, max no. of arguments */
         "Gives a short help on a primitive, e.g. (help if)",
         null /* doc strings */ ) {
-    private static final int helpColumnWidth = 19;
+    private static final int HELP_COLUMN_WIDTH = 19;
     @Override
     public Entity apply1(Entity arg1, Environment env, Continuation cont)
         throws GleamException
@@ -104,12 +106,12 @@ public final class Interaction {
                 cout.print(". Try (help).");
             }
             cout.newline();
-            return Void.value();
+            return Void.VALUE;
         }
 
         // no args: print short comments on all primitives
         // prepare filler for first column
-        char[] chars = new char[helpColumnWidth];
+        char[] chars = new char[HELP_COLUMN_WIDTH];
         java.util.Arrays.fill(chars, ' ');
         StringBuilder spc = new StringBuilder();
         spc.append(chars);
@@ -120,8 +122,8 @@ public final class Interaction {
             StringBuilder pname = new StringBuilder(s);
             String doc = Interpreter.getHelpComment(pname.toString());
             if (doc != null) {
-                if (pname.length() < helpColumnWidth) {
-                    pname.append(spc.subSequence(0, helpColumnWidth - pname.length()));
+                if (pname.length() < HELP_COLUMN_WIDTH) {
+                    pname.append(spc.subSequence(0, HELP_COLUMN_WIDTH - pname.length()));
                 }
                 cout.print(pname.toString());
                 cout.print(" ");
@@ -137,7 +139,7 @@ public final class Interaction {
         cout.newline();
         cout.print("Special variable __errobj contains last offending object after an error.");
         cout.newline();
-        return Void.value();
+        return Void.VALUE;
     }},
 
     /*
@@ -162,8 +164,8 @@ public final class Interaction {
                     "invalid argument (should be between "+ Level.ALL +" and " + Level.ERROR +")",
                     arg1);
         }
-        Logger.setLevel(Level.OFF.getValue() - (int) v);
-        return Void.value();
+        Logger.getLogger().setLevel(Level.OFF.getValue() - (int) v);
+        return Void.VALUE;
     }},
 
     /*
@@ -177,7 +179,7 @@ public final class Interaction {
     @Override
     public Entity apply0(Environment env, Continuation cont)
     {
-        return new Real(Level.OFF.getValue() - Logger.getLevelValue());
+        return new Real(Level.OFF.getValue() - logger.getLevelValue());
     }},
 
     /*
@@ -198,14 +200,14 @@ public final class Interaction {
                  ObjectOutput output = new java.io.ObjectOutputStream(fos))
             {
                 output.writeObject(Interpreter.getSessionEnv(env));
-                return Void.value();
+                return Void.VALUE;
             }
             catch (java.io.FileNotFoundException e) {
                 throw new GleamException(this, "file not found", arg1);
             }
             catch (java.io.IOException e) {
-                Logger.error(e);
-                throw new GleamException(this, "I/O error", arg1);
+                Logger.getLogger().warning(e);
+                throw new GleamException(this, "I/O warning", arg1);
             }
         }
         else {
@@ -232,22 +234,22 @@ public final class Interaction {
             {
                 Environment newEnv = (Environment) input.readObject();
                 Interpreter.setSessionEnv(env, newEnv);
-                return Void.value();
+                return Void.VALUE;
             }
             catch (java.io.FileNotFoundException e) {
-                Logger.error(e);
+                logger.warning(e);
                 throw new GleamException(this, "file not found", arg1);
             }
             catch (java.io.IOException e) {
-                Logger.error(e);
-                throw new GleamException(this, "I/O error", arg1);
+                logger.warning(e);
+                throw new GleamException(this, "I/O warning", arg1);
             }
             catch (ClassNotFoundException e) {
-                Logger.error(e);
+                logger.warning(e);
                 throw new GleamException(this, "class not found", arg1);
             }
             catch (ClassCastException e) {
-                Logger.error(e);
+                logger.warning(e);
                 throw new GleamException(this, "invalid class", arg1);
             }
         }

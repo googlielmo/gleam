@@ -61,6 +61,6 @@ public class AssignmentAction extends Action {
         cont.head = next;
         env.getLocation(symbol).set(arg);
         trace(out -> out.printf("%s <- %s\n", symbol.toWriteFormat(), arg.toWriteFormat()), env);
-        return Void.value;
+        return Void.VALUE;
     }
 }

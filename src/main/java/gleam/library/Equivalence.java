@@ -66,7 +66,7 @@ public final class Equivalence {
         // Java object are a special case, since we want to compare the
         // underlying objects to preserve common Java semantics
         if (arg1 instanceof JavaObject && arg2 instanceof JavaObject)
-            return Boolean.makeBoolean(((JavaObject) arg1).eq_p((JavaObject) arg2));
+            return Boolean.makeBoolean(((JavaObject) arg1).eq((JavaObject) arg2));
         else
             return Boolean.makeBoolean(arg1 == arg2);
     }},

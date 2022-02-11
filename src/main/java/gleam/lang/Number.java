@@ -34,4 +34,3 @@ public abstract class Number extends AbstractEntity
     /** Takes value of number as a double. */
     public abstract double getDoubleValue();
 }
-

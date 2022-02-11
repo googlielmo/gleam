@@ -61,7 +61,9 @@ public class Gleam {
     // Trace off control symbol
     static final String C_TROFF = "!troff";
     // Shortcut for '(help)
-    static final Entity CALL_HELP = new Pair(Symbol.HELP, EmptyList.value());
+    static final Entity CALL_HELP = new Pair(Symbol.HELP, EmptyList.VALUE);
+
+    private static final Logger logger = Logger.getLogger();
 
     /**
      * Entry point for the Gleam interactive interpreter
@@ -70,7 +72,7 @@ public class Gleam {
      */
     public static void main(String[] args)
     {
-        Logger.setLevel(WARNING);
+        logger.setLevel(WARNING);
 
         final Interpreter intp = bootstrap();
         final Environment session = intp.getSessionEnv();
@@ -78,7 +80,7 @@ public class Gleam {
 
         welcome(w);
 
-        Entity obj = Void.value();
+        Entity obj = Void.VALUE;
 
         // the REPL loop
         do {
@@ -88,7 +90,7 @@ public class Gleam {
                 if ((obj = readEntity(intp)) != null) {
                     Entity result = intp.eval(obj, session);
 
-                    if (result != Void.value()) {
+                    if (result != Void.VALUE) {
                         w.write(result);
                     }
                     w.newline();
@@ -99,7 +101,7 @@ public class Gleam {
                 intp.clearContinuation();
             } catch (Exception e) {
                 w.printf("*** Uncaught Exception: %s\n", e.getMessage());
-                Logger.error(e);
+                logger.warning(e);
                 intp.clearContinuation();
             }
         } while (obj != null);
@@ -119,11 +121,11 @@ public class Gleam {
     {
         final Interpreter intp;
         try {
-            Logger.enter(Logger.Level.FINE, "Bootstrapping Gleam... ");
+            logger.log(Logger.Level.DEBUG, "Bootstrapping Gleam... ");
             intp = Interpreter.newInterpreter();
-            Logger.enter(Logger.Level.FINE, "... done");
+            logger.log(Logger.Level.DEBUG, "... done");
         } catch (GleamException e) {
-            Logger.error(e);
+            logger.warning(e);
             System.exit(1);
             return null;
         }
@@ -147,7 +149,7 @@ public class Gleam {
         Entity obj = intp.getCin().read();
 
         // check for EOF
-        if (obj == Eof.value() || obj == C_QUIT) {
+        if (obj == Eof.VALUE || obj == C_QUIT) {
             return null;
         }
 
@@ -156,15 +158,15 @@ public class Gleam {
             switch (obj.toString()) {
                 case C_ENV:
                     intp.getSessionEnv().dump();
-                    obj = Void.value();
+                    obj = Void.VALUE;
                     break;
                 case C_TRON:
                     Interpreter.traceOn();
-                    obj = Void.value();
+                    obj = Void.VALUE;
                     break;
                 case C_TROFF:
                     Interpreter.traceOff();
-                    obj = Void.value();
+                    obj = Void.VALUE;
                     break;
                 case C_HELP:
                     intp.getCout().print("Enable trace with !tron, disable with !troff.\n\n");

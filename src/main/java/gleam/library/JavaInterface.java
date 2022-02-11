@@ -60,6 +60,8 @@ import static gleam.lang.Environment.Kind.INTERACTION_ENV;
  */
 public class JavaInterface {
 
+    private static final Logger logger = Logger.getLogger();
+
     /**
      * Can't instantiate this class
      */
@@ -169,23 +171,23 @@ public class JavaInterface {
             Method method = clazz.getMethod(methodName.toString(), parameterTypes);
             Object retVal = method.invoke(object.getObjectValue(), arguments);
             if (method.getReturnType().isInstance(java.lang.Void.class)) {
-                return Void.value();
+                return Void.VALUE;
             }
             return getEntityFromObject(retVal);
         } catch (SecurityException ex) {
-            Logger.error(ex);
+            logger.warning(ex);
             throw new GleamException("call: SecurityException: " + ex.getMessage(), methodName);
         } catch (IllegalArgumentException ex) {
-            Logger.error(ex);
+            logger.warning(ex);
             throw new GleamException("call: IllegalArgumentException: " + ex.getMessage(), methodName);
         } catch (NoSuchMethodException ex) {
-            Logger.error(ex);
+            logger.warning(ex);
             throw new GleamException("call: NoSuchMethodException: " + ex.getMessage(), methodName);
         } catch (IllegalAccessException ex) {
-            Logger.error(ex);
+            logger.warning(ex);
             throw new GleamException("call: IllegalAccessException: " + ex.getMessage(), methodName);
         } catch (InvocationTargetException ex) {
-            Logger.error(ex);
+            logger.warning(ex);
             throw new GleamException("call: InvocationTargetException: " + ex.getMessage(), methodName);
         }
     }

@@ -121,7 +121,7 @@ public class OutputPort extends Port implements Closeable, Flushable
      * prints object in human-readable form
      */
     public void display(Entity obj) {
-        if (obj == EmptyList.value) {
+        if (obj == EmptyList.VALUE) {
             out.print("()");
         }
         else if (obj instanceof Pair) {

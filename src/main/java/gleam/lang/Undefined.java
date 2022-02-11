@@ -41,28 +41,22 @@ public final class Undefined extends AbstractEntity {
      */
     private static final long serialVersionUID = 1L;
 
+    private static final Logger logger = Logger.getLogger();
+
     /** the Undefined singleton */
-    protected static final Undefined value = new Undefined();
+    public static final Undefined VALUE = new Undefined();
 
     /** Can't instantiate this */
     private Undefined() {
     }
 
     /**
-     * Get the only value
-     */
-    public static Undefined value() {
-        return value;
-    }
-
-    /**
      * Prevents the release of multiple instances upon deserialization.
      */
-    @SuppressWarnings("SameReturnValue")
-    protected Object readResolve()
+    private Object readResolve()
     {
-        Logger.enter(Logger.Level.FINE, "readResolve() called! (Undefined)"); //DEBUG
-        return value;
+        logger.debug("readResolve() called! (Undefined)");
+        return VALUE;
     }
 
     /**

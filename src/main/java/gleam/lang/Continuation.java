@@ -32,11 +32,7 @@ package gleam.lang;
  * Created on October 26, 2001, 9:01 PM
  */
 
-import gleam.util.Logger;
-
 import java.io.PrintWriter;
-
-import static gleam.util.Logger.Level.FINE;
 
 /**
  * Scheme continuation, representing the "next things to do" for a procedure,
@@ -164,8 +160,8 @@ public class Continuation extends Procedure
     public Entity apply(List args, Environment env, Continuation cont)
         throws GleamException
     {
-        if (args != EmptyList.value) {
-            if (args.getCdr() == EmptyList.value) {
+        if (args != EmptyList.VALUE) {
+            if (args.getCdr() == EmptyList.VALUE) {
                 // replace continuation
                 cont.replaceContinuation(this);
                 // return argument (it's already evaluated)

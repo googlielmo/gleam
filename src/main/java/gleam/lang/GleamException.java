@@ -29,7 +29,7 @@ package gleam.lang;
 import gleam.library.Primitive;
 import gleam.util.Logger;
 
-import static gleam.util.Logger.Level.FINE;
+import static gleam.util.Logger.Level.DEBUG;
 
 /**
  * The base class for Gleam error objects.
@@ -41,10 +41,12 @@ public class GleamException extends Exception
      */
     private static final long serialVersionUID = 1L;
 
+    private static final Logger logger = Logger.getLogger();
+
     private final Entity errobj;
 
     public GleamException(String message) {
-        this(message, Void.value());
+        this(message, Void.VALUE);
     }
 
     public GleamException(Primitive primitive, String message, Entity value)
@@ -55,9 +57,9 @@ public class GleamException extends Exception
     public GleamException(String message, Entity value)
     {
         super(message);
-        errobj = (value != null) ? value : Void.value;
+        errobj = (value != null) ? value : Void.VALUE;
 
-        Logger.enter(FINE, "Generated GleamException: " + message);
+        logger.log(DEBUG, "Generated GleamException: " + message);
     }
 
     /**

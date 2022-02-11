@@ -51,6 +51,8 @@ import static gleam.util.Logger.Level.*;
  */
 public class Interpreter {
 
+    private static final Logger logger = Logger.getLogger();
+
     static final Symbol INTERPRETER_SYMBOL = Symbol.makeUninternedSymbol("__intp__");
 
     /** the keyword set */
@@ -104,7 +106,7 @@ public class Interpreter {
         initEnvironments();
         bindIOPorts();
         cont = new Continuation();
-        accum = Void.value;
+        accum = Void.VALUE;
         setSessionEnv(interactionEnv, Environment.newEnvironment(cin, cout));
     }
 
@@ -170,9 +172,9 @@ public class Interpreter {
             throws GleamException
     {
         Interpreter interpreter = new Interpreter();
-        Logger.enter(Logger.Level.FINE, String.format("created Interpreter %s", interpreter));
+        logger.log(Logger.Level.DEBUG, String.format("created Interpreter %s", interpreter));
         interpreter.bootstrap();
-        Logger.enter(FINE, String.format("bootstrapped Interpreter %s", interpreter));
+        logger.log(DEBUG, String.format("bootstrapped Interpreter %s", interpreter));
 
         return interpreter;
     }
@@ -287,13 +289,13 @@ public class Interpreter {
             /*
              * define special symbols
              */
-            getSchemeReportEnv().define(Symbol.ERROBJ, Void.value);
+            getSchemeReportEnv().define(Symbol.ERROBJ, Void.VALUE);
             getSchemeReportEnv().define(Symbol.CALL_CC, getSchemeReportEnv().lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
             getSchemeReportEnv().define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
         }
         catch (GleamException e) {
             // should never happen
-            Logger.enter(ERROR,
+            logger.log(ERROR,
                     "Internal error during environment initialization: "
                             + e.getMessage());
         }
@@ -433,11 +435,11 @@ public class Interpreter {
         // read
         Entity obj;
         Entity val;
-        while ((obj = reader.read()) != Eof.value()) {
+        while ((obj = reader.read()) != Eof.VALUE) {
             // eval
-            Logger.enter(FINE, "load: read object", obj);
+            logger.log(DEBUG, "load: read object", obj);
             val = eval(obj, env);
-            Logger.enter(FINE, "load: result is", val);
+            logger.log(DEBUG, "load: result is", val);
         }
     }
 

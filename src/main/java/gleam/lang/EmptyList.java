@@ -37,7 +37,7 @@ import gleam.util.Logger;
 import java.io.PrintWriter;
 import java.util.Iterator;
 
-import static gleam.util.Logger.Level.FINE;
+import static gleam.util.Logger.Level.DEBUG;
 
 /**
  * This class represents the distinct type of the Scheme empty list.
@@ -51,27 +51,22 @@ public final class EmptyList extends AbstractEntity implements List {
      */
     private static final long serialVersionUID = 1L;
 
+    private static final Logger logger = Logger.getLogger();
+
     /** the EmptyList singleton */
-    static final EmptyList value = new EmptyList();
+    public static final EmptyList VALUE = new EmptyList();
 
     /** Can't create an empty list */
     private EmptyList() {
     }
 
     /**
-     * factory method
-     */
-    public static EmptyList value() {
-        return value;
-    }
-
-    /**
      * Prevents the release of multiple instances upon deserialization.
      */
-    protected Object readResolve()
+    private Object readResolve()
     {
-        Logger.enter(FINE, "readResolve() called! (EmptyList)"); //DEBUG
-        return value;
+        logger.log(DEBUG, "readResolve() called! (EmptyList)"); //DEBUG
+        return VALUE;
     }
 
     /**

@@ -13,6 +13,8 @@ import static org.junit.Assert.assertNotNull;
 
 public class GleamTest {
 
+    private static final Logger logger = Logger.getLogger();
+
     @Test
     public void test()
             throws GleamException {
@@ -33,8 +35,8 @@ public class GleamTest {
                             new java.io.InputStreamReader(inputStream));
             intp.load(tests, intp.getSessionEnv());
         } catch (GleamException e) {
-            Logger.error(e);
-            Logger.enter(WARNING, "__errobj:", e.value());
+            logger.warning(e);
+            logger.log(WARNING, "__errobj:", e.value());
             Assert.fail(String.format("GleamException: %s", e.getMessage()));
         }
     }
