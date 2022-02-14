@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import static gleam.util.Logger.Level.DEBUG;
-import static gleam.util.Logger.Level.WARNING;
 
 /**
  * Scheme runtime support.
@@ -287,8 +286,7 @@ public final class System
             }
         }
         else {
-            logger.log(WARNING,
-                       String.format("analyzeSpecialForm: unknown or not implemented %s", op.toString()));
+            logger.debug("analyzeSpecialForm: unknown: ", op);
         }
     }
 

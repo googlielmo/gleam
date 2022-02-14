@@ -1,5 +1,12 @@
+;;;;; tests.scm
+;;;;;
+;;;;; (c) 2001-2022 Guglielmo Nigri <guglielmonigri@yahoo.it>.
+;;;;; Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are
+;;;;; welcome to redistribute it under certain conditions; see LICENSE.TXT.
 
 ;;; new continuation tests:
+
+(display "tests-continuations.scm\n")
 
 
 (define (write-my-args . x) display (cons 'MY-ARGS x))
@@ -135,6 +142,6 @@
 
 (assert-value-output "side effects"
     6.0
-    "one  two  three  op"
+    " one  two  three  op"
     ((op) (one) (two) (three))
 )

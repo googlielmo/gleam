@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2008-2022 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -47,6 +47,7 @@ public class ExpressionInEnvironmentAction extends Action {
     /** Creates a new instance of this action */
     public ExpressionInEnvironmentAction(Entity expr, Environment env, Action next) {
         super(env, next);
+        this.expr = expr;
     }
 
     /** Creates a new instance of this action */

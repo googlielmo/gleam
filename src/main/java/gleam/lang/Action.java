@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -92,7 +92,7 @@ public abstract class Action implements java.io.Serializable
     protected void trace(Printer doo, Environment env)
             throws GleamException
     {
-        if (Interpreter.traceEnabled()) {
+        if (env.getInterpreter().traceEnabled()) {
             OutputPort cout = env.getOut();
 
             String actionName = this.getClass().getSimpleName().replace("Action", "");

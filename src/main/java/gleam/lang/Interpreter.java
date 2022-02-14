@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -44,7 +44,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static gleam.lang.Environment.Kind.*;
-import static gleam.util.Logger.Level.*;
+import static gleam.util.Logger.Level.DEBUG;
+import static gleam.util.Logger.Level.ERROR;
 
 /**
  * The Gleam Scheme Interpreter
@@ -64,12 +65,12 @@ public class Interpreter {
     /** the long-help map */
     private static final HashMap<String, String> helpDocumentation = new HashMap<>();
 
-    private static boolean traceEnabled = false;
+    private boolean traceEnabled = false;
 
     /**
      * true if bootstrap code already loaded
      */
-    private static boolean bootstrapped = false;
+    private boolean bootstrapped = false;
 
     /** the program continuation */
     private final Continuation cont;
@@ -202,17 +203,17 @@ public class Interpreter {
     /**
      * @return true if trace is enabled
      */
-    public static boolean traceEnabled() {
+    public boolean traceEnabled() {
         return traceEnabled;
     }
 
     /** enables trace */
-    public static void traceOn() {
+    public void traceOn() {
         traceEnabled = true;
     }
 
     /** disables trace */
-    public static void traceOff() {
+    public void traceOff() {
         traceEnabled = false;
     }
 
@@ -447,7 +448,7 @@ public class Interpreter {
      * Loads and executes the bootstrap code for the Gleam Scheme Interpreter.
      * @throws gleam.lang.GleamException on any error
      */
-    private synchronized void bootstrap() throws GleamException
+    private void bootstrap() throws GleamException
     {
         if (!bootstrapped) {
             gleam.lang.InputPort bootstrap =

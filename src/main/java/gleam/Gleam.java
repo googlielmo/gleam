@@ -137,7 +137,7 @@ public class Gleam {
         if (w.isConsole()) {
             String version = Gleam.class.getPackage().getImplementationVersion();
             w.printf("Welcome to Gleam, release %s\n", version != null ? version : RELEASE);
-            w.print("(c) 2001-2020 Guglielmo Nigri <guglielmonigri@yahoo.it>.\n");
+            w.print("(c) 2001-2022 Guglielmo Nigri <guglielmonigri@yahoo.it>.\n");
             w.print("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are\n");
             w.print("welcome to redistribute it under certain conditions; see LICENSE.TXT.\n");
             w.print("\nType !h for help, !q to quit.\n\n");
@@ -161,11 +161,11 @@ public class Gleam {
                     obj = Void.VALUE;
                     break;
                 case C_TRON:
-                    Interpreter.traceOn();
+                    intp.traceOn();
                     obj = Void.VALUE;
                     break;
                 case C_TROFF:
-                    Interpreter.traceOff();
+                    intp.traceOff();
                     obj = Void.VALUE;
                     break;
                 case C_HELP:
