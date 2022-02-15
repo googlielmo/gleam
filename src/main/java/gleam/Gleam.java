@@ -46,7 +46,7 @@ import static gleam.util.Logger.Level.WARNING;
 public class Gleam {
 
     // Gleam release number
-    static final String RELEASE = "1.2-SNAPSHOT";
+    static final String RELEASE = "1.3-SNAPSHOT";
 
     // the interactive prompt
     static final String PROMPT = "> ";
