@@ -1,3 +1,39 @@
+Release 1.2.0
+2022-02-15
+
+    Refactor the main REPL
+
+    Refactor the Logger
+     - add getLogger() factory method
+     - Log caller class and method name
+     - Add custom LogFormatter
+     - Remove per-thread logger
+     - Set default logger level to INFO
+
+    Bug fixes and better tests
+     - Upgrade test framework to Junit 5
+     - Fix: ExpressionInEnvironmentAction NPE
+     - Fix: trace per Interpreter
+     - Parameterized tests
+     - Reader tests
+
+2020-12-27
+
+    Refactor the Interpreter
+     - Remove static environments
+     - Each Interpreter instance is independently bootstrapped
+     - Remove ThreadLocal Interpreter
+     - Move I/O ports to Environment
+     - Change access to singletons, from value() to VALUE constant
+     - Change StringBuffer to StringBuilder in MutableString
+     - Implement hash() and equals() in MutableString
+
+    Add continuation tests
+
+    Improve doc strings and help output
+     - Edit/fix README.md
+     - New repo links in CONTRIBUTING.md
+
 2020-11-09
 
     Trace actions in the REPL: enable with !tron, disable with !troff.
@@ -9,21 +45,37 @@
     Per-interpreter I/O.
     Bootstrap in Report Environment.
     Extend analyze() to redefined syntax.
+    Fix: check number of arguments in PrimitiveProcedure.
 
 2020-10-22
 
     Migrate to Java 8: Use switch for strings.
 
+Release 1.1.0
+2020-11-07
+
+    Update CHANGES.TXT and TODO.TXT
+
 2020-10-21
 
     Migrated to Java 1.6: Generics, @Override, List is now an Iterable.
     Refactored and cleaned up Java code.
+    Introduced AbstractEntity.
     Fix: dirty continuation after error in repl.
     New primitive 'class-of' returns java.lang.Class of argument.
+    Remove redundant code and clarify comments.
 
-2020-10-10
+Release 1.0.1
+2020-12-12
 
-    Removed some redundant code and clarified comments
+    Bug fixes:
+        / not checking div by zero, wrong order of arguments
+        - wrong min number of arguments
+
+Release 1.0.0
+2020-10-17
+
+    Support Maven Exec plugin.
 
 2020-06-21
 
@@ -32,6 +84,10 @@
 2020-06-20
 
     Adopted java.util.logging.
+
+2018-11-22
+
+    Fixed concurrency issues.
 
 2018-10-28
 
