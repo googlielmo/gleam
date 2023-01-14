@@ -1,6 +1,6 @@
 # Gleam Scheme Interpreter
 
-(c) 2001-2022 Guglielmo Nigri
+(c) 2001-2023 Guglielmo Nigri
 (guglielmonigri at yahoo.it, googlielmo at gmail.com)
 
 Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are
@@ -35,7 +35,7 @@ and vice versa).
 
 ## How to build and run Gleam
 
-See [BUILD.TXT](BUILD.TXT).
+See [BUILD.md](BUILD.md).
 
 ## Project history
 

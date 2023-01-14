@@ -1,3 +1,12 @@
+Current development release 1.3-SNAPSHOT
+2023-01-14
+
+    Implement jsr223 GleamScriptEngine
+
+    - separate REPL to new Maven module
+    - provide updated instructions for the multi-module build
+
+
 Release 1.2.0
 2022-02-15
 

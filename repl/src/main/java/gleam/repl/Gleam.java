@@ -24,19 +24,15 @@
  *
  */
 
-package gleam;
+package gleam.repl;
 
-import gleam.lang.EmptyList;
-import gleam.lang.Entity;
-import gleam.lang.Environment;
-import gleam.lang.Eof;
-import gleam.lang.GleamException;
-import gleam.lang.Interpreter;
-import gleam.lang.OutputPort;
-import gleam.lang.Pair;
-import gleam.lang.Symbol;
+import gleam.GleamScriptEngine;
 import gleam.lang.Void;
+import gleam.lang.*;
 import gleam.util.Logger;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import static gleam.util.Logger.Level.WARNING;
 
@@ -45,13 +41,10 @@ import static gleam.util.Logger.Level.WARNING;
  */
 public class Gleam {
 
-    // Gleam release number
-    static final String RELEASE = "1.3-SNAPSHOT";
-
     // the interactive prompt
     static final String PROMPT = "> ";
     // Quit control symbol
-    static final Symbol C_QUIT = Symbol.makeSymbol("!q");
+    static final String C_QUIT = "!q";
     // Dump env control symbol
     static final String C_ENV = "!e";
     // Help control symbol
@@ -65,18 +58,36 @@ public class Gleam {
 
     private static final Logger logger = Logger.getLogger();
 
+    private String release;
+
+    private boolean console;
+
     /**
      * Entry point for the Gleam interactive interpreter
      *
      * @param args command line arguments
      */
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
+        new Gleam().repl(args);
+    }
+
+    private void repl(String[] args) {
+
         logger.setLevel(WARNING);
 
-        final Interpreter intp = bootstrap();
+        final ScriptEngineManager manager = new ScriptEngineManager();
+        final ScriptEngine engine = manager.getEngineByName("gleam");
+        final Interpreter intp = ((GleamScriptEngine) engine).getInterpreter();
         final Environment session = intp.getSessionEnv();
         final OutputPort w = intp.getCout();
+
+        if (args.length == 1 && args[0].equals("--force-console")) {
+            console = true;
+        } else {
+            console = w.isConsole();
+        }
+
+        release = engine.getFactory().getEngineVersion();
 
         welcome(w);
 
@@ -109,53 +120,38 @@ public class Gleam {
         prompt(w, "Bye!");
     }
 
-    private static void prompt(OutputPort w, String prompt)
-    {
-        if (w.isConsole()) {
+    private void prompt(OutputPort w, String prompt) {
+        if (console) {
             w.print(prompt);
             w.flush();
         }
     }
 
-    private static Interpreter bootstrap()
-    {
-        final Interpreter intp;
-        try {
-            logger.log(Logger.Level.DEBUG, "Bootstrapping Gleam... ");
-            intp = Interpreter.newInterpreter();
-            logger.log(Logger.Level.DEBUG, "... done");
-        } catch (GleamException e) {
-            logger.warning(e);
-            System.exit(1);
-            return null;
-        }
-        return intp;
-    }
-
-    private static void welcome(OutputPort w)
-    {
-        if (w.isConsole()) {
-            String version = Gleam.class.getPackage().getImplementationVersion();
-            w.printf("Welcome to Gleam, release %s\n", version != null ? version : RELEASE);
+    private void welcome(OutputPort w) {
+        if (console) {
+            w.printf("Welcome to Gleam, release %s\n", release);
             w.print("(c) 2001-2022 Guglielmo Nigri <guglielmonigri@yahoo.it>.\n");
             w.print("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are\n");
             w.print("welcome to redistribute it under certain conditions; see LICENSE.TXT.\n");
-            w.print("\nType !h for help, !q to quit.\n\n");
+            w.print("\nType !h for help, !q to quit.\n");
+            w.print("Enable trace with !tron, disable with !troff.\n\n");
         }
     }
 
-    private static Entity readEntity(Interpreter intp) throws GleamException
-    {
+    private Entity readEntity(Interpreter intp) throws GleamException {
         Entity obj = intp.getCin().read();
 
         // check for EOF
-        if (obj == Eof.VALUE || obj == C_QUIT) {
+        if (obj == Eof.VALUE) {
             return null;
         }
 
         // check for control symbols
         if (obj instanceof Symbol) {
             switch (obj.toString()) {
+                case C_QUIT:
+                    obj = null;
+                    break;
                 case C_ENV:
                     intp.getSessionEnv().dump();
                     obj = Void.VALUE;
@@ -169,7 +165,6 @@ public class Gleam {
                     obj = Void.VALUE;
                     break;
                 case C_HELP:
-                    intp.getCout().print("Enable trace with !tron, disable with !troff.\n\n");
                     obj = CALL_HELP;
                     break;
                 default:

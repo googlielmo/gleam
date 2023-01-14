@@ -7,12 +7,18 @@
         <groupId>gleam-lang</groupId>
         <artifactId>gleam-all</artifactId>
         <version>1.3-SNAPSHOT</version>
-        <relativePath>gleam-all</relativePath>
+        <relativePath>../gleam-all</relativePath>
     </parent>
 
-    <artifactId>gleam</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <artifactId>repl</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>gleam-lang</groupId>
+            <artifactId>gleam</artifactId>
+            <version>1.3-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>
@@ -21,11 +27,9 @@
                 <configuration>
                     <archive>
                         <manifest>
+                            <mainClass>${exec.mainClass}</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
-                        <manifestEntries>
-                            <Service-Provider>gleam.GleamScriptEngineFactory</Service-Provider>
-                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
@@ -38,10 +42,17 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>false</skip>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-
 </project>
