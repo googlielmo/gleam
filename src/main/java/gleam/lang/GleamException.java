@@ -59,7 +59,7 @@ public class GleamException extends Exception
         super(message);
         errobj = (value != null) ? value : Void.VALUE;
 
-        logger.log(DEBUG, "Generated GleamException: " + message);
+        logger.log(DEBUG, () -> String.format("Generated GleamException: %s", message));
     }
 
     /**

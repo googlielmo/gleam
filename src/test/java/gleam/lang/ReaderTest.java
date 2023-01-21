@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import gleam.util.Logger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
@@ -35,8 +37,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ReaderTest {
 
-    // lists
+    private static final Logger logger = Logger.getLogger();
 
+    @BeforeEach
+    void init() {
+        logger.setLevel(Logger.Level.CONFIG);
+    }
+
+    // lists
     @Test
     void read_empty_list() throws GleamException
     {

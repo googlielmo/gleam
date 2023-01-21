@@ -29,11 +29,15 @@ package gleam;
 import gleam.lang.GleamException;
 import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
+import gleam.lang.OutputPort;
 import gleam.util.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -45,37 +49,55 @@ class GleamTest {
     private Interpreter intp;
 
     @BeforeEach
-    void init() throws GleamException
-    {
+    void init() throws GleamException {
+        logger.setLevel(Logger.Level.CONFIG);
         intp = Interpreter.newInterpreter();
         intp.traceOff();
         runTestFile("/test-utilities.scm");
     }
 
     @Test
-    void tests_scm() throws GleamException
-    {
+    void tests_scm() {
         runTestFile("/tests.scm");
     }
 
     @Test
-    void tests_continuations_scm() throws GleamException
-    {
+    void tests_continuations_scm() {
         runTestFile("/tests-continuations.scm");
     }
 
-    private void runTestFile(String testFile) throws GleamException
-    {
+    private void runTestFile(String testFile) {
         try {
             InputStream inputStream = getClass().getResourceAsStream(testFile);
             assertNotNull(inputStream, String.format("test file %s not found", testFile));
 
             InputPort tests = new gleam.lang.InputPort(new java.io.InputStreamReader(inputStream));
+            StringWriter stringWriter = new StringWriter();
+            OutputPort outputPort = new OutputPort(stringWriter, false);
+            intp.setCout(outputPort);
             intp.load(tests, intp.getSessionEnv());
+            String testOutput = stringWriter.toString();
+            if (testOutput.contains("FAILED:")) {
+                printFailures(testOutput);
+                fail("Errors in " + testFile + ". Check output.");
+            } else {
+                System.out.println(testOutput);
+            }
         } catch (GleamException e) {
             logger.warning(e);
             logger.warning("__errobj: ", e.value());
             fail(String.format("GleamException: %s", e.getMessage()));
+        }
+    }
+
+    private static void printFailures(String testOutput) {
+        Pattern pattern =
+            Pattern.compile("^Running test:[[^K]&&[\\s\\S]]*?FAILED.*$",
+                Pattern.MULTILINE);
+        Matcher matcher = pattern.matcher(testOutput);
+        while (matcher.find()) {
+            System.err.println(matcher.group());
+            System.err.println();
         }
     }
 }

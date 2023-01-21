@@ -30,7 +30,7 @@
 ;(call/cc (lambda (x) (set! stop x)))
 
 (define (test-head name)
-    (flush) (display "Running test: ")
+    (flush) (display "\nRunning test: ")
     (display name) (display "...") (flush))
 
 (define (test-body expected actual)
@@ -41,6 +41,7 @@
                        (display expected)
                        (display " but was ")
                        (display actual)
+                       (display "\n")
                        (flush))))
 
 ;Usage: (assert name expected actual)

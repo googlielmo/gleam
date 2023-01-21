@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -107,7 +107,7 @@ public class Gleam {
                     w.newline();
                 }
             } catch (GleamException e) {
-                intp.getInteractionEnv().define(Symbol.ERROBJ, e.value());
+                Interpreter.getInteractionEnv().define(Symbol.ERROBJ, e.value());
                 w.printf("*** %s\n", e.getMessage());
                 intp.clearContinuation();
             } catch (Exception e) {

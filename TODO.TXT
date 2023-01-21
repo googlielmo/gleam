@@ -1,6 +1,6 @@
 TODO.TXT
 
-(c) 2001-2007 Guglielmo Nigri <guglielmonigri@yahoo.it>.
+(c) 2001-2023 Guglielmo Nigri <guglielmonigri at yahoo.it>.
 Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are
 welcome to redistribute it under certain conditions; see LICENSE.TXT.
 

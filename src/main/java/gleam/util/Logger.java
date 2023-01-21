@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -31,6 +31,7 @@ import gleam.lang.Entity;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.Supplier;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
@@ -51,59 +52,8 @@ public class Logger {
     private static final int JUL_THRESHOLD_INFO = 800;
     private static final int JUL_THRESHOLD_CONFIG = 700;
     private static final int JUL_THRESHOLD_FINE = 500;
-
-    /**
-     * Level<BR>
-     * <code>
-     * OFF, no output<BR>
-     * ERROR, a serious failure<BR>
-     * WARNING, a potential problem<BR>
-     * INFO, significant messages<BR>
-     * CONFIG, configuration messages<BR>
-     * DEBUG, tracing information<BR>
-     * ALL, all messages<BR>
-     * </code>
-     */
-    public enum Level {
-        OFF(6),
-        ERROR(5),
-        WARNING(4),
-        INFO(3),
-        CONFIG(2),
-        DEBUG(1),
-        ALL(0);
-
-        private final int value;
-
-        Level(int value)
-        {
-            this.value = value;
-        }
-
-        public int getValue()
-        {
-            return value;
-        }
-
-        public static Level fromValue(int value)
-        {
-            for (Level level : values()) {
-                if (level.getValue() == value) {
-                    return level;
-                }
-            }
-            return null;
-        }
-    }
-
-    /**
-     * Can't instantiate this class directly
-     */
-    private Logger()
-    {
-    }
-
     private static final java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("gleam");
+    private static final Logger theLogger = new Logger();
 
     static {
         if (julLogger.getHandlers().length == 0) {
@@ -116,46 +66,17 @@ public class Logger {
         }
     }
 
-    private static final Logger theLogger = new Logger();
+    /**
+     * Can't instantiate this class directly
+     */
+    private Logger() {
+    }
 
     /**
      * Get the Gleam logger.
      */
-    public static Logger getLogger()
-    {
+    public static Logger getLogger() {
         return theLogger;
-    }
-
-    /**
-     * Sets current level.
-     * Message with level lower than this level will be discarded.
-     *
-     * @param level level value
-     * @see Level
-     */
-    public void setLevel(int level)
-    {
-        julLogger.setLevel(getJulLevel(level));
-    }
-
-    /**
-     * Sets current level.
-     * Message with level lower than this level will be discarded.
-     *
-     * @param level numeric level value
-     * @see Level
-     */
-    public void setLevel(Level level)
-    {
-        julLogger.setLevel(getJulLevel(level.getValue()));
-    }
-
-    /**
-     * @return the current level
-     */
-    public int getLevelValue()
-    {
-        return getLevelValue(julLogger.getLevel());
     }
 
     /**
@@ -164,8 +85,7 @@ public class Logger {
      * @param level integer level value
      * @return the corresponding Level
      */
-    private static java.util.logging.Level getJulLevel(int level)
-    {
+    private static java.util.logging.Level getJulLevel(int level) {
         java.util.logging.Level n;
         if (level < 0)
             level = 0;
@@ -200,77 +120,101 @@ public class Logger {
      * @param level the current level
      * @return the corresponding integer level value
      */
-    private static int getLevelValue(java.util.logging.Level level)
-    {
+    private static int getLevelValue(java.util.logging.Level level) {
         final int n;
 
         if (level.intValue() == Integer.MAX_VALUE) {
             n = Level.OFF.getValue();
-        }
-        else if (level.intValue() >= JUL_THRESHOLD_ALL) {
+        } else if (level.intValue() >= JUL_THRESHOLD_ALL) {
             n = Level.ERROR.getValue();
-        }
-        else if (level.intValue() >= JUL_THRESHOLD_WARNING) {
+        } else if (level.intValue() >= JUL_THRESHOLD_WARNING) {
             n = Level.WARNING.getValue();
-        }
-        else if (level.intValue() >= JUL_THRESHOLD_INFO) {
+        } else if (level.intValue() >= JUL_THRESHOLD_INFO) {
             n = Level.INFO.getValue();
-        }
-        else if (level.intValue() >= JUL_THRESHOLD_CONFIG) {
+        } else if (level.intValue() >= JUL_THRESHOLD_CONFIG) {
             n = Level.CONFIG.getValue();
-        }
-        else if (level.intValue() >= JUL_THRESHOLD_FINE) {
+        } else if (level.intValue() >= JUL_THRESHOLD_FINE) {
             n = Level.DEBUG.getValue();
-        }
-        else {
+        } else {
             n = Level.ALL.getValue();
         }
         return n;
     }
 
     /**
+     * Sets current level.
+     * Message with level lower than this level will be discarded.
+     *
+     * @param level level value
+     * @see Level
+     */
+    public void setLevel(int level) {
+        julLogger.setLevel(getJulLevel(level));
+    }
+
+    /**
+     * Sets current level.
+     * Message with level lower than this level will be discarded.
+     *
+     * @param level numeric level value
+     * @see Level
+     */
+    public void setLevel(Level level) {
+        julLogger.setLevel(getJulLevel(level.getValue()));
+    }
+
+    /**
+     * @return the current level
+     */
+    public int getLevelValue() {
+        return getLevelValue(julLogger.getLevel());
+    }
+
+    /**
      * Logs a message.
      */
-    public void log(int level, String message)
-    {
+    public void log(int level, String message) {
         julLogger.log(getJulLevel(level), message);
     }
 
     /**
      * Logs a message.
      */
-    public void log(Level level, String message)
-    {
+    public void log(Level level, String message) {
         julLogger.log(getJulLevel(level.getValue()), message);
+    }
+
+    /**
+     * Logs a message.
+     */
+    public void log(Level level, Supplier<String> msgSupplier) {
+        julLogger.log(getJulLevel(level.getValue()), msgSupplier);
     }
 
     /**
      * Logs a message and an Entity.
      */
-    public void log(int level, String message, Entity obj)
-    {
+    public void log(int level, String message, Entity obj) {
         julLogger.log(getJulLevel(level), () -> message + " " + obj);
     }
 
     /**
      * Logs a message and an Entity.
      */
-    public void log(Level level, String message, Entity obj)
-    {
+    public void log(Level level, String message, Entity obj) {
         julLogger.log(getJulLevel(level.getValue()), () -> message + " " + obj);
     }
-
-    // shortcuts
 
     /**
      * Logs a message at DEBUG level.
      *
      * @param message the message to log
      */
-    public void debug(String message)
-    {
+    public void debug(String message) {
         julLogger.log(java.util.logging.Level.FINE, message);
     }
+
+    // shortcuts
 
     /**
      * Logs a message and an Entity at DEBUG level.
@@ -278,8 +222,7 @@ public class Logger {
      * @param message the message to log
      * @param obj     the Entity to log
      */
-    public void debug(String message, Entity obj)
-    {
+    public void debug(String message, Entity obj) {
         julLogger.log(java.util.logging.Level.FINE, () -> message + " " + obj);
     }
 
@@ -288,8 +231,7 @@ public class Logger {
      *
      * @param message the message to log
      */
-    public void config(String message)
-    {
+    public void config(String message) {
         julLogger.log(java.util.logging.Level.CONFIG, message);
     }
 
@@ -299,8 +241,7 @@ public class Logger {
      * @param message the message to log
      * @param obj     the Entity to log
      */
-    public void config(String message, Entity obj)
-    {
+    public void config(String message, Entity obj) {
         julLogger.log(java.util.logging.Level.CONFIG, () -> message + " " + obj);
     }
 
@@ -309,8 +250,7 @@ public class Logger {
      *
      * @param message the message to log
      */
-    public void info(String message)
-    {
+    public void info(String message) {
         julLogger.log(java.util.logging.Level.INFO, message);
     }
 
@@ -320,8 +260,7 @@ public class Logger {
      * @param message the message to log
      * @param obj     the Entity to log
      */
-    public void info(String message, Entity obj)
-    {
+    public void info(String message, Entity obj) {
         julLogger.log(java.util.logging.Level.INFO, () -> message + " " + obj);
     }
 
@@ -330,8 +269,7 @@ public class Logger {
      *
      * @param message the message to log
      */
-    public void warning(String message)
-    {
+    public void warning(String message) {
         julLogger.log(java.util.logging.Level.WARNING, message);
     }
 
@@ -341,8 +279,7 @@ public class Logger {
      * @param message the message to log
      * @param obj     the Entity to log
      */
-    public void warning(String message, Entity obj)
-    {
+    public void warning(String message, Entity obj) {
         julLogger.log(java.util.logging.Level.WARNING, () -> message + " " + obj);
     }
 
@@ -351,8 +288,7 @@ public class Logger {
      *
      * @param ex Throwable to log
      */
-    public void warning(Throwable ex)
-    {
+    public void warning(Throwable ex) {
         julLogger.log(java.util.logging.Level.WARNING, ex, ex::getMessage);
     }
 
@@ -362,8 +298,7 @@ public class Logger {
      * @param message the message to log
      * @param ex      Throwable to log
      */
-    public void warning(String message, Throwable ex)
-    {
+    public void warning(String message, Throwable ex) {
         julLogger.log(java.util.logging.Level.WARNING, message, ex);
     }
 
@@ -372,8 +307,7 @@ public class Logger {
      *
      * @param message the message to log
      */
-    public void severe(String message)
-    {
+    public void severe(String message) {
         julLogger.log(java.util.logging.Level.SEVERE, message);
     }
 
@@ -383,8 +317,7 @@ public class Logger {
      * @param message the message to log
      * @param obj     the Entity to log
      */
-    public void severe(String message, Entity obj)
-    {
+    public void severe(String message, Entity obj) {
         julLogger.log(java.util.logging.Level.SEVERE, () -> message + " " + obj);
     }
 
@@ -393,8 +326,7 @@ public class Logger {
      *
      * @param ex Throwable to log
      */
-    public void severe(Throwable ex)
-    {
+    public void severe(Throwable ex) {
         julLogger.log(java.util.logging.Level.SEVERE, ex, ex::getMessage);
     }
 
@@ -404,9 +336,49 @@ public class Logger {
      * @param message the message to log
      * @param ex      Throwable to log
      */
-    public void severe(String message, Throwable ex)
-    {
+    public void severe(String message, Throwable ex) {
         julLogger.log(java.util.logging.Level.SEVERE, message, ex);
+    }
+
+    /**
+     * Level<BR>
+     * <code>
+     * OFF, no output<BR>
+     * ERROR, a serious failure<BR>
+     * WARNING, a potential problem<BR>
+     * INFO, significant messages<BR>
+     * CONFIG, configuration messages<BR>
+     * DEBUG, tracing information<BR>
+     * ALL, all messages<BR>
+     * </code>
+     */
+    public enum Level {
+        OFF(6),
+        ERROR(5),
+        WARNING(4),
+        INFO(3),
+        CONFIG(2),
+        DEBUG(1),
+        ALL(0);
+
+        private final int value;
+
+        Level(int value) {
+            this.value = value;
+        }
+
+        public static Level fromValue(int value) {
+            for (Level level : values()) {
+                if (level.getValue() == value) {
+                    return level;
+                }
+            }
+            return null;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 
     // custom formatter
@@ -415,8 +387,7 @@ public class Logger {
 
         private final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z");
 
-        public String format(LogRecord logRecord)
-        {
+        public String format(LogRecord logRecord) {
             getCallerInfo(logRecord);
             logRecord.setMessage(logRecord.getMessage().replace("\n", "\\\\n"));
             StringBuilder builder = new StringBuilder(1000);
@@ -429,15 +400,13 @@ public class Logger {
             return builder.toString();
         }
 
-        private void getCallerInfo(LogRecord logRecord)
-        {
+        private void getCallerInfo(LogRecord logRecord) {
             boolean loggerFound = false;
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
             for (StackTraceElement stackTraceElement : stackTrace) {
                 if (stackTraceElement.getClassName().equals(Logger.class.getName())) {
                     loggerFound = true;
-                }
-                else if (loggerFound) {
+                } else if (loggerFound) {
                     logRecord.setSourceClassName(stackTraceElement.getClassName());
                     logRecord.setSourceMethodName(stackTraceElement.getMethodName());
                     break;

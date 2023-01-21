@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -36,103 +36,126 @@ package gleam.lang;
 import gleam.library.Primitive;
 import gleam.util.Logger;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import static gleam.lang.Environment.Kind.*;
-import static gleam.util.Logger.Level.DEBUG;
-import static gleam.util.Logger.Level.ERROR;
+import static gleam.util.Logger.Level.*;
+
 
 /**
  * The Gleam Scheme Interpreter
  */
 public class Interpreter {
 
-    private static final Logger logger = Logger.getLogger();
-
     static final Symbol INTERPRETER_SYMBOL = Symbol.makeUninternedSymbol("__intp__");
 
-    /** the keyword set */
+    private static final Logger logger = Logger.getLogger();
+
+    /**
+     * the keyword set
+     */
     private static final Collection<Symbol> kwSet = new HashSet<>();
 
-    /** the short-help map */
+    /**
+     * the short-help map
+     */
     private static final HashMap<String, String> helpComment = new HashMap<>();
 
-    /** the long-help map */
+    /**
+     * the long-help map
+     */
     private static final HashMap<String, String> helpDocumentation = new HashMap<>();
 
-    private boolean traceEnabled = false;
+    /**
+     * the null environment, as defined in r5rs
+     */
+    private static final Environment nullEnv = new SystemEnvironment(NULL_ENV);
+
+    /**
+     * the scheme-report environment, as defined in r5rs
+     */
+    private static final Environment reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
+
+    /**
+     * the interaction environment, as defined in r5rs
+     */
+    private static final Environment interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
+
+    /**
+     * the global shared environment
+     */
+    private static Environment globalEnv = new Environment(interactionEnv);
 
     /**
      * true if bootstrap code already loaded
      */
-    private boolean bootstrapped = false;
+    private static volatile boolean bootstrapped = false;
 
-    /** the program continuation */
-    private final Continuation cont;
 
-    /** the null environment, as defined in r5rs */
-    private final Environment nullEnv = new SystemEnvironment(NULL_ENV);
-
-    /** the scheme-report environment, as defined in r5rs */
-    private final Environment reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
-
-    /** the interaction environment, as defined in r5rs */
-    private final Environment interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
-
-    /** the current-input-port */
-    private InputPort cin = null;
-
-    /** the current-output-port */
-    private OutputPort cout = null;
-
-    /** the accumulator register */
-    private Entity accum;
+    public void setSessionEnv(Environment sessionEnv) {
+        sessionEnv.setParent(globalEnv);
+        sessionEnv.define(INTERPRETER_SYMBOL, new JavaObject(this));
+        this.sessionEnv = sessionEnv;
+    }
 
     /**
-     * the session (top-level) environment;
-     * can be changed by the application.
+     * the session (top-level) environment; typically the environment used by the application.
      */
-    private Environment sesnEnv = null;
+    private Environment sessionEnv = null;
+
+    private boolean traceEnabled = false;
+
+    /**
+     * the current-input-port
+     */
+    private InputPort cin = null;
+
+    /**
+     * the current-output-port
+     */
+    private OutputPort cout = null;
+
+    /**
+     * the program continuation
+     */
+    private final Continuation cont = new Continuation();
+
+    /**
+     * the accumulator register
+     */
+    private Entity accum = Void.VALUE;
 
     /**
      * Private constructor
-     * @throws gleam.lang.GleamException on any error
      */
-    private Interpreter() throws GleamException {
+    private Interpreter() {
         initEnvironments();
         bindIOPorts();
-        cont = new Continuation();
-        accum = Void.VALUE;
-        setSessionEnv(interactionEnv, Environment.newEnvironment(cin, cout));
+
+        setSessionEnv(Environment.newEnvironment(cin, cout));
     }
 
-    public static Environment getSessionEnv(Environment env)
-            throws GleamException
-    {
-        return env.getInterpreter().getSessionEnv();
+
+    public static Environment getNullEnv() {
+        return nullEnv;
     }
 
-    public static Entity getNullEnv(Environment env)
-            throws GleamException
-    {
-        return env.getInterpreter().getNullEnv();
+    public static Environment getSchemeReportEnv() {
+        return reportEnv;
     }
 
-    public static Entity getSchemeReportEnv(Environment env)
-            throws GleamException
-    {
-        return env.getInterpreter().getSchemeReportEnv();
+    public static Environment getInteractionEnv() {
+        return interactionEnv;
     }
 
-    public static Entity getInteractionEnv(Environment env)
-            throws GleamException
-    {
-        return env.getInterpreter().getInteractionEnv();
+    public static Environment getGlobalEnv() {
+        return globalEnv;
+    }
+
+    public static void setGlobalEnv(Interpreter intp, Environment globalEnv) {
+        Interpreter.globalEnv = globalEnv;
+        globalEnv.setParent(interactionEnv);
+        intp.sessionEnv.setParent(getGlobalEnv());
     }
 
     /**
@@ -165,39 +188,45 @@ public class Interpreter {
 
     /**
      * Creates and bootstraps a new Interpreter.
-     * @return a Gleam Scheme Interpreter
      *
+     * @return a Gleam Scheme Interpreter
      * @throws GleamException in case of error
      */
     public static Interpreter newInterpreter()
-            throws GleamException
-    {
-        Interpreter interpreter = new Interpreter();
-        logger.log(Logger.Level.DEBUG, String.format("created Interpreter %s", interpreter));
-        interpreter.bootstrap();
-        logger.log(DEBUG, String.format("bootstrapped Interpreter %s", interpreter));
-
-        return interpreter;
+        throws GleamException {
+        try {
+            Interpreter interpreter = new Interpreter();
+            logger.log(Logger.Level.DEBUG, () -> String.format("created Interpreter %s", interpreter));
+            Interpreter.bootstrap(interpreter);
+            return interpreter;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
-    public static void addForEval(Entity expr, Environment env, Continuation cont) throws GleamException
-    {
+    public static void addForEval(Entity expr, Environment env, Continuation cont) throws GleamException {
         expr = expr.analyze(env).optimize(env);
         cont.begin(new ExpressionAction(expr, env, null));
     }
 
     /**
-     * Sets the current session environment.
-     * @param currentEnv the current environment
-     * @param newSessionEnv the new session environment
+     * Loads and executes the bootstrap code for the Gleam Scheme Interpreter.
+     *
+     * @throws gleam.lang.GleamException on any error
      */
-    public static void setSessionEnv(Environment currentEnv, Environment newSessionEnv)
-            throws GleamException
-    {
-        Interpreter intp = currentEnv.getInterpreter();
-        intp.sesnEnv = newSessionEnv;
-        // link to interaction env
-        intp.sesnEnv.parent = intp.getInteractionEnv();
+    private static synchronized void bootstrap(Interpreter interpreter) throws GleamException {
+        if (bootstrapped) {
+            return;
+        }
+        gleam.lang.InputPort bootstrap =
+            new gleam.lang.InputPort(
+                new java.io.BufferedReader(
+                    new java.io.InputStreamReader(
+                        Objects.requireNonNull(interpreter.getClass().getResourceAsStream("/bootstrap.scm")))));
+        interpreter.load(bootstrap, getSchemeReportEnv());
+        bootstrapped = true;
+        logger.log(CONFIG, "Gleam bootstrapped");
     }
 
     /**
@@ -207,12 +236,16 @@ public class Interpreter {
         return traceEnabled;
     }
 
-    /** enables trace */
+    /**
+     * enables trace
+     */
     public void traceOn() {
         traceEnabled = true;
     }
 
-    /** disables trace */
+    /**
+     * disables trace
+     */
     public void traceOff() {
         traceEnabled = false;
     }
@@ -242,7 +275,8 @@ public class Interpreter {
 
     /**
      * Installs a primitive in an environment
-     * @param env the environment
+     *
+     * @param env       the environment
      * @param primitive the primitive
      */
     private void installPrimitive(Environment env, Primitive primitive) {
@@ -264,7 +298,6 @@ public class Interpreter {
      * Initialize the three initial environments (null, report, interaction).
      */
     private void initEnvironments() {
-        nullEnv.define(INTERPRETER_SYMBOL, new JavaObject(this));
         try {
             /*
              * import primitives
@@ -291,40 +324,21 @@ public class Interpreter {
              * define special symbols
              */
             getSchemeReportEnv().define(Symbol.ERROBJ, Void.VALUE);
-            getSchemeReportEnv().define(Symbol.CALL_CC, getSchemeReportEnv().lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION ));
+            getSchemeReportEnv().define(Symbol.CALL_CC, getSchemeReportEnv().lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION));
             getSchemeReportEnv().define(Symbol.makeSymbol("null"), new JavaObject()); // the Java null value
-        }
-        catch (GleamException e) {
+        } catch (GleamException e) {
             // should never happen
-            logger.log(ERROR,
-                    "Internal error during environment initialization: "
-                            + e.getMessage());
+            logger.log(ERROR, () -> String.format("Internal error during environment initialization: %s", e.getMessage()));
         }
-    }
-
-    public Environment getNullEnv()
-    {
-        return nullEnv;
-    }
-
-    public Environment getSchemeReportEnv()
-    {
-        return reportEnv;
-    }
-
-    public Environment getInteractionEnv()
-    {
-        return interactionEnv;
     }
 
     /**
      * binds current I/O ports to system standard I/O
      */
-    private void bindIOPorts()
-    {
-        cin = new InputPort(new java.io.BufferedReader(
-                new java.io.InputStreamReader(
-                        java.lang.System.in)));
+    private void bindIOPorts() {
+        cin = new InputPort(
+            new java.io.BufferedReader(
+                new java.io.InputStreamReader(java.lang.System.in)));
 
         boolean isConsole = java.lang.System.console() != null;
         cout = new OutputPort(java.lang.System.out, isConsole);
@@ -339,26 +353,26 @@ public class Interpreter {
 
     /**
      * Evaluates a Gleam Scheme expression in the current session environment
+     *
      * @param expr a String holding an arbitrary Scheme expression
      * @return the value of the expression
      * @throws gleam.lang.GleamException as soon as an error condition is
-     *  raised, the loading / execution operation will terminate,
-     *  leaving the session environment in a possibly modified state
+     *                                   raised, the loading / execution operation will terminate,
+     *                                   leaving the session environment in a possibly modified state
      */
-    public Entity eval(String expr) throws GleamException
-    {
+    public Entity eval(String expr) throws GleamException {
         return eval(new java.io.StringReader(expr));
     }
 
     /**
      * Evaluates a Gleam Scheme program in the current session environment
+     *
      * @param reader a <CODE>java.io.Reader</CODE> representing the program
-     *  stream
+     *               stream
      * @return the return value of the program
      * @throws gleam.lang.GleamException on any error
      */
-    public Entity eval(java.io.Reader reader) throws GleamException
-    {
+    public Entity eval(java.io.Reader reader) throws GleamException {
         load(new InputPort(reader), getSessionEnv());
         return accum;
     }
@@ -367,13 +381,12 @@ public class Interpreter {
      * Evaluates a Gleam Scheme entity as code in a given environment.
      *
      * @param expr the <CODE>gleam.lang.Entity</CODE> corresponding to a
-     *  Scheme expression to evaluate
-     * @param env the environment of evaluation
-     * @throws gleam.lang.GleamException on any error
+     *             Scheme expression to evaluate
+     * @param env  the environment of evaluation
      * @return the value of the expression
+     * @throws gleam.lang.GleamException on any error
      */
-    public Entity eval(Entity expr, Environment env) throws GleamException
-    {
+    public Entity eval(Entity expr, Environment env) throws GleamException {
         expr = expr.analyze(env).optimize(env);
         cont.begin(new ExpressionAction(expr, env, null));
         execute();
@@ -384,18 +397,17 @@ public class Interpreter {
      * Replaces the current continuation with a new one.
      * This method is used to implement the evaluation of continuations.
      * Equivalent to a <CODE>goto</CODE> instruction.
+     *
      * @param cont the new current continuation for this <CODE>Interpreter</CODE>
      */
-    public void replaceContinuation(Continuation cont)
-    {
+    public void replaceContinuation(Continuation cont) {
         this.cont.head = cont.head;
     }
 
     /**
      * Clears up the current continuation, e.g., after an error.
      */
-    public void clearContinuation()
-    {
+    public void clearContinuation() {
         this.cont.clear();
     }
 
@@ -407,10 +419,10 @@ public class Interpreter {
      * the accumulator. Then the next action in the continuation chain is
      * extracted, and the loop repeats itself until there are no more
      * actions to execute.
+     *
      * @throws gleam.lang.GleamException on any error
      */
-    private void execute() throws GleamException
-    {
+    private void execute() throws GleamException {
         Action currentAction = cont.head;
         Entity tmp;
         while (currentAction != null) {
@@ -424,15 +436,15 @@ public class Interpreter {
 
     /**
      * Loads and executes a Gleam Scheme program from a stream
+     *
      * @param reader a <CODE>gleam.lang.InputPort</CODE> representing the
-     *  program stream
-     * @param env the environment for program execution
+     *               program stream
+     * @param env    the environment for program execution
      * @throws gleam.lang.GleamException as soon as an error condition is
-     *  raised, the loading / execution operation will terminate,
-     *  leaving the environment in a possibly modified state
+     *                                   raised, the loading / execution operation will terminate,
+     *                                   leaving the environment in a possibly modified state
      */
-    public void load(InputPort reader, Environment env) throws GleamException
-    {
+    public void load(InputPort reader, Environment env) throws GleamException {
         // read
         Entity obj;
         Entity val;
@@ -445,60 +457,41 @@ public class Interpreter {
     }
 
     /**
-     * Loads and executes the bootstrap code for the Gleam Scheme Interpreter.
-     * @throws gleam.lang.GleamException on any error
-     */
-    private void bootstrap() throws GleamException
-    {
-        if (!bootstrapped) {
-            gleam.lang.InputPort bootstrap =
-                new gleam.lang.InputPort(
-                    new java.io.BufferedReader(
-                        new java.io.InputStreamReader(
-                                Objects.requireNonNull(getClass().getResourceAsStream("/bootstrap.scm")))));
-            load(bootstrap, getSchemeReportEnv());
-            bootstrapped = true;
-        }
-    }
-
-    /**
      * Gets the current session environment
+     *
      * @return the current session environment
      */
-    public Environment getSessionEnv()
-    {
-        return sesnEnv;
+    public Environment getSessionEnv() {
+        return sessionEnv;
     }
 
     /**
-     * Binds a Java object in the current session environment.
-     * A variable with the given name will be bound to the given Java object
-     * in the current session environment
-     * @param name the variable name for the object
-     * @param object the <CODE>java.lang.Object</CODE> to bind to the given
-     *  name
+     * Gets current-input-port
      */
-    public void bind(String name, Object object) {
-        getSessionEnv().define(Symbol.makeSymbol(name), new JavaObject(object));
-    }
-
-    /** Gets current-input-port */
     public InputPort getCin() {
         return cin;
     }
 
-    /** Sets current-input-port */
+    /**
+     * Sets current-input-port
+     */
     public void setCin(InputPort newcin) {
         cin = newcin;
+        sessionEnv.setIn(newcin);
     }
 
-    /** Gets current-output-port */
+    /**
+     * Gets current-output-port
+     */
     public OutputPort getCout() {
         return cout;
     }
 
-    /** Sets current-output-port */
+    /**
+     * Sets current-output-port
+     */
     public void setCout(OutputPort newcout) {
         cout = newcout;
+        sessionEnv.setOut(newcout);
     }
 }

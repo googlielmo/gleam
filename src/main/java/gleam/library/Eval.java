@@ -104,7 +104,7 @@ public final class Eval {
         try {
             version = (Number) arg1;
             if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
-                return Interpreter.getNullEnv(env);
+                return Interpreter.getNullEnv();
             }
             else {
                 throw new GleamException(this, "version not supported", version);
@@ -133,7 +133,7 @@ public final class Eval {
         try {
             version = (Number) arg1;
             if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
-                return Interpreter.getSchemeReportEnv(env);
+                return Interpreter.getSchemeReportEnv();
             }
             else {
                 throw new GleamException(this, "version not supported", version);
@@ -154,10 +154,8 @@ public final class Eval {
         "Returns the interaction (top-level) environment",
         null /* doc strings */ ) {
     @Override
-    public Entity apply0(Environment env, Continuation cont)
-            throws GleamException
-    {
-        return Interpreter.getInteractionEnv(env);
+    public Entity apply0(Environment env, Continuation cont) {
+        return Interpreter.getInteractionEnv();
     }},
 
     /*

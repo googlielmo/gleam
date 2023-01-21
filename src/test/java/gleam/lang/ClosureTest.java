@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import gleam.util.Logger;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -34,6 +36,13 @@ import java.io.InputStreamReader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ClosureTest {
+
+    private static final Logger logger = Logger.getLogger();
+
+    @BeforeEach
+    void init() {
+        logger.setLevel(Logger.Level.CONFIG);
+    }
 
     @Test
     void getMaxArity_EmptyList() throws GleamException, IOException {
@@ -107,7 +116,7 @@ class ClosureTest {
         assertEquals(-1, c1.getMaxArity());
     }
 
-    private Closure getClosureWithParams(Entity value) throws IOException {
+    private Closure getClosureWithParams(Entity value) {
         return new Closure(value,
                            EmptyList.VALUE,
                            Environment.newEnvironment(

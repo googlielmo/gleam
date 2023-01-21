@@ -92,7 +92,7 @@ public abstract class Action implements java.io.Serializable
     protected void trace(Printer doo, Environment env)
             throws GleamException
     {
-        if (env.getInterpreter().traceEnabled()) {
+        if (env.getInterpreter() != null && env.getInterpreter().traceEnabled()) {
             OutputPort cout = env.getOut();
 
             String actionName = this.getClass().getSimpleName().replace("Action", "");

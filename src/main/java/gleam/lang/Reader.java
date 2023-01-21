@@ -268,12 +268,12 @@ class Reader {
         }
 
         if (retVal != null)
-            logger.log(DEBUG, "TOKEN=" + retVal);
+            logger.log(DEBUG, () -> String.format("TOKEN=%s", retVal));
 
         return retVal;
     }
 
     void logReadOthers(String token, String type) {
-       logger.log(DEBUG, String.format("readOthers: interpreting '%s' as a %s", token, type));
+       logger.log(DEBUG, () -> String.format("readOthers: interpreting '%s' as a %s", token, type));
     }
 }
