@@ -26,7 +26,8 @@
 
 package gleam.lang;
 
-public class ObtainArgumentAction extends Action {
+public class ObtainArgumentAction extends Action
+{
 
     /**
      * serialVersionUID
@@ -38,14 +39,16 @@ public class ObtainArgumentAction extends Action {
     private final int argumentIndex;
 
     /** Creates a new instance of this action */
-    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Environment env, Action next) {
+    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Environment env, Action next)
+    {
         super(env, next);
         this.arglist = arglist;
         this.argumentIndex = argumentIndex;
     }
 
     /** Creates a new instance of this action */
-    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Environment env) {
+    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Environment env)
+    {
         this(arglist, argumentIndex, env, null);
     }
 

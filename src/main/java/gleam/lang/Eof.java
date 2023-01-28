@@ -33,28 +33,20 @@ import java.io.PrintWriter;
 /**
  * The EOF value (a singleton).
  */
-public final class Eof extends AbstractEntity {
+public final class Eof extends AbstractEntity
+{
+    /** the Eof singleton */
+    public static final Eof VALUE = new Eof();
+
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
-
     private static final Logger logger = Logger.getLogger();
 
-    /** the Eof singleton */
-    public static final Eof VALUE = new Eof();
-
     /** Can't instantiate this class */
-    private Eof() {
-    }
-
-    /**
-     * Prevents the release of multiple instances upon deserialization.
-     */
-    private Object readResolve()
+    private Eof()
     {
-        logger.debug("readResolve() called! (Eof)");
-        return VALUE;
     }
 
     /**
@@ -64,5 +56,14 @@ public final class Eof extends AbstractEntity {
     public void write(PrintWriter out)
     {
         // no output
+    }
+
+    /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    private Object readResolve()
+    {
+        logger.debug("readResolve() called! (Eof)");
+        return VALUE;
     }
 }

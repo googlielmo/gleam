@@ -30,10 +30,10 @@ import java.io.PrintWriter;
 import java.util.Objects;
 
 /**
- * Scheme mutable string.
- * Creation date: (28/10/2001 12.22.48)
+ * Scheme mutable string. Creation date: (28/10/2001 12.22.48)
  */
-public class MutableString extends AbstractEntity {
+public class MutableString extends AbstractEntity
+{
     /**
      * serialVersionUID
      */
@@ -43,11 +43,12 @@ public class MutableString extends AbstractEntity {
     final StringBuilder value;
 
     /**
-     * Creates a new Scheme string.
-     * Creation date: (28/10/01 12.24.51)
+     * Creates a new Scheme string. Creation date: (28/10/01 12.24.51)
+     *
      * @param s java.lang.String
      */
-    public MutableString(String s) {
+    public MutableString(String s)
+    {
         Objects.requireNonNull(s);
         value = new StringBuilder(s);
     }
@@ -56,7 +57,8 @@ public class MutableString extends AbstractEntity {
      * Obtains the current string value as a java.lang.String.
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return value.toString();
     }
 
@@ -95,15 +97,20 @@ public class MutableString extends AbstractEntity {
      * Displays a Scheme string.
      */
     @Override
-    public void display(java.io.PrintWriter out) {
+    public void display(java.io.PrintWriter out)
+    {
         out.print(value);
     }
 
     @Override
     public boolean equals(Object o)
     {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         MutableString that = (MutableString) o;
         return value.toString().equals(that.toString());
     }

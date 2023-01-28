@@ -45,7 +45,8 @@ public class GleamException extends Exception
 
     private final Entity errobj;
 
-    public GleamException(String message) {
+    public GleamException(String message)
+    {
         this(message, Void.VALUE);
     }
 
@@ -67,8 +68,8 @@ public class GleamException extends Exception
      *
      * @return Entity the error value.
      */
-    @SuppressWarnings("unused")
-    public Entity value() {
+    public Entity value()
+    {
         return errobj;
     }
 }

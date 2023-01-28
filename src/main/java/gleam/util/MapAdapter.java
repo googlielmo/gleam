@@ -30,77 +30,89 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class MapAdapter<K, V, K1, V1> implements Map<K1, V1> {
+public class MapAdapter<K, V, K1, V1> implements Map<K1, V1>
+{
 
     private final Map<K, V> kvMap;
     private final Converter<K, K1> keyConverter;
     private final Converter<V, V1> valueConverter;
 
-    public MapAdapter(Map<K, V> kvMap,
-                      Converter<K, K1> keyConverter,
-                      Converter<V, V1> valueConverter) {
+    public MapAdapter(Map<K, V> kvMap, Converter<K, K1> keyConverter, Converter<V, V1> valueConverter)
+    {
         this.kvMap = kvMap;
         this.keyConverter = keyConverter;
         this.valueConverter = valueConverter;
     }
 
     @Override
-    public int size() {
+    public int size()
+    {
         return kvMap.size();
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return kvMap.isEmpty();
     }
 
     @Override
-    public boolean containsKey(Object key) {
+    public boolean containsKey(Object key)
+    {
         return kvMap.containsKey(keyConverter.invertAny(key));
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public boolean containsValue(Object value)
+    {
         return kvMap.containsValue(valueConverter.invertAny(value));
     }
 
     @Override
-    public V1 get(Object key) {
+    public V1 get(Object key)
+    {
         return valueConverter.convert(kvMap.get(keyConverter.invertAny(key)));
     }
 
     @Override
-    public V1 put(K1 key, V1 value) {
+    public V1 put(K1 key, V1 value)
+    {
         return valueConverter.convert(kvMap.put(keyConverter.invert(key), valueConverter.invert(value)));
     }
 
     @Override
-    public V1 remove(Object key) {
+    public V1 remove(Object key)
+    {
         return valueConverter.convert(kvMap.remove(key));
     }
 
     @Override
-    public void putAll(Map<? extends K1, ? extends V1> m) {
+    public void putAll(Map<? extends K1, ? extends V1> m)
+    {
         m.forEach((k1, v1) -> kvMap.put(keyConverter.invert(k1), valueConverter.invert(v1)));
     }
 
     @Override
-    public void clear() {
+    public void clear()
+    {
         kvMap.clear();
     }
 
     @Override
-    public Set<K1> keySet() {
+    public Set<K1> keySet()
+    {
         return new SetAdapter<>(kvMap.keySet(), keyConverter);
     }
 
     @Override
-    public Collection<V1> values() {
+    public Collection<V1> values()
+    {
         return new CollectionAdapter<>(kvMap.values(), valueConverter);
     }
 
     @Override
-    public Set<Entry<K1, V1>> entrySet() {
+    public Set<Entry<K1, V1>> entrySet()
+    {
         return new EntrySetAdapter<>(kvMap.entrySet(), keyConverter, valueConverter);
     }
 }

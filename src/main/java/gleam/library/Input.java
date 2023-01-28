@@ -37,72 +37,66 @@ import gleam.lang.InputPort;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
- * Input
- * Primitive operator and procedure implementation library.
+ * Input Primitive operator and procedure implementation library.
  */
-public final class Input {
+public final class Input
+{
+
+    /**
+     * This array contains definitions of primitives. It is used by static
+     * initializers in gleam.lang.System to populate the three initial
+     * environments.
+     */
+    public static final Primitive[] primitives = {
+
+            /*
+             * eof-object?
+             * Tests if argument is an EOF object
+             */
+            new Primitive("eof-object?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+                          1, 1, /* min, max no. of arguments */
+                          "Returns true if argument is the EOF object, false otherwise", null /* doc strings */)
+            {
+                @Override
+                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                {
+                    return Boolean.makeBoolean(arg1 instanceof Eof);
+                }
+            },
+
+            /*
+             * read
+             * Reads an object
+             */
+            new Primitive("read", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+                          0, 1, /* min, max no. of arguments */
+                          "Reads an object from the current or specified input port", null /* doc strings */)
+            {
+                @Override
+                public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException
+                {
+                    try {
+                        InputPort iport;
+                        if (arg1 != null) {
+                            iport = (InputPort) arg1;
+                        } else {
+                            iport = env.getIn();
+                        }
+                        if (iport.isOpen()) {
+                            return iport.read();
+                        } else {
+                            throw new GleamException(this, "closed input port", arg1);
+                        }
+                    } catch (ClassCastException e) {
+                        throw new GleamException(this, "not an input port", arg1);
+                    }
+                }
+            },
+
+            }; // primitives
 
     /**
      * Can't instantiate this class
      */
-    private Input() {
-    }
-
-    /**
-     * This array contains definitions of primitives.
-     * It is used by static initializers in gleam.lang.System to populate
-     * the three initial environments.
-     */
-    public static final Primitive[] primitives = {
-
-    /*
-     * eof-object?
-     * Tests if argument is an EOF object
-     */
-    new Primitive( "eof-object?",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        1, 1, /* min, max no. of arguments */
-        "Returns true if argument is the EOF object, false otherwise",
-        null /* doc strings */ ) {
-    @Override
-    public Entity apply1(Entity arg1, Environment env, Continuation cont)
-    {
-        return Boolean.makeBoolean(arg1 instanceof Eof);
-    }},
-
-    /*
-     * read
-     * Reads an object
-     */
-    new Primitive( "read",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        0, 1, /* min, max no. of arguments */
-        "Reads an object from the current or specified input port",
-        null /* doc strings */ ) {
-    @Override
-    public Entity apply1(Entity arg1, Environment env, Continuation cont)
-        throws GleamException
-    {
-        try {
-            InputPort iport;
-            if (arg1 != null) {
-                iport = (InputPort) arg1;
-            }
-            else {
-                iport = env.getIn();
-            }
-            if (iport.isOpen()) {
-                return iport.read();
-            }
-            else {
-                throw new GleamException(this, "closed input port", arg1);
-            }
-        }
-        catch (ClassCastException e) {
-            throw new GleamException(this, "not an input port", arg1);
-        }
-    }},
-
-    }; // primitives
-
+    private Input() {}
 }

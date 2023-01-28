@@ -26,7 +26,8 @@
 
 package gleam.util;
 
-public interface Converter<A, B> {
+public interface Converter<A, B>
+{
     B convert(A value);
 
     A invert(B value);
@@ -35,39 +36,47 @@ public interface Converter<A, B> {
 
     A invertAny(Object value);
 
-    default Converter<B, A> inverseConverter() {
+    default Converter<B, A> inverseConverter()
+    {
         return new InverseConverter<>(this);
     }
 
-    class InverseConverter<A, B> implements Converter<B, A> {
+    class InverseConverter<A, B> implements Converter<B, A>
+    {
         private final Converter<A, B> converter;
 
-        public InverseConverter(Converter<A, B> converter) {
+        public InverseConverter(Converter<A, B> converter)
+        {
             this.converter = converter;
         }
 
         @Override
-        public A convert(B value) {
+        public A convert(B value)
+        {
             return converter.invert(value);
         }
 
         @Override
-        public B invert(A value) {
+        public B invert(A value)
+        {
             return converter.convert(value);
         }
 
         @Override
-        public A convertAny(Object value) {
+        public A convertAny(Object value)
+        {
             return converter.invertAny(value);
         }
 
         @Override
-        public B invertAny(Object value) {
+        public B invertAny(Object value)
+        {
             return converter.convertAny(value);
         }
 
         @Override
-        public Converter<A, B> inverseConverter() {
+        public Converter<A, B> inverseConverter()
+        {
             return converter;
         }
     }

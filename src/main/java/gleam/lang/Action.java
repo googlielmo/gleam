@@ -33,15 +33,14 @@
 package gleam.lang;
 
 /**
- * An abstract execution unit. This object represents a single program
- * fragment, which can be invoked during the execution of the program.
- * It is a constituent of continuations, because a full continuation
- * consists of a sequence of invocations of these units.
- * Actions are linked together in a tree-like structure, where an execution
- * goes from leaf to root. In an ordinary program, the tree may degenerate
- * into a list, taking the role of the traditional stack used in many
- * non tail-recursive languages. When continuations are captured and
- * re-used, their actions may end up being arranged as a proper tree.
+ * An abstract execution unit. This object represents a single program fragment,
+ * which can be invoked during the execution of the program. It is a constituent
+ * of continuations, because a full continuation consists of a sequence of
+ * invocations of these units. Actions are linked together in a tree-like
+ * structure, where an execution goes from leaf to root. In an ordinary program,
+ * the tree may degenerate into a list, taking the role of the traditional stack
+ * used in many non tail-recursive languages. When continuations are captured
+ * and re-used, their actions may end up being arranged as a proper tree.
  */
 public abstract class Action implements java.io.Serializable
 {
@@ -51,18 +50,25 @@ public abstract class Action implements java.io.Serializable
     /** the next action to execute, this creates a tree structure */
     Action next;
 
-    Action(Environment env, Action next) {
+    Action(Environment env, Action next)
+    {
         this.env = env;
         this.next = next;
     }
 
     /**
-     * Appends a new action after this one, so that the given action be
-     * executed after this one.
+     * Appends a new action after this one, so that the given action be executed
+     * after this one.
+     *
      * @param action the Action to append
+     *
      * @return the argument
+     *
+     * @see Continuation#begin(Action)
+     * @see Continuation#beginSequence()
      */
-    public Action andThen(Action action) {
+    public Action andThen(Action action)
+    {
         action.next = this.next;
         this.next = action;
         return action;
@@ -70,34 +76,39 @@ public abstract class Action implements java.io.Serializable
 
     /**
      * Invokes this action with an argument and a continuation,  returning a
-     * value, and advancing the continuation to the next action.
-     * Subclasses that implement this abstract method must update the
-     * continuation's action with the next action to execute (e.g.
+     * value, and advancing the continuation to the next action. Subclasses that
+     * implement this abstract method must update the continuation's action with
+     * the next action to execute (e.g.
      * <CODE>cont.action = next</CODE>), so to go forward in program
      * execution
-     * @param arg the Entity argument to this step of execution
+     *
+     * @param arg  the Entity argument to this step of execution
      * @param cont the current Continuation
-     * @return an Entity, or null to signal that only the continuation has
-     *  been changed
+     *
+     * @return an Entity, or null to signal that only the continuation has been
+     * changed
+     *
      * @throws gleam.lang.GleamException in case of errors
      */
-    abstract Entity invoke(Entity arg, Continuation cont)
-        throws gleam.lang.GleamException;
-
-    protected interface Printer
-    {
-        void print(OutputPort port);
-    }
+    abstract Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException;
 
     protected void trace(Printer doo, Environment env)
     {
-        if (env.getInterpreter() != null && env.getInterpreter().traceEnabled()) {
+        if (env.getInterpreter() != null && env.getInterpreter()
+                                               .traceEnabled()) {
             OutputPort cout = env.getOut();
 
-            String actionName = this.getClass().getSimpleName().replace("Action", "");
+            String actionName = this.getClass()
+                                    .getSimpleName()
+                                    .replace("Action", "");
             cout.printf("%s ", actionName);
 
             doo.print(cout);
         }
+    }
+
+    protected interface Printer
+    {
+        void print(OutputPort port);
     }
 }

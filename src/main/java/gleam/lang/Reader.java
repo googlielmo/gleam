@@ -33,10 +33,10 @@ import java.io.StreamTokenizer;
 import static gleam.util.Logger.Level.DEBUG;
 
 /**
- * Scheme reader (lexical analyzer & parser).
- * Implemented as recursive descent.
+ * Scheme reader (lexical analyzer & parser). Implemented as recursive descent.
  */
-class Reader {
+class Reader
+{
 
     private static final Logger logger = Logger.getLogger();
 
@@ -57,25 +57,24 @@ class Reader {
         tkzr.quoteChar('\"');
         tkzr.whitespaceChars('\u0000', '\u0020');
         tkzr.eolIsSignificant(false);
-        tkzr.wordChars('A','Z'); // A-Z
-        tkzr.wordChars('a','z'); // a-z
-        tkzr.wordChars('0','9'); // 0-9
-        tkzr.wordChars('\u00A1','\u00FF'); // Unicode latin-1 supplement, symbols and letters
-        tkzr.wordChars('*','.'); // '*', '+', ',', '-', '.'
-        tkzr.wordChars('!','!'); // '!'
-        tkzr.wordChars('#','#'); // '#' Gleam extension
-        tkzr.wordChars('\\','\\'); // '\'
-        tkzr.wordChars('/','/'); // '/'
-        tkzr.wordChars('$','$'); // '$'
-        tkzr.wordChars('_','_'); // '_'
-        tkzr.wordChars('<','@'); // '<', '=', '>', '?', '@'
+        tkzr.wordChars('A', 'Z'); // A-Z
+        tkzr.wordChars('a', 'z'); // a-z
+        tkzr.wordChars('0', '9'); // 0-9
+        tkzr.wordChars('\u00A1', '\u00FF'); // Unicode latin-1 supplement, symbols and letters
+        tkzr.wordChars('*', '.'); // '*', '+', ',', '-', '.'
+        tkzr.wordChars('!', '!'); // '!'
+        tkzr.wordChars('#', '#'); // '#' Gleam extension
+        tkzr.wordChars('\\', '\\'); // '\'
+        tkzr.wordChars('/', '/'); // '/'
+        tkzr.wordChars('$', '$'); // '$'
+        tkzr.wordChars('_', '_'); // '_'
+        tkzr.wordChars('<', '@'); // '<', '=', '>', '?', '@'
     }
 
     /**
      * Converts external into internal representation.
      */
-    public Entity read()
-        throws GleamException
+    public Entity read() throws GleamException
     {
         try {
             Entity o = null;
@@ -84,14 +83,17 @@ class Reader {
                 o = readObject();
             }
             return o;
-        }
-        catch (java.io.IOException e) {
+        } catch (java.io.IOException e) {
             throw new GleamException("read: I/O Error " + e.getMessage());
         }
     }
 
-    private Entity readList(Pair l)
-        throws GleamException, java.io.IOException
+    void logReadOthers(String token, String type)
+    {
+        logger.log(DEBUG, () -> String.format("readOthers: interpreting '%s' as a %s", token, type));
+    }
+
+    private Entity readList(Pair l) throws GleamException, java.io.IOException
     {
         String t;
         boolean first = true;
@@ -108,45 +110,37 @@ class Reader {
             if (t.equals(")")) {
                 if (first) {
                     return EmptyList.VALUE;
-                }
-                else {
+                } else {
                     return l;
                 }
-            }
-            else if (t.equals(".")) {
+            } else if (t.equals(".")) {
                 if (!seendot) {
                     if (first) {
                         throw new GleamException("read: at least one datum must precede \".\"");
-                    }
-                    else {
+                    } else {
                         ins.setCdr(readObject());
                         seendot = true;
                     }
-                }
-                else {
+                } else {
                     throw new GleamException("read: more than one \".\" in a list");
                 }
-            }
-            else if (!seendot) {
+            } else if (!seendot) {
                 tkzr.pushBack();
                 if (first) {
                     first = false;
                     ins.setCar(readObject());
-                }
-                else {
+                } else {
                     Pair nextcons = new Pair(readObject(), EmptyList.VALUE);
                     ins.setCdr(nextcons);
                     ins = nextcons;
                 }
-            }
-            else {
+            } else {
                 throw new GleamException("read: missing \")\"");
             }
         }
     }
 
-    private Entity readObject()
-        throws GleamException, java.io.IOException
+    private Entity readObject() throws GleamException, java.io.IOException
     {
         String t = readToken();
         if (t == null) {
@@ -156,8 +150,7 @@ class Reader {
         return readObject(t);
     }
 
-    private Entity readObject(String t)
-        throws GleamException, java.io.IOException
+    private Entity readObject(String t) throws GleamException, java.io.IOException
     {
         if (t.equals("")) {
             return readObject(); // special case for unquote/unquote-splicing
@@ -181,55 +174,42 @@ class Reader {
         }
     }
 
-    private Entity readOthers(String t)
-        throws GleamException, java.io.IOException
+    private Entity readOthers(String t) throws GleamException, java.io.IOException
     {
-        if (".+-0123456789".indexOf(t.charAt(0)) >= 0
-        && !t.equals("+")
-        && !t.equals("-")
-        && !t.equals("...")) {
+        if (".+-0123456789".indexOf(t.charAt(0)) >= 0 && !t.equals("+") && !t.equals("-") && !t.equals("...")) {
             try {
                 logReadOthers(t, "number");
                 return new Real(Double.parseDouble(t));
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 throw new GleamException("read: invalid number " + t);
             }
-        }
-        else if (t.startsWith(",@")) {
+        } else if (t.startsWith(",@")) {
             Entity unquotedobj = readObject(t.substring(2));
             return new Pair(Symbol.UNQUOTE_SPLICING, new Pair(unquotedobj, EmptyList.VALUE));
-        }
-        else if (t.startsWith(",")) {
+        } else if (t.startsWith(",")) {
             Entity unquotedobj = readObject(t.substring(1));
             return new Pair(Symbol.UNQUOTE, new Pair(unquotedobj, EmptyList.VALUE));
-        }
-        else if (t.startsWith("\"")) {
+        } else if (t.startsWith("\"")) {
             // it is a string
             logReadOthers(t, "string");
             return new MutableString(t.substring(1));
-        }
-        else if (t.equalsIgnoreCase("#f")) {
+        } else if (t.equalsIgnoreCase("#f")) {
             return Boolean.falseValue;
-        }
-        else if (t.equalsIgnoreCase("#t")) {
+        } else if (t.equalsIgnoreCase("#t")) {
             return Boolean.trueValue;
-        }
-        else if (t.startsWith("#\\")) {
+        } else if (t.startsWith("#\\")) {
             // poor man's character parser
             String charstring = t.substring(2);
             if (charstring.equalsIgnoreCase("space")) {
                 return new Character(' ');
-            }
-            else if (charstring.equalsIgnoreCase("newline")) {
+            } else if (charstring.equalsIgnoreCase("newline")) {
                 return new Character('\n');
-            }
-            else if (charstring.length() == 1) {
+            } else if (charstring.length() == 1) {
                 return new Character(charstring.charAt(0));
+            } else {
+                throw new GleamException("read: invalid character");
             }
-            else throw new GleamException("read: invalid character");
-        }
-        else {
+        } else {
             // it is a symbol
             logReadOthers(t, "symbol");
             return Symbol.makeSymbol(t);
@@ -238,14 +218,15 @@ class Reader {
 
     /**
      * Reads a token.
+     *
      * @return java.lang.String
      */
-    private String readToken()
-            throws java.io.IOException {
+    private String readToken() throws java.io.IOException
+    {
         String retVal;
         int c = tkzr.nextToken();
 
-        switch(tkzr.ttype) {
+        switch (tkzr.ttype) {
             case StreamTokenizer.TT_EOF:
                 retVal = null;
                 break;
@@ -259,21 +240,18 @@ class Reader {
                 break;
 
             case '\"':
-                retVal = '\"'+tkzr.sval;
+                retVal = '\"' + tkzr.sval;
                 break;
 
             default:
-                retVal = String.valueOf((char)c);
+                retVal = String.valueOf((char) c);
                 break;
         }
 
-        if (retVal != null)
+        if (retVal != null) {
             logger.log(DEBUG, () -> String.format("TOKEN=%s", retVal));
+        }
 
         return retVal;
-    }
-
-    void logReadOthers(String token, String type) {
-       logger.log(DEBUG, () -> String.format("readOthers: interpreting '%s' as a %s", token, type));
     }
 }

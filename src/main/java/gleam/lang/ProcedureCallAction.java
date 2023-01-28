@@ -26,7 +26,8 @@
 
 package gleam.lang;
 
-public class ProcedureCallAction extends Action {
+public class ProcedureCallAction extends Action
+{
 
     /**
      * serialVersionUID
@@ -36,29 +37,29 @@ public class ProcedureCallAction extends Action {
     private final ArgumentList arglist;
 
     /** Creates a new instance of this action */
-    public ProcedureCallAction(ArgumentList arglist, Environment env, Action next) {
+    public ProcedureCallAction(ArgumentList arglist, Environment env, Action next)
+    {
         super(env, next);
         this.arglist = arglist;
     }
 
     /** Creates a new instance of this action */
-    public ProcedureCallAction(ArgumentList arglist, Environment env) {
+    public ProcedureCallAction(ArgumentList arglist, Environment env)
+    {
         this(arglist, env, null);
     }
 
     // arg is the function, arglist contains the arguments
     @Override
-    Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
+    Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException
+    {
         cont.head = next;
         // apply function to args, return result
         Procedure operator;
         try {
             operator = (Procedure) arg;
-        }
-        catch (ClassCastException ex) {
-            throw new GleamException(
-                      "procedure call: operator is not a procedure",
-                      arg);
+        } catch (ClassCastException ex) {
+            throw new GleamException("procedure call: operator is not a procedure", arg);
         }
         trace(out -> out.printf("%s\n", arg.toWriteFormat()), env);
         return operator.apply(arglist.getArguments(), env, cont);

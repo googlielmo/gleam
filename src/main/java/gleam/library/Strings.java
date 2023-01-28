@@ -35,38 +35,37 @@ import gleam.lang.MutableString;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
- * STRINGS
- * Primitive operator and procedure implementation library.
+ * STRINGS Primitive operator and procedure implementation library.
  */
-public final class Strings {
+public final class Strings
+{
+
+    /**
+     * This array contains definitions of primitives. It is used by static
+     * initializers in gleam.lang.System to populate the three initial
+     * environments.
+     */
+    public static final Primitive[] primitives = {
+
+            /*
+             * string?
+             * Tests if argument is a string
+             */
+            new Primitive("string?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+                          1, 1, /* min, max no. of arguments */
+                          "Returns true if argument is a string, false otherwise", "E.g. (string? \"hello\") => #t" /* doc strings */)
+            {
+                @Override
+                public Entity apply1(Entity obj, Environment env, Continuation cont)
+                {
+                    return Boolean.makeBoolean(obj instanceof MutableString);
+                }
+            }
+
+    }; // primitives
 
     /**
      * Can't instantiate this class
      */
-    private Strings() {
-    }
-
-    /**
-     * This array contains definitions of primitives.
-     * It is used by static initializers in gleam.lang.System to populate
-     * the three initial environments.
-     */
-    public static final Primitive[] primitives = {
-
-    /*
-     * string?
-     * Tests if argument is a string
-     */
-    new Primitive( "string?",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        1, 1, /* min, max no. of arguments */
-        "Returns true if argument is a string, false otherwise",
-        "E.g. (string? \"hello\") => #t" /* doc strings */ ) {
-    @Override
-    public Entity apply1(Entity obj, Environment env, Continuation cont) {
-        return Boolean.makeBoolean(obj instanceof MutableString);
-    }},
-
-    }; // primitives
-
+    private Strings() {}
 }

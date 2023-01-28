@@ -39,19 +39,16 @@ import java.io.PrintWriter;
  */
 public final class Boolean extends AbstractEntity
 {
+    /** the one and only #t */
+    static public final Boolean trueValue = new Boolean(true);
+    /** the one and only #f */
+    static public final Boolean falseValue = new Boolean(false);
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
-
     /** the truth value of this object */
-    final boolean value;
-
-    /** the one and only #t */
-    static public final Boolean trueValue = new Boolean(true);
-
-    /** the one and only #f */
-    static public final Boolean falseValue = new Boolean(false);
+    private final boolean value;
 
     /** private constructor */
     private Boolean(boolean v)
@@ -65,10 +62,11 @@ public final class Boolean extends AbstractEntity
     @SuppressWarnings("BooleanParameter")
     public static Boolean makeBoolean(boolean b)
     {
-        if (b)
+        if (b) {
             return trueValue;
-        else
+        } else {
             return falseValue;
+        }
     }
 
     /**

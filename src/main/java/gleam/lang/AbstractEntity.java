@@ -33,15 +33,14 @@ import java.io.StringWriter;
  * The base class for all Gleam objects. Entities are also referred to as
  * "objects" or "values".
  */
-public abstract class AbstractEntity
-        implements Entity {
+public abstract class AbstractEntity implements Entity
+{
     /**
-     * Evaluates this entity in the given environment,
-     * with the given continuation.
+     * Evaluates this entity in the given environment, with the given
+     * continuation.
      */
     @Override
-    public Entity eval(Environment env, Continuation cont)
-            throws GleamException
+    public Entity eval(Environment env, Continuation cont) throws GleamException
     {
         // default: evaluating an entity yields the same entity
         return this;
@@ -49,11 +48,11 @@ public abstract class AbstractEntity
 
     /**
      * Performs syntax analysis on this entity.
+     *
      * @param env the environment
      */
     @Override
-    public Entity analyze(Environment env)
-        throws GleamException
+    public Entity analyze(Environment env) throws GleamException
     {
         // default: analyzing an entity yields the same entity
         return this;
@@ -63,8 +62,7 @@ public abstract class AbstractEntity
      * Performs environment optimization on this entity.
      */
     @Override
-    public Entity optimize(Environment env)
-        throws GleamException
+    public Entity optimize(Environment env) throws GleamException
     {
         // default: optimizing an entity yields the same entity
         return this;
@@ -81,26 +79,28 @@ public abstract class AbstractEntity
     }
 
     /**
-     * Returns a representation of this entity,
-     * in the same format as a call to 'display' would produce.
+     * Returns a representation of this entity, in the same format as a call to
+     * `display` would produce.
      *
      * @return a string representation of the entity.
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringWriter sw;
         display(new PrintWriter(sw = new StringWriter()));
         return sw.toString();
     }
 
     /**
-     * Returns a representation of this entity,
-     * in the same format as a call to 'write' would produce.
+     * Returns a representation of this entity, in the same format as a call to
+     * `write` would produce.
      *
      * @return a string representation of the entity.
      */
     @Override
-    public String toWriteFormat() {
+    public String toWriteFormat()
+    {
         StringWriter sw;
         write(new PrintWriter(sw = new StringWriter()));
         return sw.toString();

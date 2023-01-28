@@ -33,11 +33,6 @@ public abstract class Port extends AbstractEntity
 {
     private static final long serialVersionUID = 1L;
 
-    public enum Kind {
-        TEXTUAL,
-        BINARY
-    }
-
     /** close the port */
     public abstract void close();
 
@@ -46,4 +41,9 @@ public abstract class Port extends AbstractEntity
 
     /** which kind of port */
     public abstract Kind getKind();
+
+    public enum Kind
+    {
+        TEXTUAL, BINARY
+    }
 }

@@ -34,53 +34,52 @@ import gleam.lang.Environment;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
- * BOOLEANS
- * Primitive operator and procedure implementation library.
+ * BOOLEANS Primitive operator and procedure implementation library.
  */
-public final class Booleans {
+public final class Booleans
+{
+
+    /**
+     * This array contains definitions of primitives. It is used by static
+     * initializers in gleam.lang.System to populate the three initial
+     * environments.
+     */
+    public static final Primitive[] primitives = {
+
+            /*
+             * boolean?
+             * Tests if argument is a boolean
+             */
+            new Primitive("boolean?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+                          1, 1, /* min, max no. of arguments */
+                          "Returns true if argument is a boolean, false otherwise", "E.g. (boolean? #f) => #t" /* doc strings */)
+            {
+                @Override
+                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                {
+                    return Boolean.makeBoolean(arg1 instanceof Boolean);
+                }
+            },
+
+            /*
+             * not
+             * Logical Not operator
+             */
+            new Primitive("not", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+                          1, 1, /* min, max no. of arguments */
+                          "Returns true if argument is false, false otherwise", "E.g. (not #f) => #t" /* doc strings */)
+            {
+                @Override
+                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                {
+                    return Boolean.makeBoolean(arg1.equals(Boolean.falseValue));
+                }
+            }
+
+    }; // primitives
 
     /**
      * Can't instantiate this class
      */
-    private Booleans() {
-    }
-
-    /**
-     * This array contains definitions of primitives.
-     * It is used by static initializers in gleam.lang.System to populate
-     * the three initial environments.
-     */
-    public static final Primitive[] primitives = {
-
-    /*
-     * boolean?
-     * Tests if argument is a boolean
-     */
-    new Primitive( "boolean?",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        1, 1, /* min, max no. of arguments */
-        "Returns true if argument is a boolean, false otherwise",
-        "E.g. (boolean? #f) => #t" /* doc strings */ ) {
-    @Override
-    public Entity apply1(Entity arg1, Environment env, Continuation cont)
-    {
-        return Boolean.makeBoolean(arg1 instanceof Boolean);
-    }},
-
-    /*
-     * not
-     * Logical Not operator
-     */
-    new Primitive( "not",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        1, 1, /* min, max no. of arguments */
-        "Returns true if argument is false, false otherwise",
-        "E.g. (not #f) => #t" /* doc strings */ ) {
-    @Override
-    public Entity apply1(Entity arg1, Environment env, Continuation cont)
-    {
-        return Boolean.makeBoolean(arg1.equals(Boolean.falseValue));
-    }},
-
-    }; // primitives
+    private Booleans() {}
 }

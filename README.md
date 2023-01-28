@@ -3,15 +3,15 @@
 (c) 2001-2023 Guglielmo Nigri
 (`guglielmonigri at yahoo.it`, `googlielmo at gmail.com`)
 
-Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are
+Gleam comes with ABSOLUTELY NO WARRANTY. This is free software, and you are
 welcome to redistribute it under certain conditions; see LICENSE.TXT.
 
 ## Abstract
 
-Gleam is a simple Scheme language interpreter written in Java. 
+Gleam is a simple Scheme language interpreter written in Java.
 
-Project goals: to support the discovery of Scheme for beginners, simplicity, 
-R5RS compliance, full integration with the Java platform (call Java from Scheme 
+Project goals: to support the discovery of Scheme for beginners, simplicity,
+R5RS compliance, full integration with the Java platform (call Java from Scheme
 and vice versa).
 
 ## Contents

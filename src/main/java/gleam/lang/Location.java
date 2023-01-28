@@ -51,27 +51,31 @@ public final class Location extends AbstractEntity
     /**
      * Location constructor.
      */
-    Location(Entity value) {
+    Location(Entity value)
+    {
         this.value = value;
     }
 
     /** Location evaluates to its content value */
     @Override
-    public Entity eval(Environment env, Continuation cont) {
+    public Entity eval(Environment env, Continuation cont)
+    {
         return value;
     }
 
     /**
      * Sets current referred object
      */
-    public void set(Entity obj) {
+    public void set(Entity obj)
+    {
         this.value = obj;
     }
 
     /**
      * Gets current referred object
      */
-    public Entity get() {
+    public Entity get()
+    {
         return value;
     }
 

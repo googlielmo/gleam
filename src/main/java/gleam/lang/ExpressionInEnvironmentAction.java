@@ -35,7 +35,8 @@ package gleam.lang;
 /**
  * An Action that evaluates an expression in an arbitrary environment.
  */
-public class ExpressionInEnvironmentAction extends Action {
+public class ExpressionInEnvironmentAction extends Action
+{
     /**
      * serialVersionUID
      */
@@ -45,22 +46,27 @@ public class ExpressionInEnvironmentAction extends Action {
     private Entity expr;
 
     /** Creates a new instance of this action */
-    public ExpressionInEnvironmentAction(Entity expr, Environment env, Action next) {
+    public ExpressionInEnvironmentAction(Entity expr, Environment env, Action next)
+    {
         super(env, next);
         this.expr = expr;
     }
 
     /** Creates a new instance of this action */
-    public ExpressionInEnvironmentAction(Entity expr, Environment env) {
+    public ExpressionInEnvironmentAction(Entity expr, Environment env)
+    {
         this(expr, env, null);
     }
 
     /**
      * Invokes this action, causing the evaluation of the expression in the
      * environment passed as argument.
+     *
      * @param newEnv the environment in which to evaluate the expression
-     * @param cont the current Continuation
+     * @param cont   the current Continuation
+     *
      * @return the result of the evaluation
+     *
      * @throws gleam.lang.GleamException in case of errors
      */
     @Override

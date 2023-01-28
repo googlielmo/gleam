@@ -46,13 +46,13 @@ public class PrimitiveProcedure extends Procedure
     /**
      * PrimitiveProcedure
      */
-    public PrimitiveProcedure(gleam.library.Primitive primitive) {
+    public PrimitiveProcedure(gleam.library.Primitive primitive)
+    {
         this.value = primitive;
     }
 
     @Override
-    public Entity apply(List arg, Environment env, Continuation cont)
-        throws GleamException
+    public Entity apply(List arg, Environment env, Continuation cont) throws GleamException
     {
         if (value.maxArgs < 0 || value.maxArgs > 3) {
             if (value.minArgs >= 0 || value.maxArgs >= 0) {
@@ -61,7 +61,7 @@ public class PrimitiveProcedure extends Procedure
             return value.applyN(arg, env, cont);
         }
         // ok, 0 <= maxArgs <= 3 : special rules
-        Entity[] argArray = new Entity[] {null, null, null};
+        Entity[] argArray = new Entity[]{null, null, null};
         int countedArgs = 0;
         ListIterator it = new ListIterator(arg);
         while (it.hasNext()) {
@@ -88,10 +88,11 @@ public class PrimitiveProcedure extends Procedure
     @Override
     public void write(PrintWriter out)
     {
-        out.write("#<primitive-procedure "+ value.toString() + ">");
+        out.write("#<primitive-procedure " + value.toString() + ">");
     }
 
-    private void checkNumArgs(List args) throws GleamException {
+    private void checkNumArgs(List args) throws GleamException
+    {
         Iterator<Entity> it = new ListIterator(args);
         int i;
         for (i = 0; i < value.minArgs; ++i) {
@@ -102,8 +103,9 @@ public class PrimitiveProcedure extends Procedure
         }
         if (value.maxArgs > 0) {
             while (it.hasNext()) {
-                if (++i > value.maxArgs)
+                if (++i > value.maxArgs) {
                     throw new GleamException(value, "too many arguments", args);
+                }
             }
         }
     }

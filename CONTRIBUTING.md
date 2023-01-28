@@ -7,8 +7,8 @@ By participating in this project, you agree to abide by the Gleam
 
 The main git repository lives on GitHub at https://github.com/googlielmo/gleam.
 
-The best channel for discussing and improving Gleam is the project Issue 
-tracker at https://github.com/googlielmo/gleam/issues. Have a look at the 
+The best channel for discussing and improving Gleam is the project Issue
+tracker at https://github.com/googlielmo/gleam/issues. Have a look at the
 current issues so that you're up-to-date with the current status.
 
 Get acquainted with the project, look at the code and/or the documentation.

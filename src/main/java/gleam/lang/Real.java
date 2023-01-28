@@ -52,30 +52,33 @@ public class Real extends Number
     }
 
     /**
-     * Scheme double comparison.
-     * Creation date: (28/10/01 12.45.00)
-     * @return boolean
+     * Scheme double comparison. Creation date: (28/10/01 12.45.00)
+     *
      * @param o java.lang.Object
+     *
+     * @return boolean
      */
     @Override
-    public boolean equals(java.lang.Object o) {
+    public boolean equals(java.lang.Object o)
+    {
         if (o instanceof Real) {
-            return value == ((Real)o).value;
-        }
-        else {
+            return value == ((Real) o).value;
+        } else {
             return false;
         }
     }
 
     /**
-     * Returns a hashcode for this Scheme object.
-     * The implementation is the same as per java.lang.Double.
+     * Returns a hashcode for this Scheme object. The implementation is the same
+     * as per java.lang.Double.
+     *
      * @return int
      */
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         long v = Double.doubleToLongBits(value);
-        return (int)(v^(v>>>32));
+        return (int) (v ^ (v >>> 32));
     }
 
     /**
@@ -87,9 +90,10 @@ public class Real extends Number
         out.print(value);
     }
 
-    /** Takes value of number as a double.  */
+    /** Takes value of number as a double. */
     @Override
-    public double getDoubleValue() {
+    public double getDoubleValue()
+    {
         return value;
     }
 }

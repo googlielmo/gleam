@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -35,10 +35,10 @@ package gleam.lang;
 import java.io.PrintWriter;
 
 /**
- * Scheme continuation, representing the "next things to do" for a procedure,
- * or the future execution path in a Gleam program.
- * This object is a wrapper for a chain of actions (partial continuations or
- * execution steps), and can be called as a procedure of one argument.
+ * Scheme continuation, representing the "next things to do" for a procedure, or
+ * the future execution path in a Gleam program. This object is a wrapper for a
+ * chain of actions (partial continuations or execution steps), and can be
+ * called as a procedure of one argument.
  */
 public class Continuation extends Procedure
 {
@@ -50,9 +50,11 @@ public class Continuation extends Procedure
     /**
      * Dummy action used as anchor to add actions
      */
-    private static final Action DUMMY_ACTION = new Action(null, null) {
+    private static final Action DUMMY_ACTION = new Action(null, null)
+    {
         @Override
-        Entity invoke(Entity arg, Continuation cont) throws GleamException {
+        Entity invoke(Entity arg, Continuation cont) throws GleamException
+        {
             throw new GleamException("internal error: dummy action invoked");
         }
     };
@@ -60,7 +62,8 @@ public class Continuation extends Procedure
     public Action head;
 
     /** Constructor */
-    Continuation() {
+    Continuation()
+    {
         this.head = null;
     }
 
@@ -73,67 +76,85 @@ public class Continuation extends Procedure
     /**
      * Clears this continuation (unwinds stack)
      */
-    public void clear() {
+    public void clear()
+    {
         this.head = null;
     }
 
     /**
-     * Change this continuation to begin with a given action.
-     * Prepend a single action to this continuation's chain.
-     * The action's next is changed to be the current head, therefore
-     * <i>do not</i> pass an action that is already chained to other actions:
-     * its <CODE>next</CODE> field will be overwritten.<BR>
-     * You can safely add other actions <i>after</i> calling this method by using
-     * {@link Action#andThen(Action)} on the action.<BR>
-     * If you need to add a variable number of actions at the head of
-     * this continuation, see {@link #beginSequence()}
+     * Change this continuation to begin with a given action. Prepend a single
+     * action to this continuation's chain. The action's <code>next</code> will
+     * be set to the current head, so be careful <i>not</i> to pass an action
+     * that is already chained to other actions, as its <code>next</code> field
+     * will be overwritten.
+     * <br>
+     * You can safely add other actions after calling this method by using
+     * {@link Action#andThen(Action)} on the action.
+     * <br>
+     * If you need to add a variable number of actions at the head of this
+     * continuation and don't have an action ready yet, use
+     * {@link #beginSequence()}
      *
      * @param action the Action to prepend
+     *
      * @return the prepended action
+     *
+     * @see Action#andThen(Action)
+     * @see #beginSequence()
+     * @see #endSequence()
      */
-    public Action begin(Action action) {
+    public Action begin(Action action)
+    {
         action.next = this.head;
         this.head = action;
         return action;
     }
 
     /**
-     * Prepares for inserting a sequence of actions at the start of this continuation.
-     * Append new actions to this method's return value with {@link Action#andThen(Action)}
-     * Terminate the sequence by calling {@link #endSequence()}.
-     * E.g.,
-     * <BR><BR>
-     * <CODE>
-     *      Action action = cont.beginSequence();<BR>
-     *      action = action.andThen(...).andThen(...);<BR>
-     *          ...<BR>
-     *      action = action.andThen(...);<BR>
-     *          ...<BR>
-     *      cont.endSequence();<BR>
-     * </CODE>
+     * Use this method when inserting a sequence of actions at the start of this
+     * continuation. Append new actions to this method's return value with
+     * {@link Action#andThen(Action)} Terminate the sequence by calling
+     * {@link #endSequence()}. E.g.,
+     * <pre><code>
+     * Action action = cont.beginSequence();
+     * action = action.andThen(...).andThen(...);
+     * ...
+     * action = action.andThen(...);
+     * ...
+     * cont.endSequence();
+     * </code></pre>
      *
-     * @return a "dummy" Action to append to
+     * @return a dummy Action to append to
+     *
      * @see Action#andThen(Action)
+     * @see #begin(Action)
      * @see #endSequence()
      */
-    public Action beginSequence() {
+    public Action beginSequence()
+    {
         return begin(DUMMY_ACTION);
     }
 
     /**
      * Finalizes an insertion sequence started with {@link #beginSequence()}.
-     * Removes the "dummy" action at the head of this continuation.
+     * <br>
+     * Removes the dummy action at the head of this continuation.
+     *
+     * @see Action#andThen(Action)
+     * @see #beginSequence()
      */
-    public void endSequence() {
-        if (this.head == DUMMY_ACTION)
+    public void endSequence()
+    {
+        if (this.head == DUMMY_ACTION) {
             this.head = this.head.next;
+        }
     }
 
     /**
      * addCommandSequenceActions
      *
      * @param body Pair
-     * @param env Environment
+     * @param env  Environment
      */
     public void addCommandSequenceActions(Iterable<Entity> body, Environment env)
     {
@@ -145,20 +166,19 @@ public class Continuation extends Procedure
     }
 
     /**
-     * Applies this continuation.
-     * Replaces the continuation in the current interpreter with this one.
-     * Gets one argument, and returns it to the current interpreter as the
-     * argument that this continuation will receive when executed, i.e.
-     * immediately after the action of returning.
+     * Applies this continuation. Replaces the continuation in the current
+     * interpreter with this one. Gets one argument, and returns it to the
+     * current interpreter as the argument that this continuation will receive
+     * when executed, i.e. immediately after the action of returning.
      *
      * @param args List
-     * @param env Environment
+     * @param env  Environment
      * @param cont Continuation
+     *
      * @return Entity
      */
     @Override
-    public Entity apply(List args, Environment env, Continuation cont)
-        throws GleamException
+    public Entity apply(List args, Environment env, Continuation cont) throws GleamException
     {
         if (args != EmptyList.VALUE) {
             if (args.getCdr() == EmptyList.VALUE) {
@@ -166,18 +186,12 @@ public class Continuation extends Procedure
                 cont.replaceContinuation(this);
                 // return argument (it's already evaluated)
                 return args.getCar();
-            }
-            else {
+            } else {
                 throw new GleamException("continuation: too many arguments", args);
             }
-        }
-        else {
+        } else {
             throw new GleamException("continuation: too few arguments", args);
         }
-    }
-
-    private void replaceContinuation(Continuation continuation) {
-        this.head = continuation.head;
     }
 
     /**
@@ -187,5 +201,10 @@ public class Continuation extends Procedure
     public void write(PrintWriter out)
     {
         out.write("#<continuation>");
+    }
+
+    private void replaceContinuation(Continuation continuation)
+    {
+        this.head = continuation.head;
     }
 }

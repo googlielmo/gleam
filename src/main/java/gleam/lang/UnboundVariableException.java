@@ -29,7 +29,8 @@ package gleam.lang;
 /**
  * Exception thrown when attempting to dereference an unbound symbol.
  */
-public class UnboundVariableException extends GleamException {
+public class UnboundVariableException extends GleamException
+{
     /**
      * serialVersionUID
      */
@@ -40,7 +41,8 @@ public class UnboundVariableException extends GleamException {
      *
      * @param symbol the unbound symbol
      */
-    public UnboundVariableException(Entity symbol) {
+    public UnboundVariableException(Entity symbol)
+    {
         super("Unbound variable: " + symbol, symbol);
     }
 }

@@ -33,7 +33,8 @@ import java.util.Map;
 /**
  * Constituent part of Scheme environment
  */
-public class Environment extends AbstractEntity {
+public class Environment extends AbstractEntity
+{
 
     /**
      * serialVersionUID
@@ -57,29 +58,37 @@ public class Environment extends AbstractEntity {
     /**
      * Constructor
      */
-    private Environment(Environment parent, InputPort in, OutputPort out) {
+    private Environment(Environment parent, InputPort in, OutputPort out)
+    {
         this.parent = parent;
         this.in = in;
         this.out = out;
     }
 
-    public Environment(Environment parent) {
-        this(parent, parent == null ? null : parent.in, parent == null ? null : parent.out);
+    public Environment(Environment parent)
+    {
+        this(parent, parent == null ? null : parent.in, parent == null
+                                                        ? null
+                                                        : parent.out);
     }
 
-    public Environment(InputPort in, OutputPort out) {
+    public Environment(InputPort in, OutputPort out)
+    {
         this(null, in, out);
     }
 
-    public static Environment newEnvironment(InputPort in, OutputPort out) {
+    public static Environment newEnvironment(InputPort in, OutputPort out)
+    {
         return new Environment(in, out);
     }
 
-    public Environment getParent() {
+    public Environment getParent()
+    {
         return parent;
     }
 
-    public void setParent(Environment parent) {
+    public void setParent(Environment parent)
+    {
         this.parent = parent;
         if (parent != null && this.in == null) {
             this.in = parent.in;
@@ -89,7 +98,8 @@ public class Environment extends AbstractEntity {
         }
     }
 
-    public Interpreter getInterpreter() {
+    public Interpreter getInterpreter()
+    {
         Location location = this.getLocationOrNull(Interpreter.INTERPRETER_SYMBOL);
         if (location == null) {
             return null;
@@ -98,26 +108,31 @@ public class Environment extends AbstractEntity {
         return (Interpreter) j.getObjectValue();
     }
 
-    public InputPort getIn() {
+    public InputPort getIn()
+    {
         return in;
     }
 
-    public void setIn(InputPort in) {
+    public void setIn(InputPort in)
+    {
         this.in = in;
     }
 
-    public OutputPort getOut() {
+    public OutputPort getOut()
+    {
         return out;
     }
 
-    public void setOut(OutputPort out) {
+    public void setOut(OutputPort out)
+    {
         this.out = out;
     }
 
     /**
      * Associates a symbol in this environment with a value.
      */
-    public synchronized void define(Symbol s, Entity v) {
+    public synchronized void define(Symbol s, Entity v)
+    {
         Location loc;
         if ((loc = assoc.get(s)) != null) {
             loc.set(v);
@@ -130,12 +145,14 @@ public class Environment extends AbstractEntity {
      * Gives the Location for the specified variable.
      *
      * @param s Symbol a variable name
+     *
      * @return Location
+     *
      * @throws UnboundVariableException if the variable is unbound
      * @see Location
      */
-    public Location getLocation(Symbol s)
-        throws UnboundVariableException {
+    public Location getLocation(Symbol s) throws UnboundVariableException
+    {
         Location location = getLocationOrNull(s);
         if (location == null) {
             throw new UnboundVariableException(s);
@@ -145,39 +162,15 @@ public class Environment extends AbstractEntity {
     }
 
     /**
-     * Gives the Location for the specified variable, or null
-     * if unbound.
-     *
-     * @param s Symbol a variable name
-     * @return Location or null
-     * @see Location
-     */
-    Location getLocationOrNull(Symbol s) {
-        Location loc;
-        Environment e = this;
-        while (e != null) {
-            loc = e.assoc.get(s);
-            if (loc == null) {
-                e = e.getParent();
-            } else {
-                return loc;
-            }
-        }
-
-        // so it is unbound...
-        return null;
-    }
-
-    /**
-     * Looks up a Symbol in the environment
-     * by searching this environment and all enclosing
-     * environments, up to the topmost (global) environment.
+     * Looks up a Symbol in the environment by searching this environment and
+     * all enclosing environments, up to the topmost (global) environment.
      *
      * @param s Symbol
+     *
      * @return Entity
      */
-    public Entity lookup(Symbol s)
-        throws GleamException {
+    public Entity lookup(Symbol s) throws GleamException
+    {
         return getLocation(s).get();
     }
 
@@ -185,13 +178,14 @@ public class Environment extends AbstractEntity {
      * Writes this environment
      */
     @Override
-    public void write(PrintWriter out) {
+    public void write(PrintWriter out)
+    {
         out.write("#<environment>");
     }
 
     // DEBUG
-    public void dump()
-        throws GleamException {
+    public void dump() throws GleamException
+    {
         if (out == null) {
             throw new GleamException("OutputPort null in Environment");
         }
@@ -209,9 +203,34 @@ public class Environment extends AbstractEntity {
         }
     }
 
-    public enum Kind {
-        NULL_ENV,
-        REPORT_ENV,
-        INTERACTION_ENV
+    /**
+     * Gives the Location for the specified variable, or null if unbound.
+     *
+     * @param s Symbol a variable name
+     *
+     * @return Location or null
+     *
+     * @see Location
+     */
+    Location getLocationOrNull(Symbol s)
+    {
+        Location loc;
+        Environment e = this;
+        while (e != null) {
+            loc = e.assoc.get(s);
+            if (loc == null) {
+                e = e.getParent();
+            } else {
+                return loc;
+            }
+        }
+
+        // so it is unbound...
+        return null;
+    }
+
+    public enum Kind
+    {
+        NULL_ENV, REPORT_ENV, INTERACTION_ENV
     }
 }

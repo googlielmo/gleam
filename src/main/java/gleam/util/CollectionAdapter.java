@@ -31,72 +31,87 @@ import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-public class CollectionAdapter<V, V1> implements Collection<V1> {
+public class CollectionAdapter<V, V1> implements Collection<V1>
+{
     private final Collection<V> vCollection;
     private final Converter<V, V1> converter;
 
-    public CollectionAdapter(Collection<V> vCollection,
-                             Converter<V, V1> converter) {
+    public CollectionAdapter(Collection<V> vCollection, Converter<V, V1> converter)
+    {
         this.vCollection = vCollection;
         this.converter = converter;
     }
 
     @Override
-    public int size() {
+    public int size()
+    {
         return vCollection.size();
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return vCollection.isEmpty();
     }
 
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(Object o)
+    {
         return vCollection.contains(converter.invertAny(o));
     }
 
     @Override
-    public Iterator<V1> iterator() {
+    public Iterator<V1> iterator()
+    {
         return vCollection.stream().map(converter::convert).iterator();
     }
 
     @Override
-    public Object[] toArray() {
+    public Object[] toArray()
+    {
         return vCollection.stream().map(converter::convert).toArray();
     }
 
     @Override
-    public <T> T[] toArray(T[] a) {
-        return vCollection.stream().map(converter::convert).collect(Collectors.toList()).toArray(a);
+    public <T> T[] toArray(T[] a)
+    {
+        return vCollection.stream()
+                          .map(converter::convert)
+                          .collect(Collectors.toList())
+                          .toArray(a);
     }
 
     @Override
-    public boolean add(V1 v1) {
+    public boolean add(V1 v1)
+    {
         return vCollection.add(converter.invert(v1));
     }
 
     @Override
-    public boolean remove(Object o) {
+    public boolean remove(Object o)
+    {
         return vCollection.remove(converter.invertAny(o));
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(Collection<?> c)
+    {
         final AtomicBoolean contained = new AtomicBoolean(true);
         c.forEach(value -> contained.set(contained.get() && vCollection.contains(converter.invertAny(value))));
         return contained.get();
     }
 
     @Override
-    public boolean addAll(Collection<? extends V1> c) {
+    public boolean addAll(Collection<? extends V1> c)
+    {
         final AtomicBoolean changed = new AtomicBoolean(false);
         c.forEach(value -> changed.set(changed.get() || vCollection.add(converter.invert(value))));
         return changed.get();
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(Collection<?> c)
+    {
         final AtomicBoolean changed = new AtomicBoolean(false);
         c.forEach(value -> {
             boolean removed = vCollection.remove(converter.invertAny(value));
@@ -106,7 +121,8 @@ public class CollectionAdapter<V, V1> implements Collection<V1> {
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(Collection<?> c)
+    {
         final AtomicBoolean changed = new AtomicBoolean(false);
         vCollection.forEach(value -> {
             if (!c.contains(converter.convertAny(value))) {
@@ -118,7 +134,8 @@ public class CollectionAdapter<V, V1> implements Collection<V1> {
     }
 
     @Override
-    public void clear() {
+    public void clear()
+    {
         vCollection.clear();
     }
 }

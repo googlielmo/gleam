@@ -28,63 +28,72 @@ package gleam.util;
 
 import java.util.Map;
 
-public class EntryConverter<K, V, K1, V1> implements Converter<Map.Entry<K, V>, Map.Entry<K1, V1>> {
+public class EntryConverter<K, V, K1, V1> implements Converter<Map.Entry<K, V>, Map.Entry<K1, V1>>
+{
     private final Converter<K, K1> keyConverter;
     private final Converter<V, V1> valueConverter;
 
-    public EntryConverter(Converter<K, K1> keyConverter,
-                          Converter<V, V1> valueConverter)
+    public EntryConverter(Converter<K, K1> keyConverter, Converter<V, V1> valueConverter)
     {
         this.keyConverter = keyConverter;
         this.valueConverter = valueConverter;
     }
 
     @Override
-    public Map.Entry<K1, V1> convert(Map.Entry<K, V> entry) {
+    public Map.Entry<K1, V1> convert(Map.Entry<K, V> entry)
+    {
         return new ConverterEntry<>(entry, keyConverter, valueConverter);
     }
 
     @Override
-    public Map.Entry<K, V> invert(Map.Entry<K1, V1> entry) {
+    public Map.Entry<K, V> invert(Map.Entry<K1, V1> entry)
+    {
         return new ConverterEntry<>(entry, keyConverter.inverseConverter(), valueConverter.inverseConverter());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Map.Entry<K1, V1> convertAny(Object value) {
+    public Map.Entry<K1, V1> convertAny(Object value)
+    {
         return convert((Map.Entry<K, V>) value);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Map.Entry<K, V> invertAny(Object value) {
+    public Map.Entry<K, V> invertAny(Object value)
+    {
         return invert((Map.Entry<K1, V1>) value);
     }
 
-    private static class ConverterEntry<EK, EV, EK1, EV1> implements Map.Entry<EK1, EV1> {
+    private static class ConverterEntry<EK, EV, EK1, EV1> implements Map.Entry<EK1, EV1>
+    {
 
         private final Map.Entry<EK, EV> underlyingEntry;
         private final Converter<EK, EK1> keyConverter;
         private final Converter<EV, EV1> valueConverter;
 
-        public ConverterEntry(Map.Entry<EK, EV> underlyingEntry, Converter<EK, EK1> keyConverter, Converter<EV, EV1> valueConverter) {
+        public ConverterEntry(Map.Entry<EK, EV> underlyingEntry, Converter<EK, EK1> keyConverter, Converter<EV, EV1> valueConverter)
+        {
             this.underlyingEntry = underlyingEntry;
             this.keyConverter = keyConverter;
             this.valueConverter = valueConverter;
         }
 
         @Override
-        public EK1 getKey() {
+        public EK1 getKey()
+        {
             return keyConverter.convert(underlyingEntry.getKey());
         }
 
         @Override
-        public EV1 getValue() {
+        public EV1 getValue()
+        {
             return valueConverter.convert(underlyingEntry.getValue());
         }
 
         @Override
-        public EV1 setValue(EV1 value) {
+        public EV1 setValue(EV1 value)
+        {
             EV1 prev = valueConverter.convert(underlyingEntry.getValue());
             this.underlyingEntry.setValue(valueConverter.invert(value));
             return prev;

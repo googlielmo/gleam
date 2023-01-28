@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General License as
@@ -27,6 +27,7 @@
 package gleam.lang;
 
 import gleam.util.Logger;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,16 +36,19 @@ import java.io.StringReader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ReaderTest {
+class ReaderTest
+{
 
     private static final Logger logger = Logger.getLogger();
 
     @BeforeEach
-    void init() {
+    void init()
+    {
         logger.setLevel(Logger.Level.CONFIG);
     }
 
     // lists
+
     @Test
     void read_empty_list() throws GleamException
     {
@@ -248,17 +252,19 @@ class ReaderTest {
         return new Reader(new StringReader(expr));
     }
 
-    private boolean equalPairs(Pair a, Pair b) {
+    private boolean equalPairs(Pair a, Pair b)
+    {
 
         boolean cars;
 
         if (a.getCar() instanceof Pair && b.getCar() instanceof Pair) {
             cars = equalPairs((Pair) a.getCar(), (Pair) b.getCar());
-        }
-        else {
+        } else {
             cars = a.getCar().equals(b.getCar());
         }
-        if (!cars) return false;
+        if (!cars) {
+            return false;
+        }
 
         if (b.getCdr() instanceof Pair) {
             return equalPairs((Pair) a.getCdr(), (Pair) b.getCdr());

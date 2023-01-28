@@ -51,8 +51,7 @@ public class InputPort extends Port implements Closeable
 
     private transient Reader gleamReader;
 
-    public InputPort(String name)
-        throws java.io.FileNotFoundException
+    public InputPort(String name) throws java.io.FileNotFoundException
     {
         this.fileName = name;
         openFile(name);
@@ -63,15 +62,6 @@ public class InputPort extends Port implements Closeable
         this.fileName = null;
         this.reader = reader;
         this.gleamReader = new Reader(reader);
-    }
-
-    private void openFile(String name)
-            throws FileNotFoundException
-    {
-        reader =  new BufferedReader(
-                new java.io.InputStreamReader(
-                        new java.io.FileInputStream(name)));
-        gleamReader = new Reader(reader);
     }
 
     /**
@@ -94,8 +84,8 @@ public class InputPort extends Port implements Closeable
     }
 
     /**
-     * @return  <code>true</code> if this InputPort is open,
-     *          <code>false</code> otherwise
+     * @return <code>true</code> if this InputPort is open,
+     * <code>false</code> otherwise
      */
     @Override
     public boolean isOpen()
@@ -105,19 +95,19 @@ public class InputPort extends Port implements Closeable
 
     /**
      * reads (parses) an object
-    */
-    public Entity read()
-        throws GleamException
+     */
+    public Entity read() throws GleamException
     {
         if (isOpen()) {
             Entity retVal = gleamReader.read();
-            if (retVal == null)
+            if (retVal == null) {
                 return Eof.VALUE;
-            else
+            } else {
                 return retVal;
-        }
-        else
+            }
+        } else {
             throw new GleamException("InputPort not open");
+        }
     }
 
     /**
@@ -129,34 +119,41 @@ public class InputPort extends Port implements Closeable
         out.print("#<input-port>");
     }
 
-    private void writeObject(java.io.ObjectOutputStream out)
-            throws IOException
-    {
-        out.defaultWriteObject();
-    }
-
-    private void readObject(java.io.ObjectInputStream in)
-            throws IOException, ClassNotFoundException
-    {
-        in.defaultReadObject();
-        if (fileName != null)
-            openFile(fileName);
-        else
-            gleamReader = null;
-    }
-
     @Override
-    public Kind getKind() {
+    public Kind getKind()
+    {
         return Kind.TEXTUAL;
     }
 
-    public void loadForEval(Environment env, Continuation cont) throws GleamException {
+    public void loadForEval(Environment env, Continuation cont) throws GleamException
+    {
         // read
         Entity obj;
         while ((obj = this.read()) != Eof.VALUE) {
             // eval
             logger.log(DEBUG, "loadForEval: read object", obj);
             Interpreter.addForEval(obj, env, cont);
+        }
+    }
+
+    private void openFile(String name) throws FileNotFoundException
+    {
+        reader = new BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(name)));
+        gleamReader = new Reader(reader);
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        if (fileName != null) {
+            openFile(fileName);
+        } else {
+            gleamReader = null;
         }
     }
 }

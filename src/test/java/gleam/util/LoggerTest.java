@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -41,24 +41,20 @@ import java.util.logging.LogRecord;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class LoggerTest {
+class LoggerTest
+{
 
-    private static Logger logger;
     private static final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private static final PrintStream originalErr = System.err;
-
-    private static class TestFormatter extends Formatter {
-
-        public String format(LogRecord logRecord)
-        {
-            return formatMessage(logRecord) + System.lineSeparator();
-        }
-    }
+    private static Logger logger;
 
     @BeforeAll
-    static void setUpJul() {
+    static void setUpJul()
+    {
         LogManager.getLogManager().reset();
-        LogManager.getLogManager().getLogger("").setLevel(java.util.logging.Level.ALL);
+        LogManager.getLogManager()
+                  .getLogger("")
+                  .setLevel(java.util.logging.Level.ALL);
         System.setErr(new PrintStream(errContent));
         java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("gleam");
         julLogger.addHandler(getConsoleHandler());
@@ -66,18 +62,19 @@ class LoggerTest {
         logger = Logger.getLogger();
     }
 
-    private static ConsoleHandler getConsoleHandler()
+    @AfterAll
+    static void restoreStreams()
+    {
+        System.setErr(originalErr);
+        LogManager.getLogManager().reset();
+    }
+
+    static ConsoleHandler getConsoleHandler()
     {
         ConsoleHandler handler = new ConsoleHandler();
         handler.setLevel(java.util.logging.Level.ALL);
         handler.setFormatter(new TestFormatter());
         return handler;
-    }
-
-    @AfterAll
-    public static void restoreStreams() {
-        System.setErr(originalErr);
-        LogManager.getLogManager().reset();
     }
 
     @BeforeEach
@@ -108,9 +105,19 @@ class LoggerTest {
         logger.log(6, "6");
 
 
-        int numLines = errContent.toString().split(System.getProperty("line.separator")).length;
+        int numLines = errContent.toString()
+                                 .split(System.getProperty("line.separator")).length;
         int expectedLines = (6 - level) + 1;
 
         assertEquals(expectedLines, numLines);
+    }
+
+    private static class TestFormatter extends Formatter
+    {
+
+        public String format(LogRecord logRecord)
+        {
+            return formatMessage(logRecord) + System.lineSeparator();
+        }
     }
 }

@@ -27,8 +27,16 @@
 package gleam.repl;
 
 import gleam.GleamScriptEngine;
+import gleam.lang.EmptyList;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.Eof;
+import gleam.lang.GleamException;
+import gleam.lang.Interpreter;
+import gleam.lang.OutputPort;
+import gleam.lang.Pair;
+import gleam.lang.Symbol;
 import gleam.lang.Void;
-import gleam.lang.*;
 import gleam.util.Logger;
 
 import javax.script.ScriptEngine;
@@ -39,7 +47,8 @@ import static gleam.util.Logger.Level.WARNING;
 /**
  * The Gleam interactive interpreter.
  */
-public class Gleam {
+public class Gleam
+{
 
     // the interactive prompt
     static final String PROMPT = "> ";
@@ -67,11 +76,13 @@ public class Gleam {
      *
      * @param args command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         new Gleam().repl(args);
     }
 
-    private void repl(String[] args) {
+    private void repl(String[] args)
+    {
 
         logger.setLevel(WARNING);
 
@@ -107,7 +118,8 @@ public class Gleam {
                     w.newline();
                 }
             } catch (GleamException e) {
-                Interpreter.getInteractionEnv().define(Symbol.ERROBJ, e.value());
+                Interpreter.getInteractionEnv()
+                           .define(Symbol.ERROBJ, e.value());
                 w.printf("*** %s\n", e.getMessage());
                 intp.clearContinuation();
             } catch (Exception e) {
@@ -120,14 +132,16 @@ public class Gleam {
         prompt(w, "Bye!");
     }
 
-    private void prompt(OutputPort w, String prompt) {
+    private void prompt(OutputPort w, String prompt)
+    {
         if (console) {
             w.print(prompt);
             w.flush();
         }
     }
 
-    private void welcome(OutputPort w) {
+    private void welcome(OutputPort w)
+    {
         if (console) {
             w.printf("Welcome to Gleam, release %s\n", release);
             w.print("(c) 2001-2022 Guglielmo Nigri <guglielmonigri@yahoo.it>.\n");
@@ -138,7 +152,8 @@ public class Gleam {
         }
     }
 
-    private Entity readEntity(Interpreter intp) throws GleamException {
+    private Entity readEntity(Interpreter intp) throws GleamException
+    {
         Entity obj = intp.getCin().read();
 
         // check for EOF

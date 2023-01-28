@@ -32,7 +32,7 @@ import java.io.PrintWriter;
 
 /**
  * Syntax rewriter. Holds a rewriting function of one argument.
- *
+ * <p>
  * Creation date: Dec. 22, 2004 15:32
  */
 public final class SyntaxRewriter extends Closure implements SyntaxObject
@@ -45,7 +45,8 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
 
     private static final Logger logger = Logger.getLogger();
 
-    public SyntaxRewriter(Closure rewriter) {
+    public SyntaxRewriter(Closure rewriter)
+    {
         super(rewriter.param, rewriter.body, rewriter.definitionEnv);
     }
 
@@ -55,7 +56,8 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
      * @param out PrintWriter
      */
     @Override
-    public void write(PrintWriter out) {
+    public void write(PrintWriter out)
+    {
         out.write("#<syntax-rewriter");
         if (logger.getLevelValue() < Logger.Level.INFO.getValue()) {
             out.write(" ");

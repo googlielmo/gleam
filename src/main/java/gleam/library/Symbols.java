@@ -38,27 +38,19 @@ import static gleam.lang.Environment.Kind.INTERACTION_ENV;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
- * SYMBOLS
- * Primitive operator and procedure implementation library.
+ * SYMBOLS Primitive operator and procedure implementation library.
  */
-public final class Symbols {
-
-    /**
-     * Can't instantiate this class
-     */
-    @SuppressWarnings("unused")
-    private Symbols() {
-    }
+public final class Symbols
+{
 
     /**
      * Counter used by generate-symbol
      */
     private static final AtomicInteger gencount = new AtomicInteger(0);
-
     /**
-     * This array contains definitions of primitives.
-     * It is used by static initializers in gleam.lang.System to populate
-     * the three initial environments.
+     * This array contains definitions of primitives. It is used by static
+     * initializers in gleam.lang.System to populate the three initial
+     * environments.
      */
     public static final Primitive[] primitives = {
 
@@ -66,31 +58,36 @@ public final class Symbols {
               symbol?
               Tests if argument is a symbol
              */
-    new Primitive( "symbol?",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        1, 1, /* min, max no. of arguments */
-        "Returns true if argument is a symbol, false otherwise",
-        "E.g. (symbol? 'sym) => #t" /* doc strings */ ) {
-    @Override
-    public Entity apply1(Entity arg1, Environment env, Continuation cont)
-    {
-        return Boolean.makeBoolean(arg1 instanceof Symbol);
-    }},
+            new Primitive("symbol?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+                          1, 1, /* min, max no. of arguments */
+                          "Returns true if argument is a symbol, false otherwise", "E.g. (symbol? 'sym) => #t" /* doc strings */)
+            {
+                @Override
+                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                {
+                    return Boolean.makeBoolean(arg1 instanceof Symbol);
+                }
+            },
 
-    /*
-     * generate-symbol
-     * Generates a fresh uninterned symbol
-     */
-    new Primitive( "generate-symbol",
-        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
-        0, 0, /* min, max no. of arguments */
-        "Makes a new symbol, e.g. (generate-symbol)",
-        null /* doc strings */ ) {
-    @Override
-    public Entity apply0(Environment env, Continuation cont)
-    {
-        return Symbol.makeUninternedSymbol("__S" + (gencount.getAndIncrement()));
-    }},
+            /*
+             * generate-symbol
+             * Generates a fresh uninterned symbol
+             */
+            new Primitive("generate-symbol", INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
+                          0, 0, /* min, max no. of arguments */
+                          "Makes a new symbol, e.g. (generate-symbol)", null /* doc strings */)
+            {
+                @Override
+                public Entity apply0(Environment env, Continuation cont)
+                {
+                    return Symbol.makeUninternedSymbol("__S" + (gencount.getAndIncrement()));
+                }
+            }
 
     }; // primitives
+
+    /**
+     * Can't instantiate this class
+     */
+    private Symbols() {}
 }

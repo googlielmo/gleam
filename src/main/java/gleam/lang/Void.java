@@ -29,29 +29,21 @@ package gleam.lang;
 import java.io.PrintWriter;
 
 /**
- * The Scheme void value (a singleton).
- * Creation date: (31/10/01 23.06.59)
+ * The Scheme void value (a singleton). Creation date: (31/10/01 23.06.59)
  */
-public final class Void extends AbstractEntity {
+public final class Void extends AbstractEntity
+{
 
+    /** the Void singleton */
+    public static final Void VALUE = new Void();
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
 
-    /** the Void singleton */
-    public static final Void VALUE = new Void();
-
     /** Can't instantiate this */
-    private Void() {
-    }
-
-    /**
-     * Prevents the release of multiple instances upon deserialization.
-     */
-    private Object readResolve()
+    private Void()
     {
-        return VALUE;
     }
 
     /**
@@ -61,5 +53,13 @@ public final class Void extends AbstractEntity {
     public void write(PrintWriter out)
     {
         out.write("#<void>");
+    }
+
+    /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    private Object readResolve()
+    {
+        return VALUE;
     }
 }

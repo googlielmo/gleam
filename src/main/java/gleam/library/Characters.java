@@ -35,39 +35,37 @@ import gleam.lang.Environment;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
- * CHARACTERS
- * Primitive operator and procedure implementation library.
+ * CHARACTERS Primitive operator and procedure implementation library.
  */
-public final class Characters {
+public final class Characters
+{
+
+    /**
+     * This array contains definitions of primitives. It is used by static
+     * initializers in gleam.lang.System to populate the three initial
+     * environments.
+     */
+    public static final Primitive[] primitives = {
+
+            /*
+             * char?
+             * Tests if argument is a character
+             */
+            new Primitive("char?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+                          1, 1, /* min, max no. of arguments */
+                          "Returns true if argument is a character, false otherwise", "E.g. (char? #\\a) => #t" /* doc strings */)
+            {
+                @Override
+                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                {
+                    return Boolean.makeBoolean(arg1 instanceof Character);
+                }
+            }
+
+    }; // primitives
 
     /**
      * Can't instantiate this class
      */
-    private Characters() {
-    }
-
-    /**
-     * This array contains definitions of primitives.
-     * It is used by static initializers in gleam.lang.System to populate
-     * the three initial environments.
-     */
-    public static final Primitive[] primitives = {
-
-    /*
-     * char?
-     * Tests if argument is a character
-     */
-    new Primitive( "char?",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        1, 1, /* min, max no. of arguments */
-        "Returns true if argument is a character, false otherwise",
-        "E.g. (char? #\\a) => #t" /* doc strings */ ) {
-    @Override
-    public Entity apply1(Entity arg1, Environment env, Continuation cont)
-    {
-        return Boolean.makeBoolean(arg1 instanceof Character);
-    }},
-
-    }; // primitives
-
+    private Characters() {}
 }

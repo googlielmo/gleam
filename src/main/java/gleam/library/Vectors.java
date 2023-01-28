@@ -27,23 +27,22 @@
 package gleam.library;
 
 /**
- * VECTORS
- * Primitive operator and procedure implementation library.
+ * VECTORS Primitive operator and procedure implementation library.
  */
-public final class Vectors {
+public final class Vectors
+{
 
     /**
-     * Can't instantiate this class
-     */
-    private Vectors() {
-    }
-
-    /**
-     * This array contains definitions of primitives.
-     * It is used by static initializers in gleam.lang.System to populate
-     * the three initial environments.
+     * This array contains definitions of primitives. It is used by static
+     * initializers in gleam.lang.System to populate the three initial
+     * environments.
      */
     public static final Primitive[] primitives = {
 
     }; // primitives
+
+    /**
+     * Can't instantiate this class
+     */
+    private Vectors() {}
 }

@@ -44,7 +44,8 @@ import java.util.Objects;
 /**
  * A Java object.
  */
-public class JavaObject extends AbstractEntity {
+public class JavaObject extends AbstractEntity
+{
 
     /**
      * serialVersionUID
@@ -56,15 +57,18 @@ public class JavaObject extends AbstractEntity {
     private final Object value;
 
     /** Creates a new instance of JavaObject */
-    public JavaObject() {
+    public JavaObject()
+    {
         value = null;
     }
 
-    public JavaObject(Object object) {
+    public JavaObject(Object object)
+    {
         value = object;
     }
 
-    public JavaObject(Symbol s) throws GleamException {
+    public JavaObject(Symbol s) throws GleamException
+    {
         String className = s.toString();
         Object object = null;
         try {
@@ -77,11 +81,14 @@ public class JavaObject extends AbstractEntity {
         }
     }
 
-    public JavaObject(Symbol s, Class<?>[] classes, Object[] objects) throws GleamException {
+    public JavaObject(Symbol s, Class<?>[] classes, Object[] objects) throws GleamException
+    {
         String className = s.toString();
         Object object = null;
         try {
-            object = Class.forName(className).getConstructor(classes).newInstance(objects);
+            object = Class.forName(className)
+                          .getConstructor(classes)
+                          .newInstance(objects);
         } catch (Exception ex) {
             logger.warning(ex);
             throw new GleamException("new: " + ex.getMessage(), s);
@@ -91,44 +98,55 @@ public class JavaObject extends AbstractEntity {
     }
 
     @Override
-    public void write(PrintWriter out) {
+    public void write(PrintWriter out)
+    {
         out.print(this);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return value == null ? "null" : value.toString();
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        if (value == null || value instanceof Serializable)
-            out.defaultWriteObject();
-        else
-            out.writeObject(new JavaObject());
-    }
-
-    public Object getObjectValue() {
+    public Object getObjectValue()
+    {
         return value;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(Object obj)
+    {
+        if (this == obj) {
             return true;
-        if (!(obj instanceof JavaObject))
+        }
+        if (!(obj instanceof JavaObject)) {
             return false;
+        }
         JavaObject javaObject = (JavaObject) obj;
         return Objects.equals(value, javaObject.value);
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return Objects.hash(value);
     }
 
-    public boolean eq(JavaObject obj) {
-        if (obj == null)
+    public boolean eq(JavaObject obj)
+    {
+        if (obj == null) {
             return false;
+        }
         return value == obj.value;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException
+    {
+        if (value == null || value instanceof Serializable) {
+            out.defaultWriteObject();
+        } else {
+            out.writeObject(new JavaObject());
+        }
     }
 }

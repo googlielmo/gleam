@@ -29,5 +29,5 @@ package gleam.lang;
 /**
  * Marker interface for syntax rewriters and procedures.
  */
-public interface SyntaxObject {
-}
+public interface SyntaxObject
+{}

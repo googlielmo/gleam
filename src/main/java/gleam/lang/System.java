@@ -34,8 +34,7 @@ import java.util.HashSet;
 import static gleam.util.Logger.Level.DEBUG;
 
 /**
- * Scheme runtime support.
- * Creation date: 03/11/2001
+ * Scheme runtime support. Creation date: 03/11/2001
  */
 public final class System
 {
@@ -45,13 +44,16 @@ public final class System
     private System() {}
 
     /**
-     * Checks if a symbol stands for the name of a special form in a given environment.
+     * Checks if a symbol stands for the name of a special form in a given
+     * environment.
      *
      * @param symbol the Symbol to check
-     * @param env the Environment
+     * @param env    the Environment
+     *
      * @return true is symbol represents a special form
      */
-    public static boolean isSpecialForm(Symbol symbol, Environment env) {
+    public static boolean isSpecialForm(Symbol symbol, Environment env)
+    {
         Location location = env.getLocationOrNull(symbol);
         boolean isSyntaxProcedure = false;
         boolean isSyntaxRewriter = false;
@@ -66,11 +68,10 @@ public final class System
     }
 
     /**
-     * Performs syntactic analysis of special forms.
-     * Creation date: (02/11/2001 12.34.35)
+     * Performs syntactic analysis of special forms. Creation date: (02/11/2001
+     * 12.34.35)
      */
-    public static void analyzeSpecialForm(List form, Environment env)
-            throws GleamException
+    public static void analyzeSpecialForm(List form, Environment env) throws GleamException
     {
         ListIterator it = new ListIterator(form);
         if (!it.hasNext()) {
@@ -94,66 +95,52 @@ public final class System
 
         // Other special forms have at least an argument, so check for it
         if (!it.hasNext()) {
-            throw new GleamException(
-                    String.format("invalid special form %s: too few arguments", op), form);
+            throw new GleamException(String.format("invalid special form %s: too few arguments", op), form);
         }
         arg = it.next();
 
-        if (op == Symbol.QUOTE || op == Symbol.QUASIQUOTE ) {
+        if (op == Symbol.QUOTE || op == Symbol.QUASIQUOTE) {
             // just one datum argument with no syntax analysis, of course!
             if (it.hasNext()) {
-                throw new GleamException(
-                        "quote: too many arguments", form);
+                throw new GleamException("quote: too many arguments", form);
             }
-        }
-        else if (op == Symbol.LAMBDA) {
+        } else if (op == Symbol.LAMBDA) {
             // analyze param list
             if (arg == EmptyList.VALUE || isVariable(arg)) {
                 // ok
                 it.replace(arg.analyze(env));
-            }
-            else if (arg instanceof List) {
+            } else if (arg instanceof List) {
                 // iterate over (possibly improper) list
-                ListIterator ait = new ListIterator( (List) arg, true);
+                ListIterator ait = new ListIterator((List) arg, true);
                 Collection<Symbol> paramSet = new HashSet<>();
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
                     if (!isVariable(pobj)) {
-                        throw new GleamException(
-                                "lambda: procedure parameter is not a variable",
-                                form);
+                        throw new GleamException("lambda: procedure parameter is not a variable", form);
                     }
                     Symbol param = (Symbol) pobj;
                     if (paramSet.contains(param)) {
-                        throw new GleamException(
-                                "lambda: repeated procedure parameter",
-                                form);
+                        throw new GleamException("lambda: repeated procedure parameter", form);
                     }
                     paramSet.add(param);
                     ait.replace(pobj.analyze(env));
                 }
-            }
-            else {
-                throw new GleamException(
-                        "lambda: parameter is not a variable nor a variable list",
-                        form);
+            } else {
+                throw new GleamException("lambda: parameter is not a variable nor a variable list", form);
             }
             // analyze body
             if (!it.hasNext()) {
-                throw new GleamException(
-                        "lambda: missing procedure body", form);
+                throw new GleamException("lambda: missing procedure body", form);
             }
             while (it.hasNext()) {
                 Entity bodyPart = it.next();
                 it.replace(bodyPart.analyze(env));
             }
-        }
-        else if (op == Symbol.IF) {
+        } else if (op == Symbol.IF) {
             // analyze condition
             it.replace(arg.analyze(env));
             if (!it.hasNext()) {
-                throw new GleamException(
-                        "if: missing consequence", form);
+                throw new GleamException("if: missing consequence", form);
             }
             // analyze consequence
             arg = it.next();
@@ -163,141 +150,108 @@ public final class System
                 arg = it.next();
                 it.replace(arg.analyze(env));
                 if (it.hasNext()) {
-                    throw new GleamException(
-                            "if: too many arguments", form);
+                    throw new GleamException("if: too many arguments", form);
                 }
             }
-        }
-        else if (op == Symbol.SET) {
+        } else if (op == Symbol.SET) {
             if (!isVariable(arg)) {
-                throw new GleamException(
-                        "set!: assignment object is not a variable",
-                        form);
+                throw new GleamException("set!: assignment object is not a variable", form);
             }
             if (!it.hasNext()) {
-                throw new GleamException(
-                        "set!: missing assignment value", form);
+                throw new GleamException("set!: missing assignment value", form);
             }
             it.replace(arg.analyze(env));
             // analyze assigned value
             arg = it.next();
             it.replace(arg.analyze(env));
             if (it.hasNext()) {
-                throw new GleamException(
-                        "set!: too many assignment values",
-                        form);
+                throw new GleamException("set!: too many assignment values", form);
             }
-        }
-        else if (op == Symbol.BEGIN) {
+        } else if (op == Symbol.BEGIN) {
             // begin is followed by one or more expressions
             it.replace(arg.analyze(env));
             while (it.hasNext()) {
                 it.replace(it.next().analyze(env));
             }
+        } else if (op == Symbol.COND) {
+        } else if (op == Symbol.CASE) {
+        } else if (op == Symbol.LET || op == Symbol.LETSTAR || op == Symbol.LETREC) {
         }
-        else if (op == Symbol.COND) {
-            // TODO
-        }
-        else if (op == Symbol.CASE) {
-            // TODO
-        }
-        else if (op == Symbol.LET || op == Symbol.LETSTAR || op == Symbol.LETREC) {
-            // TODO
-        }
-//        else if (op == Symbol.DO) {
-//        }
-//        else if (op == Symbol.DELAY) {
-//            // delay wants one expression
-//            it.replace(arg.analyze(env));
-//            if (it.hasNext()) {
-//                throw new GleamException(
-//                        "delay: too many arguments", form);
-//            }
-//        }
+        //        else if (op == Symbol.DO) {
+        //        }
+        //        else if (op == Symbol.DELAY) {
+        //            // delay wants one expression
+        //            it.replace(arg.analyze(env));
+        //            if (it.hasNext()) {
+        //                throw new GleamException(
+        //                        "delay: too many arguments", form);
+        //            }
+        //        }
         else if (op == Symbol.DEFINE) {
             // analyze variable or function
             boolean isFunction;
             if (arg == EmptyList.VALUE) {
-                throw new GleamException(
-                        "define: invalid function name", form);
-            }
-            else if (isVariable(arg)) {
+                throw new GleamException("define: invalid function name", form);
+            } else if (isVariable(arg)) {
                 isFunction = false;
                 it.replace(arg.analyze(env));
-            }
-            else if (arg instanceof List) {
+            } else if (arg instanceof List) {
                 isFunction = true;
 
                 // take out function name
                 boolean fname = true;
 
                 // iterate over (possibly improper) list
-                ListIterator ait = new ListIterator( (List) arg, true);
+                ListIterator ait = new ListIterator((List) arg, true);
                 Collection<Symbol> paramSet = new HashSet<>();
 
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
                     if (!isVariable(pobj)) {
-                        if (fname)
-                            throw new
-                                    GleamException(
-                                    "define: procedure name is not a variable",
-                                    form);
-                        else
-                            throw new
-                                    GleamException(
-                                    "define: procedure parameter is not a variable",
-                                    form);
+                        if (fname) {
+                            throw new GleamException("define: procedure name is not a variable", form);
+                        } else {
+                            throw new GleamException("define: procedure parameter is not a variable", form);
+                        }
                     }
                     Symbol param = (Symbol) pobj;
                     if (paramSet.contains(param)) {
-                        throw new GleamException(
-                                "define: repeated procedure parameter",
-                                form);
+                        throw new GleamException("define: repeated procedure parameter", form);
                     }
                     if (!fname) {
                         paramSet.add(param);
-                    }
-                    else {
+                    } else {
                         fname = false;
                     }
                     ait.replace(pobj.analyze(env));
                 }
-            }
-            else {
-                throw new GleamException(
-                        "define: definition object is not a variable nor a procedure",
-                        form);
+            } else {
+                throw new GleamException("define: definition object is not a variable nor a procedure", form);
             }
             // analyze value or procedure body
             if (!it.hasNext()) {
-                throw new GleamException(
-                        "define: missing definition value",
-                        form);
+                throw new GleamException("define: missing definition value", form);
             }
             Entity v = it.next();
             it.replace(v.analyze(env));
             if (it.hasNext() && !isFunction) {
-                throw new GleamException(
-                        "define: too many definition values",
-                        form);
+                throw new GleamException("define: too many definition values", form);
+            } else {
+                while (it.hasNext()) {
+                    Entity bodyPart = it.next();
+                    it.replace(bodyPart.analyze(env));
+                }
             }
-            else while (it.hasNext()) {
-                Entity bodyPart = it.next();
-                it.replace(bodyPart.analyze(env));
-            }
-        }
-        else {
+        } else {
             logger.debug("analyzeSpecialForm: unknown: ", op);
         }
     }
 
     /**
-     * Performs optimization of special forms.
-     * Creation date: (14/11/2001 02.19.35)
+     * Performs optimization of special forms. Creation date: (14/11/2001
+     * 02.19.35)
      */
-    public static void optimizeSpecialForm(List form, Environment env)
-            throws GleamException
+    public static void optimizeSpecialForm(List form, Environment env) throws GleamException
     {
         /* We operate under the assumption that syntax analysis
          * has already been performed, so we skip syntax checking.
@@ -328,8 +282,7 @@ public final class System
 
         if (op == Symbol.QUOTE) {
             // shall not touch arg, that's the whole point of quote!
-        }
-        else if (op == Symbol.LAMBDA) {
+        } else if (op == Symbol.LAMBDA) {
             // analyze param list
 
             /* we scan out the defines in lambda body
@@ -343,18 +296,15 @@ public final class System
             Environment paramEnv = new Environment(newEnv);
             if (arg == EmptyList.VALUE) {
                 // ok (but different from Pair below)
-            }
-            else if (isVariable(arg)) {
+            } else if (isVariable(arg)) {
                 // ok, but we add it to paramEnv
-                paramEnv.define( (Symbol) arg, Undefined.VALUE);
-            }
-            else if (arg instanceof List) {
+                paramEnv.define((Symbol) arg, Undefined.VALUE);
+            } else if (arg instanceof List) {
                 // iterate over (possibly improper) list
-                ListIterator ait = new ListIterator( (List) arg, true);
+                ListIterator ait = new ListIterator((List) arg, true);
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
-                    paramEnv.define( (Symbol) pobj,
-                            Undefined.VALUE);
+                    paramEnv.define((Symbol) pobj, Undefined.VALUE);
                 }
             }
             // optimize body in the new param environment
@@ -364,37 +314,34 @@ public final class System
                 Entity bodyPart = it.next();
                 it.replace(bodyPart.optimize(paramEnv));
             }
-        }
-        else if (op == Symbol.SET) {
+        } else if (op == Symbol.SET) {
             // only optimize expression, not variable name
             it.replace(it.next().optimize(env));
-        }
-        else if (op == Symbol.BEGIN) {
+        } else if (op == Symbol.BEGIN) {
             Environment newEnv = createScanOutDefineEnv(form, env);
             it.replace(arg.optimize(newEnv));
             while (it.hasNext()) {
                 it.replace(it.next().optimize(newEnv));
             }
         }
-//      else if (op == Symbol.LET) {
-//          // TODO
-//      }
-//      else if (op == Symbol.LETSTAR) {
-//          // TODO
-//      }
-//      else if (op == Symbol.LETREC) {
-//          // TODO
-//      }
-//        else if (op == Symbol.DO) {
-//            // TODO
-//        }
-//        else if (op == Symbol.DELAY) {
-//            // TODO
-//        }
+        //      else if (op == Symbol.LET) {
+        //          // TODO
+        //      }
+        //      else if (op == Symbol.LETSTAR) {
+        //          // TODO
+        //      }
+        //      else if (op == Symbol.LETREC) {
+        //          // TODO
+        //      }
+        //        else if (op == Symbol.DO) {
+        //            // TODO
+        //        }
+        //        else if (op == Symbol.DELAY) {
+        //            // TODO
+        //        }
         else if (op == Symbol.QUASIQUOTE) {
             // shall not touch arg, like quote
-        }
-        else if (op == Symbol.DEFINE) {
+        } else if (op == Symbol.DEFINE) {
             /* in case this is a procedure
              * we scan out the defines in lambda body
              */
@@ -409,15 +356,13 @@ public final class System
             // optimize variable or function
             if (isVariable(arg)) {
                 // ok, leave it alone
-            }
-            else if (arg instanceof List) {
+            } else if (arg instanceof List) {
                 // iterate over (possibly improper) list
-                ListIterator ait = new ListIterator( (List) arg, true);
+                ListIterator ait = new ListIterator((List) arg, true);
 
                 while (ait.hasNext()) {
                     Entity pobj = ait.next();
-                    paramEnv.define( (Symbol) pobj,
-                            Undefined.VALUE);
+                    paramEnv.define((Symbol) pobj, Undefined.VALUE);
                 }
             }
             /* optimize value or procedure body
@@ -431,8 +376,7 @@ public final class System
                 Entity bodyPart = it.next();
                 it.replace(bodyPart.optimize(paramEnv));
             }
-        }
-        else {
+        } else {
             /* Default case for:
              *  if
              *  cond
@@ -452,41 +396,43 @@ public final class System
      * Deep clones a list
      *
      * @param list List
+     *
      * @return List
      */
-    private static List cloneList(List list)
-            throws GleamException {
+    private static List cloneList(List list) throws GleamException
+    {
 
-        if (list == EmptyList.VALUE)
+        if (list == EmptyList.VALUE) {
             return list;
+        }
 
-        return new Pair(
-                clone(list.getCar()),
-                clone(list.getCdr()));
+        return new Pair(clone(list.getCar()), clone(list.getCdr()));
     }
 
     /**
-     * Deep clones an entity.
-     * Pairs are cloned as new Pairs, every other value is unchanged in the clone.
+     * Deep clones an entity. Pairs are cloned as new Pairs, every other value
+     * is unchanged in the clone.
      *
      * @param entity an Entity
+     *
      * @return the cloned entity
      */
-    private static Entity clone(Entity entity)
-            throws GleamException {
+    private static Entity clone(Entity entity) throws GleamException
+    {
 
-        if (entity instanceof List)
+        if (entity instanceof List) {
             return cloneList((List) entity);
+        }
 
         return entity;
     }
 
-    private static List internalScanOut(Entity bodyPart)
-            throws GleamException
+    private static List internalScanOut(Entity bodyPart) throws GleamException
     {
         List retVal = EmptyList.VALUE;
-        if (! (bodyPart instanceof List))
+        if (!(bodyPart instanceof List)) {
             return retVal;
+        }
 
         List bpAsPair = (List) bodyPart;
 
@@ -494,13 +440,11 @@ public final class System
             Entity obj = ((List) bpAsPair.getCdr()).getCar();
             if (obj instanceof Symbol) {
                 retVal = new Pair(obj, retVal);
-            }
-            else if (obj instanceof List) {
+            } else if (obj instanceof List) {
                 retVal = new Pair(((List) obj).getCar(), retVal);
             }
-        }
-        else if (bpAsPair.getCar() == Symbol.BEGIN) {
-            ListIterator it = new ListIterator( (List) bpAsPair.getCdr());
+        } else if (bpAsPair.getCar() == Symbol.BEGIN) {
+            ListIterator it = new ListIterator((List) bpAsPair.getCdr());
             while (it.hasNext()) {
                 List is = internalScanOut(it.next());
                 if (is != EmptyList.VALUE) {
@@ -516,19 +460,19 @@ public final class System
     }
 
     /**
-     * Determines if a given object is a variable.
-     * An object is a variable iff it is a symbol.
+     * Determines if a given object is a variable. An object is a variable iff
+     * it is a symbol.
      */
-    static boolean isVariable(Entity s) {
+    static boolean isVariable(Entity s)
+    {
         return s instanceof Symbol;
     }
 
     /**
-     * Creates a new environment for all variables defined within body
-     * to hold Undefined values.
+     * Creates a new environment for all variables defined within body to hold
+     * Undefined values.
      */
-    static Environment createScanOutDefineEnv(List body, Environment env)
-            throws GleamException
+    static Environment createScanOutDefineEnv(List body, Environment env) throws GleamException
     {
         List varList = EmptyList.VALUE;
         ListIterator it = new ListIterator(body);
@@ -545,8 +489,7 @@ public final class System
         }
         if (varList == EmptyList.VALUE) {
             return env;
-        }
-        else {
+        } else {
             Environment retVal = new Environment(env);
             // iterate on varList, binding each var to Undefined
             logger.log(DEBUG, "Scanned out: ");

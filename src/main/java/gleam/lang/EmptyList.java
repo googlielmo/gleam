@@ -40,41 +40,31 @@ import java.util.Iterator;
 import static gleam.util.Logger.Level.DEBUG;
 
 /**
- * This class represents the distinct type of the Scheme empty list.
- * There is only one instance of this class, i.e. the empty list itself '().
- * EmptyList is a specialization of Pair uniquely for efficiency reasons in
- * procedure evaluation.
+ * This class represents the distinct type of the Scheme empty list. There is
+ * only one instance of this class, i.e. the empty list itself '(). EmptyList is
+ * a specialization of Pair uniquely for efficiency reasons in procedure
+ * evaluation.
  */
-public final class EmptyList extends AbstractEntity implements List {
+public final class EmptyList extends AbstractEntity implements List
+{
+    /** the EmptyList singleton */
+    public static final EmptyList VALUE = new EmptyList();
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
-
     private static final Logger logger = Logger.getLogger();
 
-    /** the EmptyList singleton */
-    public static final EmptyList VALUE = new EmptyList();
-
     /** Can't create an empty list */
-    private EmptyList() {
-    }
-
-    /**
-     * Prevents the release of multiple instances upon deserialization.
-     */
-    private Object readResolve()
+    private EmptyList()
     {
-        logger.log(DEBUG, "readResolve() called! (EmptyList)"); //DEBUG
-        return VALUE;
     }
 
     /**
      * The empty combination is an error in Scheme.
      */
     @Override
-    public Entity eval(Environment env, Continuation cont)
-        throws GleamException
+    public Entity eval(Environment env, Continuation cont) throws GleamException
     {
         throw new GleamException("invalid combination: empty list", this);
     }
@@ -89,22 +79,26 @@ public final class EmptyList extends AbstractEntity implements List {
     }
 
     @Override
-    public Entity getCar() throws GleamException {
+    public Entity getCar() throws GleamException
+    {
         throw new GleamException("car: invalid arguments", this);
     }
 
     @Override
-    public Entity getCdr() throws GleamException {
-        throw new GleamException("cdr: invalid arguments", this);
-    }
-
-    @Override
-    public void setCar(Entity obj) throws GleamException {
+    public void setCar(Entity obj) throws GleamException
+    {
         throw new GleamException("set-car!: invalid arguments", this);
     }
 
     @Override
-    public void setCdr(Entity obj) throws GleamException {
+    public Entity getCdr() throws GleamException
+    {
+        throw new GleamException("cdr: invalid arguments", this);
+    }
+
+    @Override
+    public void setCdr(Entity obj) throws GleamException
+    {
         throw new GleamException("set-cdr!: invalid arguments", this);
     }
 
@@ -114,7 +108,17 @@ public final class EmptyList extends AbstractEntity implements List {
      * @return an Entity iterator.
      */
     @Override
-    public Iterator<Entity> iterator() {
+    public Iterator<Entity> iterator()
+    {
         return new ListIterator(this);
+    }
+
+    /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    private Object readResolve()
+    {
+        logger.log(DEBUG, "readResolve() called! (EmptyList)"); //DEBUG
+        return VALUE;
     }
 }

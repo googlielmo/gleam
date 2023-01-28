@@ -31,40 +31,30 @@ import gleam.util.Logger;
 import java.io.PrintWriter;
 
 /**
- * The Scheme undefined value (a singleton).
- * Creation date: (07/nov/2001 23.40.59)
+ * The Scheme undefined value (a singleton). Creation date: (07/nov/2001
+ * 23.40.59)
  */
-public final class Undefined extends AbstractEntity {
+public final class Undefined extends AbstractEntity
+{
 
+    /** the Undefined singleton */
+    public static final Undefined VALUE = new Undefined();
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
-
     private static final Logger logger = Logger.getLogger();
 
-    /** the Undefined singleton */
-    public static final Undefined VALUE = new Undefined();
-
     /** Can't instantiate this */
-    private Undefined() {
-    }
-
-    /**
-     * Prevents the release of multiple instances upon deserialization.
-     */
-    private Object readResolve()
+    private Undefined()
     {
-        logger.debug("readResolve() called! (Undefined)");
-        return VALUE;
     }
 
     /**
      * Evaluates this object in the given environment.
      */
     @Override
-    public Entity eval(Environment env, Continuation cont)
-        throws GleamException
+    public Entity eval(Environment env, Continuation cont) throws GleamException
     {
         throw new GleamException("Evaluation of undefined value", this);
     }
@@ -76,5 +66,14 @@ public final class Undefined extends AbstractEntity {
     public void write(PrintWriter out)
     {
         out.write("#<undefined>");
+    }
+
+    /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    private Object readResolve()
+    {
+        logger.debug("readResolve() called! (Undefined)");
+        return VALUE;
     }
 }

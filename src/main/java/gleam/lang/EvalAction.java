@@ -35,31 +35,38 @@ package gleam.lang;
 /**
  * Eval action
  */
-public class EvalAction extends Action {
+public class EvalAction extends Action
+{
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 2L;
 
     /** Creates a new instance of this action */
-    public EvalAction(Environment env, Action next) {
+    public EvalAction(Environment env, Action next)
+    {
         super(env, next);
     }
 
     /** Creates a new instance of this action */
-    public EvalAction(Environment env) {
+    public EvalAction(Environment env)
+    {
         this(env, null);
     }
 
     /**
      * Invokes this action, causing the evaluation of its argument
-     * @param arg the Entity to evaluate
+     *
+     * @param arg  the Entity to evaluate
      * @param cont the current Continuation
+     *
      * @return the result of the evaluation
+     *
      * @throws gleam.lang.GleamException in case of errors
      */
     @Override
-    Entity invoke(Entity arg, Continuation cont) throws GleamException {
+    Entity invoke(Entity arg, Continuation cont) throws GleamException
+    {
         cont.head = next;
         trace(out -> out.printf("%s\n", arg.toWriteFormat()), env);
         return arg.eval(env, cont);

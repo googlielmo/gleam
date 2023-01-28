@@ -4,7 +4,7 @@ Gleam Scheme Interpreter
 (c) 2001-2023 Guglielmo Nigri
 (`guglielmonigri at yahoo.it`, `googlielmo at gmail.com`)
 
-Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are
+Gleam comes with ABSOLUTELY NO WARRANTY. This is free software, and you are
 welcome to redistribute it under certain conditions; see LICENSE.TXT.
 
 HOW TO BUILD GLEAM
@@ -12,8 +12,8 @@ HOW TO BUILD GLEAM
 
 The Gleam distribution consists of two jar archives:
 
- - `gleam-VERSION.jar` the interpreter library
- - `repl-VERSION.jar` the interactive interpreter, or read-eval-print loop (REPL)
+- `gleam-VERSION.jar` the interpreter library
+- `repl-VERSION.jar` the interactive interpreter, or read-eval-print loop (REPL)
 
 Create the jars with Maven:
 

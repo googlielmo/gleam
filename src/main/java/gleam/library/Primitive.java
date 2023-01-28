@@ -40,79 +40,77 @@ import gleam.lang.GleamException;
 import gleam.lang.List;
 
 /**
- * A primitive procedure of the language.
- * Each primitive should extend this class, overriding exactly one of the apply
- * methods to define its behavior. The method to override should be the one
- * corresponding to the maxArgs of the primitive (0..3, or N when more than 3
- * or VAR_ARGS). Missing arguments will be represented by null values if minArgs
- * is less than maxArgs.
+ * A primitive procedure of the language. Each primitive should extend this
+ * class, overriding exactly one of the apply methods to define its behavior.
+ * The method to override should be the one corresponding to the maxArgs of the
+ * primitive (0..3, or N when more than 3 or VAR_ARGS). Missing arguments will
+ * be represented by null values if minArgs is less than maxArgs.
  */
-public abstract class Primitive implements java.io.Serializable {
+public abstract class Primitive implements java.io.Serializable
+{
+    /** binding for a language keyword */
+    public static final boolean KEYWORD = true;
+    /** binding for an identifier */
+    public static final boolean IDENTIFIER = false;
+    /** constant to signal a variable (unlimited) number of arguments */
+    public static final int VAR_ARGS = -1;
     /**
      * serialVersionUID
      */
     private static final long serialVersionUID = 1L;
-
-    /** primitive name, as used in programs, e.g. "car" */
-    private final String name;
     /** definition environment */
     public final Environment.Kind definitionEnv;
     /** true if this primitive defines a syntax keyword, false otherwise */
     public final boolean keyword;
+
+    // documentation fields
     /** minimum no. of arguments */
     public final int minArgs;
     /** maximum no. of arguments, or VAR_ARGS for a variable number */
     public final int maxArgs;
 
-    // documentation fields
+    // constant values for keyword field
     /** a short note about this primitive */
     public final transient String comment;
     /** an optional longer documentation note */
     public final transient String documentation;
 
-    // constant values for keyword field
-    /** binding for a language keyword */
-    public static final boolean KEYWORD = true;
-    /** binding for an identifier */
-    public static final boolean IDENTIFIER = false;
-
     // constant values for maxArgs field
-    /** constant to signal a variable (unlimited) number of arguments */
-    public static final int VAR_ARGS = -1;
+    /** primitive name, as used in programs, e.g. "car" */
+    private final String name;
 
-    Primitive(String name,
-              Environment.Kind definitionEnv,
-              boolean keyword,
-              int minArgs,
-              int maxArgs,
-              String comment,
-              String documentation)
+    Primitive(String name, Environment.Kind definitionEnv, boolean keyword, int minArgs, int maxArgs, String comment, String documentation)
     {
         this.name = name;
         this.definitionEnv = definitionEnv;
         this.keyword = keyword;
         this.minArgs = minArgs;
         this.maxArgs = maxArgs;
-        if (comment != null)
+        if (comment != null) {
             this.comment = comment;
-        else
+        } else {
             this.comment = "No documentation defined";
+        }
 
-        if (documentation != null)
+        if (documentation != null) {
             this.documentation = this.comment + "\n" + documentation;
-        else
+        } else {
             this.documentation = this.comment;
+        }
 
     }
 
     /**
      * Apply this primitive to zero arguments.
-     * @param env the environment in which to apply the primitive
+     *
+     * @param env  the environment in which to apply the primitive
      * @param cont the current continuation
-     * @return an Entity, or null to signal that only the continuation has
-     * been modified.
-     * @throws gleam.lang.GleamException if any error is signaled during
-     * the execution of this primitive
+     *
+     * @return an Entity, or null to signal that only the continuation has been
+     * modified.
+     *
+     * @throws gleam.lang.GleamException if any error is signaled during the
+     *                                   execution of this primitive
      */
     @SuppressWarnings("unused")
     public Entity apply0(Environment env, Continuation cont) throws GleamException
@@ -122,14 +120,16 @@ public abstract class Primitive implements java.io.Serializable {
 
     /**
      * Apply this primitive to at most one argument.
-     * @param arg1 the only argument to this primitive, or null if not
-     * present
-     * @param env the environment in which to apply the primitive
+     *
+     * @param arg1 the only argument to this primitive, or null if not present
+     * @param env  the environment in which to apply the primitive
      * @param cont the current continuation
-     * @return an Entity, or null to signal that only the continuation has
-     * been modified.
-     * @throws gleam.lang.GleamException if any error is signaled during
-     * the execution of this primitive
+     *
+     * @return an Entity, or null to signal that only the continuation has been
+     * modified.
+     *
+     * @throws gleam.lang.GleamException if any error is signaled during the
+     *                                   execution of this primitive
      */
     public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException
     {
@@ -138,16 +138,18 @@ public abstract class Primitive implements java.io.Serializable {
 
     /**
      * Apply this primitive to at most two arguments.
-     * @param arg1 the first argument to this primitive, or null if not
-     * present
+     *
+     * @param arg1 the first argument to this primitive, or null if not present
      * @param arg2 the second argument to this primitive, or null if not
-     * present
-     * @param env the environment in which to apply the primitive
+     *             present
+     * @param env  the environment in which to apply the primitive
      * @param cont the current continuation
-     * @return an Entity, or null to signal that only the continuation has
-     * been modified.
-     * @throws gleam.lang.GleamException if any error is signaled during
-     * the execution of this primitive
+     *
+     * @return an Entity, or null to signal that only the continuation has been
+     * modified.
+     *
+     * @throws gleam.lang.GleamException if any error is signaled during the
+     *                                   execution of this primitive
      */
     public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont) throws GleamException
     {
@@ -156,18 +158,19 @@ public abstract class Primitive implements java.io.Serializable {
 
     /**
      * Apply this primitive to at most three arguments.
-     * @param arg1 the first argument to this primitive, or null if not
-     * present
+     *
+     * @param arg1 the first argument to this primitive, or null if not present
      * @param arg2 the second argument to this primitive, or null if not
-     * present
-     * @param arg3 the third argument to this primitive, or null if not
-     * present
-     * @param env the environment in which to apply the primitive
+     *             present
+     * @param arg3 the third argument to this primitive, or null if not present
+     * @param env  the environment in which to apply the primitive
      * @param cont the current continuation
-     * @return an Entity, or null to signal that only the continuation has
-     * been modified.
-     * @throws gleam.lang.GleamException if any error is signaled during
-     * the execution of this primitive
+     *
+     * @return an Entity, or null to signal that only the continuation has been
+     * modified.
+     *
+     * @throws gleam.lang.GleamException if any error is signaled during the
+     *                                   execution of this primitive
      */
     public Entity apply3(Entity arg1, Entity arg2, Entity arg3, Environment env, Continuation cont) throws GleamException
     {
@@ -175,15 +178,18 @@ public abstract class Primitive implements java.io.Serializable {
     }
 
     /**
-     * Apply this primitive to a variable number of arguments (but more
-     * than three).
+     * Apply this primitive to a variable number of arguments (but more than
+     * three).
+     *
      * @param args a Scheme list (a Pair) holding the arguments
-     * @param env the environment in which to apply the primitive
+     * @param env  the environment in which to apply the primitive
      * @param cont the current continuation
-     * @return an Entity, or null to signal that only the continuation has
-     * been modified.
-     * @throws gleam.lang.GleamException if any error is signaled during
-     * the execution of this primitive
+     *
+     * @return an Entity, or null to signal that only the continuation has been
+     * modified.
+     *
+     * @throws gleam.lang.GleamException if any error is signaled during the
+     *                                   execution of this primitive
      */
     public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
     {
@@ -192,6 +198,7 @@ public abstract class Primitive implements java.io.Serializable {
 
     /**
      * Gets the name of this Primitive.
+     *
      * @return a String holding the name of this Primitive.
      */
     public String getName()
@@ -201,18 +208,20 @@ public abstract class Primitive implements java.io.Serializable {
 
     /**
      * Gets a representation of this Primitive
+     *
      * @return a String representing this Primitive in human readable form
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         StringBuilder sb = new StringBuilder();
         sb.append(name);
         sb.append(":");
         sb.append(minArgs);
         if (minArgs != maxArgs) {
-            if (maxArgs < 0)
+            if (maxArgs < 0) {
                 sb.append("..*");
-            else{
+            } else {
                 sb.append("..");
                 sb.append(maxArgs);
             }

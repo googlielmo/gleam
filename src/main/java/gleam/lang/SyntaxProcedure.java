@@ -36,12 +36,12 @@ import java.io.PrintWriter;
 
 /**
  * A special form, or a specialized version of primitive procedure, with
- * different rules for parameter evaluation.
- * It is assumed that procedures of this class may take
- * their arguments without following the standard
- * evaluation rules.
+ * different rules for parameter evaluation. It is assumed that procedures of
+ * this class may take their arguments without following the standard evaluation
+ * rules.
  */
-public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject {
+public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject
+{
 
     /**
      * serialVersionUID
@@ -51,14 +51,15 @@ public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject 
     /**
      * SyntaxProcedure
      */
-    public SyntaxProcedure(gleam.library.Primitive p) {
+    public SyntaxProcedure(gleam.library.Primitive p)
+    {
         super(p);
     }
 
     @Override
     public void write(PrintWriter out)
     {
-        out.write("#<syntax-procedure "+ value.getName() + ">");
+        out.write("#<syntax-procedure " + value.getName() + ">");
     }
 
 }

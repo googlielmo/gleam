@@ -32,7 +32,8 @@ import java.util.NoSuchElementException;
 /**
  * List read/write iterator.
  */
-public class ListIterator implements Iterator<Entity> {
+public class ListIterator implements Iterator<Entity>
+{
 
     private final boolean allowImproper;
 
@@ -43,14 +44,16 @@ public class ListIterator implements Iterator<Entity> {
     /**
      * Creates an iterator over a proper list.
      */
-    public ListIterator(List pair) {
+    public ListIterator(List pair)
+    {
         this(pair, false);
     }
 
     /**
      * Creates an iterator over a (possibly improper) list.
      */
-    public ListIterator(List pair, boolean allowImproper) {
+    public ListIterator(List pair, boolean allowImproper)
+    {
         this.pair = pair;
         this.allowImproper = allowImproper;
         this.restPair = null;
@@ -60,7 +63,8 @@ public class ListIterator implements Iterator<Entity> {
     /**
      * Determines whether there's another object to retrieve from the list.
      */
-    public boolean hasNext() {
+    public boolean hasNext()
+    {
         return pair != EmptyList.VALUE;
     }
 
@@ -68,58 +72,52 @@ public class ListIterator implements Iterator<Entity> {
      * Retrieves next object from the list.
      *
      * @return the next Entity in the list
+     *
      * @throws NoSuchElementException if no next element is available
      */
     @Override
     public Entity next() throws NoSuchElementException
-{
-    final Entity retVal;
-    try {
-        if (isImproper) {
-            retVal = pair.getCdr();
-            pair = EmptyList.VALUE;
-            if (!allowImproper) {
-                throw (NoSuchElementException)
-                        new NoSuchElementException("improper list").initCause(new ImproperListException(retVal));
+    {
+        final Entity retVal;
+        try {
+            if (isImproper) {
+                retVal = pair.getCdr();
+                pair = EmptyList.VALUE;
+                if (!allowImproper) {
+                    throw (NoSuchElementException) new NoSuchElementException("improper list").initCause(new ImproperListException(retVal));
+                }
+            } else {
+                retVal = pair.getCar();
+                restPair = pair;
+                if (pair.getCdr() instanceof List) {
+                    pair = (List) pair.getCdr();
+                } else {
+                    isImproper = true;
+                }
             }
-        } else {
-            retVal = pair.getCar();
-            restPair = pair;
-            if (pair.getCdr() instanceof List) {
-                pair = (List) pair.getCdr();
-            }
-            else {
-                isImproper = true;
-            }
+        } catch (GleamException e) {
+            throw (NoSuchElementException) new NoSuchElementException().initCause(e);
         }
-    } catch (GleamException e) {
-        throw (NoSuchElementException)
-                new NoSuchElementException().initCause(e);
+        if (retVal == null) {
+            throw new NoSuchElementException("null element");
+        }
+        return retVal;
     }
-    if (retVal == null) {
-        throw new NoSuchElementException("null element");
-    }
-    return retVal;
-}
 
     /**
-     * Replaces current value.
-     * Must be called after next().
+     * Replaces current value. Must be called after next().
      */
-    public void replace(Entity newArg)
-        throws GleamException
+    public void replace(Entity newArg) throws GleamException
     {
         if (newArg == null) {
             throw new GleamException("Unexpected null");
         }
         if (restPair == null) {
-            throw new GleamException(
-                "No current value to replace", pair);
+            throw new GleamException("No current value to replace", pair);
         }
         if (isImproper && pair == EmptyList.VALUE) {
             restPair.setCdr(newArg);
-        }
-        else {
+        } else {
             restPair.setCar(newArg);
         }
     }
@@ -128,14 +126,16 @@ public class ListIterator implements Iterator<Entity> {
      * Remove operation currently not supported.
      */
     @Override
-    public void remove() {
+    public void remove()
+    {
         throw new UnsupportedOperationException("Unsupported remove operation");
     }
 
     /**
      * Returns the remaining portion of the list as a Pair.
      */
-    public Entity rest() {
+    public Entity rest()
+    {
         return pair;
     }
 }

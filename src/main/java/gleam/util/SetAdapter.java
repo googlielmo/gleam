@@ -28,9 +28,11 @@ package gleam.util;
 
 import java.util.Set;
 
-public class SetAdapter<V, V1> extends CollectionAdapter<V, V1> implements Set<V1> {
+public class SetAdapter<V, V1> extends CollectionAdapter<V, V1> implements Set<V1>
+{
 
-    public SetAdapter(Set<V> vSet, Converter<V, V1> converter) {
+    public SetAdapter(Set<V> vSet, Converter<V, V1> converter)
+    {
         super(vSet, converter);
     }
 }

@@ -35,7 +35,8 @@ package gleam.lang;
 /**
  * If (conditional expression)
  */
-public class IfAction extends Action {
+public class IfAction extends Action
+{
     /**
      * serialVersionUID
      */
@@ -45,32 +46,39 @@ public class IfAction extends Action {
     protected final Entity consequent, alternate;
 
     /** Creates a new IfAction */
-    public IfAction(Entity consequent, Entity alternate, Environment env, Action next) {
+    public IfAction(Entity consequent, Entity alternate, Environment env, Action next)
+    {
         super(env, next);
         this.consequent = consequent;
         this.alternate = alternate;
     }
 
     /** Creates a new IfAction */
-    public IfAction(Entity consequent, Entity alternate, Environment env) {
+    public IfAction(Entity consequent, Entity alternate, Environment env)
+    {
         this(consequent, alternate, env, null);
     }
 
     /**
-     * Evaluates the consequent or the alternate, deciding upon the
-     * truth value of the argument. If it is any value except a boolean
-     * false, then the consequent is evaluated, otherwise the alternate is.
-     * @param arg the value upon which the decision is taken
+     * Evaluates the consequent or the alternate, deciding upon the truth value
+     * of the argument. If it is any value except a boolean false, then the
+     * consequent is evaluated, otherwise the alternate is.
+     *
+     * @param arg  the value upon which the decision is taken
      * @param cont the current Continuation
+     *
      * @return the result of the evaluation
+     *
      * @throws gleam.lang.GleamException in case of errors
-    */
+     */
     @Override
-    Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException {
+    Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException
+    {
         cont.head = next;
-        if (arg != Boolean.falseValue)
+        if (arg != Boolean.falseValue) {
             return consequent.eval(env, cont);
-        else
+        } else {
             return alternate.eval(env, cont);
+        }
     }
 }

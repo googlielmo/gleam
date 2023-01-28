@@ -31,7 +31,8 @@ import java.util.ArrayList;
 /**
  * A list of arguments for a procedure.
  */
-public class ArgumentList implements java.io.Serializable {
+public class ArgumentList implements java.io.Serializable
+{
     /**
      * serialVersionUID
      */
@@ -40,51 +41,60 @@ public class ArgumentList implements java.io.Serializable {
     private final java.util.ArrayList<Entity> listArgs;
     private final List pairArgs;
 
-    public ArgumentList() {
+    public ArgumentList()
+    {
         this.listArgs = new java.util.ArrayList<>();
         this.pairArgs = null;
     }
 
-    public ArgumentList(List args) {
+    public ArgumentList(List args)
+    {
         this.listArgs = null;
         this.pairArgs = args;
     }
 
     /**
      * Sets the value for an argument at a given index
+     *
      * @param index the index in this list
      * @param value the value for the argument
      */
-    public void set(int index, Entity value) {
+    public void set(int index, Entity value)
+    {
         assert listArgs != null : "set called on immutable ArgumentList";
-        ensureSize(listArgs, index+1);
+        ensureSize(listArgs, index + 1);
         listArgs.set(index, value);
-    }
-
-    /**
-     * Ensure argument list has at least <code>size</code> elements.
-     * Grow the list with Undefined values if necessary.
-     * @param listArgs the argument list
-     * @param size minimum needed size
-     */
-    private void ensureSize(ArrayList<Entity> listArgs, int size) {
-        int missing = size - listArgs.size();
-        listArgs.ensureCapacity(size);
-        for (int i = 0 ; i < missing; ++i) {
-            listArgs.add(Undefined.VALUE);
-        }
     }
 
     /**
      * @return List the list of arguments
      */
-    public List getArguments() {
+    public List getArguments()
+    {
         return null == listArgs ? pairArgs : j2g(listArgs);
     }
 
-    private List j2g(java.util.List<Entity> lst) {
-        if (lst.isEmpty())
+    /**
+     * Ensure argument list has at least <code>size</code> elements. Grow the
+     * list with Undefined values if necessary.
+     *
+     * @param listArgs the argument list
+     * @param size     minimum needed size
+     */
+    private void ensureSize(ArrayList<Entity> listArgs, int size)
+    {
+        int missing = size - listArgs.size();
+        listArgs.ensureCapacity(size);
+        for (int i = 0; i < missing; ++i) {
+            listArgs.add(Undefined.VALUE);
+        }
+    }
+
+    private List j2g(java.util.List<Entity> lst)
+    {
+        if (lst.isEmpty()) {
             return EmptyList.VALUE;
+        }
 
         List p = EmptyList.VALUE;
         for (int i = lst.size() - 1; i >= 0; --i) {

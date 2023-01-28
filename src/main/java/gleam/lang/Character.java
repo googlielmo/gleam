@@ -54,11 +54,9 @@ public final class Character extends AbstractEntity
     {
         if (value == '\n') {
             out.print("#\\newline");
-        }
-        else if (value == ' ') {
+        } else if (value == ' ') {
             out.print("#\\space");
-        }
-        else {
+        } else {
             out.print("#\\" + value);
         }
     }

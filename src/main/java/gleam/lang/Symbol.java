@@ -38,24 +38,16 @@ import java.util.Map;
 public final class Symbol extends AbstractEntity
 {
     /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 1L;
-
-    private static final Logger logger = Logger.getLogger();
-
-    /**
      * The unique symbol table
      */
     static final Map<String, Symbol> symtable = new HashMap<>(512);
-
     /*
      * common symbols (some are keywords, some are not)
      * defined here as constants for convenience
      */
     public static final Symbol AND = makeSymbol("and");
     public static final Symbol APPEND = makeSymbol("append");
-//    public static final Symbol ARROW = makeSymbol("=>");
+    //    public static final Symbol ARROW = makeSymbol("=>");
     public static final Symbol BEGIN = makeSymbol("begin");
     public static final Symbol CALL_CC = makeSymbol("call/cc");
     public static final Symbol CALL_WITH_CURRENT_CONTINUATION = makeSymbol("call-with-current-continuation");
@@ -63,7 +55,7 @@ public final class Symbol extends AbstractEntity
     public static final Symbol COND = makeSymbol("cond");
     public static final Symbol CONS = makeSymbol("cons");
     public static final Symbol DEFINE = makeSymbol("define");
-//    public static final Symbol DELAY = makeSymbol("delay"); // TODO implement delay / force
+    //    public static final Symbol DELAY = makeSymbol("delay"); // TODO implement delay / force
     public static final Symbol DO = makeSymbol("do");
     public static final Symbol ELSE = makeSymbol("else");
     public static final Symbol ERROBJ = makeSymbol("__errobj");
@@ -80,7 +72,11 @@ public final class Symbol extends AbstractEntity
     public static final Symbol SET = makeSymbol("set!");
     public static final Symbol UNQUOTE = makeSymbol("unquote");
     public static final Symbol UNQUOTE_SPLICING = makeSymbol("unquote-splicing");
-
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger();
     /**
      * String representation
      */
@@ -106,24 +102,6 @@ public final class Symbol extends AbstractEntity
     }
 
     /**
-     * Obtains the string representation of this symbol
-     */
-    @Override
-    public String toString() {
-        return value;
-    }
-
-    /**
-     * Evaluates this symbol in the given environment.
-     */
-    @Override
-    public Entity eval(Environment env, Continuation cont)
-        throws GleamException
-    {
-        return env.lookup(this);
-    }
-
-    /**
      * Factory method to create and intern a symbol.
      */
     public static synchronized Symbol makeSymbol(String s)
@@ -140,15 +118,21 @@ public final class Symbol extends AbstractEntity
     }
 
     /**
-     * Prevents the release of multiple instances upon deserialization.
+     * Obtains the string representation of this symbol
      */
-    private Object readResolve()
+    @Override
+    public String toString()
     {
-        logger.log(Logger.Level.DEBUG, "readResolve() called! (Symbol)"); //DEBUG
-        if (interned)
-            return makeSymbol(value);
-        else
-            return this;
+        return value;
+    }
+
+    /**
+     * Evaluates this symbol in the given environment.
+     */
+    @Override
+    public Entity eval(Environment env, Continuation cont) throws GleamException
+    {
+        return env.lookup(this);
     }
 
     /**
@@ -177,5 +161,18 @@ public final class Symbol extends AbstractEntity
     public void write(PrintWriter out)
     {
         out.write(value);
+    }
+
+    /**
+     * Prevents the release of multiple instances upon deserialization.
+     */
+    private Object readResolve()
+    {
+        logger.log(Logger.Level.DEBUG, "readResolve() called! (Symbol)"); //DEBUG
+        if (interned) {
+            return makeSymbol(value);
+        } else {
+            return this;
+        }
     }
 }

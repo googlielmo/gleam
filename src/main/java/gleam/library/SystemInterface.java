@@ -39,51 +39,48 @@ import java.io.IOException;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
- * SystemInterface
- * Primitive operator and procedure implementation library.
+ * SystemInterface Primitive operator and procedure implementation library.
  */
-public final class SystemInterface {
+public final class SystemInterface
+{
+
+    /**
+     * This array contains definitions of primitives. It is used by static
+     * initializers in gleam.lang.System to populate the three initial
+     * environments.
+     */
+    public static final Primitive[] primitives = {
+
+            /*
+             * load
+             * Loads and executes an external source file
+             */
+            new Primitive("load", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+                          1, 1, /* min, max no. of arguments */
+                          "Loads and executes a source file", null /* doc strings */)
+            {
+                @Override
+                public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException
+                {
+                    MutableString filename;
+                    try {
+                        filename = (MutableString) arg1;
+                    } catch (ClassCastException e) {
+                        throw new GleamException(this, "argument is not a string", arg1);
+                    }
+                    try (InputPort iport = new InputPort(filename.toString())) {
+                        iport.loadForEval(env, cont);
+                        return Void.VALUE;
+                    } catch (IOException e) {
+                        throw new GleamException(this, "file not found", arg1);
+                    }
+                }
+            }
+
+    }; // primitives
 
     /**
      * Can't instantiate this class
      */
-    private SystemInterface() {
-    }
-
-    /**
-     * This array contains definitions of primitives.
-     * It is used by static initializers in gleam.lang.System to populate
-     * the three initial environments.
-     */
-    public static final Primitive[] primitives = {
-
-    /*
-     * load
-     * Loads and executes an external source file
-     */
-    new Primitive( "load",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        1, 1, /* min, max no. of arguments */
-        "Loads and executes a source file",
-        null /* doc strings */ ) {
-    @Override
-    public Entity apply1(Entity arg1, Environment env, Continuation cont)
-        throws GleamException
-    {
-        MutableString filename;
-        try {
-            filename = (MutableString) arg1;
-        } catch (ClassCastException e) {
-            throw new GleamException(this, "argument is not a string", arg1);
-        }
-        try (InputPort iport = new InputPort(filename.toString())) {
-            iport.loadForEval(env, cont);
-            return Void.VALUE;
-        }
-        catch (IOException e) {
-            throw new GleamException(this, "file not found", arg1);
-        }
-    }},
-
-    }; // primitives
+    private SystemInterface() {}
 }

@@ -34,7 +34,6 @@ import static gleam.util.Logger.Level.WARNING;
 
 /**
  * Scheme closure, a procedure with a definition environment.
- *
  */
 public class Closure extends Procedure
 {
@@ -85,8 +84,7 @@ public class Closure extends Procedure
      * Applies this closure.
      */
     @Override
-    public Entity apply(List args, Environment env, Continuation cont)
-        throws GleamException
+    public Entity apply(List args, Environment env, Continuation cont) throws GleamException
     {
         Environment localenv = new Environment(definitionEnv);
         Entity currparam = param;
@@ -104,22 +102,19 @@ public class Closure extends Procedure
                 if (!dotparam) {
                     if (currparam == EmptyList.VALUE) {
                         throw new GleamException("apply: too many arguments", this);
-                    }
-                    else if (currparam instanceof Pair) {
+                    } else if (currparam instanceof Pair) {
                         // normal case: get param symbol
                         // and bind it to argument in
                         // local env
                         Entity p = ((Pair) currparam).getCar();
                         if (p instanceof Symbol) {
-                            localenv.define((Symbol)p, obj);
-                        }
-                        else {
+                            localenv.define((Symbol) p, obj);
+                        } else {
                             logger.log(WARNING, "apply: param is not a symbol");
                         }
                         // next param, please
                         currparam = ((Pair) currparam).getCdr();
-                    }
-                    else if (currparam instanceof Symbol) {
+                    } else if (currparam instanceof Symbol) {
                         // this is the unusual case
                         // we have a "." notation parameter,
                         // so we accumulate this and next
@@ -128,12 +123,10 @@ public class Closure extends Procedure
                         prev = new Pair(obj, EmptyList.VALUE);
                         localenv.define((Symbol) currparam, prev);
                         dotparam = true;
-                    }
-                    else {
+                    } else {
                         throw new GleamException("apply: invalid formal parameter", currparam);
                     }
-                }
-                else {
+                } else {
                     // accumulate argument
                     prev.setCdr(new Pair(obj, EmptyList.VALUE));
                     prev = (List) prev.getCdr();
@@ -141,8 +134,7 @@ public class Closure extends Procedure
                 // next argument, please
                 args = (List) args.getCdr();
             }
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             throw new GleamException("apply: improper list", currparam);
         }
 
@@ -150,8 +142,7 @@ public class Closure extends Procedure
             // special case:
             // a "." notation parameter taking the empty list
             localenv.define((Symbol) currparam, EmptyList.VALUE);
-        }
-        else if (currparam != EmptyList.VALUE && !dotparam) {
+        } else if (currparam != EmptyList.VALUE && !dotparam) {
             throw new GleamException("apply: too few arguments", this);
         }
 
@@ -177,11 +168,12 @@ public class Closure extends Procedure
     }
 
     /**
-     * @return the max number of arguments for this closure, or -1 in case of var args
+     * @return the max number of arguments for this closure, or -1 in case of
+     * var args
+     *
      * @throws GleamException in case of errors
      */
-    public int getMaxArity()
-            throws GleamException
+    public int getMaxArity() throws GleamException
     {
         int count = 0;
         Entity currParam = param;

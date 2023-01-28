@@ -37,54 +37,56 @@ import static gleam.lang.Environment.Kind.REPORT_ENV;
 /**
  * Primitive operator and procedure implementation library.
  */
-public final class Equivalence {
+public final class Equivalence
+{
+
+    /**
+     * This array contains definitions of primitives. It is used by static
+     * initializers in gleam.lang.System to populate the three initial
+     * environments.
+     */
+    public static final Primitive[] primitives = {
+
+            /*
+             * eq?
+             * Compares arguments by address.
+             */
+            new Primitive("eq?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+                          2, 2, /* min, max no. of arguments */
+                          "True if two objects are the same in memory, false otherwise", "E.g. (eq? 'a 'a) => #t, but (eq? (list 'a) (list 'a)) => #f" /* doc strings */)
+            {
+                @Override
+                public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
+                {
+                    // Java object are a special case, since we want to compare the
+                    // underlying objects to preserve common Java semantics
+                    if (arg1 instanceof JavaObject && arg2 instanceof JavaObject) {
+                        return Boolean.makeBoolean(((JavaObject) arg1).eq((JavaObject) arg2));
+                    } else {
+                        return Boolean.makeBoolean(arg1 == arg2);
+                    }
+                }
+            },
+
+            /*
+             * eqv?
+             * Compares arguments by value or address.
+             */
+            new Primitive("eqv?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+                          2, 2, /* min, max no. of arguments */
+                          "True if two objects have equivalent values, false otherwise", "E.g. (eqv? 10 10) => #t" /* doc strings */)
+            {
+                @Override
+                public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
+                {
+                    return Boolean.makeBoolean(arg1.equals(arg2));
+                }
+            }
+
+    }; // primitives
 
     /**
      * Can't instantiate this class
      */
     private Equivalence() {}
-
-    /**
-     * This array contains definitions of primitives.
-     * It is used by static initializers in gleam.lang.System to populate
-     * the three initial environments.
-     */
-    public static final Primitive[] primitives = {
-
-    /*
-     * eq?
-     * Compares arguments by address.
-     */
-    new Primitive( "eq?",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        2, 2, /* min, max no. of arguments */
-        "True if two objects are the same in memory, false otherwise",
-        "E.g. (eq? 'a 'a) => #t, but (eq? (list 'a) (list 'a)) => #f" /* doc strings */ ) {
-    @Override
-    public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
-    {
-        // Java object are a special case, since we want to compare the
-        // underlying objects to preserve common Java semantics
-        if (arg1 instanceof JavaObject && arg2 instanceof JavaObject)
-            return Boolean.makeBoolean(((JavaObject) arg1).eq((JavaObject) arg2));
-        else
-            return Boolean.makeBoolean(arg1 == arg2);
-    }},
-
-    /*
-     * eqv?
-     * Compares arguments by value or address.
-     */
-    new Primitive( "eqv?",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        2, 2, /* min, max no. of arguments */
-        "True if two objects have equivalent values, false otherwise",
-        "E.g. (eqv? 10 10) => #t" /* doc strings */ ) {
-    @Override
-    public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont)
-    {
-        return Boolean.makeBoolean(arg1.equals(arg2));
-    }},
-
-    }; // primitives
 }

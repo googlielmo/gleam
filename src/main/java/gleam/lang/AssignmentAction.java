@@ -35,7 +35,8 @@ package gleam.lang;
 /**
  * Assignment action
  */
-public class AssignmentAction extends Action {
+public class AssignmentAction extends Action
+{
     /**
      * serialVersionUID
      */
@@ -45,19 +46,22 @@ public class AssignmentAction extends Action {
     protected final Symbol symbol;
 
     /** Creates a new AssignmentAction */
-    public AssignmentAction(Symbol symbol, Environment env, Action next) {
+    public AssignmentAction(Symbol symbol, Environment env, Action next)
+    {
         super(env, next);
         this.symbol = symbol;
     }
 
     /** Creates a new AssignmentAction */
-    public AssignmentAction(Symbol symbol, Environment env) {
+    public AssignmentAction(Symbol symbol, Environment env)
+    {
         this(symbol, env, null);
     }
 
-    /** invocation  */
+    /** invocation */
     @Override
-    Entity invoke(Entity arg, Continuation cont) throws GleamException {
+    Entity invoke(Entity arg, Continuation cont) throws GleamException
+    {
         cont.head = next;
         env.getLocation(symbol).set(arg);
         trace(out -> out.printf("%s <- %s\n", symbol.toWriteFormat(), arg.toWriteFormat()), env);
