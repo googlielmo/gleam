@@ -7,7 +7,6 @@ import gleam.lang.OutputPort;
 
 import javax.script.Bindings;
 import javax.script.SimpleScriptContext;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
@@ -21,14 +20,18 @@ public class GleamScriptContext extends SimpleScriptContext {
     private final Interpreter interpreter;
 
     public GleamScriptContext(Interpreter interpreter) {
-        super();
+        super(); // sets stdin/out/err as reader, writer, errorWriter
         this.interpreter = interpreter;
-        this.engineScope = new GleamBindings(interpreter.getSessionEnv());
+
+        GleamBindings sessionEnv = new GleamBindings(Interpreter.getSchemeReportEnv());
+        this.engineScope = sessionEnv;
+        this.interpreter.setSessionEnv(sessionEnv);
+
         this.globalScope = null;
         boolean isConsole = System.console() != null;
-        setReader(new InputStreamReader(System.in));
-        setWriterWithConsole(new PrintWriter(System.out, true), isConsole);
-        setErrorWriter(new PrintWriter(System.err, true));
+        Interpreter.setGlobalEnv(this.interpreter,
+            Environment.newEnvironment(new InputPort(reader),
+                new OutputPort(writer, isConsole)));
     }
 
     @Override
@@ -40,16 +43,15 @@ public class GleamScriptContext extends SimpleScriptContext {
                 this.globalScope = gleamBindings;
                 if (gleamBindings != null) {
                     Interpreter.setGlobalEnv(interpreter, gleamBindings);
-                    interpreter.setSessionEnv((GleamBindings) engineScope);
                 } else {
-                    boolean isConsole = System.console() != null;
                     Interpreter.setGlobalEnv(interpreter,
                         Environment.newEnvironment(new InputPort(reader),
-                            new OutputPort(writer, isConsole)));
+                            new OutputPort(writer, false)));
                 }
                 break;
             case ENGINE_SCOPE:
                 Objects.requireNonNull(gleamBindings);
+                this.engineScope = gleamBindings;
                 interpreter.setSessionEnv(gleamBindings);
                 break;
             default:
@@ -74,14 +76,10 @@ public class GleamScriptContext extends SimpleScriptContext {
 
     @Override
     public void setWriter(Writer writer) {
-        setWriterWithConsole(writer, false);
-    }
-
-    private void setWriterWithConsole(Writer writer, boolean isConsole) {
         this.writer = writer instanceof PrintWriter ?
             writer :
             new PrintWriter(writer, true);
-        interpreter.setCout(new OutputPort(this.writer, isConsole));
+        interpreter.setCout(new OutputPort(this.writer, false));
     }
 
     @Override

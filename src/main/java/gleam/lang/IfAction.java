@@ -57,7 +57,7 @@ public class IfAction extends Action {
     }
 
     /**
-     * Evaluates the the consequent or the alternate, deciding upon the
+     * Evaluates the consequent or the alternate, deciding upon the
      * truth value of the argument. If it is any value except a boolean
      * false, then the consequent is evaluated, otherwise the alternate is.
      * @param arg the value upon which the decision is taken

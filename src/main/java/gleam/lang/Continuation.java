@@ -148,7 +148,7 @@ public class Continuation extends Procedure
      * Applies this continuation.
      * Replaces the continuation in the current interpreter with this one.
      * Gets one argument, and returns it to the current interpreter as the
-     * argument that this continuation will receive when executed, i. e.
+     * argument that this continuation will receive when executed, i.e.
      * immediately after the action of returning.
      *
      * @param args List

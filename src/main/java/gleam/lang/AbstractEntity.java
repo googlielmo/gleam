@@ -49,7 +49,7 @@ public abstract class AbstractEntity
 
     /**
      * Performs syntax analysis on this entity.
-     * @param env
+     * @param env the environment
      */
     @Override
     public Entity analyze(Environment env)

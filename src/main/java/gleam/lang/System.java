@@ -50,7 +50,6 @@ public final class System
      * @param symbol the Symbol to check
      * @param env the Environment
      * @return true is symbol represents a special form
-     * @throws GleamException in case of error
      */
     public static boolean isSpecialForm(Symbol symbol, Environment env) {
         Location location = env.getLocationOrNull(symbol);
@@ -96,7 +95,7 @@ public final class System
         // Other special forms have at least an argument, so check for it
         if (!it.hasNext()) {
             throw new GleamException(
-                    String.format("invalid special form %s: too few arguments", op.toString()), form);
+                    String.format("invalid special form %s: too few arguments", op), form);
         }
         arg = it.next();
 
@@ -197,10 +196,13 @@ public final class System
             }
         }
         else if (op == Symbol.COND) {
+            // TODO
         }
         else if (op == Symbol.CASE) {
+            // TODO
         }
         else if (op == Symbol.LET || op == Symbol.LETSTAR || op == Symbol.LETREC) {
+            // TODO
         }
 //        else if (op == Symbol.DO) {
 //        }

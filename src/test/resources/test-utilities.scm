@@ -58,7 +58,8 @@
         (flush) (display ,(third args)) (newline) (flush)
         (define actual ,(fourth args))
         (newline) (flush)
-        (test-body ,(second args) actual)))
+        (test-body ,(second args) actual)
+       ))
 
 ;Usage: (assert-output name expected actual)
 (_defmacro (assert-output args)

@@ -9,7 +9,7 @@
 (display "tests-continuations.scm\n")
 
 
-(define (write-my-args . x) display (cons 'MY-ARGS x))
+(define (write-my-args . x) (display (cons 'MY-ARGS x)))
 
 (define (arg x) (begin (display x) x))
 
@@ -20,39 +20,36 @@
 )
 
 (assert-output "write-my-args"
-    '(MY-ARGS 1 2 3)
-    "(MY-ARGS 1 2 3)"
+    '(MY-ARGS 1.0 2.0 3.0)
     (write-my-args 1 2 3)
 )
 
 (define con2 #f)
 
-(assert "write-my-args with a call/cc"
+(assert-output "write-my-args with a call/cc"
     `(MY-ARGS 1 2 3 ,void 4 5 6)
     (write-my-args 1 2 3 (call-with-current-continuation (lambda (x) (set! con2 x) ) ) 4 5 6 )
 )
 
-(assert "con2 -1"
+(assert-output "con2 -1"
     '(MY-ARGS 1 2 3 -1 4 5 6)
     (con2 -1)
 )
 
 (assert-output "con2 -2"
-    "(MY-ARGS 1 2 3 -2 4 5 6)"
+    "(MY-ARGS 1.0 2.0 3.0 -2.0 4.0 5.0 6.0)"
     (con2 -2)
 )
 
-(assert-value-output "arg + call/cc"
-    `(MY-ARGS 1.0 2.0 3.0 ,void 4.0 5.0 6.0)
-    "1.02.03.04.05.06.0"
+(assert-output "arg + call/cc"
+    "1.02.03.04.05.06.0(MY-ARGS 1.0 2.0 3.0 #<void> 4.0 5.0 6.0)"
     (write-my-args (arg 1) (arg 2) (arg 3)
         (call-with-current-continuation (lambda (x) (set! con2 x) ) )
         (arg 4) (arg 5) (arg 6) )
 )
 
-(assert-value-output "continuation with argument"
-    "4.05.06.0"
-    `(MY-ARGS 1.0 2.0 3.0 -7.0 4.0 5.0 6.0)
+(assert-output "continuation with argument"
+    "4.05.06.0(MY-ARGS 1.0 2.0 3.0 -7.0 4.0 5.0 6.0)"
     (con2 -7)
 )
 

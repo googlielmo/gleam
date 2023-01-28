@@ -27,10 +27,10 @@
 package gleam.lang;
 
 import gleam.util.Logger;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,13 +45,13 @@ class ClosureTest {
     }
 
     @Test
-    void getMaxArity_EmptyList() throws GleamException, IOException {
+    void getMaxArity_EmptyList() throws GleamException {
         Closure c1 = getClosureWithParams(EmptyList.VALUE);
         assertEquals(0, c1.getMaxArity());
     }
 
     @Test
-    void getMaxArity_OneParam() throws GleamException, IOException {
+    void getMaxArity_OneParam() throws GleamException {
         Symbol a = Symbol.makeSymbol("a");
         EmptyList nil = EmptyList.VALUE;
         Closure c1 = getClosureWithParams(new Pair(a, nil));
@@ -59,7 +59,7 @@ class ClosureTest {
     }
 
     @Test
-    void getMaxArity_TwoParams() throws GleamException, IOException {
+    void getMaxArity_TwoParams() throws GleamException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         EmptyList nil = EmptyList.VALUE;
@@ -68,7 +68,7 @@ class ClosureTest {
     }
 
     @Test
-    void getMaxArity_ThreeParams() throws GleamException, IOException {
+    void getMaxArity_ThreeParams() throws GleamException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
@@ -78,7 +78,7 @@ class ClosureTest {
     }
 
     @Test
-    void getMaxArity_FourParams() throws GleamException, IOException {
+    void getMaxArity_FourParams() throws GleamException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
@@ -89,7 +89,7 @@ class ClosureTest {
     }
 
     @Test
-    void getMaxArity_FiveParams() throws GleamException, IOException {
+    void getMaxArity_FiveParams() throws GleamException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
@@ -101,7 +101,7 @@ class ClosureTest {
     }
 
     @Test
-    void getMaxArity_TwoParamsAndRest() throws GleamException, IOException {
+    void getMaxArity_TwoParamsAndRest() throws GleamException {
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("rest");
@@ -110,7 +110,7 @@ class ClosureTest {
     }
 
     @Test
-    void getMaxArity_RestOnly() throws GleamException, IOException {
+    void getMaxArity_RestOnly() throws GleamException {
         Symbol a = Symbol.makeSymbol("rest");
         Closure c1 = getClosureWithParams(a);
         assertEquals(-1, c1.getMaxArity());

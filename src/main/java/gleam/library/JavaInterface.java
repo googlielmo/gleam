@@ -98,11 +98,7 @@ public class JavaInterface {
         }
         List<Class<?>> argClasses = new ArrayList<>();
         Collection<Object> argObjects = new ArrayList<>();
-        while (it.hasNext()) {
-            Entity arg = it.next();
-            argClasses.add(getJavaClass(arg));
-            argObjects.add(getJavaObject(arg));
-        }
+        iterateArguments(it, argClasses, argObjects);
         return new JavaObject(className, argClasses.toArray(new Class<?>[0]), argObjects.toArray());
     }},
 
@@ -129,11 +125,7 @@ public class JavaInterface {
         }
         List<Class<?>> argClasses = new ArrayList<>();
         Collection<Object> argObjects = new ArrayList<>();
-        while (it.hasNext()) {
-            Entity arg = it.next();
-            argClasses.add(getJavaClass(arg));
-            argObjects.add(getJavaObject(arg));
-        }
+        iterateArguments(it, argClasses, argObjects);
         return call((JavaObject) object, (Symbol) methodName, argClasses.toArray(new Class<?>[0]), argObjects.toArray());
     }},
 
@@ -161,6 +153,15 @@ public class JavaInterface {
     }},
 
     }; // primitives
+
+    private static void iterateArguments(ListIterator it, List<Class<?>> argClasses, Collection<Object> argObjects) throws GleamException
+    {
+        while (it.hasNext()) {
+            Entity arg = it.next();
+            argClasses.add(getJavaClass(arg));
+            argObjects.add(getJavaObject(arg));
+        }
+    }
 
     private static Entity call(JavaObject object, Symbol methodName, Class<?>[] parameterTypes, Object[] arguments) throws GleamException {
         if (object.getObjectValue() == null) {

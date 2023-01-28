@@ -33,7 +33,6 @@ import gleam.lang.Environment;
 import gleam.lang.Eof;
 import gleam.lang.GleamException;
 import gleam.lang.InputPort;
-import gleam.lang.Interpreter;
 
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 

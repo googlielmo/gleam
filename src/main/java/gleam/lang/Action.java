@@ -46,7 +46,7 @@ package gleam.lang;
 public abstract class Action implements java.io.Serializable
 {
     /** the environment in which to execute this action */
-    Environment env;
+    final Environment env;
 
     /** the next action to execute, this creates a tree structure */
     Action next;
@@ -90,7 +90,6 @@ public abstract class Action implements java.io.Serializable
     }
 
     protected void trace(Printer doo, Environment env)
-            throws GleamException
     {
         if (env.getInterpreter() != null && env.getInterpreter().traceEnabled()) {
             OutputPort cout = env.getOut();

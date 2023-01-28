@@ -30,9 +30,7 @@ import gleam.lang.Boolean;
 import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
-import gleam.lang.GleamException;
 import gleam.lang.InputPort;
-import gleam.lang.Interpreter;
 import gleam.lang.OutputPort;
 import gleam.lang.Port;
 
@@ -143,7 +141,6 @@ public final class Ports {
         null /* doc strings */ ) {
     @Override
     public Entity apply0(Environment env, Continuation cont)
-            throws GleamException
     {
         return env.getIn();
     }},
@@ -159,7 +156,6 @@ public final class Ports {
         null /* doc strings */ ) {
     @Override
     public Entity apply0(Environment env, Continuation cont)
-            throws GleamException
     {
         return env.getOut();
     }},

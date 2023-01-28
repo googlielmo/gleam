@@ -69,7 +69,7 @@ public class Interpreter {
     /**
      * the null environment, as defined in r5rs
      */
-    private static final Environment nullEnv = new SystemEnvironment(NULL_ENV);
+    private static final Environment nullEnv = new SystemEnvironment();
 
     /**
      * the scheme-report environment, as defined in r5rs
@@ -148,14 +148,10 @@ public class Interpreter {
         return interactionEnv;
     }
 
-    public static Environment getGlobalEnv() {
-        return globalEnv;
-    }
-
     public static void setGlobalEnv(Interpreter intp, Environment globalEnv) {
-        Interpreter.globalEnv = globalEnv;
         globalEnv.setParent(interactionEnv);
-        intp.sessionEnv.setParent(getGlobalEnv());
+        intp.sessionEnv.setParent(globalEnv);
+        Interpreter.globalEnv = globalEnv;
     }
 
     /**
@@ -391,17 +387,6 @@ public class Interpreter {
         cont.begin(new ExpressionAction(expr, env, null));
         execute();
         return accum;
-    }
-
-    /**
-     * Replaces the current continuation with a new one.
-     * This method is used to implement the evaluation of continuations.
-     * Equivalent to a <CODE>goto</CODE> instruction.
-     *
-     * @param cont the new current continuation for this <CODE>Interpreter</CODE>
-     */
-    public void replaceContinuation(Continuation cont) {
-        this.cont.head = cont.head;
     }
 
     /**

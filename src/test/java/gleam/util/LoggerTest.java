@@ -44,7 +44,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class LoggerTest {
 
     private static Logger logger;
-    private static java.util.logging.Logger julLogger;
     private static final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private static final PrintStream originalErr = System.err;
 
@@ -52,10 +51,7 @@ class LoggerTest {
 
         public String format(LogRecord logRecord)
         {
-            StringBuilder builder = new StringBuilder(100);
-            builder.append(formatMessage(logRecord));
-            builder.append(System.lineSeparator());
-            return builder.toString();
+            return formatMessage(logRecord) + System.lineSeparator();
         }
     }
 
@@ -64,7 +60,7 @@ class LoggerTest {
         LogManager.getLogManager().reset();
         LogManager.getLogManager().getLogger("").setLevel(java.util.logging.Level.ALL);
         System.setErr(new PrintStream(errContent));
-        julLogger = java.util.logging.Logger.getLogger("gleam");
+        java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("gleam");
         julLogger.addHandler(getConsoleHandler());
         julLogger.setLevel(java.util.logging.Level.ALL);
         logger = Logger.getLogger();

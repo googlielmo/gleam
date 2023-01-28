@@ -40,10 +40,10 @@ public final class SystemEnvironment extends Environment
 
     private final Kind kind;
 
-    /** Constructor */
-    SystemEnvironment(Kind kind)
+    /** Constructor for the null environment */
+    SystemEnvironment()
     {
-        this(null, kind);
+        this(null, Kind.NULL_ENV);
     }
 
     SystemEnvironment(Environment parent, Kind kind)
@@ -60,7 +60,7 @@ public final class SystemEnvironment extends Environment
     }
 
     /** avoids to serialize data of system environments */
-    protected Entity writeReplace()
+    private Entity writeReplace()
     {
         return new SystemEnvironment(null, kind);
     }

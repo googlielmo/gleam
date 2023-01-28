@@ -37,4 +37,4 @@ CREDITS
 -------
 
 The old Ant `build.xml` was kindly provided by Jon Rafkind `<workmin at ccs.neu.edu>`.
-Thank you Jon!
+Thank you, Jon!

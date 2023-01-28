@@ -121,7 +121,7 @@ public class Closure extends Procedure
                     }
                     else if (currparam instanceof Symbol) {
                         // this is the unusual case
-                        // we have a "." notation parameter
+                        // we have a "." notation parameter,
                         // so we accumulate this and next
                         // parameters in a cons bound to
                         // this param in local env

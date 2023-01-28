@@ -91,13 +91,12 @@ public class GleamScriptEngine extends AbstractScriptEngine {
 
     @Override
     public Bindings createBindings() {
-        return new GleamBindings(interpreter.getInteractionEnv()); // FIXME
+        return new GleamBindings(Interpreter.getInteractionEnv());
     }
 
     @Override
     public ScriptEngineFactory getFactory() {
         return new GleamScriptEngineFactory();
     }
-
 }
 

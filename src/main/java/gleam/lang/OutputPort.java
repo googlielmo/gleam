@@ -118,10 +118,6 @@ public class OutputPort extends Port implements Closeable, Flushable {
     public void display(Entity obj) {
         if (obj == EmptyList.VALUE) {
             out.print("()");
-        } else if (obj instanceof Pair) {
-            out.print("(");
-            obj.display(out);
-            out.print(")");
         } else {
             obj.display(out);
         }

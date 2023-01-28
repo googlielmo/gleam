@@ -51,7 +51,6 @@ public class ObtainArgumentAction extends Action {
 
     @Override
     Entity invoke(Entity arg, Continuation cont)
-            throws GleamException
     {
         cont.head = next;
         // arg is already evaluated

@@ -92,7 +92,7 @@ public class JavaObject extends AbstractEntity {
 
     @Override
     public void write(PrintWriter out) {
-        out.print(this.toString());
+        out.print(this);
     }
 
     @Override

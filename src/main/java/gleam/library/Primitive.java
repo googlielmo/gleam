@@ -38,7 +38,6 @@ import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
 import gleam.lang.List;
-import gleam.lang.SystemEnvironment;
 
 /**
  * A primitive procedure of the language.

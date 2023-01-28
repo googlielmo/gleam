@@ -212,11 +212,7 @@ public class Pair extends AbstractEntity implements List {
     {
         /* first check for special forms */
         if (getCar() instanceof Symbol && System.isSpecialForm( (Symbol) getCar(), env)) {
-            // we have a special form, so let's perform
-            // specific optimization
-            // -- may change retVal.{car|cdr}
-//          System.optimizeSpecialForm(retVal, env);
-//          return retVal;
+            // TODO: should we do a System.optimizeSpecialForm(this, env) ?
             return this;
         }
 

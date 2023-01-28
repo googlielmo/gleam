@@ -76,17 +76,19 @@ public class InputPort extends Port implements Closeable
 
     /**
      * Close this InputPort
-     * @throws java.io.IOException
      */
     @Override
     public void close()
-        throws java.io.IOException
     {
         if (isOpen()) {
             gleamReader = null;
         }
         if (reader != null) {
-            reader.close();
+            try {
+                reader.close();
+            } catch (IOException ignored) {
+                //
+            }
             reader = null;
         }
     }

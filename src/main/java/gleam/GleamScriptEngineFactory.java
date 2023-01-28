@@ -32,48 +32,58 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class GleamScriptEngineFactory implements ScriptEngineFactory {
+public class GleamScriptEngineFactory implements ScriptEngineFactory
+{
 
     public static final List<String> NAMES = Arrays.asList("gleam", "Gleam", "GleamScheme", "GleamSchemeInterpreter", "scheme");
 
     @Override
-    public String getEngineName() {
+    public String getEngineName()
+    {
         return "Gleam Scheme Script Engine";
     }
 
     @Override
-    public String getEngineVersion() {
-        String version = gleam.lang.Interpreter.class.getPackage().getImplementationVersion();
+    public String getEngineVersion()
+    {
+        String version = gleam.lang.Interpreter.class.getPackage()
+                                                     .getImplementationVersion();
         return version != null ? version : "DEVELOPMENT";
     }
 
     @Override
-    public List<String> getExtensions() {
+    public List<String> getExtensions()
+    {
         return Arrays.asList("scm", "glm");
     }
 
     @Override
-    public List<String> getMimeTypes() {
+    public List<String> getMimeTypes()
+    {
         return Collections.emptyList();
     }
 
     @Override
-    public List<String> getNames() {
+    public List<String> getNames()
+    {
         return NAMES;
     }
 
     @Override
-    public String getLanguageName() {
+    public String getLanguageName()
+    {
         return "Gleam Scheme";
     }
 
     @Override
-    public String getLanguageVersion() {
+    public String getLanguageVersion()
+    {
         return "5.0.0-r5rs";
     }
 
     @Override
-    public Object getParameter(String key) {
+    public Object getParameter(String key)
+    {
         switch (key) {
             case ScriptEngine.ENGINE:
                 return getEngineName();
@@ -92,22 +102,35 @@ public class GleamScriptEngineFactory implements ScriptEngineFactory {
     }
 
     @Override
-    public String getMethodCallSyntax(String obj, String m, String... args) {
-        return null;
+    public String getMethodCallSyntax(String obj, String m, String... args)
+    {
+        StringBuilder ret = new StringBuilder();
+        ret.append("(").append(m).append(" ").append(obj).append(" ");
+        for (int i = 0; i < args.length; i++) {
+            ret.append(args[i]);
+            if (i < args.length - 1) {
+                ret.append(" ");
+            }
+        }
+        ret.append(")");
+        return ret.toString();
     }
 
     @Override
-    public String getOutputStatement(String toDisplay) {
+    public String getOutputStatement(String toDisplay)
+    {
         return "(display " + toDisplay + ")";
     }
 
     @Override
-    public String getProgram(String... statements) {
+    public String getProgram(String... statements)
+    {
         return String.join("\n", statements);
     }
 
     @Override
-    public ScriptEngine getScriptEngine() {
+    public ScriptEngine getScriptEngine()
+    {
         return new GleamScriptEngine();
     }
 }
