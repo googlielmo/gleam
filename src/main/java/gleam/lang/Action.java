@@ -94,9 +94,8 @@ public abstract class Action implements java.io.Serializable
 
     protected void trace(Printer doo, Environment env)
     {
-        if (env.getInterpreter() != null && env.getInterpreter()
-                                               .traceEnabled()) {
-            OutputPort cout = env.getOut();
+        if (env.getExecutionContext().isTraceEnabled()) {
+            OutputPort cout = env.getExecutionContext().getOut();
 
             String actionName = this.getClass()
                                     .getSimpleName()

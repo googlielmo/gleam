@@ -31,8 +31,6 @@ import gleam.util.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.InputStreamReader;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ClosureTest
@@ -128,6 +126,8 @@ class ClosureTest
 
     private Closure getClosureWithParams(Entity value)
     {
-        return new Closure(value, EmptyList.VALUE, Environment.newEnvironment(new InputPort(new InputStreamReader(java.lang.System.in)), new OutputPort(java.lang.System.out, false)));
+        return new Closure(value,
+                           EmptyList.VALUE,
+                           new Environment(Interpreter.getNullEnv()));
     }
 }

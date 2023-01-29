@@ -51,35 +51,27 @@ public class Environment extends AbstractEntity
      */
     protected Environment parent;
 
-    transient private InputPort in;
-
-    transient private OutputPort out;
-
     /**
-     * Constructor
+     * The ExecutionContext. If <code>null</code>, this environment is
+     * assumed to have the same context of its parent.
      */
-    private Environment(Environment parent, InputPort in, OutputPort out)
+    transient private ExecutionContext executionContext;
+
+
+    private Environment(Environment parent, ExecutionContext executionContext)
     {
         this.parent = parent;
-        this.in = in;
-        this.out = out;
+        this.executionContext = executionContext;
     }
 
     public Environment(Environment parent)
     {
-        this(parent, parent == null ? null : parent.in, parent == null
-                                                        ? null
-                                                        : parent.out);
+        this(parent, parent == null ? null : parent.executionContext);
     }
 
-    public Environment(InputPort in, OutputPort out)
+    public Environment(ExecutionContext ctx)
     {
-        this(null, in, out);
-    }
-
-    public static Environment newEnvironment(InputPort in, OutputPort out)
-    {
-        return new Environment(in, out);
+        this (null, ctx);
     }
 
     public Environment getParent()
@@ -90,42 +82,34 @@ public class Environment extends AbstractEntity
     public void setParent(Environment parent)
     {
         this.parent = parent;
-        if (parent != null && this.in == null) {
-            this.in = parent.in;
+    }
+
+    protected ExecutionContext readContext()
+    {
+        Environment env = this;
+        ExecutionContext ctx = null;
+        while (ctx == null && env != null) {
+            ctx = env.executionContext;
+            env = env.parent;
         }
-        if (parent != null && this.out == null) {
-            this.out = parent.out;
+        if (ctx == null) {
+            // should never happen
+            throw new IllegalStateException("ExecutionContext not found");
         }
+        return ctx;
     }
 
     public Interpreter getInterpreter()
     {
-        Location location = this.getLocationOrNull(Interpreter.INTERPRETER_SYMBOL);
-        if (location == null) {
-            return null;
-        }
-        JavaObject j = (JavaObject) location.get();
-        return (Interpreter) j.getObjectValue();
+        return readContext().getInterpreter();
     }
 
-    public InputPort getIn()
-    {
-        return in;
+    public ExecutionContext getExecutionContext() {
+        return readContext();
     }
 
-    public void setIn(InputPort in)
-    {
-        this.in = in;
-    }
-
-    public OutputPort getOut()
-    {
-        return out;
-    }
-
-    public void setOut(OutputPort out)
-    {
-        this.out = out;
+    protected void setExecutionContext(ExecutionContext ctx) {
+        this.executionContext = ctx;
     }
 
     /**
@@ -162,6 +146,32 @@ public class Environment extends AbstractEntity
     }
 
     /**
+     * Gives the Location for the specified variable, or null if unbound.
+     *
+     * @param s Symbol a variable name
+     *
+     * @return Location or null
+     *
+     * @see Location
+     */
+    Location getLocationOrNull(Symbol s)
+    {
+        Location loc;
+        Environment e = this;
+        while (e != null) {
+            loc = e.assoc.get(s);
+            if (loc == null) {
+                e = e.getParent();
+            } else {
+                return loc;
+            }
+        }
+
+        // so it is unbound...
+        return null;
+    }
+
+    /**
      * Looks up a Symbol in the environment by searching this environment and
      * all enclosing environments, up to the topmost (global) environment.
      *
@@ -186,12 +196,12 @@ public class Environment extends AbstractEntity
     // DEBUG
     public void dump() throws GleamException
     {
+        OutputPort out = readContext().getOut();
         if (out == null) {
             throw new GleamException("OutputPort null in Environment");
         }
         out.printf("/——————————————— Environment %s --\\ \n", this);
-        out.printf("|——————————————— In  :       %s \n", in);
-        out.printf("|——————————————— Out :       %s \n", out);
+        out.printf("|——————————————— ExecutionContext :       %s \n", this.executionContext);
         out.printf("| \n");
         for (Symbol s : assoc.keySet()) {
             Location l = assoc.get(s);
@@ -201,32 +211,6 @@ public class Environment extends AbstractEntity
         if (this.getParent() != null) {
             getParent().dump();
         }
-    }
-
-    /**
-     * Gives the Location for the specified variable, or null if unbound.
-     *
-     * @param s Symbol a variable name
-     *
-     * @return Location or null
-     *
-     * @see Location
-     */
-    Location getLocationOrNull(Symbol s)
-    {
-        Location loc;
-        Environment e = this;
-        while (e != null) {
-            loc = e.assoc.get(s);
-            if (loc == null) {
-                e = e.getParent();
-            } else {
-                return loc;
-            }
-        }
-
-        // so it is unbound...
-        return null;
     }
 
     public enum Kind

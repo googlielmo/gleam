@@ -2,9 +2,7 @@ package gleam;
 
 import gleam.lang.Entity;
 import gleam.lang.Environment;
-import gleam.lang.InputPort;
 import gleam.lang.Location;
-import gleam.lang.OutputPort;
 import gleam.lang.Symbol;
 import gleam.util.Converter;
 import gleam.util.MapAdapter;
@@ -27,13 +25,7 @@ public class GleamBindings extends Environment implements Bindings
         super(parent);
     }
 
-    public GleamBindings(InputPort in, OutputPort out)
-    {
-        super(in, out);
-    }
-
-    public GleamBindings(Environment parent, Bindings bindings)
-    {
+    public GleamBindings(Environment parent, Bindings bindings) {
         super(parent);
         MapAdapter<String, Object, Symbol, Location> assocAdapter = new MapAdapter<>(bindings, new SymbolStringConverter().inverseConverter(), new LocationObjectConverter().inverseConverter());
         assocAdapter.forEach(this::define);

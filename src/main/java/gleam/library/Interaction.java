@@ -64,26 +64,27 @@ public final class Interaction
      */
     public static final Primitive[] primitives = {
 
-            /*
-             * help
-             * Gives help on primitives.
-             */
-            new Primitive("help", INTERACTION_ENV, Primitive.KEYWORD, /* environment, type */
-                          0, 1, /* min, max no. of arguments */
-                          "Gives a short help on a primitive, e.g. (help if)", null /* doc strings */)
-            {
-                private static final int HELP_COLUMN_WIDTH = 19;
-
-                @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException
-                {
-                    OutputPort cout = env.getOut();
-                    if (arg1 != null) {
-                        // we have an explicit argument,
-                        // so print full documentation
-                        if (!(arg1 instanceof Symbol)) {
-                            throw new GleamException(this, INVALID_ARGUMENT, arg1);
-                        }
+    /*
+     * help
+     * Gives help on primitives.
+     */
+    new Primitive( "help",
+        INTERACTION_ENV, Primitive.KEYWORD, /* environment, type */
+        0, 1, /* min, max no. of arguments */
+        "Gives a short help on a primitive, e.g. (help if)",
+        null /* doc strings */ ) {
+    private static final int HELP_COLUMN_WIDTH = 19;
+    @Override
+    public Entity apply1(Entity arg1, Environment env, Continuation cont)
+        throws GleamException
+    {
+        OutputPort cout = env.getExecutionContext().getOut();
+        if (arg1 != null) {
+            // we have an explicit argument,
+            // so print full documentation
+            if (!(arg1 instanceof Symbol)) {
+                throw new GleamException(this, INVALID_ARGUMENT, arg1);
+            }
 
                         String pname = arg1.toString();
                         String doc = Interpreter.getHelpDocumentation(pname);
@@ -198,43 +199,49 @@ public final class Interaction
                 }
             },
 
-            /*
-             * load-session
-             * Loads the session environment.
-             */
-            new Primitive("load-session", INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Loads a session environment, e.g. (load-session \"file\")", null /* doc strings */)
+    /*
+     * load-session
+     * Loads the session environment.
+     */
+    new Primitive( "load-session",
+        INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
+        1, 1, /* min, max no. of arguments */
+        "Loads a session environment, e.g. (load-session \"file\")",
+        null /* doc strings */ ) {
+    @Override
+    public Entity apply1(Entity arg1, Environment env, Continuation cont)
+        throws GleamException
+    {
+        if (arg1 instanceof MutableString) {
+            try (FileInputStream fis = new FileInputStream(arg1.toString());
+                 ObjectInput input = new ObjectInputStream(fis))
             {
-                @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException
-                {
-                    if (arg1 instanceof MutableString) {
-                        try (FileInputStream fis = new FileInputStream(arg1.toString());
-                             ObjectInput input = new ObjectInputStream(fis)) {
-                            Environment newEnv = (Environment) input.readObject();
-                            Interpreter intp = env.getInterpreter();
+                Environment newEnv = (Environment) input.readObject();
 
-                            intp.setSessionEnv(newEnv);
-                            return Void.VALUE;
-                        } catch (java.io.FileNotFoundException e) {
-                            logger.warning(e);
-                            throw new GleamException(this, "file not found", arg1);
-                        } catch (java.io.IOException e) {
-                            logger.warning(e);
-                            throw new GleamException(this, "I/O warning", arg1);
-                        } catch (ClassNotFoundException e) {
-                            logger.warning(e);
-                            throw new GleamException(this, "class not found", arg1);
-                        } catch (ClassCastException e) {
-                            logger.warning(e);
-                            throw new GleamException(this, "invalid class", arg1);
-                        }
-                    } else {
-                        throw new GleamException(this, INVALID_ARGUMENT, arg1);
-                    }
-                }
+                env.getInterpreter().setSessionEnv(newEnv);
+                return Void.VALUE;
             }
+            catch (java.io.FileNotFoundException e) {
+                logger.warning(e);
+                throw new GleamException(this, "file not found", arg1);
+            }
+            catch (java.io.IOException e) {
+                logger.warning(e);
+                throw new GleamException(this, "I/O warning", arg1);
+            }
+            catch (ClassNotFoundException e) {
+                logger.warning(e);
+                throw new GleamException(this, "class not found", arg1);
+            }
+            catch (ClassCastException e) {
+                logger.warning(e);
+                throw new GleamException(this, "invalid class", arg1);
+            }
+        }
+        else {
+            throw new GleamException(this, INVALID_ARGUMENT, arg1);
+        }
+    }},
 
     }; // primitives
 

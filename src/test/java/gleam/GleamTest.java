@@ -60,7 +60,7 @@ class GleamTest
     {
         logger.setLevel(Logger.Level.CONFIG);
         intp = Interpreter.newInterpreter();
-        intp.traceOff();
+        intp.getSessionEnv().getExecutionContext().setTraceEnabled(false);
         runTestFile("/test-utilities.scm");
     }
 
@@ -85,7 +85,7 @@ class GleamTest
             InputPort tests = new gleam.lang.InputPort(new java.io.InputStreamReader(inputStream));
             StringWriter stringWriter = new StringWriter();
             OutputPort outputPort = new OutputPort(stringWriter, false);
-            intp.setCout(outputPort);
+            intp.getSessionEnv().getExecutionContext().setOut(outputPort);
             intp.load(tests, intp.getSessionEnv());
             String testOutput = stringWriter.toString();
             if (checkFailures(testOutput)) {

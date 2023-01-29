@@ -1,6 +1,7 @@
 package gleam;
 
 import gleam.lang.Environment;
+import gleam.lang.ExecutionContext;
 import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
 import gleam.lang.OutputPort;
@@ -18,20 +19,26 @@ public class GleamScriptContext extends SimpleScriptContext
 {
     public static final List<Integer> SCOPES = Arrays.asList(ENGINE_SCOPE, GLOBAL_SCOPE);
 
-    private final Interpreter interpreter;
+    private final ExecutionContext executionContext;
 
     public GleamScriptContext(Interpreter interpreter)
     {
         super(); // sets stdin/out/err as reader, writer, errorWriter
-        this.interpreter = interpreter;
+        boolean isConsole = System.console() != null;
+        executionContext = new ExecutionContext(
+                interpreter,
+                new InputPort(reader),
+                new OutputPort(writer, isConsole),
+                new OutputPort(errorWriter, isConsole)
+        );
+
 
         GleamBindings sessionEnv = new GleamBindings(Interpreter.getSchemeReportEnv());
-        this.engineScope = sessionEnv;
-        this.interpreter.setSessionEnv(sessionEnv);
+        engineScope = sessionEnv;
+        interpreter.setSessionEnv(sessionEnv);
 
         this.globalScope = null;
-        boolean isConsole = System.console() != null;
-        Interpreter.setGlobalEnv(this.interpreter, Environment.newEnvironment(new InputPort(reader), new OutputPort(writer, isConsole)));
+        Interpreter.setGlobalEnv(interpreter, new Environment(executionContext));
     }
 
     @Override
@@ -41,17 +48,17 @@ public class GleamScriptContext extends SimpleScriptContext
         super.setBindings(bindings, scope);
         switch (scope) {
             case GLOBAL_SCOPE:
-                this.globalScope = gleamBindings;
+                globalScope = gleamBindings;
                 if (gleamBindings != null) {
-                    Interpreter.setGlobalEnv(interpreter, gleamBindings);
+                    Interpreter.setGlobalEnv(executionContext.getInterpreter(), gleamBindings);
                 } else {
-                    Interpreter.setGlobalEnv(interpreter, Environment.newEnvironment(new InputPort(reader), new OutputPort(writer, false)));
+                    Interpreter.setGlobalEnv(executionContext.getInterpreter(), new Environment(executionContext));
                 }
                 break;
             case ENGINE_SCOPE:
                 Objects.requireNonNull(gleamBindings);
-                this.engineScope = gleamBindings;
-                interpreter.setSessionEnv(gleamBindings);
+                engineScope = gleamBindings;
+                executionContext.getInterpreter().setSessionEnv(gleamBindings);
                 break;
             default:
                 throw new IllegalArgumentException("unknown scope");
@@ -65,21 +72,19 @@ public class GleamScriptContext extends SimpleScriptContext
     }
 
     @Override
-    public void setWriter(Writer writer)
-    {
-        this.writer = writer instanceof PrintWriter
-                      ? writer
-                      : new PrintWriter(writer, true);
-        interpreter.setCout(new OutputPort(this.writer, false));
+    public void setWriter(Writer writer) {
+        this.writer = writer instanceof PrintWriter ?
+            writer :
+            new PrintWriter(writer, true);
+        executionContext.setOut(new OutputPort(this.writer, false));
     }
 
     @Override
-    public void setErrorWriter(Writer writer)
-    {
-        this.errorWriter = writer instanceof PrintWriter
-                           ? writer
-                           : new PrintWriter(writer, true);
-        // TODO Cerr in interpreter
+    public void setErrorWriter(Writer writer) {
+        this.errorWriter = writer instanceof PrintWriter ?
+            writer :
+            new PrintWriter(writer, true);
+        executionContext.setErr(new OutputPort(this.errorWriter, false));
     }
 
     @Override
@@ -87,8 +92,7 @@ public class GleamScriptContext extends SimpleScriptContext
     {
         this.reader = reader;
         InputPort inputPort = new InputPort(this.reader);
-        interpreter.setCin(inputPort);
-        interpreter.getSessionEnv().setIn(inputPort);
+        executionContext.setIn(inputPort);
     }
 
     @Override

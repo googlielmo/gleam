@@ -26,6 +26,7 @@
 
 package gleam.lang;
 
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 /**
@@ -40,10 +41,21 @@ public final class SystemEnvironment extends Environment
 
     private final Kind kind;
 
-    /** Constructor for the null environment */
+    /**
+     * Constructor for the null environment.
+     * <br>
+     * Binds global I/O ports to system standard I/O
+     */
     SystemEnvironment()
     {
         this(null, Kind.NULL_ENV);
+        boolean isConsole = java.lang.System.console() != null;
+        setExecutionContext(new ExecutionContext(
+            null,
+            new InputPort(new InputStreamReader(java.lang.System.in)),
+            new OutputPort(java.lang.System.out, isConsole),
+            new OutputPort(java.lang.System.err, isConsole)
+        ));
     }
 
     SystemEnvironment(Environment parent, Kind kind)

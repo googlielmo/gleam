@@ -124,35 +124,35 @@ public final class Ports
                 }
             },
 
-            /*
-             * current-input-port
-             * Returns the current input port
-             */
-            new Primitive("current-input-port", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          0, 0, /* min, max no. of arguments */
-                          "Returns the current input port", null /* doc strings */)
-            {
-                @Override
-                public Entity apply0(Environment env, Continuation cont)
-                {
-                    return env.getIn();
-                }
-            },
+    /*
+     * current-input-port
+     * Returns the current input port
+     */
+    new Primitive( "current-input-port",
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+        0, 0, /* min, max no. of arguments */
+        "Returns the current input port",
+        null /* doc strings */ ) {
+    @Override
+    public Entity apply0(Environment env, Continuation cont)
+    {
+        return env.getExecutionContext().getIn();
+    }},
 
-            /*
-             * current-output-port
-             * Returns the current output port
-             */
-            new Primitive("current-output-port", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          0, 0, /* min, max no. of arguments */
-                          "Returns the current output port", null /* doc strings */)
-            {
-                @Override
-                public Entity apply0(Environment env, Continuation cont)
-                {
-                    return env.getOut();
-                }
-            }
+    /*
+     * current-output-port
+     * Returns the current output port
+     */
+    new Primitive( "current-output-port",
+        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
+        0, 0, /* min, max no. of arguments */
+        "Returns the current output port",
+        null /* doc strings */ ) {
+    @Override
+    public Entity apply0(Environment env, Continuation cont)
+    {
+        return env.getExecutionContext().getOut();
+    }},
 
     };
 

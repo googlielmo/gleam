@@ -62,16 +62,18 @@ public final class Output
                 {
                     OutputPort out;
 
-                    // get output port, if present
-                    if (obj2 != null) {
-                        if (obj2 instanceof OutputPort) {
-                            out = (OutputPort) obj2;
-                        } else {
-                            throw new GleamException(this, NOT_AN_OUTPUT_PORT, obj2);
-                        }
-                    } else {
-                        out = env.getOut();
-                    }
+        // get output port, if present
+        if (obj2 != null) {
+            if (obj2 instanceof OutputPort) {
+                out = (OutputPort) obj2;
+            }
+            else {
+                throw new GleamException(this, NOT_AN_OUTPUT_PORT, obj2);
+            }
+        }
+        else {
+            out = env.getExecutionContext().getOut();
+        }
 
                     // print object
                     if (out.isOpen()) {
@@ -167,8 +169,9 @@ public final class Output
             } else {
                 throw new GleamException(primitive, NOT_AN_OUTPUT_PORT, entity);
             }
-        } else {
-            oport = env.getOut();
+        }
+        else {
+            oport = env.getExecutionContext().getOut();
         }
         return oport;
     }

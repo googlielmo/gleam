@@ -90,7 +90,7 @@ public class Gleam
         final ScriptEngine engine = manager.getEngineByName("gleam");
         final Interpreter intp = ((GleamScriptEngine) engine).getInterpreter();
         final Environment session = intp.getSessionEnv();
-        final OutputPort w = intp.getCout();
+        final OutputPort w = session.getExecutionContext().getOut();
 
         if (args.length == 1 && args[0].equals("--force-console")) {
             console = true;
@@ -109,7 +109,7 @@ public class Gleam
             try {
                 prompt(w, PROMPT);
 
-                if ((obj = readEntity(intp)) != null) {
+                if ((obj = readEntity(session)) != null) {
                     Entity result = intp.eval(obj, session);
 
                     if (result != Void.VALUE) {
@@ -152,9 +152,9 @@ public class Gleam
         }
     }
 
-    private Entity readEntity(Interpreter intp) throws GleamException
+    private Entity readEntity(Environment env) throws GleamException
     {
-        Entity obj = intp.getCin().read();
+        Entity obj = env.getExecutionContext().getIn().read();
 
         // check for EOF
         if (obj == Eof.VALUE) {
@@ -168,15 +168,15 @@ public class Gleam
                     obj = null;
                     break;
                 case C_ENV:
-                    intp.getSessionEnv().dump();
+                    env.dump();
                     obj = Void.VALUE;
                     break;
                 case C_TRON:
-                    intp.traceOn();
+                    env.getExecutionContext().setTraceEnabled(true);
                     obj = Void.VALUE;
                     break;
                 case C_TROFF:
-                    intp.traceOff();
+                    env.getExecutionContext().setTraceEnabled(false);
                     obj = Void.VALUE;
                     break;
                 case C_HELP:
