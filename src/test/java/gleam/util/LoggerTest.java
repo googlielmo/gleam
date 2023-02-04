@@ -27,8 +27,8 @@
 package gleam.util;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -40,6 +40,8 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LoggerTest
 {
@@ -48,13 +50,13 @@ class LoggerTest
     private static final PrintStream originalErr = System.err;
     private static Logger logger;
 
-    @BeforeAll
-    static void setUpJul()
+    @BeforeEach
+    void setUpJul()
     {
         LogManager.getLogManager().reset();
-        LogManager.getLogManager()
-                  .getLogger("")
-                  .setLevel(java.util.logging.Level.ALL);
+        java.util.logging.Logger rootLogger =
+                LogManager.getLogManager().getLogger("");
+        rootLogger.setLevel(java.util.logging.Level.ALL);
         System.setErr(new PrintStream(errContent));
         java.util.logging.Logger julLogger =
                 java.util.logging.Logger.getLogger("gleam");
@@ -112,12 +114,42 @@ class LoggerTest
         assertEquals(expectedLines, numLines);
     }
 
+    @Test
+    void severeWithThrowableMessage()
+    {
+        IllegalArgumentException ex = new IllegalArgumentException("SomeError");
+        logger.severe("Message", ex);
+        String err = errContent.toString();
+        assertTrue(err.contains("Message"));
+        assertTrue(err.contains(ex.getClass().getName()));
+        assertTrue(err.contains("SomeError"));
+    }
+
+    @Test
+    void severeWithoutThrowableMessage()
+    {
+        IllegalArgumentException ex = new IllegalArgumentException();
+        logger.severe("Message", ex);
+        String err = errContent.toString();
+        assertTrue(err.contains("Message"));
+        assertTrue(err.contains(ex.getClass().getName()));
+        assertFalse(err.contains("(null)"));
+    }
+
     private static class TestFormatter extends Formatter
     {
 
         public String format(LogRecord logRecord)
         {
-            return formatMessage(logRecord) + System.lineSeparator();
+            StringBuilder builder =
+                    new StringBuilder()
+                            .append(formatMessage(logRecord))
+                            .append(System.lineSeparator());
+            Throwable throwable = logRecord.getThrown();
+            if (throwable != null) {
+                builder.append(throwable).append(System.lineSeparator());
+            }
+            return builder.toString();
         }
     }
 }

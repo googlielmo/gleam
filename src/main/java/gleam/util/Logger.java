@@ -53,8 +53,9 @@ public class Logger
     private static final int JUL_THRESHOLD_INFO = 800;
     private static final int JUL_THRESHOLD_CONFIG = 700;
     private static final int JUL_THRESHOLD_FINE = 500;
-    private static final java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger(
-            "gleam");
+    private static final
+    java.util.logging.Logger julLogger = java.util.logging.Logger
+            .getLogger("gleam");
     private static final Logger theLogger = new Logger();
 
     static {
@@ -228,7 +229,7 @@ public class Logger
      */
     public void log(int level, String message)
     {
-        julLogger.log(getJulLevel(level), message);
+        julLog(getJulLevel(level), message);
     }
 
     /**
@@ -236,7 +237,7 @@ public class Logger
      */
     public void log(Level level, String message)
     {
-        julLogger.log(getJulLevel(level.getValue()), message);
+        julLog(getJulLevel(level.getValue()), message);
     }
 
     /**
@@ -252,7 +253,7 @@ public class Logger
      */
     public void log(int level, String message, Entity obj)
     {
-        julLogger.log(getJulLevel(level), () -> message + " " + obj);
+        julLog(getJulLevel(level), message, obj);
     }
 
     /**
@@ -260,10 +261,32 @@ public class Logger
      */
     public void log(Level level, String message, Entity obj)
     {
-        julLogger.log(getJulLevel(level.getValue()), () -> message + " " + obj);
+        julLog(getJulLevel(level.getValue()), message, obj);
     }
 
-    // shortcuts
+    private static void julLog(java.util.logging.Level level, String message)
+    {
+        julLogger.log(level, String.valueOf(message));
+    }
+
+    private static void julLog(java.util.logging.Level level, String message,
+                               Entity obj)
+    {
+        julLogger.log(level, () -> String.format("%s %s", message, obj));
+    }
+
+    private static void julLog(java.util.logging.Level level, String message,
+                               Throwable ex)
+    {
+        julLogger.log(level, String.valueOf(message), ex);
+    }
+
+    private static void julLog(java.util.logging.Level level, Throwable ex)
+    {
+        julLogger.log(level, String.valueOf(ex.getMessage()), ex);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
 
     /**
      * Logs a message at DEBUG level.
@@ -272,7 +295,8 @@ public class Logger
      */
     public void debug(String message)
     {
-        julLogger.log(java.util.logging.Level.FINE, message);
+        java.util.logging.Level level = java.util.logging.Level.FINE;
+        julLog(level, message);
     }
 
     /**
@@ -283,7 +307,8 @@ public class Logger
      */
     public void debug(String message, Entity obj)
     {
-        julLogger.log(java.util.logging.Level.FINE, () -> message + " " + obj);
+        java.util.logging.Level level = java.util.logging.Level.FINE;
+        julLog(level, message, obj);
     }
 
     /**
@@ -293,7 +318,7 @@ public class Logger
      */
     public void config(String message)
     {
-        julLogger.log(java.util.logging.Level.CONFIG, message);
+        julLog(java.util.logging.Level.CONFIG, message);
     }
 
     /**
@@ -304,8 +329,7 @@ public class Logger
      */
     public void config(String message, Entity obj)
     {
-        julLogger.log(java.util.logging.Level.CONFIG,
-                      () -> message + " " + obj);
+        julLog(java.util.logging.Level.CONFIG, message, obj);
     }
 
     /**
@@ -315,7 +339,7 @@ public class Logger
      */
     public void info(String message)
     {
-        julLogger.log(java.util.logging.Level.INFO, message);
+        julLog(java.util.logging.Level.INFO, message);
     }
 
     /**
@@ -326,7 +350,7 @@ public class Logger
      */
     public void info(String message, Entity obj)
     {
-        julLogger.log(java.util.logging.Level.INFO, () -> message + " " + obj);
+        julLog(java.util.logging.Level.INFO, message, obj);
     }
 
     /**
@@ -336,7 +360,7 @@ public class Logger
      */
     public void warning(String message)
     {
-        julLogger.log(java.util.logging.Level.WARNING, message);
+        julLog(java.util.logging.Level.WARNING, message);
     }
 
     /**
@@ -347,8 +371,7 @@ public class Logger
      */
     public void warning(String message, Entity obj)
     {
-        julLogger.log(java.util.logging.Level.WARNING,
-                      () -> message + " " + obj);
+        julLog(java.util.logging.Level.WARNING, message, obj);
     }
 
     /**
@@ -358,7 +381,8 @@ public class Logger
      */
     public void warning(Throwable ex)
     {
-        julLogger.log(java.util.logging.Level.WARNING, ex, ex::getMessage);
+        java.util.logging.Level level = java.util.logging.Level.WARNING;
+        julLog(level, ex);
     }
 
     /**
@@ -369,7 +393,8 @@ public class Logger
      */
     public void warning(String message, Throwable ex)
     {
-        julLogger.log(java.util.logging.Level.WARNING, message, ex);
+        java.util.logging.Level level = java.util.logging.Level.WARNING;
+        julLog(level, message, ex);
     }
 
     /**
@@ -379,7 +404,7 @@ public class Logger
      */
     public void severe(String message)
     {
-        julLogger.log(java.util.logging.Level.SEVERE, message);
+        julLog(java.util.logging.Level.SEVERE, message);
     }
 
     /**
@@ -390,8 +415,7 @@ public class Logger
      */
     public void severe(String message, Entity obj)
     {
-        julLogger.log(java.util.logging.Level.SEVERE,
-                      () -> message + " " + obj);
+        julLog(java.util.logging.Level.SEVERE, message, obj);
     }
 
     /**
@@ -401,7 +425,7 @@ public class Logger
      */
     public void severe(Throwable ex)
     {
-        julLogger.log(java.util.logging.Level.SEVERE, ex, ex::getMessage);
+        julLog(java.util.logging.Level.SEVERE, ex.getMessage(), ex);
     }
 
     /**
@@ -412,7 +436,7 @@ public class Logger
      */
     public void severe(String message, Throwable ex)
     {
-        julLogger.log(java.util.logging.Level.SEVERE, message, ex);
+        julLog(java.util.logging.Level.SEVERE, message, ex);
     }
 
     // custom formatter
