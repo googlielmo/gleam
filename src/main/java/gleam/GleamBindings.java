@@ -8,6 +8,7 @@ import gleam.util.Converter;
 import gleam.util.MapAdapter;
 
 import javax.script.Bindings;
+import javax.script.SimpleBindings;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -18,29 +19,42 @@ import static gleam.GleamScriptEngine.wrap;
 
 public class GleamBindings extends Environment implements Bindings
 {
-    final transient private MapAdapter<Symbol, Location, String, Object> assocAdapter = new MapAdapter<>(assoc, new SymbolStringConverter(), new LocationObjectConverter());
+    private final SymbolStringConverter symbolStringConverter = new SymbolStringConverter();
+    private final LocationObjectConverter locationObjectConverter = new LocationObjectConverter();
+    final transient private MapAdapter<Symbol, Location, String, Object> assocAdapter =
+            new MapAdapter<>(
+                    assoc,
+                    symbolStringConverter,
+                    locationObjectConverter);
 
     public GleamBindings(Environment parent)
     {
-        super(parent);
+        this(parent, new SimpleBindings());
     }
 
-    public GleamBindings(Environment parent, Bindings bindings) {
+    public GleamBindings(Environment parent, Bindings bindings)
+    {
         super(parent);
-        MapAdapter<String, Object, Symbol, Location> assocAdapter = new MapAdapter<>(bindings, new SymbolStringConverter().inverseConverter(), new LocationObjectConverter().inverseConverter());
-        assocAdapter.forEach(this::define);
+        this.putAll(bindings);
     }
 
     @Override
     public Object put(String name, Object value)
     {
-        return assocAdapter.put(name, value);
+        Object prev = null;
+        if (assocAdapter.containsKey(name)) {
+            prev = assocAdapter.get(name);
+        }
+        Symbol symbol = symbolStringConverter.invert(name);
+        Entity entity = wrap(value);
+        define(symbol, entity);
+        return prev;
     }
 
     @Override
     public void putAll(Map<? extends String, ?> toMerge)
     {
-        assocAdapter.putAll(toMerge);
+        toMerge.forEach(this::put);
     }
 
     @Override
@@ -58,7 +72,7 @@ public class GleamBindings extends Environment implements Bindings
     @Override
     public Object remove(Object key)
     {
-        return assocAdapter.remove(key);
+        return assocAdapter.remove(symbolStringConverter.invert((String) key));
     }
 
     @Override
@@ -128,18 +142,20 @@ public class GleamBindings extends Environment implements Bindings
         @Override
         public Symbol invertAny(Object value)
         {
-            Objects.requireNonNull(value); // FIXME check "" as well?
+            if (value.equals("")) { // implicit null check for value
+                throw new IllegalArgumentException("value");
+            }
             return Symbol.makeSymbol(value.toString());
         }
     }
 
     private class LocationObjectConverter implements Converter<Location, Object>
     {
-
         @Override
+
         public Object convert(Location value)
         {
-            return value == null ? null : unwrap(value.get()); // FIXME nulls
+            return Objects.requireNonNull(unwrap(value.get()));
         }
 
         @Override
@@ -150,7 +166,7 @@ public class GleamBindings extends Environment implements Bindings
                         .stream()
                         .filter(location -> location.get().equals(entity))
                         .findFirst()
-                        .orElse(null); // FIXME nulls
+                        .orElseThrow(NullPointerException::new);
         }
 
         @Override

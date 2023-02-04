@@ -36,7 +36,8 @@ public class CollectionAdapter<V, V1> implements Collection<V1>
     private final Collection<V> vCollection;
     private final Converter<V, V1> converter;
 
-    public CollectionAdapter(Collection<V> vCollection, Converter<V, V1> converter)
+    public CollectionAdapter(Collection<V> vCollection,
+                             Converter<V, V1> converter)
     {
         this.vCollection = vCollection;
         this.converter = converter;
@@ -97,7 +98,8 @@ public class CollectionAdapter<V, V1> implements Collection<V1>
     public boolean containsAll(Collection<?> c)
     {
         final AtomicBoolean contained = new AtomicBoolean(true);
-        c.forEach(value -> contained.set(contained.get() && vCollection.contains(converter.invertAny(value))));
+        c.forEach(value -> contained.set(contained.get() && vCollection.contains(
+                converter.invertAny(value))));
         return contained.get();
     }
 
@@ -105,7 +107,8 @@ public class CollectionAdapter<V, V1> implements Collection<V1>
     public boolean addAll(Collection<? extends V1> c)
     {
         final AtomicBoolean changed = new AtomicBoolean(false);
-        c.forEach(value -> changed.set(changed.get() || vCollection.add(converter.invert(value))));
+        c.forEach(value -> changed.set(changed.get() || vCollection.add(
+                converter.invert(value))));
         return changed.get();
     }
 

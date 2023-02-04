@@ -58,12 +58,18 @@ public final class Symbols
               symbol?
               Tests if argument is a symbol
              */
-            new Primitive("symbol?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is a symbol, false otherwise", "E.g. (symbol? 'sym) => #t" /* doc strings */)
+            new Primitive("symbol?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is a symbol, false otherwise",
+                          "E.g. (symbol? 'sym) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1 instanceof Symbol);
                 }
@@ -73,9 +79,13 @@ public final class Symbols
              * generate-symbol
              * Generates a fresh uninterned symbol
              */
-            new Primitive("generate-symbol", INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          0, 0, /* min, max no. of arguments */
-                          "Makes a new symbol, e.g. (generate-symbol)", null /* doc strings */)
+            new Primitive("generate-symbol",
+                          INTERACTION_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          0,
+                          0, /* min, max no. of arguments */
+                          "Makes a new symbol, e.g. (generate-symbol)",
+                          null /* doc strings */)
             {
                 @Override
                 public Entity apply0(Environment env, Continuation cont)

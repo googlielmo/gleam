@@ -51,7 +51,9 @@ class GleamTest
 {
     private static final Logger logger = Logger.getLogger();
 
-    private static final Pattern FAILED_GLEAM_TEST = Pattern.compile("^Running test:[^K]*?FAILED.*$", Pattern.MULTILINE);
+    private static final Pattern FAILED_GLEAM_TEST = Pattern.compile(
+            "^Running test:[^K]*?FAILED.*$",
+            Pattern.MULTILINE);
 
     private Interpreter intp;
 
@@ -64,25 +66,16 @@ class GleamTest
         runTestFile("/test-utilities.scm");
     }
 
-    @Test
-    void tests_scm()
-    {
-        runTestFile("/tests.scm");
-    }
-
-    @Test
-    void tests_continuations_scm()
-    {
-        runTestFile("/tests-continuations.scm");
-    }
-
     private void runTestFile(String testFile)
     {
         try {
             InputStream inputStream = getClass().getResourceAsStream(testFile);
-            assertNotNull(inputStream, String.format("test file %s not found", testFile));
+            assertNotNull(inputStream,
+                          String.format("test file %s not found", testFile));
 
-            InputPort tests = new gleam.lang.InputPort(new java.io.InputStreamReader(inputStream));
+            InputPort tests =
+                    new gleam.lang.InputPort(
+                            new java.io.InputStreamReader(inputStream));
             StringWriter stringWriter = new StringWriter();
             OutputPort outputPort = new OutputPort(stringWriter, false);
             intp.getSessionEnv().getExecutionContext().setOut(outputPort);
@@ -91,7 +84,8 @@ class GleamTest
             if (checkFailures(testOutput)) {
                 fail(String.format("Failures in %s", testFile));
             }
-        } catch (GleamException e) {
+        }
+        catch (GleamException e) {
             logger.warning(e);
             logger.warning("__errobj: ", e.value());
             fail(String.format("GleamException: %s", e.getMessage()));
@@ -122,7 +116,8 @@ class GleamTest
     private boolean checkUnmatchedOutput(String testOutput)
     {
         boolean retVal = false;
-        BufferedReader lineReader = new BufferedReader(new StringReader(testOutput));
+        BufferedReader lineReader = new BufferedReader(new StringReader(
+                testOutput));
         String prev = "";
         String line;
         try {
@@ -131,16 +126,34 @@ class GleamTest
                     String v1 = lineReader.readLine().trim();
                     String v2 = lineReader.readLine().trim();
                     if (!Objects.equals(v1, v2)) {
-                        System.err.printf(">>> %s%n%s%n%s%n%s%n%nFAILED: expected and actual output do not match%n%n", prev, line, v1, v2);
+                        System.err.printf(
+                                ">>> %s%n%s%n%s%n%s%n%nFAILED: expected and actual output do not match%n%n",
+                                prev,
+                                line,
+                                v1,
+                                v2);
                         retVal = true;
                     }
                 }
                 prev = line;
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
             retVal = true;
         }
         return retVal;
+    }
+
+    @Test
+    void tests_scm()
+    {
+        runTestFile("/tests.scm");
+    }
+
+    @Test
+    void tests_continuations_scm()
+    {
+        runTestFile("/tests-continuations.scm");
     }
 }

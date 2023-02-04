@@ -43,9 +43,6 @@ import java.io.PrintWriter;
 public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject
 {
 
-    /**
-     * serialVersionUID
-     */
     private static final long serialVersionUID = 1L;
 
     /**
@@ -57,9 +54,10 @@ public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject
     }
 
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.write("#<syntax-procedure " + value.getName() + ">");
+        return out;
     }
 
 }

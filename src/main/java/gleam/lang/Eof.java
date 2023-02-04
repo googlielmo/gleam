@@ -35,27 +35,24 @@ import java.io.PrintWriter;
  */
 public final class Eof extends AbstractEntity
 {
-    /** the Eof singleton */
+
+    /** the Eof singleton. */
     public static final Eof VALUE = new Eof();
 
-    /**
-     * serialVersionUID
-     */
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger();
 
-    /** Can't instantiate this class */
-    private Eof()
-    {
-    }
+    /** Can't just instantiate this class. */
+    private Eof() {}
 
     /**
      * Writes the Eof value.
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         // no output
+        return out;
     }
 
     /**

@@ -33,36 +33,11 @@ public class EntryConverter<K, V, K1, V1> implements Converter<Map.Entry<K, V>, 
     private final Converter<K, K1> keyConverter;
     private final Converter<V, V1> valueConverter;
 
-    public EntryConverter(Converter<K, K1> keyConverter, Converter<V, V1> valueConverter)
+    public EntryConverter(Converter<K, K1> keyConverter,
+                          Converter<V, V1> valueConverter)
     {
         this.keyConverter = keyConverter;
         this.valueConverter = valueConverter;
-    }
-
-    @Override
-    public Map.Entry<K1, V1> convert(Map.Entry<K, V> entry)
-    {
-        return new ConverterEntry<>(entry, keyConverter, valueConverter);
-    }
-
-    @Override
-    public Map.Entry<K, V> invert(Map.Entry<K1, V1> entry)
-    {
-        return new ConverterEntry<>(entry, keyConverter.inverseConverter(), valueConverter.inverseConverter());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Map.Entry<K1, V1> convertAny(Object value)
-    {
-        return convert((Map.Entry<K, V>) value);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Map.Entry<K, V> invertAny(Object value)
-    {
-        return invert((Map.Entry<K1, V1>) value);
     }
 
     private static class ConverterEntry<EK, EV, EK1, EV1> implements Map.Entry<EK1, EV1>
@@ -72,7 +47,9 @@ public class EntryConverter<K, V, K1, V1> implements Converter<Map.Entry<K, V>, 
         private final Converter<EK, EK1> keyConverter;
         private final Converter<EV, EV1> valueConverter;
 
-        public ConverterEntry(Map.Entry<EK, EV> underlyingEntry, Converter<EK, EK1> keyConverter, Converter<EV, EV1> valueConverter)
+        public ConverterEntry(Map.Entry<EK, EV> underlyingEntry,
+                              Converter<EK, EK1> keyConverter,
+                              Converter<EV, EV1> valueConverter)
         {
             this.underlyingEntry = underlyingEntry;
             this.keyConverter = keyConverter;
@@ -98,5 +75,33 @@ public class EntryConverter<K, V, K1, V1> implements Converter<Map.Entry<K, V>, 
             this.underlyingEntry.setValue(valueConverter.invert(value));
             return prev;
         }
+    }
+
+    @Override
+    public Map.Entry<K1, V1> convert(Map.Entry<K, V> entry)
+    {
+        return new ConverterEntry<>(entry, keyConverter, valueConverter);
+    }
+
+    @Override
+    public Map.Entry<K, V> invert(Map.Entry<K1, V1> entry)
+    {
+        return new ConverterEntry<>(entry,
+                                    keyConverter.inverseConverter(),
+                                    valueConverter.inverseConverter());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Map.Entry<K1, V1> convertAny(Object value)
+    {
+        return convert((Map.Entry<K, V>) value);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Map.Entry<K, V> invertAny(Object value)
+    {
+        return invert((Map.Entry<K1, V1>) value);
     }
 }

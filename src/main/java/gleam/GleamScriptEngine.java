@@ -48,7 +48,8 @@ public class GleamScriptEngine extends AbstractScriptEngine
     {
         try {
             this.interpreter = Interpreter.newInterpreter();
-        } catch (GleamException e) {
+        }
+        catch (GleamException e) {
             throw new RuntimeException(e);
         }
         setContext(new GleamScriptContext(this.interpreter));
@@ -58,20 +59,11 @@ public class GleamScriptEngine extends AbstractScriptEngine
     {
         if (value instanceof Entity) {
             return (Entity) value;
-        } else if (value instanceof Number) {
+        }
+        else if (value instanceof Number) {
             return new Real(((Number) value).doubleValue());
         }
         return new JavaObject(value);
-    }
-
-    static Object unwrap(Object value)
-    {
-        if (value instanceof JavaObject) {
-            return ((JavaObject) value).getObjectValue();
-        } else if (value instanceof gleam.lang.Number) {
-            return ((gleam.lang.Number) value).getDoubleValue();
-        }
-        return value;
     }
 
     public Interpreter getInterpreter()
@@ -80,23 +72,38 @@ public class GleamScriptEngine extends AbstractScriptEngine
     }
 
     @Override
-    public Object eval(String script, ScriptContext context) throws ScriptException
+    public Object eval(String script,
+                       ScriptContext context) throws ScriptException
     {
         try {
             Object value = interpreter.eval(script);
             return unwrap(value);
-        } catch (GleamException e) {
+        }
+        catch (GleamException e) {
             throw new ScriptException(e);
         }
     }
 
+    static Object unwrap(Object value)
+    {
+        if (value instanceof JavaObject) {
+            return ((JavaObject) value).getObjectValue();
+        }
+        else if (value instanceof gleam.lang.Number) {
+            return ((gleam.lang.Number) value).getDoubleValue();
+        }
+        return value;
+    }
+
     @Override
-    public Object eval(Reader reader, ScriptContext context) throws ScriptException
+    public Object eval(Reader reader,
+                       ScriptContext context) throws ScriptException
     {
         try {
             Object value = interpreter.eval(reader);
             return unwrap(value);
-        } catch (GleamException e) {
+        }
+        catch (GleamException e) {
             throw new ScriptException(e);
         }
     }

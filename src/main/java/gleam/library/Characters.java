@@ -51,12 +51,18 @@ public final class Characters
              * char?
              * Tests if argument is a character
              */
-            new Primitive("char?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is a character, false otherwise", "E.g. (char? #\\a) => #t" /* doc strings */)
+            new Primitive("char?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is a character, false otherwise",
+                          "E.g. (char? #\\a) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1 instanceof Character);
                 }

@@ -42,13 +42,11 @@ import java.io.PrintWriter;
  */
 public class Continuation extends Procedure
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
     /**
-     * Dummy action used as anchor to add actions
+     * Dummy action used as anchor to add actions.
      */
     private static final Action DUMMY_ACTION = new Action(null, null)
     {
@@ -61,20 +59,20 @@ public class Continuation extends Procedure
 
     public Action head;
 
-    /** Constructor */
-    Continuation()
-    {
-        this.head = null;
-    }
-
-    /** Copy constructor */
+    /** Copy constructor. */
     public Continuation(Continuation other)
     {
         this.head = other.head;
     }
 
+    /** Constructor. */
+    Continuation()
+    {
+        this.head = null;
+    }
+
     /**
-     * Clears this continuation (unwinds stack)
+     * Clears this continuation (unwinds stack).
      */
     public void clear()
     {
@@ -82,45 +80,32 @@ public class Continuation extends Procedure
     }
 
     /**
-     * Change this continuation to begin with a given action. Prepend a single
-     * action to this continuation's chain. The action's <code>next</code> will
-     * be set to the current head, so be careful <i>not</i> to pass an action
-     * that is already chained to other actions, as its <code>next</code> field
-     * will be overwritten.
-     * <br>
-     * You can safely add other actions after calling this method by using
-     * {@link Action#andThen(Action)} on the action.
-     * <br>
-     * If you need to add a variable number of actions at the head of this
-     * continuation and don't have an action ready yet, use
-     * {@link #beginSequence()}
+     * Adds a command sequence to this continuation.
      *
-     * @param action the Action to prepend
-     *
-     * @return the prepended action
-     *
-     * @see Action#andThen(Action)
-     * @see #beginSequence()
-     * @see #endSequence()
+     * @param body Pair a sequence of commands
+     * @param env  Environment the current environment
      */
-    public Action begin(Action action)
+    public void addCommandSequence(Iterable<Entity> body, Environment env)
     {
-        action.next = this.head;
-        this.head = action;
-        return action;
+        Action currAction = beginSequence();
+        for (Entity expr : body) {
+            currAction = currAction.andThen(new ExpressionAction(expr, env));
+        }
+        endSequence();
     }
 
     /**
-     * Use this method when inserting a sequence of actions at the start of this
+     * Prepares for inserting a sequence of actions at the start of this
      * continuation. Append new actions to this method's return value with
      * {@link Action#andThen(Action)} Terminate the sequence by calling
      * {@link #endSequence()}. E.g.,
+     * <br>
      * <pre><code>
      * Action action = cont.beginSequence();
      * action = action.andThen(...).andThen(...);
-     * ...
+     *   ...
      * action = action.andThen(...);
-     * ...
+     *   ...
      * cont.endSequence();
      * </code></pre>
      *
@@ -151,25 +136,38 @@ public class Continuation extends Procedure
     }
 
     /**
-     * addCommandSequenceActions
+     * Change this continuation to begin with a given action. Prepend a single
+     * action to this continuation's chain. The action's next is changed to be
+     * the current head, therefore
+     * <i>do not</i> pass an action that is already chained to other actions:
+     * its <CODE>next</CODE> field will be overwritten.<BR> You can safely add
+     * other actions <i>after</i> calling this method by using
+     * {@link Action#andThen(Action)} on the action.<BR> If you need to add a
+     * variable number of actions at the head of this continuation, see
+     * {@link #beginSequence()}
      *
-     * @param body Pair
-     * @param env  Environment
+     * @param action the Action to prepend
+     *
+     * @return the prepended action
+     *
+     * @see Action#andThen(Action)
+     * @see #beginSequence()
+     * @see #endSequence()
      */
-    public void addCommandSequenceActions(Iterable<Entity> body, Environment env)
+    public Action begin(Action action)
     {
-        Action currAction = beginSequence();
-        for (Entity expr : body) {
-            currAction = currAction.andThen(new ExpressionAction(expr, env));
-        }
-        endSequence();
+        action.next = this.head;
+        this.head = action;
+        return action;
     }
 
     /**
-     * Applies this continuation. Replaces the continuation in the current
-     * interpreter with this one. Gets one argument, and returns it to the
-     * current interpreter as the argument that this continuation will receive
-     * when executed, i.e. immediately after the action of returning.
+     * Applies this continuation.
+     * <p>
+     * Replaces the continuation in the current interpreter with this one. Gets
+     * one argument, and returns it to the current interpreter as the argument
+     * that this continuation will receive when executed, i.e. immediately after
+     * the action of returning.
      *
      * @param args List
      * @param env  Environment
@@ -178,7 +176,9 @@ public class Continuation extends Procedure
      * @return Entity
      */
     @Override
-    public Entity apply(List args, Environment env, Continuation cont) throws GleamException
+    public Entity apply(List args,
+                        Environment env,
+                        Continuation cont) throws GleamException
     {
         if (args != EmptyList.VALUE) {
             if (args.getCdr() == EmptyList.VALUE) {
@@ -186,25 +186,29 @@ public class Continuation extends Procedure
                 cont.replaceContinuation(this);
                 // return argument (it's already evaluated)
                 return args.getCar();
-            } else {
-                throw new GleamException("continuation: too many arguments", args);
             }
-        } else {
+            else {
+                throw new GleamException("continuation: too many arguments",
+                                         args);
+            }
+        }
+        else {
             throw new GleamException("continuation: too few arguments", args);
         }
+    }
+
+    private void replaceContinuation(Continuation continuation)
+    {
+        this.head = continuation.head;
     }
 
     /**
      * Writes this continuation.
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.write("#<continuation>");
-    }
-
-    private void replaceContinuation(Continuation continuation)
-    {
-        this.head = continuation.head;
+        return out;
     }
 }

@@ -29,20 +29,18 @@ package gleam.lang;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * Constituent part of Scheme environment
+ * Constituent part of Scheme environment.
  */
 public class Environment extends AbstractEntity
 {
 
-    /**
-     * serialVersionUID
-     */
     private static final long serialVersionUID = 1L;
 
     /**
-     * Association function: symbol --> location
+     * Association function: <code>symbol -> location</code>.
      */
     protected final Map<Symbol, Location> assoc = new HashMap<>();
 
@@ -52,16 +50,14 @@ public class Environment extends AbstractEntity
     protected Environment parent;
 
     /**
-     * The ExecutionContext. If <code>null</code>, this environment is
-     * assumed to have the same context of its parent.
+     * The ExecutionContext. If <code>null</code>, this environment is assumed
+     * to have the same context of its parent.
      */
     transient private ExecutionContext executionContext;
 
-
-    private Environment(Environment parent, ExecutionContext executionContext)
+    public enum Kind
     {
-        this.parent = parent;
-        this.executionContext = executionContext;
+        NULL_ENV, REPORT_ENV, INTERACTION_ENV
     }
 
     public Environment(Environment parent)
@@ -69,19 +65,20 @@ public class Environment extends AbstractEntity
         this(parent, parent == null ? null : parent.executionContext);
     }
 
-    public Environment(ExecutionContext ctx)
-    {
-        this (null, ctx);
-    }
-
-    public Environment getParent()
-    {
-        return parent;
-    }
-
-    public void setParent(Environment parent)
+    private Environment(Environment parent, ExecutionContext executionContext)
     {
         this.parent = parent;
+        this.executionContext = executionContext;
+    }
+
+    public Environment(ExecutionContext ctx)
+    {
+        this(null, ctx);
+    }
+
+    public Interpreter getInterpreter()
+    {
+        return readContext().getInterpreter();
     }
 
     protected ExecutionContext readContext()
@@ -99,16 +96,13 @@ public class Environment extends AbstractEntity
         return ctx;
     }
 
-    public Interpreter getInterpreter()
+    public ExecutionContext getExecutionContext()
     {
-        return readContext().getInterpreter();
-    }
-
-    public ExecutionContext getExecutionContext() {
         return readContext();
     }
 
-    protected void setExecutionContext(ExecutionContext ctx) {
+    protected void setExecutionContext(ExecutionContext ctx)
+    {
         this.executionContext = ctx;
     }
 
@@ -117,12 +111,27 @@ public class Environment extends AbstractEntity
      */
     public synchronized void define(Symbol s, Entity v)
     {
+        Objects.requireNonNull(v);
         Location loc;
         if ((loc = assoc.get(s)) != null) {
             loc.set(v);
-        } else {
+        }
+        else {
             assoc.put(s, new Location(v));
         }
+    }
+
+    /**
+     * Looks up a Symbol in the environment by searching this environment and
+     * all enclosing environments, up to the topmost (global) environment.
+     *
+     * @param s Symbol
+     *
+     * @return Entity
+     */
+    public Entity lookup(Symbol s) throws GleamException
+    {
+        return getLocation(s).get();
     }
 
     /**
@@ -162,35 +171,34 @@ public class Environment extends AbstractEntity
             loc = e.assoc.get(s);
             if (loc == null) {
                 e = e.getParent();
-            } else {
+            }
+            else {
                 return loc;
             }
         }
 
-        // so it is unbound...
+        // it's unbound
         return null;
     }
 
-    /**
-     * Looks up a Symbol in the environment by searching this environment and
-     * all enclosing environments, up to the topmost (global) environment.
-     *
-     * @param s Symbol
-     *
-     * @return Entity
-     */
-    public Entity lookup(Symbol s) throws GleamException
+    public Environment getParent()
     {
-        return getLocation(s).get();
+        return parent;
+    }
+
+    public void setParent(Environment parent)
+    {
+        this.parent = parent;
     }
 
     /**
-     * Writes this environment
+     * Writes this environment.
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.write("#<environment>");
+        return out;
     }
 
     // DEBUG
@@ -201,7 +209,8 @@ public class Environment extends AbstractEntity
             throw new GleamException("OutputPort null in Environment");
         }
         out.printf("/——————————————— Environment %s --\\ \n", this);
-        out.printf("|——————————————— ExecutionContext :       %s \n", this.executionContext);
+        out.printf("|——————————————— ExecutionContext :       %s \n",
+                   this.executionContext);
         out.printf("| \n");
         for (Symbol s : assoc.keySet()) {
             Location l = assoc.get(s);
@@ -211,10 +220,5 @@ public class Environment extends AbstractEntity
         if (this.getParent() != null) {
             getParent().dump();
         }
-    }
-
-    public enum Kind
-    {
-        NULL_ENV, REPORT_ENV, INTERACTION_ENV
     }
 }

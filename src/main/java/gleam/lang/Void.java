@@ -33,26 +33,22 @@ import java.io.PrintWriter;
  */
 public final class Void extends AbstractEntity
 {
-
     /** the Void singleton */
     public static final Void VALUE = new Void();
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
-    /** Can't instantiate this */
-    private Void()
-    {
-    }
+    /** Can't instantiate this class. */
+    private Void() {}
 
     /**
      * Writes the void value.
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.write("#<void>");
+        return out;
     }
 
     /**

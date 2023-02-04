@@ -41,9 +41,7 @@ import java.io.PrintWriter;
  */
 public final class Location extends AbstractEntity
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
     private Entity value;
@@ -51,7 +49,7 @@ public final class Location extends AbstractEntity
     /**
      * Location constructor.
      */
-    Location(Entity value)
+    public Location(Entity value)
     {
         this.value = value;
     }
@@ -83,10 +81,11 @@ public final class Location extends AbstractEntity
      * Writes this location
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.write("#<location of ");
         value.write(out);
         out.write(">");
+        return out;
     }
 }

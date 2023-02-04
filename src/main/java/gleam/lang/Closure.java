@@ -37,35 +37,9 @@ import static gleam.util.Logger.Level.WARNING;
  */
 public class Closure extends Procedure
 {
-    /**
-     * serialVersionUID
-     */
     private static final long serialVersionUID = 1L;
-
     private static final Logger logger = Logger.getLogger();
 
-    /* TODO: should implement scan-out of defines, as follows:
-     * when a closure is created, a scanOut method should
-     * retrieve a proper list of internally defined variables,
-     * i.e. the scan out for
-     *          (lambda (x y)
-     *            (define a 1)
-     *            (define b (foo x y))
-     *            (begin
-     *              (define c 1)
-     *              (define d 2))
-     *            (b (+ a c d)))
-     * the scan out should give (a b c d).
-     * At application time, after creating the local environment,
-     * the scanned-out variables should be bound in the new
-     * environment with an Undefined value.
-     * This should suffice to preserve the "simultaneous definition"
-     * semantics of Scheme defines inside procedures.
-     *
-     * The scan-out could be either done internally by the existing
-     * constructor, or externally by the interpreter and passed on
-     * to a new constructor.
-     */
     protected final Entity param;
     protected final List body;
     protected final Environment definitionEnv;
@@ -84,7 +58,9 @@ public class Closure extends Procedure
      * Applies this closure.
      */
     @Override
-    public Entity apply(List args, Environment env, Continuation cont) throws GleamException
+    public Entity apply(List args,
+                        Environment env,
+                        Continuation cont) throws GleamException
     {
         Environment localenv = new Environment(definitionEnv);
         Entity currparam = param;
@@ -101,21 +77,25 @@ public class Closure extends Procedure
 
                 if (!dotparam) {
                     if (currparam == EmptyList.VALUE) {
-                        throw new GleamException("apply: too many arguments", this);
-                    } else if (currparam instanceof Pair) {
-                        // normal case: get param symbol
+                        throw new GleamException("apply: too many arguments",
+                                                 this);
+                    }
+                    else if (currparam instanceof Pair) {
+                        // regular case: get param symbol
                         // and bind it to argument in
                         // local env
                         Entity p = ((Pair) currparam).getCar();
                         if (p instanceof Symbol) {
                             localenv.define((Symbol) p, obj);
-                        } else {
+                        }
+                        else {
                             logger.log(WARNING, "apply: param is not a symbol");
                         }
                         // next param, please
                         currparam = ((Pair) currparam).getCdr();
-                    } else if (currparam instanceof Symbol) {
-                        // this is the unusual case
+                    }
+                    else if (currparam instanceof Symbol) {
+                        // var args case:
                         // we have a "." notation parameter,
                         // so we accumulate this and next
                         // parameters in a cons bound to
@@ -123,10 +103,14 @@ public class Closure extends Procedure
                         prev = new Pair(obj, EmptyList.VALUE);
                         localenv.define((Symbol) currparam, prev);
                         dotparam = true;
-                    } else {
-                        throw new GleamException("apply: invalid formal parameter", currparam);
                     }
-                } else {
+                    else {
+                        throw new GleamException(
+                                "apply: invalid formal parameter",
+                                currparam);
+                    }
+                }
+                else {
                     // accumulate argument
                     prev.setCdr(new Pair(obj, EmptyList.VALUE));
                     prev = (List) prev.getCdr();
@@ -134,7 +118,8 @@ public class Closure extends Procedure
                 // next argument, please
                 args = (List) args.getCdr();
             }
-        } catch (ClassCastException e) {
+        }
+        catch (ClassCastException e) {
             throw new GleamException("apply: improper list", currparam);
         }
 
@@ -142,22 +127,22 @@ public class Closure extends Procedure
             // special case:
             // a "." notation parameter taking the empty list
             localenv.define((Symbol) currparam, EmptyList.VALUE);
-        } else if (currparam != EmptyList.VALUE && !dotparam) {
+        }
+        else if (currparam != EmptyList.VALUE && !dotparam) {
             throw new GleamException("apply: too few arguments", this);
         }
 
-        /* we have bound params, let's eval body
-         * by adding to the continuation
-         */
-        cont.addCommandSequenceActions(body, localenv);
+        // we have bound params, let's eval body
+        // by adding to the continuation
+        cont.addCommandSequence(body, localenv);
         return null;
     }
 
     /**
-     * Writes a Closure
+     * Writes a Closure.
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.write("#<procedure");
         if (logger.getLevelValue() < Logger.Level.INFO.getValue()) {
@@ -165,11 +150,13 @@ public class Closure extends Procedure
             new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
         }
         out.write(">");
+        return out;
     }
 
     /**
-     * @return the max number of arguments for this closure, or -1 in case of
-     * var args
+     * Gets the maximum arity for this closure.
+     *
+     * @return the max number of arguments, or -1 in case of var args
      *
      * @throws GleamException in case of errors
      */

@@ -42,9 +42,7 @@ import static gleam.util.Logger.Level.WARNING;
  */
 public class Pair extends AbstractEntity implements List
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
     private static final Logger logger = Logger.getLogger();
@@ -59,28 +57,68 @@ public class Pair extends AbstractEntity implements List
         this.analyzed = false;
     }
 
+    /**
+     * Evaluates the procedure call this pair stands for.
+     */
+    @SuppressWarnings("UnusedAssignment")
     @Override
-    public Entity getCar()
+    public Entity eval(Environment env, Continuation cont) throws GleamException
     {
-        return car;
-    }
+        ListIterator it = new ListIterator(this);
+        // operator
+        Entity operator = it.next();
 
-    @Override
-    public void setCar(Entity obj)
-    {
-        car = obj;
-    }
+        /* check for special forms or syntax rewriters */
+        if (operator instanceof Symbol) {
+            Entity e = env.lookup((Symbol) operator);
+            if (e instanceof SyntaxRewriter) {
+                // call of syntax rewriter, will be followed by evaluation of resulting expression
+                rewriteAndEval((SyntaxRewriter) e,
+                               new ArgumentList(),
+                               env,
+                               cont);
+                return null;
+            }
+            else if (e instanceof SyntaxProcedure) {
+                // special procedure call
+                // don't evaluate arguments at all!
+                cont.begin(new ExpressionAction(operator, env))
+                    .andThen(new ProcedureCallAction(new ArgumentList((List) this.getCdr()),
+                                                     env));
 
-    @Override
-    public Entity getCdr()
-    {
-        return cdr;
-    }
+                return null;
+            }
+        }
+        else if (operator instanceof Location) {
+            Entity e = ((Location) operator).get();
+            if (e instanceof SyntaxRewriter) {
+                // call of syntax rewriter, will be followed by evaluation of resulting expression
+                rewriteAndEval((SyntaxRewriter) e,
+                               new ArgumentList(),
+                               env,
+                               cont);
+                return null;
+            }
+        }
 
-    @Override
-    public void setCdr(Entity obj)
-    {
-        cdr = obj;
+        /* we have a regular procedure call */
+        ArgumentList argList = new ArgumentList();
+        Action action = cont.beginSequence();
+
+        // evaluate each argument
+        int argidx = 0;
+        while (it.hasNext()) {
+            Entity nextArg = it.next();
+            action = action.andThen(new ExpressionAction(nextArg, env))
+                           .andThen(new ObtainArgumentAction(argList,
+                                                             argidx++,
+                                                             env));
+        }
+        action = action.andThen(new ExpressionAction(operator, env))
+                       .andThen(new ProcedureCallAction(argList, env));
+
+        cont.endSequence();
+        return null;
     }
 
     /**
@@ -90,7 +128,8 @@ public class Pair extends AbstractEntity implements List
     public Entity analyze(Environment env) throws GleamException
     {
         if (!analyzed) {
-            if (getCar() instanceof Symbol && System.isSpecialForm((Symbol) getCar(), env)) {
+            if (getCar() instanceof Symbol && System.isSpecialForm((Symbol) getCar(),
+                                                                   env)) {
                 /* we have a special form, so let's
                  * perform syntax analysis
                  * -- may change car, cdr
@@ -121,13 +160,15 @@ public class Pair extends AbstractEntity implements List
                     restParent = restAsPair;
                     restAsPair.setCar(restAsPair.getCar().analyze(env));
                     rest = restAsPair.getCdr();
-                } else {
+                }
+                else {
                     /* this is an improper list
                      * (not necessarily an error: think lambda)
                      *
                      * analyze cdr in place
                      */
-                    logger.log(INFO, "dotted pair in analyze... check for correctness");
+                    logger.log(INFO,
+                               "dotted pair in analyze... check for correctness");
                     restParent.setCdr(rest.analyze(env));
                     break;
                 }
@@ -137,57 +178,28 @@ public class Pair extends AbstractEntity implements List
         return this;
     }
 
-    /**
-     * Evaluates the procedure call this pair stands for.
-     */
-    @SuppressWarnings("UnusedAssignment")
     @Override
-    public Entity eval(Environment env, Continuation cont) throws GleamException
+    public Entity getCar()
     {
-        ListIterator it = new ListIterator(this);
-        // operator
-        Entity operator = it.next();
+        return car;
+    }
 
-        /* check for special forms or syntax rewriters */
-        if (operator instanceof Symbol) {
-            Entity e = env.lookup((Symbol) operator);
-            if (e instanceof SyntaxRewriter) {
-                // call of syntax rewriter, will be followed by evaluation of resulting expression
-                rewriteAndEval((SyntaxRewriter) e, new ArgumentList(), env, cont);
-                return null;
-            } else if (e instanceof SyntaxProcedure) {
-                // special procedure call
-                // don't evaluate arguments at all!
-                cont.begin(new ExpressionAction(operator, env))
-                    .andThen(new ProcedureCallAction(new ArgumentList((List) this.getCdr()), env));
+    @Override
+    public void setCar(Entity obj)
+    {
+        car = obj;
+    }
 
-                return null;
-            }
-        } else if (operator instanceof Location) {
-            Entity e = ((Location) operator).get();
-            if (e instanceof SyntaxRewriter) {
-                // call of syntax rewriter, will be followed by evaluation of resulting expression
-                rewriteAndEval((SyntaxRewriter) e, new ArgumentList(), env, cont);
-                return null;
-            }
-        }
+    @Override
+    public Entity getCdr()
+    {
+        return cdr;
+    }
 
-        /* we have a regular procedure call */
-        ArgumentList argList = new ArgumentList();
-        Action action = cont.beginSequence();
-
-        // evaluate each argument
-        int argidx = 0;
-        while (it.hasNext()) {
-            Entity nextArg = it.next();
-            action = action.andThen(new ExpressionAction(nextArg, env))
-                           .andThen(new ObtainArgumentAction(argList, argidx++, env));
-        }
-        action = action.andThen(new ExpressionAction(operator, env))
-                       .andThen(new ProcedureCallAction(argList, env));
-
-        cont.endSequence();
-        return null;
+    @Override
+    public void setCdr(Entity obj)
+    {
+        cdr = obj;
     }
 
     /**
@@ -197,13 +209,15 @@ public class Pair extends AbstractEntity implements List
     public Entity optimize(Environment env) throws GleamException
     {
         /* first check for special forms */
-        if (getCar() instanceof Symbol && System.isSpecialForm((Symbol) getCar(), env)) {
+        if (getCar() instanceof Symbol && System.isSpecialForm((Symbol) getCar(),
+                                                               env)) {
             // TODO: should we do a System.optimizeSpecialForm(this, env) ?
             return this;
         }
 
         /* if the operator is a syntax rewriter, we must not optimize */
-        if ((getCar() instanceof SyntaxRewriter) || (getCar() instanceof Symbol && env.lookup((Symbol) getCar()) instanceof SyntaxRewriter)) {
+        if ((getCar() instanceof SyntaxRewriter) || (getCar() instanceof Symbol && env.lookup(
+                (Symbol) getCar()) instanceof SyntaxRewriter)) {
             return this;
         }
 
@@ -244,11 +258,13 @@ public class Pair extends AbstractEntity implements List
                 restParent = restAsList;
                 restAsList.setCar(restAsList.getCar().optimize(env));
                 rest = restAsList.getCdr();
-            } else {
+            }
+            else {
                 /* this is an improper list
                  * (not necessarily an error: e.g., lambda)
                  */
-                logger.log(INFO, "dotted pair in optimize... check for correctness");
+                logger.log(INFO,
+                           "dotted pair in optimize... check for correctness");
                 restParent.setCdr(rest.optimize(env));
                 break;
             }
@@ -256,25 +272,41 @@ public class Pair extends AbstractEntity implements List
         return retVal;
     }
 
+    private void rewriteAndEval(SyntaxRewriter syntaxRewriter,
+                                ArgumentList args,
+                                Environment env,
+                                Continuation cont)
+    {
+        cont.begin(new ExpressionAction(syntaxRewriter, env))
+            .andThen(new ProcedureCallAction(args, env))
+            .andThen(new EvalAction(env));
+        // pass this pair, not evaluated
+        args.set(0, this);
+    }
+
     /**
      * Writes this pair.
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         if (getCar() == Symbol.QUOTE && !(getCdr() instanceof EmptyList) && getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print("'");
             ((Pair) getCdr()).getCar().write(out);
-        } else if (getCar() == Symbol.QUASIQUOTE && !(getCdr() instanceof EmptyList) && getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
+        }
+        else if (getCar() == Symbol.QUASIQUOTE && !(getCdr() instanceof EmptyList) && getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print("`");
             ((Pair) getCdr()).getCar().write(out);
-        } else if (getCar() == Symbol.UNQUOTE && !(getCdr() instanceof EmptyList) && getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
+        }
+        else if (getCar() == Symbol.UNQUOTE && !(getCdr() instanceof EmptyList) && getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print(",");
             ((Pair) getCdr()).getCar().write(out);
-        } else if (getCar() == Symbol.UNQUOTE_SPLICING && !(getCdr() instanceof EmptyList) && getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
+        }
+        else if (getCar() == Symbol.UNQUOTE_SPLICING && !(getCdr() instanceof EmptyList) && getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print(",@");
             ((Pair) getCdr()).getCar().write(out);
-        } else {
+        }
+        else {
             Pair current = this;
             out.print("(");
             getCar().write(out);
@@ -284,7 +316,8 @@ public class Pair extends AbstractEntity implements List
                 if ((current.getCar() == null)) {
                     out.print("ERROR");
                     logger.log(WARNING, "null car", current);
-                } else {
+                }
+                else {
                     current.getCar().write(out);
                 }
             }
@@ -294,6 +327,7 @@ public class Pair extends AbstractEntity implements List
             }
             out.print(")");
         }
+        return out;
     }
 
     /**
@@ -305,14 +339,5 @@ public class Pair extends AbstractEntity implements List
     public Iterator<Entity> iterator()
     {
         return new ListIterator(this);
-    }
-
-    private void rewriteAndEval(SyntaxRewriter syntaxRewriter, ArgumentList args, Environment env, Continuation cont)
-    {
-        cont.begin(new ExpressionAction(syntaxRewriter, env))
-            .andThen(new ProcedureCallAction(args, env))
-            .andThen(new EvalAction(env));
-        // pass this pair, not evaluated
-        args.set(0, this);
     }
 }

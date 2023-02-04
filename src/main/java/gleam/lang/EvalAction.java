@@ -33,29 +33,27 @@
 package gleam.lang;
 
 /**
- * Eval action
+ * Eval action.
  */
 public class EvalAction extends Action
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 2L;
 
-    /** Creates a new instance of this action */
-    public EvalAction(Environment env, Action next)
-    {
-        super(env, next);
-    }
-
-    /** Creates a new instance of this action */
+    /** Creates a new instance of this action. */
     public EvalAction(Environment env)
     {
         this(env, null);
     }
 
+    /** Creates a new instance of this action. */
+    public EvalAction(Environment env, Action next)
+    {
+        super(env, next);
+    }
+
     /**
-     * Invokes this action, causing the evaluation of its argument
+     * Invokes this action, causing the evaluation of its argument.
      *
      * @param arg  the Entity to evaluate
      * @param cont the current Continuation

@@ -69,27 +69,13 @@ public abstract class AbstractEntity implements Entity
     }
 
     /**
-     * Writes this entity in human-readable form
+     * Writes this entity in human-readable form.
      */
     @Override
-    public void display(java.io.PrintWriter out)
+    public PrintWriter display(PrintWriter out)
     {
         // default: use write method
-        write(out);
-    }
-
-    /**
-     * Returns a representation of this entity, in the same format as a call to
-     * `display` would produce.
-     *
-     * @return a string representation of the entity.
-     */
-    @Override
-    public String toString()
-    {
-        StringWriter sw;
-        display(new PrintWriter(sw = new StringWriter()));
-        return sw.toString();
+        return write(out);
     }
 
     /**
@@ -103,6 +89,20 @@ public abstract class AbstractEntity implements Entity
     {
         StringWriter sw;
         write(new PrintWriter(sw = new StringWriter()));
+        return sw.toString();
+    }
+
+    /**
+     * Returns a representation of this entity, in the same format as a call to
+     * `display` would produce.
+     *
+     * @return a string representation of the entity.
+     */
+    @Override
+    public String toString()
+    {
+        StringWriter sw;
+        display(new PrintWriter(sw = new StringWriter()));
         return sw.toString();
     }
 }

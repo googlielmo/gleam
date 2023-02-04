@@ -51,12 +51,18 @@ public final class Strings
              * string?
              * Tests if argument is a string
              */
-            new Primitive("string?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is a string, false otherwise", "E.g. (string? \"hello\") => #t" /* doc strings */)
+            new Primitive("string?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is a string, false otherwise",
+                          "E.g. (string? \"hello\") => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj, Environment env, Continuation cont)
+                public Entity apply1(Entity obj,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof MutableString);
                 }

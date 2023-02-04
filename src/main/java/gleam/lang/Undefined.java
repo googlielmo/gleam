@@ -31,17 +31,16 @@ import gleam.util.Logger;
 import java.io.PrintWriter;
 
 /**
- * The Scheme undefined value (a singleton). Creation date: (07/nov/2001
- * 23.40.59)
+ * The Scheme undefined value (a singleton).
+ * <p>
+ * Creation date: (07/nov/2001 23.40.59)
  */
 public final class Undefined extends AbstractEntity
 {
 
     /** the Undefined singleton */
     public static final Undefined VALUE = new Undefined();
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger();
 
@@ -63,9 +62,10 @@ public final class Undefined extends AbstractEntity
      * Writes the undefined value
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.write("#<undefined>");
+        return out;
     }
 
     /**

@@ -36,9 +36,7 @@ import static gleam.util.Logger.Level.DEBUG;
  */
 public class GleamException extends Exception
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
     private static final Logger logger = Logger.getLogger();
@@ -50,17 +48,19 @@ public class GleamException extends Exception
         this(message, Void.VALUE);
     }
 
-    public GleamException(Primitive primitive, String message, Entity value)
-    {
-        this(primitive + ": " + message, value);
-    }
-
     public GleamException(String message, Entity value)
     {
         super(message);
         errobj = (value != null) ? value : Void.VALUE;
 
-        logger.log(DEBUG, () -> String.format("Generated GleamException: %s", message));
+        logger.log(DEBUG,
+                   () -> String.format("Generated GleamException: %s",
+                                       message));
+    }
+
+    public GleamException(Primitive primitive, String message, Entity value)
+    {
+        this(primitive + ": " + message, value);
     }
 
     /**

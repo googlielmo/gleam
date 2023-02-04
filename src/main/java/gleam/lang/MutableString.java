@@ -30,13 +30,13 @@ import java.io.PrintWriter;
 import java.util.Objects;
 
 /**
- * Scheme mutable string. Creation date: (28/10/2001 12.22.48)
+ * Scheme mutable string.
+ * <p>
+ * Creation date: (28/10/2001 12.22.48)
  */
 public class MutableString extends AbstractEntity
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
     /** The current string value. */
@@ -54,19 +54,10 @@ public class MutableString extends AbstractEntity
     }
 
     /**
-     * Obtains the current string value as a java.lang.String.
-     */
-    @Override
-    public String toString()
-    {
-        return value.toString();
-    }
-
-    /**
      * Writes a Scheme string.
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.print("\"");
         for (int i = 0; i < value.length(); ++i) {
@@ -91,15 +82,32 @@ public class MutableString extends AbstractEntity
             }
         }
         out.print("\"");
+        return out;
     }
 
     /**
      * Displays a Scheme string.
      */
     @Override
-    public void display(java.io.PrintWriter out)
+    public PrintWriter display(PrintWriter out)
     {
         out.print(value);
+        return out;
+    }
+
+    /**
+     * Obtains the current string value as a java.lang.String.
+     */
+    @Override
+    public String toString()
+    {
+        return value.toString();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(value);
     }
 
     @Override
@@ -113,11 +121,5 @@ public class MutableString extends AbstractEntity
         }
         MutableString that = (MutableString) o;
         return value.toString().equals(that.toString());
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(value);
     }
 }

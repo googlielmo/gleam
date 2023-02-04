@@ -36,9 +36,7 @@ import java.util.Iterator;
  */
 public class PrimitiveProcedure extends Procedure
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
     protected final Primitive value;
@@ -52,7 +50,9 @@ public class PrimitiveProcedure extends Procedure
     }
 
     @Override
-    public Entity apply(List arg, Environment env, Continuation cont) throws GleamException
+    public Entity apply(List arg,
+                        Environment env,
+                        Continuation cont) throws GleamException
     {
         if (value.maxArgs < 0 || value.maxArgs > 3) {
             if (value.minArgs >= 0 || value.maxArgs >= 0) {
@@ -81,14 +81,12 @@ public class PrimitiveProcedure extends Procedure
             case 2:
                 return value.apply2(argArray[0], argArray[1], env, cont);
             default: // 3
-                return value.apply3(argArray[0], argArray[1], argArray[2], env, cont);
+                return value.apply3(argArray[0],
+                                    argArray[1],
+                                    argArray[2],
+                                    env,
+                                    cont);
         }
-    }
-
-    @Override
-    public void write(PrintWriter out)
-    {
-        out.write("#<primitive-procedure " + value.toString() + ">");
     }
 
     private void checkNumArgs(List args) throws GleamException
@@ -108,5 +106,12 @@ public class PrimitiveProcedure extends Procedure
                 }
             }
         }
+    }
+
+    @Override
+    public PrintWriter write(PrintWriter out)
+    {
+        out.write("#<primitive-procedure " + value.toString() + ">");
+        return out;
     }
 }

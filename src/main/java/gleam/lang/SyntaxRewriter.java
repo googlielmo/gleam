@@ -38,9 +38,6 @@ import java.io.PrintWriter;
 public final class SyntaxRewriter extends Closure implements SyntaxObject
 {
 
-    /**
-     * serialVersionUID
-     */
     private static final long serialVersionUID = 1L;
 
     private static final Logger logger = Logger.getLogger();
@@ -56,7 +53,7 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
      * @param out PrintWriter
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.write("#<syntax-rewriter");
         if (logger.getLevelValue() < Logger.Level.INFO.getValue()) {
@@ -64,5 +61,6 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
             new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
         }
         out.write(">");
+        return out;
     }
 }

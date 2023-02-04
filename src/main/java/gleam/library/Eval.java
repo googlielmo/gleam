@@ -55,21 +55,32 @@ public final class Eval
              * eval
              * Evaluates an expression in an environment
              */
-            new Primitive("eval", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 2, /* min, max no. of arguments */
-                          "Evaluates an expression in a given environment", "E.g. (eval '(+ 1 2) (interaction-environment)) => 3" /* doc strings */)
+            new Primitive("eval",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          2, /* min, max no. of arguments */
+                          "Evaluates an expression in a given environment",
+                          "E.g. (eval '(+ 1 2) (interaction-environment)) => 3" /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont) throws GleamException
+                public Entity apply2(Entity arg1,
+                                     Entity arg2,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     Environment eval_env;
                     if (arg2 == null) {
                         eval_env = env;
-                    } else {
+                    }
+                    else {
                         try {
                             eval_env = (Environment) arg2;
-                        } catch (ClassCastException e) {
-                            throw new GleamException(this, "not an environment", arg2);
+                        }
+                        catch (ClassCastException e) {
+                            throw new GleamException(this,
+                                                     "not an environment",
+                                                     arg2);
                         }
                     }
                     arg1 = arg1.analyze(env).optimize(eval_env);
@@ -82,23 +93,35 @@ public final class Eval
              * null-environment
              * Returns the null environment
              */
-            new Primitive("null-environment", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns the null environment", "A scheme-report version number must be specified, e.g. (null-environment 5). " + "Currently supported versions are 4 and 5" /* doc strings */)
+            new Primitive("null-environment",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns the null environment",
+                          "A scheme-report version number must be specified, e.g. (null-environment 5). " + "Currently supported versions are 4 and 5" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     Number version;
                     try {
                         version = (Number) arg1;
                         if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
                             return Interpreter.getNullEnv();
-                        } else {
-                            throw new GleamException(this, "version not supported", version);
                         }
-                    } catch (ClassCastException e) {
-                        throw new GleamException(this, "not a version number", arg1);
+                        else {
+                            throw new GleamException(this,
+                                                     "version not supported",
+                                                     version);
+                        }
+                    }
+                    catch (ClassCastException e) {
+                        throw new GleamException(this,
+                                                 "not a version number",
+                                                 arg1);
                     }
                 }
             },
@@ -107,23 +130,35 @@ public final class Eval
              * scheme-report-environment
              * Returns the scheme-report environment
              */
-            new Primitive("scheme-report-environment", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns the scheme-report environment", "A scheme-report version number must be specified, e.g. (scheme-report-environment 5). " + "Currently supported versions are 4 and 5" /* doc strings */)
+            new Primitive("scheme-report-environment",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns the scheme-report environment",
+                          "A scheme-report version number must be specified, e.g. (scheme-report-environment 5). " + "Currently supported versions are 4 and 5" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     Number version;
                     try {
                         version = (Number) arg1;
                         if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
                             return Interpreter.getSchemeReportEnv();
-                        } else {
-                            throw new GleamException(this, "version not supported", version);
                         }
-                    } catch (ClassCastException e) {
-                        throw new GleamException(this, "not a version number", arg1);
+                        else {
+                            throw new GleamException(this,
+                                                     "version not supported",
+                                                     version);
+                        }
+                    }
+                    catch (ClassCastException e) {
+                        throw new GleamException(this,
+                                                 "not a version number",
+                                                 arg1);
                     }
                 }
             },
@@ -132,9 +167,13 @@ public final class Eval
              * interaction-environment
              * Returns the interaction environment
              */
-            new Primitive("interaction-environment", INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          0, 0, /* min, max no. of arguments */
-                          "Returns the interaction (top-level) environment", null /* doc strings */)
+            new Primitive("interaction-environment",
+                          INTERACTION_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          0,
+                          0, /* min, max no. of arguments */
+                          "Returns the interaction (top-level) environment",
+                          null /* doc strings */)
             {
                 @Override
                 public Entity apply0(Environment env, Continuation cont)
@@ -147,9 +186,13 @@ public final class Eval
              * current-environment
              * Returns the current environment
              */
-            new Primitive("current-environment", INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          0, 0, /* min, max no. of arguments */
-                          "Returns the current environment", null /* doc strings */)
+            new Primitive("current-environment",
+                          INTERACTION_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          0,
+                          0, /* min, max no. of arguments */
+                          "Returns the current environment",
+                          null /* doc strings */)
             {
                 @Override
                 public Entity apply0(Environment env, Continuation cont)
@@ -162,15 +205,24 @@ public final class Eval
              * in-environment
              * Returns the current environment
              */
-            new Primitive("in-environment", INTERACTION_ENV, Primitive.KEYWORD, /* environment, type */
-                          2, 2, /* min, max no. of arguments */
-                          "Evaluates an expression in a given environment", "E.g. (in-environment (scheme-report-environment 5) (+ 1 2)) => 3" /* doc strings */)
+            new Primitive("in-environment",
+                          INTERACTION_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          2,
+                          2, /* min, max no. of arguments */
+                          "Evaluates an expression in a given environment",
+                          "E.g. (in-environment (scheme-report-environment 5) (+ 1 2)) => 3" /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity argEnv, Entity argExpr, Environment env, Continuation cont)
+                public Entity apply2(Entity argEnv,
+                                     Entity argExpr,
+                                     Environment env,
+                                     Continuation cont)
                 {
-                    cont.begin(new ExpressionAction(argEnv, env))         // 1) evaluate environment expr
-                        .andThen(new ExpressionInEnvironmentAction(argExpr, env)); // 2) evaluate expr in that env
+                    cont.begin(new ExpressionAction(argEnv,
+                                                    env))         // 1) evaluate environment expr
+                        .andThen(new ExpressionInEnvironmentAction(argExpr,
+                                                                   env)); // 2) evaluate expr in that env
 
                     return null;
                 }
@@ -180,9 +232,13 @@ public final class Eval
              * make-environment
              * Returns a new environment
              */
-            new Primitive("make-environment", INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          0, 0, /* min, max no. of arguments */
-                          "Creates a new environment", "E.g. (in-environment (make-environment) (begin (define a 7) a)) => 7" /* doc strings */)
+            new Primitive("make-environment",
+                          INTERACTION_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          0,
+                          0, /* min, max no. of arguments */
+                          "Creates a new environment",
+                          "E.g. (in-environment (make-environment) (begin (define a 7) a)) => 7" /* doc strings */)
             {
                 @Override
                 public Entity apply0(Environment env, Continuation cont)
@@ -195,12 +251,18 @@ public final class Eval
              * environment?
              * Returns a new environment
              */
-            new Primitive("environment?", INTERACTION_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is an environment, false otherwise", "E.g. (environment? (scheme-report-environment 5)) => #t" /* doc strings */)
+            new Primitive("environment?",
+                          INTERACTION_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is an environment, false otherwise",
+                          "E.g. (environment? (scheme-report-environment 5)) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg, Environment env, Continuation cont)
+                public Entity apply1(Entity arg,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(arg instanceof Environment);
                 }

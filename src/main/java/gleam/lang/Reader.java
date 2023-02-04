@@ -47,6 +47,7 @@ class Reader
      *
      * @param r java.io.Reader
      */
+    @SuppressWarnings("all") // for Unicode escape sequences
     public Reader(java.io.Reader r)
     {
         tkzr = new StreamTokenizer(r);
@@ -60,7 +61,8 @@ class Reader
         tkzr.wordChars('A', 'Z'); // A-Z
         tkzr.wordChars('a', 'z'); // a-z
         tkzr.wordChars('0', '9'); // 0-9
-        tkzr.wordChars('\u00A1', '\u00FF'); // Unicode latin-1 supplement, symbols and letters
+        tkzr.wordChars('\u00A1',
+                       '\u00FF'); // Unicode latin-1 supplement, symbols and letters
         tkzr.wordChars('*', '.'); // '*', '+', ',', '-', '.'
         tkzr.wordChars('!', '!'); // '!'
         tkzr.wordChars('#', '#'); // '#' Gleam extension
@@ -83,14 +85,18 @@ class Reader
                 o = readObject();
             }
             return o;
-        } catch (java.io.IOException e) {
+        }
+        catch (java.io.IOException e) {
             throw new GleamException("read: I/O Error " + e.getMessage());
         }
     }
 
     void logReadOthers(String token, String type)
     {
-        logger.log(DEBUG, () -> String.format("readOthers: interpreting '%s' as a %s", token, type));
+        logger.log(DEBUG,
+                   () -> String.format("readOthers: interpreting '%s' as a %s",
+                                       token,
+                                       type));
     }
 
     private Entity readList(Pair l) throws GleamException, java.io.IOException
@@ -110,31 +116,40 @@ class Reader
             if (t.equals(")")) {
                 if (first) {
                     return EmptyList.VALUE;
-                } else {
+                }
+                else {
                     return l;
                 }
-            } else if (t.equals(".")) {
+            }
+            else if (t.equals(".")) {
                 if (!seendot) {
                     if (first) {
-                        throw new GleamException("read: at least one datum must precede \".\"");
-                    } else {
+                        throw new GleamException(
+                                "read: at least one datum must precede \".\"");
+                    }
+                    else {
                         ins.setCdr(readObject());
                         seendot = true;
                     }
-                } else {
-                    throw new GleamException("read: more than one \".\" in a list");
                 }
-            } else if (!seendot) {
+                else {
+                    throw new GleamException(
+                            "read: more than one \".\" in a list");
+                }
+            }
+            else if (!seendot) {
                 tkzr.pushBack();
                 if (first) {
                     first = false;
                     ins.setCar(readObject());
-                } else {
+                }
+                else {
                     Pair nextcons = new Pair(readObject(), EmptyList.VALUE);
                     ins.setCdr(nextcons);
                     ins = nextcons;
                 }
-            } else {
+            }
+            else {
                 throw new GleamException("read: missing \")\"");
             }
         }
@@ -161,11 +176,13 @@ class Reader
                 return readList(l);
             case "'": { // quote
                 Entity quotedobj = readObject();
-                return new Pair(Symbol.QUOTE, new Pair(quotedobj, EmptyList.VALUE));
+                return new Pair(Symbol.QUOTE,
+                                new Pair(quotedobj, EmptyList.VALUE));
             }
             case "`": { // semiquote
                 Entity quotedobj = readObject();
-                return new Pair(Symbol.QUASIQUOTE, new Pair(quotedobj, EmptyList.VALUE));
+                return new Pair(Symbol.QUASIQUOTE,
+                                new Pair(quotedobj, EmptyList.VALUE));
             }
             case ")":  // extra parens
                 throw new GleamException("read: unexpected \")\"");
@@ -176,40 +193,54 @@ class Reader
 
     private Entity readOthers(String t) throws GleamException, java.io.IOException
     {
-        if (".+-0123456789".indexOf(t.charAt(0)) >= 0 && !t.equals("+") && !t.equals("-") && !t.equals("...")) {
+        if (".+-0123456789".indexOf(t.charAt(0)) >= 0 && !t.equals("+") && !t.equals(
+                "-") && !t.equals("...")) {
             try {
                 logReadOthers(t, "number");
                 return new Real(Double.parseDouble(t));
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e) {
                 throw new GleamException("read: invalid number " + t);
             }
-        } else if (t.startsWith(",@")) {
+        }
+        else if (t.startsWith(",@")) {
             Entity unquotedobj = readObject(t.substring(2));
-            return new Pair(Symbol.UNQUOTE_SPLICING, new Pair(unquotedobj, EmptyList.VALUE));
-        } else if (t.startsWith(",")) {
+            return new Pair(Symbol.UNQUOTE_SPLICING,
+                            new Pair(unquotedobj, EmptyList.VALUE));
+        }
+        else if (t.startsWith(",")) {
             Entity unquotedobj = readObject(t.substring(1));
-            return new Pair(Symbol.UNQUOTE, new Pair(unquotedobj, EmptyList.VALUE));
-        } else if (t.startsWith("\"")) {
+            return new Pair(Symbol.UNQUOTE,
+                            new Pair(unquotedobj, EmptyList.VALUE));
+        }
+        else if (t.startsWith("\"")) {
             // it is a string
             logReadOthers(t, "string");
             return new MutableString(t.substring(1));
-        } else if (t.equalsIgnoreCase("#f")) {
+        }
+        else if (t.equalsIgnoreCase("#f")) {
             return Boolean.falseValue;
-        } else if (t.equalsIgnoreCase("#t")) {
+        }
+        else if (t.equalsIgnoreCase("#t")) {
             return Boolean.trueValue;
-        } else if (t.startsWith("#\\")) {
+        }
+        else if (t.startsWith("#\\")) {
             // poor man's character parser
             String charstring = t.substring(2);
             if (charstring.equalsIgnoreCase("space")) {
                 return new Character(' ');
-            } else if (charstring.equalsIgnoreCase("newline")) {
+            }
+            else if (charstring.equalsIgnoreCase("newline")) {
                 return new Character('\n');
-            } else if (charstring.length() == 1) {
+            }
+            else if (charstring.length() == 1) {
                 return new Character(charstring.charAt(0));
-            } else {
+            }
+            else {
                 throw new GleamException("read: invalid character");
             }
-        } else {
+        }
+        else {
             // it is a symbol
             logReadOthers(t, "symbol");
             return Symbol.makeSymbol(t);

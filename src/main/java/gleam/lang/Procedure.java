@@ -31,5 +31,7 @@ package gleam.lang;
  */
 public abstract class Procedure extends AbstractEntity
 {
-    public abstract Entity apply(List args, Environment env, Continuation cont) throws GleamException;
+    public abstract Entity apply(List args,
+                                 Environment env,
+                                 Continuation cont) throws GleamException;
 }

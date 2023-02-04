@@ -59,6 +59,11 @@ class ReaderTest
         assertEquals(expected, r.read());
     }
 
+    private Reader getReader(String expr)
+    {
+        return new Reader(new StringReader(expr));
+    }
+
     @Test
     void read_single_element_list() throws GleamException
     {
@@ -110,7 +115,13 @@ class ReaderTest
         Symbol a = Symbol.makeSymbol("a");
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
-        Pair expected = new Pair(a, new Pair(b, new Pair(c, new Pair(new Pair(Symbol.makeSymbol("d"), EmptyList.VALUE), EmptyList.VALUE))));
+        Pair expected = new Pair(a,
+                                 new Pair(b,
+                                          new Pair(c,
+                                                   new Pair(new Pair(Symbol.makeSymbol(
+                                                           "d"),
+                                                                     EmptyList.VALUE),
+                                                            EmptyList.VALUE))));
         String expr = "(a b c (d))";
 
         Reader r = getReader(expr);
@@ -135,6 +146,8 @@ class ReaderTest
         assertTrue(equalPairs(expected, pair));
     }
 
+    // numbers
+
     @Test
     void read_three_element_dotted_list() throws GleamException
     {
@@ -151,7 +164,7 @@ class ReaderTest
         assertTrue(equalPairs(expected, pair));
     }
 
-    // numbers
+    // strings
 
     @Test
     void read_number() throws GleamException
@@ -162,8 +175,6 @@ class ReaderTest
         Reader r = getReader(expr);
         assertEquals(expected, r.read());
     }
-
-    // strings
 
     @Test
     void read_string() throws GleamException
@@ -235,6 +246,8 @@ class ReaderTest
         assertEquals(expected, r.read());
     }
 
+    // utils
+
     @Test
     void read_string_with_escaped_carriage_return() throws GleamException
     {
@@ -245,13 +258,6 @@ class ReaderTest
         assertEquals(expected, r.read());
     }
 
-    // utils
-
-    private Reader getReader(String expr)
-    {
-        return new Reader(new StringReader(expr));
-    }
-
     private boolean equalPairs(Pair a, Pair b)
     {
 
@@ -259,7 +265,8 @@ class ReaderTest
 
         if (a.getCar() instanceof Pair && b.getCar() instanceof Pair) {
             cars = equalPairs((Pair) a.getCar(), (Pair) b.getCar());
-        } else {
+        }
+        else {
             cars = a.getCar().equals(b.getCar());
         }
         if (!cars) {

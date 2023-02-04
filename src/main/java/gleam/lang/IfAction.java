@@ -37,26 +37,27 @@ package gleam.lang;
  */
 public class IfAction extends Action
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 2L;
 
     /** consequent, alternate parts of the if command */
     protected final Entity consequent, alternate;
 
     /** Creates a new IfAction */
-    public IfAction(Entity consequent, Entity alternate, Environment env, Action next)
+    public IfAction(Entity consequent, Entity alternate, Environment env)
+    {
+        this(consequent, alternate, env, null);
+    }
+
+    /** Creates a new IfAction */
+    public IfAction(Entity consequent,
+                    Entity alternate,
+                    Environment env,
+                    Action next)
     {
         super(env, next);
         this.consequent = consequent;
         this.alternate = alternate;
-    }
-
-    /** Creates a new IfAction */
-    public IfAction(Entity consequent, Entity alternate, Environment env)
-    {
-        this(consequent, alternate, env, null);
     }
 
     /**
@@ -72,12 +73,14 @@ public class IfAction extends Action
      * @throws gleam.lang.GleamException in case of errors
      */
     @Override
-    Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException
+    Entity invoke(Entity arg,
+                  Continuation cont) throws gleam.lang.GleamException
     {
         cont.head = next;
         if (arg != Boolean.falseValue) {
             return consequent.eval(env, cont);
-        } else {
+        }
+        else {
             return alternate.eval(env, cont);
         }
     }

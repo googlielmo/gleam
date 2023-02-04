@@ -84,24 +84,39 @@ public class ListIterator implements Iterator<Entity>
                 retVal = pair.getCdr();
                 pair = EmptyList.VALUE;
                 if (!allowImproper) {
-                    throw (NoSuchElementException) new NoSuchElementException("improper list").initCause(new ImproperListException(retVal));
+                    throw (NoSuchElementException) new NoSuchElementException(
+                            "improper list").initCause(new ImproperListException(
+                            retVal));
                 }
-            } else {
+            }
+            else {
                 retVal = pair.getCar();
                 restPair = pair;
                 if (pair.getCdr() instanceof List) {
                     pair = (List) pair.getCdr();
-                } else {
+                }
+                else {
                     isImproper = true;
                 }
             }
-        } catch (GleamException e) {
-            throw (NoSuchElementException) new NoSuchElementException().initCause(e);
+        }
+        catch (GleamException e) {
+            throw (NoSuchElementException) new NoSuchElementException().initCause(
+                    e);
         }
         if (retVal == null) {
             throw new NoSuchElementException("null element");
         }
         return retVal;
+    }
+
+    /**
+     * Remove operation not supported.
+     */
+    @Override
+    public void remove()
+    {
+        throw new UnsupportedOperationException("Unsupported remove operation");
     }
 
     /**
@@ -117,18 +132,10 @@ public class ListIterator implements Iterator<Entity>
         }
         if (isImproper && pair == EmptyList.VALUE) {
             restPair.setCdr(newArg);
-        } else {
+        }
+        else {
             restPair.setCar(newArg);
         }
-    }
-
-    /**
-     * Remove operation currently not supported.
-     */
-    @Override
-    public void remove()
-    {
-        throw new UnsupportedOperationException("Unsupported remove operation");
     }
 
     /**

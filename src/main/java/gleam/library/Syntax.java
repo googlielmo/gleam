@@ -63,12 +63,18 @@ public final class Syntax
              * quote
              * Returns its argument without evaluation.
             */
-            new Primitive("quote", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Gives its argument unevaluated, e.g. (quote x); 'x", null /* doc strings */)
+            new Primitive("quote",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Gives its argument unevaluated, e.g. (quote x); 'x",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return arg1;
                 }
@@ -78,12 +84,18 @@ public final class Syntax
              * define
              * Defines a new binding in the environment.
             */
-            new Primitive("define", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Variable or procedure definition, e.g. (define (inc x) (+ x 1))", "Can be used at top-level to create a new global variable, " + "e.g. (define x 1); or at the beginning of a procedure body " + "to create a new local variable." /* doc strings */)
+            new Primitive("define",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          2,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Variable or procedure definition, e.g. (define (inc x) (+ x 1))",
+                          "Can be used at top-level to create a new global variable, " + "e.g. (define x 1); or at the beginning of a procedure body " + "to create a new local variable." /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     try {
                         ListIterator it = new ListIterator(args);
@@ -95,7 +107,9 @@ public final class Syntax
                          */
                         if (target instanceof Symbol) {
                             if (it.hasNext()) {
-                                throw new GleamException(this, "too many arguments", args);
+                                throw new GleamException(this,
+                                                         "too many arguments",
+                                                         args);
                             }
                             Symbol s = (Symbol) target;
                             // create binding
@@ -105,7 +119,8 @@ public final class Syntax
                                 .andThen(new AssignmentAction(s, env));
 
                             return null;
-                        } else if (target instanceof Pair) {
+                        }
+                        else if (target instanceof Pair) {
                             Entity rtarget = ((List) target).getCar();
                             Entity params = ((List) target).getCdr();
                             Pair body = new Pair(value, it.rest());
@@ -117,14 +132,23 @@ public final class Syntax
                                 cont.begin(new AssignmentAction(s, env));
 
                                 return new Closure(params, body, env);
-                            } else {
-                                throw new GleamException(this, "invalid procedure name", rtarget);
                             }
-                        } else {
-                            throw new GleamException(this, "invalid form", args);
+                            else {
+                                throw new GleamException(this,
+                                                         "invalid procedure name",
+                                                         rtarget);
+                            }
                         }
-                    } catch (ClassCastException e) {
-                        throw new GleamException(this, "invalid arguments", args);
+                        else {
+                            throw new GleamException(this,
+                                                     "invalid form",
+                                                     args);
+                        }
+                    }
+                    catch (ClassCastException e) {
+                        throw new GleamException(this,
+                                                 "invalid arguments",
+                                                 args);
                     }
                 }
             },
@@ -133,19 +157,28 @@ public final class Syntax
              * lambda
              * Creates a new procedure.
             */
-            new Primitive("lambda", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Creates a procedure, e.g. (lambda (x) (+ x 1))", null /* doc strings */)
+            new Primitive("lambda",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          2,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Creates a procedure, e.g. (lambda (x) (+ x 1))",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     try {
                         Entity lambdaParams = args.getCar();
                         Pair lambdaBody = (Pair) args.getCdr();
                         return new Closure(lambdaParams, lambdaBody, env);
-                    } catch (ClassCastException e) {
-                        throw new GleamException(this, "invalid procedure definition", args);
+                    }
+                    catch (ClassCastException e) {
+                        throw new GleamException(this,
+                                                 "invalid procedure definition",
+                                                 args);
                     }
                 }
             },
@@ -154,12 +187,20 @@ public final class Syntax
              * if
              * Conditional expression.
             */
-            new Primitive("if", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          2, 3, /* min, max no. of arguments */
-                          "Conditional evaluation, e.g. (if (eqv? 1 0) 'hmm 'ok)", null /* doc strings */)
+            new Primitive("if",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          2,
+                          3, /* min, max no. of arguments */
+                          "Conditional evaluation, e.g. (if (eqv? 1 0) 'hmm 'ok)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity apply3(Entity test, Entity consequent, Entity alternate, Environment env, Continuation cont)
+                public Entity apply3(Entity test,
+                                     Entity consequent,
+                                     Entity alternate,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     if (alternate == null) {
                         alternate = Void.VALUE;
@@ -176,12 +217,19 @@ public final class Syntax
              * set!
              * Assigns a value to a variable
             */
-            new Primitive("set!", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          2, 2, /* min, max no. of arguments */
-                          "Variable assignment, e.g. (set! x 11)", "The variable must be already bound, e.g. with define" /* doc strings */)
+            new Primitive("set!",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          2,
+                          2, /* min, max no. of arguments */
+                          "Variable assignment, e.g. (set! x 11)",
+                          "The variable must be already bound, e.g. with define" /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity arg1, Entity obj, Environment env, Continuation cont) throws GleamException
+                public Entity apply2(Entity arg1,
+                                     Entity obj,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     try {
                         Symbol s = (Symbol) arg1;
@@ -189,8 +237,11 @@ public final class Syntax
                             .andThen(new AssignmentAction(s, env, null));
 
                         return null;
-                    } catch (ClassCastException e) {
-                        throw new GleamException(this, "argument is not a symbol", arg1);
+                    }
+                    catch (ClassCastException e) {
+                        throw new GleamException(this,
+                                                 "argument is not a symbol",
+                                                 arg1);
                     }
                 }
             },
@@ -200,15 +251,21 @@ public final class Syntax
              * Evaluates each argument sequentially from left to right.
              * The result of the last evaluation is returned.
             */
-            new Primitive("begin", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Sequential execution, e.g. (begin (first-step) (second-step))", null /* doc strings */)
+            new Primitive("begin",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          0,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Sequential execution, e.g. (begin (first-step) (second-step))",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont)
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     // equivalent to the body of a procedure with no arguments
-                    cont.addCommandSequenceActions(args, env);
+                    cont.addCommandSequence(args, env);
                     return null;
                 }
             },
@@ -217,18 +274,26 @@ public final class Syntax
              * case
              * @todo implementation
             */
-            new Primitive("case", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "See cond", null /* doc strings */)
+            new Primitive("case",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          0,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "See cond",
+                          null /* doc strings */)
             {},
 
             /**
              * do
              * @todo implementation
             */
-            new Primitive("do", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Iteration syntax (not implemented)", null /* doc strings */)
+            new Primitive("do",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          0,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Iteration syntax (not implemented)",
+                          null /* doc strings */)
             {},
 
             //    /**
@@ -244,18 +309,26 @@ public final class Syntax
             /**
              * quasiquote
             */
-            new Primitive("quasiquote", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Gives its argument almost unevaluated, e.g. (quasiquote x); `x", "If a comma appears within the argument, the expression following the " + "comma is evaluated (\"unquoted\") and its result is inserted into " + "the structure instead of the comma and the expression. If a comma " + "appears followed immediately by an at-sign (@), then the following " + "expression must evaluate to a list; the opening and closing " + "parentheses of the list are then \"stripped away\" and the elements " + "of the list are inserted in place of the comma at-sign expression " + "sequence. (unquote x) is equivalent to ,x and (unquote-splicing x) " + "is equivalent to ,@x." /* doc strings */)
+            new Primitive("quasiquote",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Gives its argument almost unevaluated, e.g. (quasiquote x); `x",
+                          "If a comma appears within the argument, the expression following the " + "comma is evaluated (\"unquoted\") and its result is inserted into " + "the structure instead of the comma and the expression. If a comma " + "appears followed immediately by an at-sign (@), then the following " + "expression must evaluate to a list; the opening and closing " + "parentheses of the list are then \"stripped away\" and the elements " + "of the list are inserted in place of the comma at-sign expression " + "sequence. (unquote x) is equivalent to ,x and (unquote-splicing x) " + "is equivalent to ,@x." /* doc strings */)
             {},
 
             /**
              * else
              * @todo implementation
             */
-            new Primitive("else", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "See cond", null /* doc strings */)
+            new Primitive("else",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          0,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "See cond",
+                          null /* doc strings */)
             {},
 
             //    /**
@@ -271,62 +344,93 @@ public final class Syntax
             /**
              * let
             */
-            new Primitive("let", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          1, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Introduce bindings, e.g. (let ((x 2) (y 3)) (* x y))", null /* doc strings */)
+            new Primitive("let",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          1,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Introduce bindings, e.g. (let ((x 2) (y 3)) (* x y))",
+                          null /* doc strings */)
             {},
 
             /**
              * let*
              * @todo implementation
             */
-            new Primitive("let*", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          1, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Introduce bindings sequentially, e.g. (let* ((x 9) (y (+ x 1))) (+ x y))", null /* doc strings */)
+            new Primitive("let*",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          1,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Introduce bindings sequentially, e.g. (let* ((x 9) (y (+ x 1))) (+ x y))",
+                          null /* doc strings */)
             {},
 
             /**
              * cond
             */
-            new Primitive("cond", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          1, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Conditional, e.g. (cond ((> 3 3) 'greater) ((< 3 3) 'less) (else 'equal))", null /* doc strings */)
+            new Primitive("cond",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          1,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Conditional, e.g. (cond ((> 3 3) 'greater) ((< 3 3) 'less) (else 'equal))",
+                          null /* doc strings */)
             {},
 
             /**
              * unquote
             */
-            new Primitive("unquote", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Or ','. Evaluates an expression inserting its result in a quasiquote template, e.g. `(1 ,(+ 1 1) 3)", null /* doc strings */)
+            new Primitive("unquote",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Or ','. Evaluates an expression inserting its result in a quasiquote template, e.g. `(1 ,(+ 1 1) 3)",
+                          null /* doc strings */)
             {},
 
             /**
              * unquote-splicing
             */
-            new Primitive("unquote-splicing", NULL_ENV, Primitive.KEYWORD, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Or ',@'. Evaluates a list inserting its elements in a quasiquote template, e.g. `(1 ,@(list 2 3) 4)", null /* doc strings */)
+            new Primitive("unquote-splicing",
+                          NULL_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Or ',@'. Evaluates a list inserting its elements in a quasiquote template, e.g. `(1 ,@(list 2 3) 4)",
+                          null /* doc strings */)
             {},
 
             /**
              * make-rewriter
             */
-            new Primitive("make-rewriter", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Makes a syntax rewriter, e.g. (make-rewriter (lambda (exp) ...))", null /* doc strings */)
+            new Primitive("make-rewriter",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Makes a syntax rewriter, e.g. (make-rewriter (lambda (exp) ...))",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj, Environment env, Continuation cont) throws GleamException
+                public Entity apply1(Entity obj,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     // evaluate argument: must be a function of exactly one argument
                     // obj = obj.eval(env, cont);
                     if (!(obj instanceof Closure)) {
-                        throw new GleamException(this, "argument must be a function taking one argument", obj);
-                    } else {
+                        throw new GleamException(this,
+                                                 "argument must be a function taking one argument",
+                                                 obj);
+                    }
+                    else {
                         Closure closure = (Closure) obj;
                         if (closure.getMaxArity() != 1) {
-                            throw new GleamException(this, "argument must be a function taking one argument", obj);
+                            throw new GleamException(this,
+                                                     "argument must be a function taking one argument",
+                                                     obj);
                         }
                         return new SyntaxRewriter(closure);
                     }
@@ -337,9 +441,13 @@ public final class Syntax
              * rewrite1
              * @todo implementation
             */
-            new Primitive("rewrite1", INTERACTION_ENV, Primitive.KEYWORD, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Rewrites an expression applying a syntax rewriter at most once", null /* doc strings */)
+            new Primitive("rewrite1",
+                          INTERACTION_ENV,
+                          Primitive.KEYWORD, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Rewrites an expression applying a syntax rewriter at most once",
+                          null /* doc strings */)
             {}
 
     }; // primitives

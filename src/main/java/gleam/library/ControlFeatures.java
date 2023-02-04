@@ -55,12 +55,18 @@ public final class ControlFeatures
              * procedure?
              * Tests if argument is a procedure
              */
-            new Primitive("procedure?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is a procedure, false otherwise", "E.g. (procedure? cons) => #t" /* doc strings */)
+            new Primitive("procedure?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is a procedure, false otherwise",
+                          "E.g. (procedure? cons) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1 instanceof Procedure);
                 }
@@ -69,21 +75,31 @@ public final class ControlFeatures
             /*
              * call-with-current-continuation
              */
-            new Primitive("call-with-current-continuation", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Calls a procedure with an escape procedure arg.", "Also known as call/cc, this operator is both unusual and powerful.\n" + "A simple usage pattern of call/cc is to implement exception handling." /* doc strings */)
+            new Primitive("call-with-current-continuation",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Calls a procedure with an escape procedure arg.",
+                          "Also known as call/cc, this operator is both unusual and powerful.\n" + "A simple usage pattern of call/cc is to implement exception handling." /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     if (arg1 instanceof Procedure) {
                         /* create a new procedure call with the continuation argument. */
                         ArgumentList arglist = new ArgumentList();
-                        arglist.set(0, new Continuation(cont)); // copy-constructor: cont itself is going to change soon!
+                        arglist.set(0,
+                                    new Continuation(cont)); // copy-constructor: cont itself is going to change soon!
                         cont.begin(new ProcedureCallAction(arglist, env));
                         return arg1;
-                    } else {
-                        throw new GleamException("call-with-current-continuation: wrong argument type, should be a procedure", arg1);
+                    }
+                    else {
+                        throw new GleamException(
+                                "call-with-current-continuation: wrong argument type, should be a procedure",
+                                arg1);
                     }
                 }
             },
@@ -91,24 +107,36 @@ public final class ControlFeatures
             /*
              * apply
              */
-            new Primitive("apply", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          2, 2, /* min, max no. of arguments */
-                          "Calls a procedure with arguments, e.g. (apply + 1 2)", null /* doc strings */)
+            new Primitive("apply",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          2,
+                          2, /* min, max no. of arguments */
+                          "Calls a procedure with arguments, e.g. (apply + 1 2)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity proc, Entity args, Environment env, Continuation cont) throws GleamException
+                public Entity apply2(Entity proc,
+                                     Entity args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     if (!(proc instanceof Procedure)) {
-                        throw new GleamException(this, "wrong argument type, should be a procedure", proc);
+                        throw new GleamException(this,
+                                                 "wrong argument type, should be a procedure",
+                                                 proc);
                     }
 
                     if (args instanceof List) {
                         /* create a new procedure call with the given arguments. */
-                        cont.begin(new ProcedureCallAction(new ArgumentList((List) args), env));
+                        cont.begin(new ProcedureCallAction(new ArgumentList((List) args),
+                                                           env));
                         return proc;
                     }
 
-                    throw new GleamException(this, "wrong argument type, should be a list", args);
+                    throw new GleamException(this,
+                                             "wrong argument type, should be a list",
+                                             args);
                 }
             }
 

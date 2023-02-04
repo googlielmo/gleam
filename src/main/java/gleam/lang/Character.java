@@ -33,39 +33,45 @@ import java.io.PrintWriter;
  */
 public final class Character extends AbstractEntity
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
     final char value;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public Character(char v)
     {
         value = v;
     }
 
-    /** Writes this character */
+    /**
+     * Writes this character.
+     */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         if (value == '\n') {
             out.print("#\\newline");
-        } else if (value == ' ') {
+        }
+        else if (value == ' ') {
             out.print("#\\space");
-        } else {
+        }
+        else {
             out.print("#\\" + value);
         }
+        return out;
     }
 
-    /** Displays this character */
+    /**
+     * Displays this character.
+     */
     @Override
-    public void display(java.io.PrintWriter out)
+    public PrintWriter display(PrintWriter out)
     {
         out.print(value);
+        return out;
     }
 }
 

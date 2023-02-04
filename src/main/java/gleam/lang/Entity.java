@@ -67,30 +67,30 @@ public interface Entity extends java.io.Serializable
     Entity optimize(Environment env) throws GleamException;
 
     /**
-     * Writes this entity in machine-readable form
+     * Writes this entity in machine-readable form.
      *
      * @param out PrintWriter
      */
-    void write(PrintWriter out);
+    PrintWriter write(PrintWriter out);
 
     /**
-     * Writes this entity in human-readable form
+     * Writes this entity in human-readable form.
      *
      * @param out PrintWriter
      */
-    void display(PrintWriter out);
+    PrintWriter display(PrintWriter out);
 
     /**
-     * Returns a representation of this entity, in the same format as a call to
-     * 'write' would produce.
+     * Returns a representation of this entity in the same format as a call to
+     * <code>write<code/> would produce.
      *
      * @return a string representation of the entity.
      */
     String toWriteFormat();
 
     /**
-     * Returns a representation of this entity, in the same format as a call to
-     * 'display' would produce.
+     * Returns a representation of this entity in the same format as a call to
+     * <code>display<code/> would produce.
      *
      * @return a string representation of the entity.
      */

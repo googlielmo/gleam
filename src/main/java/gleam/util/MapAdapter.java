@@ -37,7 +37,9 @@ public class MapAdapter<K, V, K1, V1> implements Map<K1, V1>
     private final Converter<K, K1> keyConverter;
     private final Converter<V, V1> valueConverter;
 
-    public MapAdapter(Map<K, V> kvMap, Converter<K, K1> keyConverter, Converter<V, V1> valueConverter)
+    public MapAdapter(Map<K, V> kvMap,
+                      Converter<K, K1> keyConverter,
+                      Converter<V, V1> valueConverter)
     {
         this.kvMap = kvMap;
         this.keyConverter = keyConverter;
@@ -77,7 +79,9 @@ public class MapAdapter<K, V, K1, V1> implements Map<K1, V1>
     @Override
     public V1 put(K1 key, V1 value)
     {
-        return valueConverter.convert(kvMap.put(keyConverter.invert(key), valueConverter.invert(value)));
+        K k = keyConverter.invert(key);
+        V v = valueConverter.invert(value);
+        return valueConverter.convert(kvMap.put(k, v));
     }
 
     @Override
@@ -89,7 +93,8 @@ public class MapAdapter<K, V, K1, V1> implements Map<K1, V1>
     @Override
     public void putAll(Map<? extends K1, ? extends V1> m)
     {
-        m.forEach((k1, v1) -> kvMap.put(keyConverter.invert(k1), valueConverter.invert(v1)));
+        m.forEach((k1, v1) -> kvMap.put(keyConverter.invert(k1),
+                                        valueConverter.invert(v1)));
     }
 
     @Override
@@ -113,6 +118,8 @@ public class MapAdapter<K, V, K1, V1> implements Map<K1, V1>
     @Override
     public Set<Entry<K1, V1>> entrySet()
     {
-        return new EntrySetAdapter<>(kvMap.entrySet(), keyConverter, valueConverter);
+        return new EntrySetAdapter<>(kvMap.entrySet(),
+                                     keyConverter,
+                                     valueConverter);
     }
 }

@@ -28,7 +28,6 @@ package gleam.lang;
 
 import java.io.Closeable;
 import java.io.FileOutputStream;
-import java.io.Flushable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -36,7 +35,7 @@ import java.io.Writer;
 /**
  * Scheme output port object.
  */
-public class OutputPort extends Port implements Closeable, Flushable
+public class OutputPort extends Port implements Closeable
 {
     private static final long serialVersionUID = 3L;
 
@@ -69,7 +68,6 @@ public class OutputPort extends Port implements Closeable, Flushable
         this.isConsole = isConsole;
     }
 
-
     /**
      * creates an output port to a file
      */
@@ -78,6 +76,12 @@ public class OutputPort extends Port implements Closeable, Flushable
         this.fileName = fileName;
         this.isConsole = false;
         openFile(fileName);
+    }
+
+    private void openFile(String name) throws IOException
+    {
+        FileOutputStream stream = new FileOutputStream(name);
+        this.out = new java.io.PrintWriter(stream, true);
     }
 
     /**
@@ -102,6 +106,15 @@ public class OutputPort extends Port implements Closeable, Flushable
     }
 
     /**
+     * which kind of port
+     */
+    @Override
+    public Kind getKind()
+    {
+        return Kind.TEXTUAL;
+    }
+
+    /**
      * @return whether this is the system Console
      */
     public boolean isConsole()
@@ -110,42 +123,52 @@ public class OutputPort extends Port implements Closeable, Flushable
     }
 
     /**
-     * prints object in machine-readable form
+     * Prints an object in machine-readable form.
+     *
+     * @return this {@link OutputPort}
      */
-    public void write(Entity obj) throws GleamException
+    public OutputPort write(Entity obj) throws GleamException
     {
         if (isOpen()) {
             obj.write(out);
-        } else {
+        }
+        else {
             throw new GleamException("OutputPort not open");
         }
+        return this;
     }
 
     /**
-     * prints object in human-readable form
+     * Prints an object in human-readable form.
+     *
+     * @return this {@link OutputPort}
      */
-    public void display(Entity obj)
+    public OutputPort display(Entity obj)
     {
         if (obj == EmptyList.VALUE) {
             out.print("()");
-        } else {
+        }
+        else {
             obj.display(out);
         }
+        return this;
     }
 
     /**
-     * prints a newline and flushes buffer
+     * Prints a newline and flushes buffers.
+     *
+     * @return this {@link OutputPort}
      */
-    public void newline()
+    public OutputPort newline()
     {
         out.println();
         flush();
+        return this;
     }
 
     /**
-     * flushes buffer
+     * Flushes buffers.
      */
-    @Override
     public void flush()
     {
         out.flush();
@@ -155,28 +178,26 @@ public class OutputPort extends Port implements Closeable, Flushable
     }
 
     /**
-     * print method useful for primitives
+     * String printing method, useful for primitives.
+     *
+     * @return this {@link OutputPort}
      */
-    public void print(String s)
+    public OutputPort print(String s)
     {
         out.print(s);
+        return this;
     }
 
     /**
-     * returns the underlying PrintWriter
-     */
-    public java.io.PrintWriter getPrintWriter()
-    {
-        return out;
-    }
-
-    /**
-     * Writes this port
+     * Writes this port.
+     *
+     * @return this {@link OutputPort}
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.print("#<output-port>");
+        return out;
     }
 
     /**
@@ -185,28 +206,14 @@ public class OutputPort extends Port implements Closeable, Flushable
      * @param format the format String
      * @param args   argument list
      *
+     * @return this {@link OutputPort}
+     *
      * @see java.util.Formatter printf-style format strings
      */
-    public void printf(String format, Object... args)
+    public OutputPort printf(String format, Object... args)
     {
         out.printf(format, args);
-    }
-
-    // serialization
-
-    /**
-     * which kind of port
-     */
-    @Override
-    public Kind getKind()
-    {
-        return Kind.TEXTUAL;
-    }
-
-    private void openFile(String name) throws IOException
-    {
-        FileOutputStream stream = new FileOutputStream(name);
-        this.out = new java.io.PrintWriter(stream, true);
+        return this;
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws IOException
@@ -220,7 +227,8 @@ public class OutputPort extends Port implements Closeable, Flushable
         in.defaultReadObject();
         if (this.fileName != null) {
             openFile(this.fileName);
-        } else {
+        }
+        else {
             out = null;
         }
     }

@@ -54,12 +54,18 @@ public final class Numbers
              * -
              * Implements the minus operator.
              */
-            new Primitive("-", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Difference, e.g. (- 7 3); Also negation, e.g. (- x)", null /* doc strings */)
+            new Primitive("-",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Difference, e.g. (- 7 3); Also negation, e.g. (- x)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     double result = 0.0;
                     ListIterator it = new ListIterator(args);
@@ -82,12 +88,18 @@ public final class Numbers
              * +
              * Implements the plus operator.
              */
-            new Primitive("+", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Addition, e.g (+ 1 2)", null /* doc strings */)
+            new Primitive("+",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          0,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Addition, e.g (+ 1 2)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     double result = 0.0;
                     ListIterator it = new ListIterator(args);
@@ -102,12 +114,18 @@ public final class Numbers
              * /
              * Implements the division operator.
              */
-            new Primitive("/", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Division, e.g. (/ 42 7)", null /* doc strings */)
+            new Primitive("/",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Division, e.g. (/ 42 7)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     double result = 1.0;
                     ListIterator it = new ListIterator(args);
@@ -118,7 +136,8 @@ public final class Numbers
                     }
                     if (!it.hasNext()) {
                         result /= next;
-                    } else {
+                    }
+                    else {
                         // it is a division, adjust result and divide remaining arguments
                         result = next;
                     }
@@ -137,12 +156,18 @@ public final class Numbers
              * *
              * Implements the multiplication operator.
              */
-            new Primitive("*", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Multiplication, e.g. (* 7 9)", null /* doc strings */)
+            new Primitive("*",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          0,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Multiplication, e.g. (* 7 9)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     double result = 1.0;
                     ListIterator it = new ListIterator(args);
@@ -157,12 +182,18 @@ public final class Numbers
              * =
              * Implements the equals operator.
              */
-            new Primitive("=", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Equals comparison, e.g. (= 1 1)", null /* doc strings */)
+            new Primitive("=",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          2,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Equals comparison, e.g. (= 1 1)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     boolean retVal = true;
                     double prev, curr;
@@ -184,12 +215,18 @@ public final class Numbers
              * &gt;=
              * Implements the greater than or equals operator.
              */
-            new Primitive(">=", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Greater-than-or-equals comparison, e.g. (>= 1 2)", null /* doc strings */)
+            new Primitive(">=",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          2,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Greater-than-or-equals comparison, e.g. (>= 1 2)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     boolean retVal = true;
                     double prev, curr;
@@ -211,12 +248,18 @@ public final class Numbers
              * &lt;=
              * Implements the less than or equals operator.
              */
-            new Primitive("<=", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Less-than-or-equals comparison, e.g. (<= 1 2)", null /* doc strings */)
+            new Primitive("<=",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          2,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Less-than-or-equals comparison, e.g. (<= 1 2)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     boolean retVal = true;
                     double prev, curr;
@@ -238,12 +281,18 @@ public final class Numbers
              * &gt;
              * Implements the greater than operator.
              */
-            new Primitive(">", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Greater-than comparison, e.g. (> 1 2)", null /* doc strings */)
+            new Primitive(">",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          2,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Greater-than comparison, e.g. (> 1 2)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     boolean retVal = true;
                     double prev, curr;
@@ -265,12 +314,18 @@ public final class Numbers
              * &lt;
              * Implements the less than operator.
              */
-            new Primitive("<", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          2, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Less-than comparison, e.g. (< 1 2)", null /* doc strings */)
+            new Primitive("<",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          2,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Less-than comparison, e.g. (< 1 2)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     boolean retVal = true;
                     double prev, curr;
@@ -292,12 +347,18 @@ public final class Numbers
              * number?
              * Tests if argument is a number
              */
-            new Primitive("number?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is a number, false otherwise", "E.g. (number? 3) => #t" /* doc strings */)
+            new Primitive("number?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is a number, false otherwise",
+                          "E.g. (number? 3) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1 instanceof Number);
                 }
@@ -310,13 +371,17 @@ public final class Numbers
      */
     private Numbers() {}
 
-    private static double getNumberArgument(Primitive primitive, Entity obj) throws GleamException
+    private static double getNumberArgument(Primitive primitive,
+                                            Entity obj) throws GleamException
     {
         double arg;
         if (obj instanceof Number) {
             arg = ((Number) obj).getDoubleValue();
-        } else {
-            throw new GleamException(primitive, "argument is not a number", obj);
+        }
+        else {
+            throw new GleamException(primitive,
+                                     "argument is not a number",
+                                     obj);
         }
         return arg;
     }

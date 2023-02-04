@@ -44,11 +44,35 @@ package gleam.lang;
  */
 public abstract class Action implements java.io.Serializable
 {
-    /** the environment in which to execute this action */
+    /** the environment in which to execute this action. */
     final Environment env;
 
-    /** the next action to execute, this creates a tree structure */
+    /** the next action to execute, this creates a tree structure. */
     Action next;
+
+    /**
+     * Invokes this action with an argument and a continuation,  returning a
+     * value, and advancing the continuation to the next action. Subclasses that
+     * implement this abstract method must update the continuation's action with
+     * the next action to execute (e.g.
+     * <CODE>cont.action = next</CODE>), so to go forward in program
+     * execution
+     *
+     * @param arg  the Entity argument to this step of execution
+     * @param cont the current Continuation
+     *
+     * @return an Entity, or null to signal that only the continuation has been
+     * changed
+     *
+     * @throws gleam.lang.GleamException in case of errors
+     */
+    abstract Entity invoke(Entity arg,
+                           Continuation cont) throws gleam.lang.GleamException;
+
+    protected interface Printer
+    {
+        void print(OutputPort port);
+    }
 
     Action(Environment env, Action next)
     {
@@ -74,24 +98,6 @@ public abstract class Action implements java.io.Serializable
         return action;
     }
 
-    /**
-     * Invokes this action with an argument and a continuation,  returning a
-     * value, and advancing the continuation to the next action. Subclasses that
-     * implement this abstract method must update the continuation's action with
-     * the next action to execute (e.g.
-     * <CODE>cont.action = next</CODE>), so to go forward in program
-     * execution
-     *
-     * @param arg  the Entity argument to this step of execution
-     * @param cont the current Continuation
-     *
-     * @return an Entity, or null to signal that only the continuation has been
-     * changed
-     *
-     * @throws gleam.lang.GleamException in case of errors
-     */
-    abstract Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException;
-
     protected void trace(Printer doo, Environment env)
     {
         if (env.getExecutionContext().isTraceEnabled()) {
@@ -104,10 +110,5 @@ public abstract class Action implements java.io.Serializable
 
             doo.print(cout);
         }
-    }
-
-    protected interface Printer
-    {
-        void print(OutputPort port);
     }
 }

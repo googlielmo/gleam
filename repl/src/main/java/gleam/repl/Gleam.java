@@ -94,7 +94,8 @@ public class Gleam
 
         if (args.length == 1 && args[0].equals("--force-console")) {
             console = true;
-        } else {
+        }
+        else {
             console = w.isConsole();
         }
 
@@ -117,12 +118,14 @@ public class Gleam
                     }
                     w.newline();
                 }
-            } catch (GleamException e) {
+            }
+            catch (GleamException e) {
                 Interpreter.getInteractionEnv()
                            .define(Symbol.ERROBJ, e.value());
                 w.printf("*** %s\n", e.getMessage());
                 intp.clearContinuation();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 w.printf("*** Uncaught Exception: %s\n", e.getMessage());
                 logger.warning(e);
                 intp.clearContinuation();
@@ -130,14 +133,6 @@ public class Gleam
         } while (obj != null);
 
         prompt(w, "Bye!");
-    }
-
-    private void prompt(OutputPort w, String prompt)
-    {
-        if (console) {
-            w.print(prompt);
-            w.flush();
-        }
     }
 
     private void welcome(OutputPort w)
@@ -149,6 +144,14 @@ public class Gleam
             w.print("welcome to redistribute it under certain conditions; see LICENSE.TXT.\n");
             w.print("\nType !h for help, !q to quit.\n");
             w.print("Enable trace with !tron, disable with !troff.\n\n");
+        }
+    }
+
+    private void prompt(OutputPort w, String prompt)
+    {
+        if (console) {
+            w.print(prompt);
+            w.flush();
         }
     }
 

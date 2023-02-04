@@ -47,9 +47,6 @@ import java.util.Objects;
 public class JavaObject extends AbstractEntity
 {
 
-    /**
-     * serialVersionUID
-     */
     private static final long serialVersionUID = 1L;
 
     private static final Logger logger = Logger.getLogger();
@@ -73,15 +70,19 @@ public class JavaObject extends AbstractEntity
         Object object = null;
         try {
             object = Class.forName(className).getConstructor().newInstance();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.warning(ex);
             throw new GleamException("new: " + ex.getMessage(), s);
-        } finally {
+        }
+        finally {
             value = object;
         }
     }
 
-    public JavaObject(Symbol s, Class<?>[] classes, Object[] objects) throws GleamException
+    public JavaObject(Symbol s,
+                      Class<?>[] classes,
+                      Object[] objects) throws GleamException
     {
         String className = s.toString();
         Object object = null;
@@ -89,18 +90,21 @@ public class JavaObject extends AbstractEntity
             object = Class.forName(className)
                           .getConstructor(classes)
                           .newInstance(objects);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             logger.warning(ex);
             throw new GleamException("new: " + ex.getMessage(), s);
-        } finally {
+        }
+        finally {
             value = object;
         }
     }
 
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.print(this);
+        return out;
     }
 
     @Override
@@ -112,6 +116,12 @@ public class JavaObject extends AbstractEntity
     public Object getObjectValue()
     {
         return value;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(value);
     }
 
     @Override
@@ -127,12 +137,6 @@ public class JavaObject extends AbstractEntity
         return Objects.equals(value, javaObject.value);
     }
 
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(value);
-    }
-
     public boolean eq(JavaObject obj)
     {
         if (obj == null) {
@@ -145,7 +149,8 @@ public class JavaObject extends AbstractEntity
     {
         if (value == null || value instanceof Serializable) {
             out.defaultWriteObject();
-        } else {
+        }
+        else {
             out.writeObject(new JavaObject());
         }
     }

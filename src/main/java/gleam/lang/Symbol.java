@@ -37,20 +37,22 @@ import java.util.Map;
  */
 public final class Symbol extends AbstractEntity
 {
+
     /**
      * The unique symbol table
      */
-    static final Map<String, Symbol> symtable = new HashMap<>(512);
+    private static final Map<String, Symbol> symtable = new HashMap<>(512);
+
     /*
      * common symbols (some are keywords, some are not)
      * defined here as constants for convenience
      */
     public static final Symbol AND = makeSymbol("and");
     public static final Symbol APPEND = makeSymbol("append");
-    //    public static final Symbol ARROW = makeSymbol("=>");
     public static final Symbol BEGIN = makeSymbol("begin");
     public static final Symbol CALL_CC = makeSymbol("call/cc");
-    public static final Symbol CALL_WITH_CURRENT_CONTINUATION = makeSymbol("call-with-current-continuation");
+    public static final Symbol CALL_WITH_CURRENT_CONTINUATION =
+            makeSymbol("call-with-current-continuation");
     public static final Symbol CASE = makeSymbol("case");
     public static final Symbol COND = makeSymbol("cond");
     public static final Symbol CONS = makeSymbol("cons");
@@ -72,11 +74,10 @@ public final class Symbol extends AbstractEntity
     public static final Symbol SET = makeSymbol("set!");
     public static final Symbol UNQUOTE = makeSymbol("unquote");
     public static final Symbol UNQUOTE_SPLICING = makeSymbol("unquote-splicing");
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger();
+
     /**
      * String representation
      */
@@ -88,42 +89,11 @@ public final class Symbol extends AbstractEntity
     final boolean interned;
 
     /**
-     * Can't instantiate directly.
-     */
-    private Symbol(String value)
-    {
-        this(value, true);
-    }
-
-    private Symbol(String value, boolean interned)
-    {
-        this.value = value;
-        this.interned = interned;
-    }
-
-    /**
-     * Factory method to create and intern a symbol.
-     */
-    public static synchronized Symbol makeSymbol(String s)
-    {
-        return symtable.computeIfAbsent(s, Symbol::new);
-    }
-
-    /**
      * Factory method to create an uninterned symbol.
      */
     public static Symbol makeUninternedSymbol(String s)
     {
         return new Symbol(s, false);
-    }
-
-    /**
-     * Obtains the string representation of this symbol
-     */
-    @Override
-    public String toString()
-    {
-        return value;
     }
 
     /**
@@ -156,11 +126,23 @@ public final class Symbol extends AbstractEntity
         return loc;
     }
 
-    /** Writes this symbol */
+    /**
+     * Obtains the string representation of this symbol
+     */
     @Override
-    public void write(PrintWriter out)
+    public String toString()
+    {
+        return value;
+    }
+
+    /**
+     * Writes this symbol
+     */
+    @Override
+    public PrintWriter write(PrintWriter out)
     {
         out.write(value);
+        return out;
     }
 
     /**
@@ -168,11 +150,35 @@ public final class Symbol extends AbstractEntity
      */
     private Object readResolve()
     {
-        logger.log(Logger.Level.DEBUG, "readResolve() called! (Symbol)"); //DEBUG
+        logger.log(Logger.Level.DEBUG,
+                   "readResolve() called! (Symbol)"); //DEBUG
         if (interned) {
             return makeSymbol(value);
-        } else {
+        }
+        else {
             return this;
         }
+    }
+
+    /**
+     * Factory method to create and intern a symbol.
+     */
+    public static synchronized Symbol makeSymbol(String s)
+    {
+        return symtable.computeIfAbsent(s, Symbol::new);
+    }
+
+    /**
+     * Can't instantiate directly.
+     */
+    private Symbol(String value)
+    {
+        this(value, true);
+    }
+
+    private Symbol(String value, boolean interned)
+    {
+        this.value = value;
+        this.interned = interned;
     }
 }

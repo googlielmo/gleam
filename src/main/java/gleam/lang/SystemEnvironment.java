@@ -34,28 +34,28 @@ import java.io.PrintWriter;
  */
 public final class SystemEnvironment extends Environment
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 3L;
 
     private final Kind kind;
 
     /**
      * Constructor for the null environment.
-     * <br>
-     * Binds global I/O ports to system standard I/O
+     * <p>
+     * It creates the default {@link ExecutionContext} binding global I/O ports
+     * to system standard I/O
      */
     SystemEnvironment()
     {
         this(null, Kind.NULL_ENV);
         boolean isConsole = java.lang.System.console() != null;
-        setExecutionContext(new ExecutionContext(
-            null,
-            new InputPort(new InputStreamReader(java.lang.System.in)),
-            new OutputPort(java.lang.System.out, isConsole),
-            new OutputPort(java.lang.System.err, isConsole)
-        ));
+        setExecutionContext(new ExecutionContext(null,
+                                                 new InputPort(new InputStreamReader(
+                                                         java.lang.System.in)),
+                                                 new OutputPort(java.lang.System.out,
+                                                                isConsole),
+                                                 new OutputPort(java.lang.System.err,
+                                                                isConsole)));
     }
 
     SystemEnvironment(Environment parent, Kind kind)
@@ -64,15 +64,18 @@ public final class SystemEnvironment extends Environment
         this.kind = kind;
     }
 
-    /** Writes this environment */
+    /**
+     * Writes this environment
+     */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.write(String.format("#<system-environment: %s>", kind));
+        return out;
     }
 
     /** avoids to serialize data of system environments */
-    private Entity writeReplace()
+    private Object writeReplace()
     {
         return new SystemEnvironment(null, kind);
     }

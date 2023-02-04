@@ -50,12 +50,18 @@ public final class Booleans
              * boolean?
              * Tests if argument is a boolean
              */
-            new Primitive("boolean?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is a boolean, false otherwise", "E.g. (boolean? #f) => #t" /* doc strings */)
+            new Primitive("boolean?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is a boolean, false otherwise",
+                          "E.g. (boolean? #f) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1 instanceof Boolean);
                 }
@@ -65,12 +71,18 @@ public final class Booleans
              * not
              * Logical Not operator
              */
-            new Primitive("not", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is false, false otherwise", "E.g. (not #f) => #t" /* doc strings */)
+            new Primitive("not",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is false, false otherwise",
+                          "E.g. (not #f) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1.equals(Boolean.falseValue));
                 }

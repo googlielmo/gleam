@@ -37,25 +37,23 @@ package gleam.lang;
  */
 public class ExpressionAction extends Action
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
     /** the expression to evaluate */
     private final Entity expr;
 
     /** Creates a new instance of this action */
+    public ExpressionAction(Entity value, Environment env)
+    {
+        this(value, env, null);
+    }
+
+    /** Creates a new instance of this action */
     public ExpressionAction(Entity expr, Environment env, Action next)
     {
         super(env, next);
         this.expr = expr;
-    }
-
-    /** Creates a new instance of this action */
-    public ExpressionAction(Entity value, Environment env)
-    {
-        this(value, env, null);
     }
 
     /**
@@ -69,7 +67,8 @@ public class ExpressionAction extends Action
      * @throws gleam.lang.GleamException in case of errors
      */
     @Override
-    Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException
+    Entity invoke(Entity arg,
+                  Continuation cont) throws gleam.lang.GleamException
     {
         cont.head = next;
         // note: ignore arg

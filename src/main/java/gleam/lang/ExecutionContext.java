@@ -1,8 +1,12 @@
 package gleam.lang;
 
 /**
+ * The execution context. It holds I/O ports and other context.
+ * <p>
+ * A default context is accessible in all environments, but can be overridden.
+ * <p>
  *
- *
+ * @see SystemEnvironment#SystemEnvironment()
  */
 public class ExecutionContext
 {
@@ -12,7 +16,10 @@ public class ExecutionContext
     private OutputPort err;
     private boolean traceEnabled;
 
-    public ExecutionContext(Interpreter intp, InputPort in, OutputPort out, OutputPort err)
+    public ExecutionContext(Interpreter intp,
+                            InputPort in,
+                            OutputPort out,
+                            OutputPort err)
     {
         this.intp = intp;
         this.in = in;

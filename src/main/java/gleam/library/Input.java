@@ -53,51 +53,66 @@ public final class Input
              * eof-object?
              * Tests if argument is an EOF object
              */
-            new Primitive("eof-object?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is the EOF object, false otherwise", null /* doc strings */)
+            new Primitive("eof-object?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is the EOF object, false otherwise",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1 instanceof Eof);
                 }
             },
 
-    /*
-     * read
-     * Reads an object
-     */
-    new Primitive( "read",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        0, 1, /* min, max no. of arguments */
-        "Reads an object from the current or specified input port",
-        null /* doc strings */ ) {
-    @Override
-    public Entity apply1(Entity arg1, Environment env, Continuation cont)
-        throws GleamException
-    {
-        try {
-            InputPort iport;
-            if (arg1 != null) {
-                iport = (InputPort) arg1;
+            /*
+             * read
+             * Reads an object
+             */
+            new Primitive("read",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          0,
+                          1, /* min, max no. of arguments */
+                          "Reads an object from the current or specified input port",
+                          null /* doc strings */)
+            {
+                @Override
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
+                {
+                    try {
+                        InputPort iport;
+                        if (arg1 != null) {
+                            iport = (InputPort) arg1;
+                        }
+                        else {
+                            iport = env.getExecutionContext().getIn();
+                        }
+                        if (iport.isOpen()) {
+                            return iport.read();
+                        }
+                        else {
+                            throw new GleamException(this,
+                                                     "closed input port",
+                                                     arg1);
+                        }
+                    }
+                    catch (ClassCastException e) {
+                        throw new GleamException(this,
+                                                 "not an input port",
+                                                 arg1);
+                    }
+                }
             }
-            else {
-                iport = env.getExecutionContext().getIn();
-            }
-            if (iport.isOpen()) {
-                return iport.read();
-            }
-            else {
-                throw new GleamException(this, "closed input port", arg1);
-            }
-        }
-        catch (ClassCastException e) {
-            throw new GleamException(this, "not an input port", arg1);
-        }
-    }},
 
-            }; // primitives
+    }; // primitives
 
     /**
      * Can't instantiate this class

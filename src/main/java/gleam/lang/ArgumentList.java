@@ -33,9 +33,7 @@ import java.util.ArrayList;
  */
 public class ArgumentList implements java.io.Serializable
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
     private final java.util.ArrayList<Entity> listArgs;
@@ -54,7 +52,7 @@ public class ArgumentList implements java.io.Serializable
     }
 
     /**
-     * Sets the value for an argument at a given index
+     * Sets the value for an argument at a given index.
      *
      * @param index the index in this list
      * @param value the value for the argument
@@ -64,14 +62,6 @@ public class ArgumentList implements java.io.Serializable
         assert listArgs != null : "set called on immutable ArgumentList";
         ensureSize(listArgs, index + 1);
         listArgs.set(index, value);
-    }
-
-    /**
-     * @return List the list of arguments
-     */
-    public List getArguments()
-    {
-        return null == listArgs ? pairArgs : j2g(listArgs);
     }
 
     /**
@@ -88,6 +78,14 @@ public class ArgumentList implements java.io.Serializable
         for (int i = 0; i < missing; ++i) {
             listArgs.add(Undefined.VALUE);
         }
+    }
+
+    /**
+     * @return List the list of arguments
+     */
+    public List getArguments()
+    {
+        return null == listArgs ? pairArgs : j2g(listArgs);
     }
 
     private List j2g(java.util.List<Entity> lst)

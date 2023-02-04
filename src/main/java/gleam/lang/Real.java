@@ -33,9 +33,7 @@ import java.io.PrintWriter;
  */
 public class Real extends Number
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
     /** the value */
@@ -52,23 +50,6 @@ public class Real extends Number
     }
 
     /**
-     * Scheme double comparison. Creation date: (28/10/01 12.45.00)
-     *
-     * @param o java.lang.Object
-     *
-     * @return boolean
-     */
-    @Override
-    public boolean equals(java.lang.Object o)
-    {
-        if (o instanceof Real) {
-            return value == ((Real) o).value;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Returns a hashcode for this Scheme object. The implementation is the same
      * as per java.lang.Double.
      *
@@ -82,12 +63,31 @@ public class Real extends Number
     }
 
     /**
+     * Scheme double comparison. Creation date: (28/10/01 12.45.00)
+     *
+     * @param o java.lang.Object
+     *
+     * @return boolean
+     */
+    @Override
+    public boolean equals(java.lang.Object o)
+    {
+        if (o instanceof Real) {
+            return value == ((Real) o).value;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
      * Writes a real
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.print(value);
+        return out;
     }
 
     /** Takes value of number as a double. */

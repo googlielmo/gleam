@@ -56,17 +56,11 @@ class LoggerTest
                   .getLogger("")
                   .setLevel(java.util.logging.Level.ALL);
         System.setErr(new PrintStream(errContent));
-        java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("gleam");
+        java.util.logging.Logger julLogger =
+                java.util.logging.Logger.getLogger("gleam");
         julLogger.addHandler(getConsoleHandler());
         julLogger.setLevel(java.util.logging.Level.ALL);
         logger = Logger.getLogger();
-    }
-
-    @AfterAll
-    static void restoreStreams()
-    {
-        System.setErr(originalErr);
-        LogManager.getLogManager().reset();
     }
 
     static ConsoleHandler getConsoleHandler()
@@ -75,6 +69,13 @@ class LoggerTest
         handler.setLevel(java.util.logging.Level.ALL);
         handler.setFormatter(new TestFormatter());
         return handler;
+    }
+
+    @AfterAll
+    static void restoreStreams()
+    {
+        System.setErr(originalErr);
+        LogManager.getLogManager().reset();
     }
 
     @BeforeEach
@@ -103,7 +104,6 @@ class LoggerTest
         logger.log(4, "4");
         logger.log(5, "5");
         logger.log(6, "6");
-
 
         int numLines = errContent.toString()
                                  .split(System.getProperty("line.separator")).length;

@@ -37,34 +37,45 @@ package gleam.lang;
  */
 public class AssignmentAction extends Action
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 2L;
 
-    /** the symbol to assign to */
+    /** The symbol to assign to. */
     protected final Symbol symbol;
 
-    /** Creates a new AssignmentAction */
+    /** Creates a new AssignmentAction. */
+    public AssignmentAction(Symbol symbol, Environment env)
+    {
+        this(symbol, env, null);
+    }
+
+    /** Creates a new AssignmentAction. */
     public AssignmentAction(Symbol symbol, Environment env, Action next)
     {
         super(env, next);
         this.symbol = symbol;
     }
 
-    /** Creates a new AssignmentAction */
-    public AssignmentAction(Symbol symbol, Environment env)
-    {
-        this(symbol, env, null);
-    }
-
-    /** invocation */
+    /**
+     * Invokes this action, causing an assignment of the argument to the symbol
+     * in the provided environment (with the mutation semantics of
+     * <code>set!</code>)
+     *
+     * @param arg  the value to assign to the symbol in this action
+     * @param cont the current Continuation
+     *
+     * @return the <code>Void</code> singleton
+     *
+     * @throws gleam.lang.GleamException in case of errors
+     */
     @Override
     Entity invoke(Entity arg, Continuation cont) throws GleamException
     {
         cont.head = next;
         env.getLocation(symbol).set(arg);
-        trace(out -> out.printf("%s <- %s\n", symbol.toWriteFormat(), arg.toWriteFormat()), env);
+        trace(out -> out.printf("%s <- %s\n",
+                                symbol.toWriteFormat(),
+                                arg.toWriteFormat()), env);
         return Void.VALUE;
     }
 }

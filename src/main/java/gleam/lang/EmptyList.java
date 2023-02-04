@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -47,18 +47,15 @@ import static gleam.util.Logger.Level.DEBUG;
  */
 public final class EmptyList extends AbstractEntity implements List
 {
+
     /** the EmptyList singleton */
     public static final EmptyList VALUE = new EmptyList();
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger();
 
-    /** Can't create an empty list */
-    private EmptyList()
-    {
-    }
+    /** Can't just create an empty list. */
+    private EmptyList() {}
 
     /**
      * The empty combination is an error in Scheme.
@@ -73,9 +70,10 @@ public final class EmptyList extends AbstractEntity implements List
      * Writes the empty list value.
      */
     @Override
-    public void write(PrintWriter out)
+    public PrintWriter write(PrintWriter out)
     {
         out.print("()");
+        return out;
     }
 
     @Override

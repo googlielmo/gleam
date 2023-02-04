@@ -56,16 +56,23 @@ public final class PairsAndLists
              * car
              * Takes the first element of a pair.
              */
-            new Primitive("car", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Gets first object in a pair, e.g. (car (list 1 2 3))", null /* doc strings */)
+            new Primitive("car",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Gets first object in a pair, e.g. (car (list 1 2 3))",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     try {
                         return ((List) arg1).getCar();
-                    } catch (ClassCastException e) {
+                    }
+                    catch (ClassCastException e) {
                         throw new GleamException("car: invalid argument", arg1);
                     }
                 }
@@ -75,16 +82,23 @@ public final class PairsAndLists
              * cdr
              * Takes the second element of a pair.
              */
-            new Primitive("cdr", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Gets second object in a pair, e.g. (cdr (list 1 2 3))", null /* doc strings */)
+            new Primitive("cdr",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Gets second object in a pair, e.g. (cdr (list 1 2 3))",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     try {
                         return ((List) arg1).getCdr();
-                    } catch (ClassCastException e) {
+                    }
+                    catch (ClassCastException e) {
                         throw new GleamException("cdr: invalid argument", arg1);
                     }
                 }
@@ -94,12 +108,19 @@ public final class PairsAndLists
              * cons
              * Creates a new pair.
              */
-            new Primitive("cons", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          2, 2, /* min, max no. of arguments */
-                          "Creates a new pair, e.g. (cons 1 (cons 2 '(3)))", null /* doc strings */)
+            new Primitive("cons",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          2,
+                          2, /* min, max no. of arguments */
+                          "Creates a new pair, e.g. (cons 1 (cons 2 '(3)))",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity first, Entity second, Environment env, Continuation cont)
+                public Entity apply2(Entity first,
+                                     Entity second,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return new Pair(first, second);
                 }
@@ -109,12 +130,18 @@ public final class PairsAndLists
              * list
              * Creates a new list from its arguments.
              */
-            new Primitive("list", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          0, Primitive.VAR_ARGS, /* min, max no. of arguments */
-                          "Creates a new list from its arguments, e.g. (list 1 2 3)", null /* doc strings */)
+            new Primitive("list",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          0,
+                          Primitive.VAR_ARGS, /* min, max no. of arguments */
+                          "Creates a new list from its arguments, e.g. (list 1 2 3)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args, Environment env, Continuation cont)
+                public Entity applyN(List args,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     // TODO: investigate: could we simply return list?
                     ListIterator it = new ListIterator(args);
@@ -136,12 +163,18 @@ public final class PairsAndLists
              * pair?
              * Tests if argument is a pair
              */
-            new Primitive("pair?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is a pair, false otherwise", "E.g. (pair? (cons 1 2)) => #t" /* doc strings */)
+            new Primitive("pair?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is a pair, false otherwise",
+                          "E.g. (pair? (cons 1 2)) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj, Environment env, Continuation cont)
+                public Entity apply1(Entity obj,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof Pair);
                 }
@@ -151,12 +184,18 @@ public final class PairsAndLists
              * null?
              * Tests if argument is the empty list
              */
-            new Primitive("null?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is the empty list, false otherwise", "E.g. (null? '()) => #t" /* doc strings */)
+            new Primitive("null?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is the empty list, false otherwise",
+                          "E.g. (null? '()) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj, Environment env, Continuation cont)
+                public Entity apply1(Entity obj,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof EmptyList);
                 }
@@ -166,15 +205,24 @@ public final class PairsAndLists
              * set-car!
              * store an object in the car field of a pair.
              */
-            new Primitive("set-car!", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          2, 2, /* min, max no. of arguments */
-                          "Sets car field in a pair, e.g. (set-car! my-pair 1)", null /* doc strings */)
+            new Primitive("set-car!",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          2,
+                          2, /* min, max no. of arguments */
+                          "Sets car field in a pair, e.g. (set-car! my-pair 1)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity first, Entity second, Environment env, Continuation cont) throws GleamException
+                public Entity apply2(Entity first,
+                                     Entity second,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     if (!(first instanceof Pair)) {
-                        throw new GleamException(this, "invalid argument", first);
+                        throw new GleamException(this,
+                                                 "invalid argument",
+                                                 first);
                     }
 
                     ((Pair) first).setCar(second);
@@ -186,15 +234,24 @@ public final class PairsAndLists
              * set-cdr!
              * store an object in the cdr field of a pair.
              */
-            new Primitive("set-cdr!", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          2, 2, /* min, max no. of arguments */
-                          "Sets cdr field in a pair, e.g. (set-cdr! my-pair 2)", null /* doc strings */)
+            new Primitive("set-cdr!",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          2,
+                          2, /* min, max no. of arguments */
+                          "Sets cdr field in a pair, e.g. (set-cdr! my-pair 2)",
+                          null /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity first, Entity second, Environment env, Continuation cont) throws GleamException
+                public Entity apply2(Entity first,
+                                     Entity second,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
                 {
                     if (!(first instanceof Pair)) {
-                        throw new GleamException(this, "invalid argument", first);
+                        throw new GleamException(this,
+                                                 "invalid argument",
+                                                 first);
                     }
 
                     ((Pair) first).setCdr(second);

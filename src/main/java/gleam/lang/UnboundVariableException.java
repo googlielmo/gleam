@@ -31,9 +31,7 @@ package gleam.lang;
  */
 public class UnboundVariableException extends GleamException
 {
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
 
     /**

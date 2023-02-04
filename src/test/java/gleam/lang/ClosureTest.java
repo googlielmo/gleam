@@ -51,6 +51,13 @@ class ClosureTest
         assertEquals(0, c1.getMaxArity());
     }
 
+    private Closure getClosureWithParams(Entity value)
+    {
+        return new Closure(value,
+                           EmptyList.VALUE,
+                           new Environment(Interpreter.getNullEnv()));
+    }
+
     @Test
     void getMaxArity_OneParam() throws GleamException
     {
@@ -77,7 +84,9 @@ class ClosureTest
         Symbol b = Symbol.makeSymbol("b");
         Symbol c = Symbol.makeSymbol("c");
         EmptyList nil = EmptyList.VALUE;
-        Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, nil))));
+        Closure c1 = getClosureWithParams(new Pair(a,
+                                                   new Pair(b,
+                                                            new Pair(c, nil))));
         assertEquals(3, c1.getMaxArity());
     }
 
@@ -89,7 +98,11 @@ class ClosureTest
         Symbol c = Symbol.makeSymbol("c");
         Symbol d = Symbol.makeSymbol("d");
         EmptyList nil = EmptyList.VALUE;
-        Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, new Pair(d, nil)))));
+        Closure c1 = getClosureWithParams(new Pair(a,
+                                                   new Pair(b,
+                                                            new Pair(c,
+                                                                     new Pair(d,
+                                                                              nil)))));
         assertEquals(4, c1.getMaxArity());
     }
 
@@ -102,7 +115,13 @@ class ClosureTest
         Symbol d = Symbol.makeSymbol("d");
         Symbol e = Symbol.makeSymbol("e");
         EmptyList nil = EmptyList.VALUE;
-        Closure c1 = getClosureWithParams(new Pair(a, new Pair(b, new Pair(c, new Pair(d, new Pair(e, nil))))));
+        Closure c1 = getClosureWithParams(new Pair(a,
+                                                   new Pair(b,
+                                                            new Pair(c,
+                                                                     new Pair(d,
+                                                                              new Pair(
+                                                                                      e,
+                                                                                      nil))))));
         assertEquals(5, c1.getMaxArity());
     }
 
@@ -122,12 +141,5 @@ class ClosureTest
         Symbol a = Symbol.makeSymbol("rest");
         Closure c1 = getClosureWithParams(a);
         assertEquals(-1, c1.getMaxArity());
-    }
-
-    private Closure getClosureWithParams(Entity value)
-    {
-        return new Closure(value,
-                           EmptyList.VALUE,
-                           new Environment(Interpreter.getNullEnv()));
     }
 }

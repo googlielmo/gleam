@@ -53,12 +53,18 @@ public final class Ports
              * port?
              * Tests if argument is a port
              */
-            new Primitive("port?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is a port, false otherwise", "E.g. (port? (current-input-port)) => #t" /* doc strings */)
+            new Primitive("port?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is a port, false otherwise",
+                          "E.g. (port? (current-input-port)) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj, Environment env, Continuation cont)
+                public Entity apply1(Entity obj,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof Port);
                 }
@@ -68,12 +74,18 @@ public final class Ports
              * input-port?
              * Tests if argument is an input port
              */
-            new Primitive("input-port?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is an input port, false otherwise", "E.g. (input-port? (current-input-port)) => #t" /* doc strings */)
+            new Primitive("input-port?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is an input port, false otherwise",
+                          "E.g. (input-port? (current-input-port)) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj, Environment env, Continuation cont)
+                public Entity apply1(Entity obj,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof InputPort);
                 }
@@ -83,12 +95,18 @@ public final class Ports
              * output-port?
              * Tests if argument is an output port
              */
-            new Primitive("output-port?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is an output port, false otherwise", "E.g. (output-port? (current-input-port)) => #f" /* doc strings */)
+            new Primitive("output-port?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is an output port, false otherwise",
+                          "E.g. (output-port? (current-input-port)) => #f" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj, Environment env, Continuation cont)
+                public Entity apply1(Entity obj,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof OutputPort);
                 }
@@ -98,12 +116,18 @@ public final class Ports
              * textual-port?
              * Tests if argument is a textual port
              */
-            new Primitive("textual-port?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is a textual port, false otherwise", "E.g. (textual-port? (current-input-port)) => #t" /* doc strings */)
+            new Primitive("textual-port?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is a textual port, false otherwise",
+                          "E.g. (textual-port? (current-input-port)) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj, Environment env, Continuation cont)
+                public Entity apply1(Entity obj,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof Port && ((Port) obj).getKind() == Port.Kind.TEXTUAL);
                 }
@@ -113,48 +137,62 @@ public final class Ports
              * binary-port?
              * Tests if argument is a binary port
              */
-            new Primitive("binary-port?", REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-                          1, 1, /* min, max no. of arguments */
-                          "Returns true if argument is a binary port, false otherwise", "E.g. (binary-port? (current-input-port)) => #f" /* doc strings */)
+            new Primitive("binary-port?",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns true if argument is a binary port, false otherwise",
+                          "E.g. (binary-port? (current-input-port)) => #f" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj, Environment env, Continuation cont)
+                public Entity apply1(Entity obj,
+                                     Environment env,
+                                     Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof Port && ((Port) obj).getKind() == Port.Kind.BINARY);
                 }
             },
 
-    /*
-     * current-input-port
-     * Returns the current input port
-     */
-    new Primitive( "current-input-port",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        0, 0, /* min, max no. of arguments */
-        "Returns the current input port",
-        null /* doc strings */ ) {
-    @Override
-    public Entity apply0(Environment env, Continuation cont)
-    {
-        return env.getExecutionContext().getIn();
-    }},
+            /*
+             * current-input-port
+             * Returns the current input port
+             */
+            new Primitive("current-input-port",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          0,
+                          0, /* min, max no. of arguments */
+                          "Returns the current input port",
+                          null /* doc strings */)
+            {
+                @Override
+                public Entity apply0(Environment env, Continuation cont)
+                {
+                    return env.getExecutionContext().getIn();
+                }
+            },
 
-    /*
-     * current-output-port
-     * Returns the current output port
-     */
-    new Primitive( "current-output-port",
-        REPORT_ENV, Primitive.IDENTIFIER, /* environment, type */
-        0, 0, /* min, max no. of arguments */
-        "Returns the current output port",
-        null /* doc strings */ ) {
-    @Override
-    public Entity apply0(Environment env, Continuation cont)
-    {
-        return env.getExecutionContext().getOut();
-    }},
+            /*
+             * current-output-port
+             * Returns the current output port
+             */
+            new Primitive("current-output-port",
+                          REPORT_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          0,
+                          0, /* min, max no. of arguments */
+                          "Returns the current output port",
+                          null /* doc strings */)
+            {
+                @Override
+                public Entity apply0(Environment env, Continuation cont)
+                {
+                    return env.getExecutionContext().getOut();
+                }
+            }
 
-    };
+    }; // primitives
 
     /**
      * Can't instantiate this class

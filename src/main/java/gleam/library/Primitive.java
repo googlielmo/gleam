@@ -54,9 +54,7 @@ public abstract class Primitive implements java.io.Serializable
     public static final boolean IDENTIFIER = false;
     /** constant to signal a variable (unlimited) number of arguments */
     public static final int VAR_ARGS = -1;
-    /**
-     * serialVersionUID
-     */
+
     private static final long serialVersionUID = 1L;
     /** definition environment */
     public final Environment.Kind definitionEnv;
@@ -79,7 +77,13 @@ public abstract class Primitive implements java.io.Serializable
     /** primitive name, as used in programs, e.g. "car" */
     private final String name;
 
-    Primitive(String name, Environment.Kind definitionEnv, boolean keyword, int minArgs, int maxArgs, String comment, String documentation)
+    Primitive(String name,
+              Environment.Kind definitionEnv,
+              boolean keyword,
+              int minArgs,
+              int maxArgs,
+              String comment,
+              String documentation)
     {
         this.name = name;
         this.definitionEnv = definitionEnv;
@@ -88,13 +92,15 @@ public abstract class Primitive implements java.io.Serializable
         this.maxArgs = maxArgs;
         if (comment != null) {
             this.comment = comment;
-        } else {
+        }
+        else {
             this.comment = "No documentation defined";
         }
 
         if (documentation != null) {
             this.documentation = this.comment + "\n" + documentation;
-        } else {
+        }
+        else {
             this.documentation = this.comment;
         }
 
@@ -113,7 +119,8 @@ public abstract class Primitive implements java.io.Serializable
      *                                   execution of this primitive
      */
     @SuppressWarnings("unused")
-    public Entity apply0(Environment env, Continuation cont) throws GleamException
+    public Entity apply0(Environment env,
+                         Continuation cont) throws GleamException
     {
         throw new GleamException(this, "apply0 not implemented", null);
     }
@@ -131,7 +138,9 @@ public abstract class Primitive implements java.io.Serializable
      * @throws gleam.lang.GleamException if any error is signaled during the
      *                                   execution of this primitive
      */
-    public Entity apply1(Entity arg1, Environment env, Continuation cont) throws GleamException
+    public Entity apply1(Entity arg1,
+                         Environment env,
+                         Continuation cont) throws GleamException
     {
         throw new GleamException(this, "apply1 not implemented", null);
     }
@@ -151,7 +160,10 @@ public abstract class Primitive implements java.io.Serializable
      * @throws gleam.lang.GleamException if any error is signaled during the
      *                                   execution of this primitive
      */
-    public Entity apply2(Entity arg1, Entity arg2, Environment env, Continuation cont) throws GleamException
+    public Entity apply2(Entity arg1,
+                         Entity arg2,
+                         Environment env,
+                         Continuation cont) throws GleamException
     {
         throw new GleamException(this, "apply2 not implemented", null);
     }
@@ -172,7 +184,11 @@ public abstract class Primitive implements java.io.Serializable
      * @throws gleam.lang.GleamException if any error is signaled during the
      *                                   execution of this primitive
      */
-    public Entity apply3(Entity arg1, Entity arg2, Entity arg3, Environment env, Continuation cont) throws GleamException
+    public Entity apply3(Entity arg1,
+                         Entity arg2,
+                         Entity arg3,
+                         Environment env,
+                         Continuation cont) throws GleamException
     {
         throw new GleamException(this, "apply3 not implemented", null);
     }
@@ -191,7 +207,9 @@ public abstract class Primitive implements java.io.Serializable
      * @throws gleam.lang.GleamException if any error is signaled during the
      *                                   execution of this primitive
      */
-    public Entity applyN(List args, Environment env, Continuation cont) throws GleamException
+    public Entity applyN(List args,
+                         Environment env,
+                         Continuation cont) throws GleamException
     {
         throw new GleamException(this, "applyN not implemented", null);
     }
@@ -221,7 +239,8 @@ public abstract class Primitive implements java.io.Serializable
         if (minArgs != maxArgs) {
             if (maxArgs < 0) {
                 sb.append("..*");
-            } else {
+            }
+            else {
                 sb.append("..");
                 sb.append(maxArgs);
             }

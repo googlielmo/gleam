@@ -31,7 +31,9 @@ import java.util.Set;
 
 public class EntrySetAdapter<K, V, K1, V1> extends CollectionAdapter<Map.Entry<K, V>, Map.Entry<K1, V1>> implements Set<Map.Entry<K1, V1>>
 {
-    public EntrySetAdapter(Set<Map.Entry<K, V>> entries, Converter<K, K1> keyConverter, Converter<V, V1> valueConverter)
+    public EntrySetAdapter(Set<Map.Entry<K, V>> entries,
+                           Converter<K, K1> keyConverter,
+                           Converter<V, V1> valueConverter)
     {
         super(entries, new EntryConverter<>(keyConverter, valueConverter));
     }
