@@ -12,23 +12,25 @@ HOW TO BUILD GLEAM
 
 The Gleam distribution consists of two jar archives:
 
-- `gleam-VERSION.jar` the interpreter library
-- `repl-VERSION.jar` the interactive interpreter, or read-eval-print loop (REPL)
+- `gleam-$VERSION.jar` the interpreter library
+- `repl-$VERSION.jar` the interactive interpreter, or read-eval-print loop (REPL)
 
-Create the jars with Maven:
+where `$VERSION` is set to match the project version in pom.xml.
 
-    $ mvn -f gleam-all clean package
+Create the jars with Maven, using the provided wrapper:
 
-On success, you'll find the `gleam-VERSION.jar` archive under the `target` directory, and
-`repl-VERSION.jar` under `repl/target`.
+    $ ./mvnw -f gleam-all clean package
+
+On success, you'll find the `gleam-$VERSION.jar` archive under the `target` directory, and
+`repl-$VERSION.jar` under `repl/target`.
 
 To run the REPL, execute:
 
-    $ java -cp ./target/gleam-VERSION.jar:./repl/target/repl-VERSION.jar gleam.repl.Gleam
+    $ java -cp ./target/gleam-$VERSION.jar:./repl/target/repl-$VERSION.jar gleam.repl.Gleam
 
 Alternatively, execute:
 
-    $ mvn -f gleam-all -Pexec install
+    $ ./mvnw -f gleam-all -Pexec install
 
 With this special profile (`-Pexec`) a successful install will drop you in the REPL.
 Exit the interactive interpreter to conclude the Maven build.
