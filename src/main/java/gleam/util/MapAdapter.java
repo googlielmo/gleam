@@ -73,7 +73,8 @@ public class MapAdapter<K, V, K1, V1> implements Map<K1, V1>
     @Override
     public V1 get(Object key)
     {
-        return valueConverter.convert(kvMap.get(keyConverter.invertAny(key)));
+        V ret = kvMap.get(keyConverter.invertAny(key));
+        return ret == null ? null : valueConverter.convert(ret);
     }
 
     @Override
@@ -81,13 +82,16 @@ public class MapAdapter<K, V, K1, V1> implements Map<K1, V1>
     {
         K k = keyConverter.invert(key);
         V v = valueConverter.invert(value);
-        return valueConverter.convert(kvMap.put(k, v));
+        V prev = kvMap.put(k, v);
+        return prev == null ? null : valueConverter.convert(prev);
     }
 
     @Override
     public V1 remove(Object key)
     {
-        return valueConverter.convert(kvMap.remove(key));
+        K k = keyConverter.invertAny(key);
+        V ret = kvMap.remove(k);
+        return ret == null ? null : valueConverter.convert(ret);
     }
 
     @Override
@@ -121,5 +125,13 @@ public class MapAdapter<K, V, K1, V1> implements Map<K1, V1>
         return new EntrySetAdapter<>(kvMap.entrySet(),
                                      keyConverter,
                                      valueConverter);
+    }
+
+    @Override
+    public boolean remove(Object key, Object value)
+    {
+        K k = keyConverter.invertAny(key);
+        V v = valueConverter.invertAny(value);
+        return kvMap.remove(k, v);
     }
 }
