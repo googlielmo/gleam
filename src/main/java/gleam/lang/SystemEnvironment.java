@@ -49,13 +49,12 @@ public final class SystemEnvironment extends Environment
     {
         this(null, Kind.NULL_ENV);
         boolean isConsole = java.lang.System.console() != null;
-        setExecutionContext(new ExecutionContext(null,
-                                                 new InputPort(new InputStreamReader(
-                                                         java.lang.System.in)),
-                                                 new OutputPort(java.lang.System.out,
-                                                                isConsole),
-                                                 new OutputPort(java.lang.System.err,
-                                                                isConsole)));
+        setExecutionContext(
+                new ExecutionContext(
+                        null,
+                        new InputPort(new InputStreamReader(java.lang.System.in)),
+                        new OutputPort(java.lang.System.out, isConsole),
+                        new OutputPort(java.lang.System.err, isConsole)));
     }
 
     SystemEnvironment(Environment parent, Kind kind)

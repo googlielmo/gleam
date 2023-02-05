@@ -78,6 +78,12 @@ public class OutputPort extends Port implements Closeable
         openFile(fileName);
     }
 
+    public PrintWriter getPrintWriter()
+
+    {
+        return out;
+    }
+
     private void openFile(String name) throws IOException
     {
         FileOutputStream stream = new FileOutputStream(name);

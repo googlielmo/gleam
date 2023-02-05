@@ -91,9 +91,9 @@ public class Interpreter
             INTERACTION_ENV);
 
     /**
-     * the global shared environment
+     * wrapper for the shared environment
      */
-    private static Environment globalEnv = new Environment(interactionEnv);
+    private final Environment sharedEnv = new Environment(interactionEnv);
 
     /**
      * true if bootstrap code already loaded
@@ -109,7 +109,7 @@ public class Interpreter
      * the session (top-level) environment; typically the environment used by
      * the application.
      */
-    private Environment sessionEnv = null;
+    private Environment sessionEnv = new Environment(sharedEnv);
 
     /**
      * the accumulator register
@@ -122,7 +122,6 @@ public class Interpreter
     private Interpreter()
     {
         initEnvironments();
-        setSessionEnv(new Environment(getInteractionEnv()));
     }
 
     /**
@@ -170,11 +169,6 @@ public class Interpreter
         }
     }
 
-    public static Environment getInteractionEnv()
-    {
-        return interactionEnv;
-    }
-
     /**
      * Imports primitives
      */
@@ -209,6 +203,11 @@ public class Interpreter
         return nullEnv;
     }
 
+    public static Environment getInteractionEnv()
+    {
+        return interactionEnv;
+    }
+
     /**
      * Installs a primitive in an environment
      *
@@ -236,11 +235,10 @@ public class Interpreter
         }
     }
 
-    public static void setGlobalEnv(Interpreter intp, Environment globalEnv)
+    public void setGlobalEnv(Environment env)
     {
-        globalEnv.setParent(interactionEnv);
-        intp.sessionEnv.setParent(globalEnv);
-        Interpreter.globalEnv = globalEnv;
+        env.parent = interactionEnv;
+        sharedEnv.parent = env;
     }
 
     /**
@@ -437,10 +435,10 @@ public class Interpreter
         return sessionEnv;
     }
 
-    public void setSessionEnv(Environment sessionEnv)
+    public void setSessionEnv(Environment env)
     {
-        sessionEnv.setParent(globalEnv);
-        this.sessionEnv = sessionEnv;
+        env.setParent(sharedEnv);
+        this.sessionEnv = env;
     }
 
     /**

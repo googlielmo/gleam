@@ -101,7 +101,7 @@ public class Environment extends AbstractEntity
         return readContext();
     }
 
-    protected void setExecutionContext(ExecutionContext ctx)
+    public void setExecutionContext(ExecutionContext ctx)
     {
         this.executionContext = ctx;
     }
@@ -109,16 +109,18 @@ public class Environment extends AbstractEntity
     /**
      * Associates a symbol in this environment with a value.
      */
-    public synchronized void define(Symbol s, Entity v)
+    public synchronized Location define(Symbol s, Entity v)
     {
         Objects.requireNonNull(v);
         Location loc;
-        if ((loc = assoc.get(s)) != null) {
-            loc.set(v);
+        if ((loc = assoc.get(s)) == null) {
+            loc = new Location(v);
+            assoc.put(s, loc);
         }
         else {
-            assoc.put(s, new Location(v));
+            loc.set(v);
         }
+        return loc;
     }
 
     /**

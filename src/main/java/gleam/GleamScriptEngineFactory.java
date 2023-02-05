@@ -35,8 +35,8 @@ import java.util.List;
 public class GleamScriptEngineFactory implements ScriptEngineFactory
 {
 
-    public static final List<String> NAMES = Arrays.asList("gleam",
-                                                           "Gleam",
+    public static final List<String> NAMES = Arrays.asList("Gleam",
+                                                           "gleam",
                                                            "GleamScheme",
                                                            "GleamSchemeInterpreter",
                                                            "scheme");

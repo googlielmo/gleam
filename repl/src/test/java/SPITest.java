@@ -3,9 +3,14 @@ import gleam.util.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.script.SimpleBindings;
+import javax.script.SimpleScriptContext;
+import java.io.StringWriter;
 
 import static javax.script.ScriptContext.ENGINE_SCOPE;
 import static javax.script.ScriptContext.GLOBAL_SCOPE;
@@ -15,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SPITest
 {
-
     private static final Logger logger = Logger.getLogger();
 
     ScriptEngineManager manager;
@@ -32,6 +36,15 @@ public class SPITest
     {
         ScriptEngine engine = manager.getEngineByName("gleam");
         assertNotNull(engine);
+    }
+
+    @Test
+    void testDeleteFromGlobalScopeAndReadFromSchemeThrowsOnUnboundSymbol()
+    {
+        ScriptEngine engine = manager.getEngineByName("gleam");
+        engine.getContext().setAttribute("attr", 99.9, GLOBAL_SCOPE);
+        engine.getContext().removeAttribute("attr", GLOBAL_SCOPE);
+        assertThrows(ScriptException.class, () -> engine.eval("(+ 2 attr)"));
     }
 
     @Test
@@ -59,6 +72,38 @@ public class SPITest
         engine.getContext().setAttribute("attr", 40.0, ENGINE_SCOPE);
         Object value = engine.eval("(+ 2 attr)");
         assertEquals(42.0, ((Number) value).doubleValue());
+    }
+
+    @Test
+    void testEvalWithBindings() throws ScriptException
+    {
+        ScriptEngine engine = manager.getEngineByName("gleam");
+        engine.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
+
+        Bindings b = new SimpleBindings();
+        b.put("attr", 40.0);
+
+        Object value = engine.eval("(+ 2 attr)", b);
+        assertEquals(42.0, ((Number) value).doubleValue());
+
+        assertEquals(99.9,
+                     engine.getContext().getAttribute("attr", ENGINE_SCOPE));
+    }
+
+    @Test
+    void testEvalWithContext() throws ScriptException
+    {
+        ScriptEngine engine = manager.getEngineByName("gleam");
+        engine.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
+
+        ScriptContext scriptContext = new SimpleScriptContext();
+        scriptContext.getBindings(ENGINE_SCOPE).put("attr", 40.0);
+
+        Object value = engine.eval("(+ 2 attr)", scriptContext);
+        assertEquals(42.0, ((Number) value).doubleValue());
+
+        assertEquals(99.9,
+                     engine.getContext().getAttribute("attr", ENGINE_SCOPE));
     }
 
     @Test
@@ -91,6 +136,28 @@ public class SPITest
     }
 
     @Test
+    void testPutWithDifferentMethodsAndReadFromSchemePreservesScopeOrder() throws ScriptException
+    {
+        ScriptEngine engine = manager.getEngineByName("gleam");
+
+        // shared global scope
+        engine.getContext().setAttribute("attr", 10.0, GLOBAL_SCOPE);
+
+        // these all refer to the same scope
+        engine.getContext().getBindings(ENGINE_SCOPE).put("attr", 20.0);
+        engine.getBindings(ENGINE_SCOPE).put("attr", 30.0);
+        engine.put("attr", 40.0);
+
+        Object value = engine.eval("(+ 2 attr)");
+        assertEquals(42.0, ((Number) value).doubleValue());
+
+        engine.getBindings(ENGINE_SCOPE).remove("attr");
+
+        Object value1 = engine.eval("(+ 2 attr)");
+        assertEquals(12.0, ((Number) value1).doubleValue());
+    }
+
+    @Test
     void testDeleteFromEngineScopeAndReadFromScheme() throws ScriptException
     {
         ScriptEngine engine = manager.getEngineByName("gleam");
@@ -110,6 +177,73 @@ public class SPITest
         engine.getContext().removeAttribute("attr", ENGINE_SCOPE);
         engine.getContext().removeAttribute("attr", GLOBAL_SCOPE);
         assertThrows(ScriptException.class, () -> engine.eval("(+ 2 attr)"));
+    }
+
+    @Test
+    void testGlobalScopeIsSharedBetweenEngineInstances() throws ScriptException
+    {
+        ScriptEngine engine1 = manager.getEngineByName("gleam");
+        ScriptEngine engine2 = manager.getEngineByName("gleam");
+
+        // set global in engine1
+        engine1.getContext().setAttribute("attr", 40.0, GLOBAL_SCOPE);
+
+        // use global in engine1
+        Object value1 = engine1.eval("(+ 2 attr)");
+        assertEquals(42.0, ((Number) value1).doubleValue());
+
+        // use global in engine2
+        Object value2 = engine2.eval("(+ 2 attr)");
+        assertEquals(42.0, ((Number) value2).doubleValue());
+
+        // replace global value in engine1
+        engine1.eval("(set! attr 99)");
+
+        // use global in engine2
+        Object value3 = engine2.eval("(+ 2 attr)");
+        assertEquals(101.0, ((Number) value3).doubleValue());
+    }
+
+    @Test
+    void testEngineScopeIsNotSharedBetweenEngineInstances() throws ScriptException
+    {
+        ScriptEngine engine1 = manager.getEngineByName("gleam");
+        ScriptEngine engine2 = manager.getEngineByName("gleam");
+
+        engine1.put("attr", 40.0);
+        engine2.getContext().setAttribute("attr", 19.0, ENGINE_SCOPE);
+
+        Object value1 = engine1.eval("(+ 2 attr)");
+        assertEquals(42.0, ((Number) value1).doubleValue());
+
+        Object value2 = engine2.eval("(+ 2 attr)");
+        assertEquals(21.0, ((Number) value2).doubleValue());
+    }
+
+    @Test
+    void testUsingMultipleScopesWorksAsExpected() throws ScriptException
+    {
+        // See also "Java Platform, Standard Edition Java Scripting
+        // Programmer's Guide", Rel. 10, March 2018, Oracle, 2-6
+        StringWriter stringWriter = new StringWriter();
+
+        ScriptEngine engine = manager.getEngineByName("gleam");
+        engine.getContext().setWriter(stringWriter);
+
+        engine.put("x", "hello,");
+        engine.eval("(display x)");
+
+        // define a different script context
+        ScriptContext newContext = new SimpleScriptContext();
+        newContext.setWriter(stringWriter);
+        newContext.setBindings(engine.createBindings(),
+                               ScriptContext.ENGINE_SCOPE);
+        Bindings engineScope = newContext.getBindings(ScriptContext.ENGINE_SCOPE);
+
+        engineScope.put("x", " world");
+        engine.eval("(display x)", newContext);
+
+        assertEquals("hello, world", stringWriter.toString());
     }
 
     @Test

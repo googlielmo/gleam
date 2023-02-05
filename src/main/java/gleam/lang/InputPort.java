@@ -30,9 +30,10 @@ import gleam.util.Logger;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static gleam.util.Logger.Level.DEBUG;
 
@@ -51,16 +52,22 @@ public class InputPort extends Port implements Closeable
 
     private transient Reader gleamReader;
 
-    public InputPort(String name) throws java.io.FileNotFoundException
+    public InputPort(String name) throws java.io.IOException
     {
         this.fileName = name;
         openFile(name);
     }
 
-    private void openFile(String name) throws FileNotFoundException
+    public java.io.Reader getReader()
     {
-        reader = new BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(
-                name)));
+        return reader;
+    }
+
+    private void openFile(String name) throws IOException
+    {
+        reader =
+                new BufferedReader(new java.io.InputStreamReader(
+                        Files.newInputStream(Paths.get(name))));
         gleamReader = new Reader(reader);
     }
 
