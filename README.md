@@ -8,7 +8,7 @@ welcome to redistribute it under certain conditions; see LICENSE.TXT.
 
 ## Abstract
 
-Gleam is a simple Scheme language interpreter written in Java.
+Gleam is a Scheme language interpreter written in Java.
 
 Project goals: to support the discovery of Scheme for beginners, simplicity,
 R5RS compliance, full integration with the Java platform (call Java from Scheme
@@ -42,9 +42,9 @@ See [BUILD.md](BUILD.md).
 I started this project in 2001 while looking for a Lisp interpreter to add
 scripting capabilities to Java programs.
 
-I already knew Lisp (and liked it a lot) from my university days in Pisa,
+I learned Lisp (and liked it a lot) during my university days in Pisa,
 Italy, and I thought I could augment Java with Lisp. It was around that time
-that I discovered Scheme and I was instantly fascinated by the simplicity
+that I discovered Scheme, and I was instantly fascinated by the simplicity
 and elegance of the language.
 I found out that there were already some good Java implementations of Scheme
 out there, but, you know, I have to try my hand at something to grok it! :-)
@@ -53,5 +53,5 @@ So I started my simple, slow implementation of an interpreter, always
 looking at the R5RS document for reference. One of the first things that I
 was curious to implement was first-class continuations. I wondered if there
 was a simple way to do those in Java.
-In fact, this being an interpreter, it was relatively easy to emulate them.
+In fact, this being an interpreter, it was relatively simple to implement them.
 For a compiler, it would be trickier. We'll see in version 2 ;-)

@@ -1,11 +1,34 @@
 Current development release 1.3-SNAPSHOT
-2023-01-14
+2023-02-05
 
-    Implement jsr223 GleamScriptEngine
+    JSR 223 conformant GleamScriptEngine
+     - handle console in GleamScriptContext constructor
+     - global and engine bindings
+     - use generic Adapter and Converter classes in JSR 223 Bindings
+     - per-manager global environment
+     - engine.eval() with bindings and context
+     - keep cache of shared envs
 
-    - separate REPL to new Maven module
-    - provide updated instructions for the multi-module build
+    Introduce ExecutionContext
+     - holds I/O ports and other context
+     - a default one is accessible by all environments
+     - can be overridden in any environment
 
+    Multi-module Maven build
+     - separate the Interpreter and the REPL into different modules
+     - enforce a minimum Maven version
+     - add the Maven wrapper to the project
+     - provide updated BUILD.md instructions
+
+    Lots of improvements
+     - fix Logger methods that log an exception
+     - performance improvement with new Logger.log() taking Supplier<String>
+     - improved tests, with better summary in case of failed Scheme tests
+     - display() and write() now return their OutputPort and are chainable
+     - remove serialVersionUID comments
+     - better comments, minor formatting
+     - new Java code style (CodeStyle.xml)
+     - reformat all Java code
 
 Release 1.2.0
 2022-02-15
