@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -38,7 +38,9 @@ import static gleam.lang.Environment.Kind.INTERACTION_ENV;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
- * SYMBOLS Primitive operator and procedure implementation library.
+ * SYMBOLS
+ * <p>
+ * Primitive operator and procedure implementation library.
  */
 public final class Symbols
 {
@@ -96,8 +98,6 @@ public final class Symbols
 
     }; // primitives
 
-    /**
-     * Can't instantiate this class
-     */
+    /** Can't instantiate this class. */
     private Symbols() {}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -50,8 +50,9 @@ import java.util.Set;
 import static gleam.lang.Environment.Kind.INTERACTION_ENV;
 
 /**
- * INTERACTION -- GLEAM-SPECIFIC Primitive operator and procedure implementation
- * library.
+ * INTERACTION (GLEAM-SPECIFIC)
+ * <p>
+ * Primitive operator and procedure implementation library.
  */
 public final class Interaction
 {
@@ -291,8 +292,6 @@ public final class Interaction
 
     }; // primitives
 
-    /**
-     * Can't instantiate this class
-     */
+    /** Can't instantiate this class. */
     private Interaction() {}
 }

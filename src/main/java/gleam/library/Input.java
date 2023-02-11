@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2020 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -37,7 +37,9 @@ import gleam.lang.InputPort;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
- * Input Primitive operator and procedure implementation library.
+ * INPUT
+ * <p>
+ * Primitive operator and procedure implementation library.
  */
 public final class Input
 {
@@ -114,8 +116,6 @@ public final class Input
 
     }; // primitives
 
-    /**
-     * Can't instantiate this class
-     */
+    /** Can't instantiate this class. */
     private Input() {}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -41,12 +41,14 @@ public class ArgumentList implements java.io.Serializable
 
     public ArgumentList()
     {
+        // variable-size argument list
         this.listArgs = new java.util.ArrayList<>();
         this.pairArgs = null;
     }
 
     public ArgumentList(List args)
     {
+        // immutable argument list
         this.listArgs = null;
         this.pairArgs = args;
     }
@@ -57,9 +59,11 @@ public class ArgumentList implements java.io.Serializable
      * @param index the index in this list
      * @param value the value for the argument
      */
-    public void set(int index, Entity value)
+    public void set(int index, Entity value) throws GleamException
     {
-        assert listArgs != null : "set called on immutable ArgumentList";
+        if (listArgs == null) {
+            throw new GleamException("immutable ArgumentList");
+        }
         ensureSize(listArgs, index + 1);
         listArgs.set(index, value);
     }
@@ -90,10 +94,6 @@ public class ArgumentList implements java.io.Serializable
 
     private List j2g(java.util.List<Entity> lst)
     {
-        if (lst.isEmpty()) {
-            return EmptyList.VALUE;
-        }
-
         List p = EmptyList.VALUE;
         for (int i = lst.size() - 1; i >= 0; --i) {
             p = new Pair(lst.get(i), p);

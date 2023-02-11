@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -39,7 +39,9 @@ import java.io.IOException;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
- * SystemInterface Primitive operator and procedure implementation library.
+ * SYSTEM INTERFACE
+ * <p>
+ * Primitive operator and procedure implementation library.
  */
 public final class SystemInterface
 {
@@ -89,8 +91,6 @@ public final class SystemInterface
 
     }; // primitives
 
-    /**
-     * Can't instantiate this class
-     */
+    /** Can't instantiate this class. */
     private SystemInterface() {}
 }

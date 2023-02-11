@@ -54,7 +54,7 @@ public final class EmptyList extends AbstractEntity implements List
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger();
 
-    /** Can't just create an empty list. */
+    /** Can't instantiate this class. */
     private EmptyList() {}
 
     /**

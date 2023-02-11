@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -47,6 +47,8 @@ import static gleam.lang.Environment.Kind.NULL_ENV;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
+ * SYNTAX
+ * <p>
  * Primitive operator and procedure implementation library.
  */
 public final class Syntax
@@ -59,7 +61,7 @@ public final class Syntax
      */
     public static final Primitive[] primitives = {
 
-            /**
+            /*
              * quote
              * Returns its argument without evaluation.
             */
@@ -80,7 +82,7 @@ public final class Syntax
                 }
             },
 
-            /**
+            /*
              * define
              * Defines a new binding in the environment.
             */
@@ -153,7 +155,7 @@ public final class Syntax
                 }
             },
 
-            /**
+            /*
              * lambda
              * Creates a new procedure.
             */
@@ -183,7 +185,7 @@ public final class Syntax
                 }
             },
 
-            /**
+            /*
              * if
              * Conditional expression.
             */
@@ -213,7 +215,7 @@ public final class Syntax
                 }
             },
 
-            /**
+            /*
              * set!
              * Assigns a value to a variable
             */
@@ -246,7 +248,7 @@ public final class Syntax
                 }
             },
 
-            /**
+            /*
              * begin
              * Evaluates each argument sequentially from left to right.
              * The result of the last evaluation is returned.
@@ -270,7 +272,7 @@ public final class Syntax
                 }
             },
 
-            /**
+            /*
              * case
              * @todo implementation
             */
@@ -283,7 +285,7 @@ public final class Syntax
                           null /* doc strings */)
             {},
 
-            /**
+            /*
              * do
              * @todo implementation
             */
@@ -306,7 +308,7 @@ public final class Syntax
             //        null, null /* doc strings */ ) {
             //    },
 
-            /**
+            /*
              * quasiquote
             */
             new Primitive("quasiquote",
@@ -318,7 +320,7 @@ public final class Syntax
                           "If a comma appears within the argument, the expression following the " + "comma is evaluated (\"unquoted\") and its result is inserted into " + "the structure instead of the comma and the expression. If a comma " + "appears followed immediately by an at-sign (@), then the following " + "expression must evaluate to a list; the opening and closing " + "parentheses of the list are then \"stripped away\" and the elements " + "of the list are inserted in place of the comma at-sign expression " + "sequence. (unquote x) is equivalent to ,x and (unquote-splicing x) " + "is equivalent to ,@x." /* doc strings */)
             {},
 
-            /**
+            /*
              * else
              * @todo implementation
             */
@@ -341,7 +343,7 @@ public final class Syntax
             //        null, null /* doc strings */ ) {
             //    },
 
-            /**
+            /*
              * let
             */
             new Primitive("let",
@@ -353,7 +355,7 @@ public final class Syntax
                           null /* doc strings */)
             {},
 
-            /**
+            /*
              * let*
              * @todo implementation
             */
@@ -366,7 +368,7 @@ public final class Syntax
                           null /* doc strings */)
             {},
 
-            /**
+            /*
              * cond
             */
             new Primitive("cond",
@@ -378,7 +380,7 @@ public final class Syntax
                           null /* doc strings */)
             {},
 
-            /**
+            /*
              * unquote
             */
             new Primitive("unquote",
@@ -390,7 +392,7 @@ public final class Syntax
                           null /* doc strings */)
             {},
 
-            /**
+            /*
              * unquote-splicing
             */
             new Primitive("unquote-splicing",
@@ -402,7 +404,7 @@ public final class Syntax
                           null /* doc strings */)
             {},
 
-            /**
+            /*
              * make-rewriter
             */
             new Primitive("make-rewriter",
@@ -437,7 +439,7 @@ public final class Syntax
                 }
             },
 
-            /**
+            /*
              * rewrite1
              * @todo implementation
             */
@@ -452,8 +454,6 @@ public final class Syntax
 
     }; // primitives
 
-    /**
-     * Can't instantiate this class
-     */
+    /** Can't instantiate this class. */
     private Syntax() {}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -122,13 +122,14 @@ public class ListIterator implements Iterator<Entity>
     /**
      * Replaces current value. Must be called after next().
      */
-    public void replace(Entity newArg) throws GleamException
+    public void replace(Entity newArg)
+            throws GleamException
     {
         if (newArg == null) {
-            throw new GleamException("Unexpected null");
+            throw new GleamException("unexpected null");
         }
         if (restPair == null) {
-            throw new GleamException("No current value to replace", pair);
+            throw new GleamException("no current value to replace", pair);
         }
         if (isImproper && pair == EmptyList.VALUE) {
             restPair.setCdr(newArg);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -128,8 +128,8 @@ public class Pair extends AbstractEntity implements List
     public Entity analyze(Environment env) throws GleamException
     {
         if (!analyzed) {
-            if (getCar() instanceof Symbol && System.isSpecialForm((Symbol) getCar(),
-                                                                   env)) {
+            if (getCar() instanceof Symbol
+                && System.isSpecialForm((Symbol) getCar(), env)) {
                 /* we have a special form, so let's
                  * perform syntax analysis
                  * -- may change car, cdr
@@ -209,9 +209,8 @@ public class Pair extends AbstractEntity implements List
     public Entity optimize(Environment env) throws GleamException
     {
         /* first check for special forms */
-        if (getCar() instanceof Symbol && System.isSpecialForm((Symbol) getCar(),
-                                                               env)) {
-            // TODO: should we do a System.optimizeSpecialForm(this, env) ?
+        if (getCar() instanceof Symbol
+            && System.isSpecialForm((Symbol) getCar(), env)) {
             return this;
         }
 
@@ -276,6 +275,7 @@ public class Pair extends AbstractEntity implements List
                                 ArgumentList args,
                                 Environment env,
                                 Continuation cont)
+            throws GleamException
     {
         cont.begin(new ExpressionAction(syntaxRewriter, env))
             .andThen(new ProcedureCallAction(args, env))

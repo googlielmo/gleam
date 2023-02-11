@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -31,8 +31,6 @@ import gleam.util.Logger;
 import java.util.Collection;
 import java.util.HashSet;
 
-import static gleam.util.Logger.Level.DEBUG;
-
 /**
  * Scheme runtime support. Creation date: 03/11/2001
  */
@@ -40,7 +38,7 @@ public final class System
 {
     private static final Logger logger = Logger.getLogger();
 
-    /** can't instantiate this class */
+    /** Can't instantiate this class. */
     private System() {}
 
     /**
@@ -194,22 +192,6 @@ public final class System
                 it.replace(it.next().analyze(env));
             }
         }
-        else if (op == Symbol.COND) {
-        }
-        else if (op == Symbol.CASE) {
-        }
-        else if (op == Symbol.LET || op == Symbol.LETSTAR || op == Symbol.LETREC) {
-        }
-        //        else if (op == Symbol.DO) {
-        //        }
-        //        else if (op == Symbol.DELAY) {
-        //            // delay wants one expression
-        //            it.replace(arg.analyze(env));
-        //            if (it.hasNext()) {
-        //                throw new GleamException(
-        //                        "delay: too many arguments", form);
-        //            }
-        //        }
         else if (op == Symbol.DEFINE) {
             // analyze variable or function
             boolean isFunction;
@@ -297,217 +279,6 @@ public final class System
     }
 
     /**
-     * Performs optimization of special forms. Creation date: (14/11/2001
-     * 02.19.35)
-     */
-    public static void optimizeSpecialForm(List form,
-                                           Environment env) throws GleamException
-    {
-        /* We operate under the assumption that syntax analysis
-         * has already been performed, so we skip syntax checking.
-         */
-
-        // TODO: remove clone ?
-        form.setCdr(clone(form.getCdr()));
-
-        ListIterator it = new ListIterator(form);
-        // optimize operator itself
-        Entity op = it.next();
-        it.replace(op.optimize(env));
-
-        // form arguments
-        Entity arg;
-
-        // These may take no arguments
-        if (op == Symbol.AND || op == Symbol.OR) {
-            // optimize arguments
-            while (it.hasNext()) {
-                it.replace(it.next().optimize(env));
-            }
-            return;
-        }
-
-        // Other special forms have at least an argument
-        arg = it.next();
-
-        if (op == Symbol.QUOTE) {
-            // shall not touch arg, that's the whole point of quote!
-        }
-        else if (op == Symbol.LAMBDA) {
-            // analyze param list
-
-            /* we scan out the defines in lambda body
-             */
-            Environment newEnv = createScanOutDefineEnv(form, env);
-
-            /* then we create an augmented environment to hold
-             * the param names with undefined values
-             * for the purpose of optimization only
-             */
-            Environment paramEnv = new Environment(newEnv);
-            if (arg == EmptyList.VALUE) {
-                // ok (but different from Pair below)
-            }
-            else if (isVariable(arg)) {
-                // ok, but we add it to paramEnv
-                paramEnv.define((Symbol) arg, Undefined.VALUE);
-            }
-            else if (arg instanceof List) {
-                // iterate over (possibly improper) list
-                ListIterator ait = new ListIterator((List) arg, true);
-                while (ait.hasNext()) {
-                    Entity pobj = ait.next();
-                    paramEnv.define((Symbol) pobj, Undefined.VALUE);
-                }
-            }
-            // optimize body in the new param environment
-            // this will leave each use of the parameters
-            // untouched (because their names are bound to Undefined)
-            while (it.hasNext()) {
-                Entity bodyPart = it.next();
-                it.replace(bodyPart.optimize(paramEnv));
-            }
-        }
-        else if (op == Symbol.SET) {
-            // only optimize expression, not variable name
-            it.replace(it.next().optimize(env));
-        }
-        else if (op == Symbol.BEGIN) {
-            Environment newEnv = createScanOutDefineEnv(form, env);
-            it.replace(arg.optimize(newEnv));
-            while (it.hasNext()) {
-                it.replace(it.next().optimize(newEnv));
-            }
-        }
-        //      else if (op == Symbol.LET) {
-        //          // TODO
-        //      }
-        //      else if (op == Symbol.LETSTAR) {
-        //          // TODO
-        //      }
-        //      else if (op == Symbol.LETREC) {
-        //          // TODO
-        //      }
-        //        else if (op == Symbol.DO) {
-        //            // TODO
-        //        }
-        //        else if (op == Symbol.DELAY) {
-        //            // TODO
-        //        }
-        else if (op == Symbol.QUASIQUOTE) {
-            // shall not touch arg, like quote
-        }
-        else if (op == Symbol.DEFINE) {
-            /* in case this is a procedure
-             * we scan out the defines in lambda body
-             */
-            Environment newEnv = createScanOutDefineEnv(form, env);
-
-            /* then we create an augmented environment to hold
-             * the param names with undefined values
-             * for the purpose of optimization only
-             */
-            Environment paramEnv = new Environment(newEnv);
-
-            // optimize variable or function
-            if (isVariable(arg)) {
-                // ok, leave it alone
-            }
-            else if (arg instanceof List) {
-                // iterate over (possibly improper) list
-                ListIterator ait = new ListIterator((List) arg, true);
-
-                while (ait.hasNext()) {
-                    Entity pobj = ait.next();
-                    paramEnv.define((Symbol) pobj, Undefined.VALUE);
-                }
-            }
-            /* optimize value or procedure body
-             *
-             * if this is a procedure:
-             * optimize body in the new param environment--
-             * this will leave each use of the parameters
-             * untouched (because their names are bound to Undefined)
-             */
-            while (it.hasNext()) {
-                Entity bodyPart = it.next();
-                it.replace(bodyPart.optimize(paramEnv));
-            }
-        }
-        else {
-            /* Default case for:
-             *  if
-             *  cond
-             *  case
-             *
-             * Just optimize every argument.
-             */
-            it.replace(arg.optimize(env));
-            while (it.hasNext()) {
-                arg = it.next();
-                it.replace(arg.optimize(env));
-            }
-        }
-    }
-
-    /**
-     * Creates a new environment for all variables defined within body to hold
-     * Undefined values.
-     * <p>
-     * When a closure is created, this method will retrieve a proper list of
-     * internally defined variables, i.e., for the following closure:
-     * <pre><code>
-     *    (lambda (x y)
-     *      (define a 1)
-     *      (define b (foo x y))
-     *      (begin
-     *        (define c 1)
-     *        (define d 2))
-     *      (b (+ a c d)))
-     * </code></pre>
-     * the scan-out will give (a b c d).
-     * <p>
-     * At application time, after creating the local environment, the variables
-     * will be bound in the new environment with an Undefined value.
-     * <p>
-     * This would suffice to preserve the "simultaneous definition" semantics of
-     * Scheme defines inside procedures.
-     */
-    static Environment createScanOutDefineEnv(List body,
-                                              Environment env) throws GleamException
-    {
-        List varList = EmptyList.VALUE;
-        ListIterator it = new ListIterator(body);
-        /* do a scan out for each body part,
-         * appending variables found into varList
-         */
-        while (it.hasNext()) {
-            List partialList = internalScanOut(it.next());
-            ListIterator it2 = new ListIterator(partialList);
-            while (it2.hasNext()) {
-                Entity v = it2.next();
-                varList = new Pair(v, varList);
-            }
-        }
-        if (varList == EmptyList.VALUE) {
-            return env;
-        }
-        else {
-            Environment retVal = new Environment(env);
-            // iterate on varList, binding each var to Undefined
-            logger.log(DEBUG, "Scanned out: ");
-            ListIterator vit = new ListIterator(varList);
-            while (vit.hasNext()) {
-                Symbol v = (Symbol) vit.next();
-                retVal.define(v, Undefined.VALUE);
-                logger.log(DEBUG, "variable", v);
-            }
-            logger.log(DEBUG, "...end of scan-out");
-            return retVal;
-        }
-    }
-
-    /**
      * Deep clones a list
      *
      * @param list List
@@ -540,39 +311,5 @@ public final class System
         }
 
         return entity;
-    }
-
-    private static List internalScanOut(Entity bodyPart) throws GleamException
-    {
-        List retVal = EmptyList.VALUE;
-        if (!(bodyPart instanceof List)) {
-            return retVal;
-        }
-
-        List bpAsPair = (List) bodyPart;
-
-        if (bpAsPair.getCar() == Symbol.DEFINE) {
-            Entity obj = ((List) bpAsPair.getCdr()).getCar();
-            if (obj instanceof Symbol) {
-                retVal = new Pair(obj, retVal);
-            }
-            else if (obj instanceof List) {
-                retVal = new Pair(((List) obj).getCar(), retVal);
-            }
-        }
-        else if (bpAsPair.getCar() == Symbol.BEGIN) {
-            ListIterator it = new ListIterator((List) bpAsPair.getCdr());
-            while (it.hasNext()) {
-                List is = internalScanOut(it.next());
-                if (is != EmptyList.VALUE) {
-                    ListIterator it2 = new ListIterator(is);
-                    while (it2.hasNext()) {
-                        retVal = new Pair(it2.next(), retVal);
-                    }
-                }
-            }
-        }
-        //
-        return retVal;
     }
 }

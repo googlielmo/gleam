@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -39,7 +39,9 @@ import gleam.lang.ProcedureCallAction;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
 
 /**
- * CONTROL FEATURES Primitive operator and procedure implementation library.
+ * CONTROL FEATURES
+ * <p>
+ * Primitive operator and procedure implementation library.
  */
 public final class ControlFeatures
 {
@@ -91,8 +93,8 @@ public final class ControlFeatures
                     if (arg1 instanceof Procedure) {
                         /* create a new procedure call with the continuation argument. */
                         ArgumentList arglist = new ArgumentList();
-                        arglist.set(0,
-                                    new Continuation(cont)); // copy-constructor: cont itself is going to change soon!
+                        /* use a copy of cont, as it's going to change */
+                        arglist.set(0, new Continuation(cont));
                         cont.begin(new ProcedureCallAction(arglist, env));
                         return arg1;
                     }
@@ -142,8 +144,6 @@ public final class ControlFeatures
 
     }; // primitives
 
-    /**
-     * Can't instantiate this class
-     */
+    /** Can't instantiate this class. */
     private ControlFeatures() {}
 }

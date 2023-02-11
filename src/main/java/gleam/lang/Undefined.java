@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -44,10 +44,8 @@ public final class Undefined extends AbstractEntity
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger();
 
-    /** Can't instantiate this */
-    private Undefined()
-    {
-    }
+    /** Can't instantiate this class. */
+    private Undefined() {}
 
     /**
      * Evaluates this object in the given environment.

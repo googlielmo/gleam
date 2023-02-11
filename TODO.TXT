@@ -21,9 +21,6 @@ Move away from Java serialization -> Json? XML? S-expressions?
 
 Rework serialization for I/O ports (use append write for output files, etc.)
 
-Move analyzeSpecialForm() and optimizeSpecialForm()
-to specific subclasses of SyntaxProcedure, where they belong.
-
 A rewriting system for patterns (...)
 
 Test fully: tail-call optimizations
@@ -42,8 +39,7 @@ GleamException
     new "context" parameter to constructor,
     subclasses?
 
-ListIterator
-    subclass: ArgumentIterator, with param. number checking
+ArgumentIterator, with param. number checking
 
 A compiler!
 
@@ -59,6 +55,11 @@ Scheme lists)
 
 PARTLY DONE:
 ------------
+
+ListIterator
+
+Move analyzeSpecialForm() and optimizeSpecialForm()
+to specific subclasses of SyntaxProcedure, where they belong.
 
 Eval/Apply on java.lang.Objects for full Java integration OR java-object wrapper
 

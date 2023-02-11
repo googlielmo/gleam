@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -48,18 +48,13 @@ public final class Symbol extends AbstractEntity
      * defined here as constants for convenience
      */
     public static final Symbol AND = makeSymbol("and");
-    public static final Symbol APPEND = makeSymbol("append");
     public static final Symbol BEGIN = makeSymbol("begin");
     public static final Symbol CALL_CC = makeSymbol("call/cc");
     public static final Symbol CALL_WITH_CURRENT_CONTINUATION =
             makeSymbol("call-with-current-continuation");
     public static final Symbol CASE = makeSymbol("case");
     public static final Symbol COND = makeSymbol("cond");
-    public static final Symbol CONS = makeSymbol("cons");
     public static final Symbol DEFINE = makeSymbol("define");
-    //    public static final Symbol DELAY = makeSymbol("delay"); // TODO implement delay / force
-    public static final Symbol DO = makeSymbol("do");
-    public static final Symbol ELSE = makeSymbol("else");
     public static final Symbol ERROBJ = makeSymbol("__errobj");
     public static final Symbol HELP = makeSymbol("help");
     public static final Symbol IF = makeSymbol("if");
@@ -67,7 +62,6 @@ public final class Symbol extends AbstractEntity
     public static final Symbol LET = makeSymbol("let");
     public static final Symbol LETREC = makeSymbol("letrec");
     public static final Symbol LETSTAR = makeSymbol("let*");
-    public static final Symbol LIST = makeSymbol("list");
     public static final Symbol OR = makeSymbol("or");
     public static final Symbol QUASIQUOTE = makeSymbol("quasiquote");
     public static final Symbol QUOTE = makeSymbol("quote");
@@ -168,9 +162,6 @@ public final class Symbol extends AbstractEntity
         return symtable.computeIfAbsent(s, Symbol::new);
     }
 
-    /**
-     * Can't instantiate directly.
-     */
     private Symbol(String value)
     {
         this(value, true);
