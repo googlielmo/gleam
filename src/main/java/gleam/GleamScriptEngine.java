@@ -33,20 +33,31 @@ import gleam.lang.InputPort;
 import gleam.lang.Interpreter;
 import gleam.lang.JavaObject;
 import gleam.lang.OutputPort;
-import gleam.lang.Real;
+import gleam.lang.Pair;
+import gleam.lang.Symbol;
 import gleam.util.Converter;
 import gleam.util.Logger;
 
 import javax.script.Bindings;
+import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 import java.io.Reader;
+import java.util.ArrayList;
 
+import static gleam.lang.Entities.bool;
+import static gleam.lang.Entities.car;
+import static gleam.lang.Entities.cdr;
+import static gleam.lang.Entities.cons;
+import static gleam.lang.Entities.list;
+import static gleam.lang.Entities.quoted;
+import static gleam.lang.Entities.real;
+import static gleam.lang.Entities.symbol;
 import static javax.script.ScriptContext.ENGINE_SCOPE;
 
-public class GleamScriptEngine implements ScriptEngine
+public class GleamScriptEngine implements ScriptEngine, Invocable
 {
     private static final Logger logger = Logger.getLogger();
 
@@ -58,6 +69,9 @@ public class GleamScriptEngine implements ScriptEngine
         {
             if (entity instanceof JavaObject) {
                 return ((JavaObject) entity).getObjectValue();
+            }
+            else if (entity instanceof gleam.lang.Boolean) {
+                return ((gleam.lang.Boolean) entity).getBooleanValue();
             }
             else if (entity instanceof gleam.lang.Number) {
                 return ((gleam.lang.Number) entity).getDoubleValue();
@@ -71,8 +85,11 @@ public class GleamScriptEngine implements ScriptEngine
             if (value instanceof Entity) {
                 return (Entity) value;
             }
+            else if (value instanceof Boolean) {
+                return bool((Boolean) value);
+            }
             else if (value instanceof Number) {
-                return new Real(((Number) value).doubleValue());
+                return real(((Number) value).doubleValue());
             }
             return new JavaObject(value);
         }
@@ -89,6 +106,7 @@ public class GleamScriptEngine implements ScriptEngine
             return invert(value);
         }
     };
+    private static final Symbol CALL = Symbol.makeSymbol("call");
 
     private final Interpreter interpreter;
 
@@ -267,5 +285,70 @@ public class GleamScriptEngine implements ScriptEngine
     public ScriptEngineFactory getFactory()
     {
         return new GleamScriptEngineFactory();
+    }
+
+    @Override
+    public Object invokeMethod(Object thiz,
+                               String name,
+                               Object... args)
+            throws ScriptException, NoSuchMethodException
+    {
+        try {
+            Pair call;
+            Entity self = entityObjectConverter.invert(thiz);
+            call = toGleamList(name, args);
+            if (self instanceof JavaObject) {
+                call = cons(CALL,
+                            cons(quoted(car(call)),
+                                 cons(self, cdr(call))));
+            }
+            return evalPair(call);
+        }
+        catch (GleamException e) {
+            throw new ScriptException(e);
+        }
+    }
+
+    @Override
+    public Object invokeFunction(String name,
+                                 Object... args)
+            throws ScriptException, NoSuchMethodException
+    {
+        return evalPair(toGleamList(name, args));
+    }
+
+    @Override
+    public <T> T getInterface(Class<T> clasz)
+    {
+        return null;
+    }
+
+    @Override
+    public <T> T getInterface(Object thiz, Class<T> clasz)
+    {
+        return null;
+    }
+
+    private Pair toGleamList(String name, Object[] args)
+    {
+        java.util.List<Entity> entityList = new ArrayList<>();
+        for (Object arg : args) {
+            entityList.add(entityObjectConverter.invert(arg));
+        }
+        return cons(symbol(name), list(entityList));
+    }
+
+    private Object evalPair(Pair call)
+            throws ScriptException, NoSuchMethodException
+    {
+        try {
+            return entityObjectConverter.convert(interpreter.eval(call));
+        }
+        catch (GleamException e) {
+            if (e.getCause() instanceof NoSuchMethodException) {
+                throw (NoSuchMethodException) e.getCause();
+            }
+            throw new ScriptException(e);
+        }
     }
 }

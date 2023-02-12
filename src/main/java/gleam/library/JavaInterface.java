@@ -41,7 +41,6 @@ import gleam.lang.GleamException;
 import gleam.lang.JavaObject;
 import gleam.lang.ListIterator;
 import gleam.lang.MutableString;
-import gleam.lang.Number;
 import gleam.lang.Real;
 import gleam.lang.Symbol;
 import gleam.lang.Void;
@@ -204,7 +203,8 @@ public class JavaInterface
             return String.class;
         }
         else if (arg instanceof Real) {
-            return double.class;
+            double v = ((Real) arg).getDoubleValue();
+            return v % 1 == 0 ? int.class : double.class;
         }
         else {
             throw new GleamException(
@@ -225,7 +225,11 @@ public class JavaInterface
             return arg.toString();
         }
         else if (arg instanceof Real) {
-            return ((Number) arg).getDoubleValue();
+            double v = ((Real) arg).getDoubleValue();
+            if (v % 1 == 0) {
+                return (int) v;
+            }
+            return v;
         }
         else {
             throw new GleamException(
@@ -255,27 +259,27 @@ public class JavaInterface
         catch (SecurityException ex) {
             logger.warning(ex);
             throw new GleamException("call: SecurityException: " + ex.getMessage(),
-                                     methodName);
+                                     methodName, ex);
         }
         catch (IllegalArgumentException ex) {
             logger.warning(ex);
             throw new GleamException("call: IllegalArgumentException: " + ex.getMessage(),
-                                     methodName);
+                                     methodName, ex);
         }
         catch (NoSuchMethodException ex) {
             logger.warning(ex);
             throw new GleamException("call: NoSuchMethodException: " + ex.getMessage(),
-                                     methodName);
+                                     methodName, ex);
         }
         catch (IllegalAccessException ex) {
             logger.warning(ex);
             throw new GleamException("call: IllegalAccessException: " + ex.getMessage(),
-                                     methodName);
+                                     methodName, ex);
         }
         catch (InvocationTargetException ex) {
             logger.warning(ex);
             throw new GleamException("call: InvocationTargetException: " + ex.getMessage(),
-                                     methodName);
+                                     methodName, ex);
         }
     }
 

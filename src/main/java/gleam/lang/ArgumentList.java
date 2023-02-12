@@ -28,6 +28,8 @@ package gleam.lang;
 
 import java.util.ArrayList;
 
+import static gleam.lang.Entities.list;
+
 /**
  * A list of arguments for a procedure.
  */

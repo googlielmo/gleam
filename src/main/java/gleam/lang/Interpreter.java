@@ -36,6 +36,8 @@ package gleam.lang;
 import gleam.library.Primitive;
 import gleam.util.Logger;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,9 +47,9 @@ import java.util.TreeSet;
 
 import static gleam.lang.Environment.Kind.INTERACTION_ENV;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
-import static gleam.util.Logger.Level.CONFIG;
 import static gleam.util.Logger.Level.DEBUG;
 import static gleam.util.Logger.Level.ERROR;
+import static java.lang.String.format;
 
 /**
  * The Gleam Scheme Interpreter
@@ -89,21 +91,18 @@ public class Interpreter
     private static final Environment interactionEnv = new SystemEnvironment(
             reportEnv,
             INTERACTION_ENV);
-
-    /**
-     * wrapper for the shared environment
-     */
-    private final Environment sharedEnv = new Environment(interactionEnv);
-
     /**
      * true if bootstrap code already loaded
      */
     private static volatile boolean bootstrapped = false;
-
     /**
      * the program continuation
      */
     private final Continuation cont = new Continuation();
+    /**
+     * wrapper for the shared environment
+     */
+    private final Environment sharedEnv = new Environment(interactionEnv);
 
     /**
      * the session (top-level) environment; typically the environment used by
@@ -163,7 +162,7 @@ public class Interpreter
         catch (GleamException e) {
             // should never happen
             logger.log(ERROR,
-                       () -> String.format(
+                       () -> format(
                                "Internal error during environment initialization: %s",
                                e.getMessage()));
         }
@@ -235,12 +234,6 @@ public class Interpreter
         }
     }
 
-    public void setGlobalEnv(Environment env)
-    {
-        env.parent = interactionEnv;
-        sharedEnv.parent = env;
-    }
-
     /**
      * Gets the comment string for a procedure
      */
@@ -277,8 +270,8 @@ public class Interpreter
         try {
             Interpreter interpreter = new Interpreter();
             logger.log(Logger.Level.DEBUG,
-                       () -> String.format("created Interpreter %s",
-                                           interpreter));
+                       () -> format("created Interpreter %s",
+                                    interpreter));
             Interpreter.bootstrap(interpreter);
             return interpreter;
         }
@@ -298,13 +291,23 @@ public class Interpreter
         if (bootstrapped) {
             return;
         }
-        gleam.lang.InputPort bootstrap = new gleam.lang.InputPort(new java.io.BufferedReader(
-                new java.io.InputStreamReader(Objects.requireNonNull(interpreter.getClass()
-                                                                                .getResourceAsStream(
-                                                                                        "/bootstrap.scm")))));
-        interpreter.load(bootstrap, getSchemeReportEnv());
-        bootstrapped = true;
-        logger.log(CONFIG, "Gleam bootstrapped");
+        try (InputStream inputStream =
+                     Objects.requireNonNull(
+                             interpreter.getClass()
+                                        .getResourceAsStream(
+                                                "/bootstrap.scm"))) {
+            gleam.lang.InputPort bootstrap =
+                    new gleam.lang.InputPort(
+                            new java.io.BufferedReader(
+                                    new java.io.InputStreamReader(inputStream)));
+            interpreter.load(bootstrap, getSchemeReportEnv());
+            bootstrapped = true;
+        }
+        catch (IOException e) {
+            logger.severe("Gleam cannot bootstrap", e);
+            throw new GleamException("Gleam cannot bootstrap", e);
+        }
+        logger.config("Gleam bootstrapped");
     }
 
     /**
@@ -389,6 +392,27 @@ public class Interpreter
     static boolean isKeyword(Symbol s)
     {
         return kwSet.contains(s);
+    }
+
+    public void setGlobalEnv(Environment env)
+    {
+        env.parent = interactionEnv;
+        sharedEnv.parent = env;
+    }
+
+    /**
+     * Evaluates a Gleam Scheme entity in the current session environment.
+     *
+     * @param expr the <CODE>gleam.lang.Entity</CODE> corresponding to a Scheme
+     *             expression to evaluate
+     *
+     * @return the value of the expression
+     *
+     * @throws gleam.lang.GleamException on any error
+     */
+    public Entity eval(Entity expr) throws GleamException
+    {
+        return eval(expr, getSessionEnv());
     }
 
     /**

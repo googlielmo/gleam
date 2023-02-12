@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -46,7 +46,6 @@ public final class Boolean extends AbstractEntity
     public static final Boolean falseValue = new Boolean(false);
 
     private static final long serialVersionUID = 1L;
-
     /** the truth value of this object */
     final boolean value;
 
@@ -68,6 +67,11 @@ public final class Boolean extends AbstractEntity
         else {
             return falseValue;
         }
+    }
+
+    public boolean getBooleanValue()
+    {
+        return value;
     }
 
     /**

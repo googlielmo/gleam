@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -27,9 +27,6 @@
 package gleam.lang;
 
 import gleam.library.Primitive;
-import gleam.util.Logger;
-
-import static gleam.util.Logger.Level.DEBUG;
 
 /**
  * The base class for Gleam error objects.
@@ -39,28 +36,31 @@ public class GleamException extends Exception
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = Logger.getLogger();
-
     private final Entity errobj;
 
     public GleamException(String message)
     {
-        this(message, Void.VALUE);
+        this(message, null, null);
+    }
+
+    public GleamException(String message, Throwable cause) {
+        this(message, null, cause);
     }
 
     public GleamException(String message, Entity value)
     {
-        super(message);
-        errobj = (value != null) ? value : Void.VALUE;
-
-        logger.log(DEBUG,
-                   () -> String.format("Generated GleamException: %s",
-                                       message));
+        this(message, value, null);
     }
 
     public GleamException(Primitive primitive, String message, Entity value)
     {
-        this(primitive + ": " + message, value);
+        this(primitive + ": " + message, value, null);
+    }
+
+    public GleamException(String message, Entity value, Throwable cause)
+    {
+        super(message, cause);
+        errobj = value == null ? Void.VALUE : value;
     }
 
     /**

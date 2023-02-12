@@ -24,12 +24,14 @@
  *
  */
 
+import gleam.lang.Entity;
 import gleam.util.Logger;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.script.Bindings;
+import javax.script.Invocable;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -37,127 +39,126 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 import javax.script.SimpleScriptContext;
 import java.io.StringWriter;
+import java.util.Date;
 
+import static gleam.lang.Entities.quoted;
+import static gleam.lang.Entities.real;
+import static gleam.lang.Entities.symbol;
 import static javax.script.ScriptContext.ENGINE_SCOPE;
 import static javax.script.ScriptContext.GLOBAL_SCOPE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SPITest
 {
-    private static final Logger logger = Logger.getLogger();
+    static final Logger logger = Logger.getLogger();
 
     ScriptEngineManager manager;
+    ScriptEngine engine1;
 
     @BeforeEach
     void init()
     {
         logger.setLevel(Logger.Level.CONFIG);
         manager = new ScriptEngineManager();
+        engine1 = manager.getEngineByName("gleam");
     }
 
     @Test
     void testEngineIsAutomaticallyRegistered()
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        assertNotNull(engine);
+        assertNotNull(engine1);
     }
 
     @Test
     void testDeleteFromGlobalScopeAndReadFromSchemeThrowsOnUnboundSymbol()
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        engine.getContext().setAttribute("attr", 99.9, GLOBAL_SCOPE);
-        engine.getContext().removeAttribute("attr", GLOBAL_SCOPE);
-        assertThrows(ScriptException.class, () -> engine.eval("(+ 2 attr)"));
+        engine1.getContext().setAttribute("attr", 99.9, GLOBAL_SCOPE);
+        engine1.getContext().removeAttribute("attr", GLOBAL_SCOPE);
+        assertThrows(ScriptException.class, () -> engine1.eval("(+ 2 attr)"));
     }
 
     @Test
     void testEngineSimpleExpr() throws ScriptException
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        Object value = engine.eval("(+ 2 40)");
+        Object value = engine1.eval("(+ 2 40)");
         assertEquals(42.0, ((Number) value).doubleValue());
     }
 
     @Test
     void testPutEngineScopeAndReadFromScheme() throws ScriptException
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        engine.getContext().setAttribute("attr", 40.0, ENGINE_SCOPE);
-        Object value = engine.eval("(+ 2 attr)");
+        engine1.getContext().setAttribute("attr", 40.0, ENGINE_SCOPE);
+        Object value = engine1.eval("(+ 2 attr)");
         assertEquals(42.0, ((Number) value).doubleValue());
     }
 
     @Test
     void testPutEngineScopeTwiceAndReadFromScheme() throws ScriptException
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        engine.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
-        engine.getContext().setAttribute("attr", 40.0, ENGINE_SCOPE);
-        Object value = engine.eval("(+ 2 attr)");
+        engine1.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
+        engine1.getContext().setAttribute("attr", 40.0, ENGINE_SCOPE);
+        Object value = engine1.eval("(+ 2 attr)");
         assertEquals(42.0, ((Number) value).doubleValue());
     }
 
     @Test
     void testEvalWithBindings() throws ScriptException
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        engine.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
+        engine1.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
 
         Bindings b = new SimpleBindings();
         b.put("attr", 40.0);
 
-        Object value = engine.eval("(+ 2 attr)", b);
+        Object value = engine1.eval("(+ 2 attr)", b);
         assertEquals(42.0, ((Number) value).doubleValue());
 
         assertEquals(99.9,
-                     engine.getContext().getAttribute("attr", ENGINE_SCOPE));
+                     engine1.getContext().getAttribute("attr", ENGINE_SCOPE));
     }
 
     @Test
     void testEvalWithContext() throws ScriptException
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        engine.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
+        engine1.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
 
         ScriptContext scriptContext = new SimpleScriptContext();
         scriptContext.getBindings(ENGINE_SCOPE).put("attr", 40.0);
 
-        Object value = engine.eval("(+ 2 attr)", scriptContext);
+        Object value = engine1.eval("(+ 2 attr)", scriptContext);
         assertEquals(42.0, ((Number) value).doubleValue());
 
         assertEquals(99.9,
-                     engine.getContext().getAttribute("attr", ENGINE_SCOPE));
+                     engine1.getContext().getAttribute("attr", ENGINE_SCOPE));
     }
 
     @Test
     void testPutGlobalScopeAndReadFromScheme() throws ScriptException
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        engine.getContext().setAttribute("attr", 40.0, GLOBAL_SCOPE);
-        Object value = engine.eval("(+ 2 attr)");
+        engine1.getContext().setAttribute("attr", 40.0, GLOBAL_SCOPE);
+        Object value = engine1.eval("(+ 2 attr)");
         assertEquals(42.0, ((Number) value).doubleValue());
     }
 
     @Test
     void testPutGlobalScopeTwiceAndReadFromScheme() throws ScriptException
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        engine.getContext().setAttribute("attr", 99.9, GLOBAL_SCOPE);
-        engine.getContext().setAttribute("attr", 40.0, GLOBAL_SCOPE);
-        Object value = engine.eval("(+ 2 attr)");
+        engine1.getContext().setAttribute("attr", 99.9, GLOBAL_SCOPE);
+        engine1.getContext().setAttribute("attr", 40.0, GLOBAL_SCOPE);
+        Object value = engine1.eval("(+ 2 attr)");
         assertEquals(42.0, ((Number) value).doubleValue());
     }
 
     @Test
     void testPutGlobalAndEngineScopeAndReadFromSchemePreservesOrder() throws ScriptException
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        engine.getContext().setAttribute("attr", 11.1, GLOBAL_SCOPE);
-        engine.getContext().setAttribute("attr", 40.0, ENGINE_SCOPE);
-        Object value = engine.eval("(+ 2 attr)");
+        engine1.getContext().setAttribute("attr", 11.1, GLOBAL_SCOPE);
+        engine1.getContext().setAttribute("attr", 40.0, ENGINE_SCOPE);
+        Object value = engine1.eval("(+ 2 attr)");
         assertEquals(42.0, ((Number) value).doubleValue());
     }
 
@@ -186,29 +187,26 @@ public class SPITest
     @Test
     void testDeleteFromEngineScopeAndReadFromScheme() throws ScriptException
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        engine.getContext().setAttribute("attr", 40.0, GLOBAL_SCOPE);
-        engine.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
-        engine.getContext().removeAttribute("attr", ENGINE_SCOPE);
-        Object value = engine.eval("(+ 2 attr)");
+        engine1.getContext().setAttribute("attr", 40.0, GLOBAL_SCOPE);
+        engine1.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
+        engine1.getContext().removeAttribute("attr", ENGINE_SCOPE);
+        Object value = engine1.eval("(+ 2 attr)");
         assertEquals(42.0, ((Number) value).doubleValue());
     }
 
     @Test
     void testDeleteFromEngineAndGlobalScopeAndReadFromSchemeThrowsOnUnboundSymbol()
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        engine.getContext().setAttribute("attr", 40.0, GLOBAL_SCOPE);
-        engine.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
-        engine.getContext().removeAttribute("attr", ENGINE_SCOPE);
-        engine.getContext().removeAttribute("attr", GLOBAL_SCOPE);
-        assertThrows(ScriptException.class, () -> engine.eval("(+ 2 attr)"));
+        engine1.getContext().setAttribute("attr", 40.0, GLOBAL_SCOPE);
+        engine1.getContext().setAttribute("attr", 99.9, ENGINE_SCOPE);
+        engine1.getContext().removeAttribute("attr", ENGINE_SCOPE);
+        engine1.getContext().removeAttribute("attr", GLOBAL_SCOPE);
+        assertThrows(ScriptException.class, () -> engine1.eval("(+ 2 attr)"));
     }
 
     @Test
     void testGlobalScopeIsSharedBetweenEngineInstances() throws ScriptException
     {
-        ScriptEngine engine1 = manager.getEngineByName("gleam");
         ScriptEngine engine2 = manager.getEngineByName("gleam");
 
         // set global in engine1
@@ -253,21 +251,20 @@ public class SPITest
         // Programmer's Guide", Rel. 10, March 2018, Oracle, 2-6
         StringWriter stringWriter = new StringWriter();
 
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        engine.getContext().setWriter(stringWriter);
+        engine1.getContext().setWriter(stringWriter);
 
-        engine.put("x", "hello,");
-        engine.eval("(display x)");
+        engine1.put("x", "hello,");
+        engine1.eval("(display x)");
 
         // define a different script context
         ScriptContext newContext = new SimpleScriptContext();
         newContext.setWriter(stringWriter);
-        newContext.setBindings(engine.createBindings(),
+        newContext.setBindings(engine1.createBindings(),
                                ScriptContext.ENGINE_SCOPE);
         Bindings engineScope = newContext.getBindings(ScriptContext.ENGINE_SCOPE);
 
         engineScope.put("x", " world");
-        engine.eval("(display x)", newContext);
+        engine1.eval("(display x)", newContext);
 
         assertEquals("hello, world", stringWriter.toString());
     }
@@ -275,7 +272,59 @@ public class SPITest
     @Test
     void testEngineThrowsOnInvalidCode()
     {
-        ScriptEngine engine = manager.getEngineByName("gleam");
-        assertThrows(ScriptException.class, () -> engine.eval(",,,"));
+        assertThrows(ScriptException.class, () -> engine1.eval(",,,"));
+    }
+
+    @Test
+    void testCompilableInvokeFunctionWithEntities()
+            throws ScriptException, NoSuchMethodException
+    {
+        Invocable invocable = (Invocable) engine1;
+        Object result = invocable.invokeFunction("+", 1, 2.0, real(3.0));
+        assertEquals(6.0, result);
+    }
+
+    @Test
+    void testCompilableInvokeFunctionWithJavaObjects()
+            throws ScriptException, NoSuchMethodException
+    {
+        Invocable invocable = (Invocable) engine1;
+        Entity arg1 = quoted(symbol("java.util.Date"));
+        Object result = invocable.invokeFunction("new", arg1);
+        assertInstanceOf(Date.class, result);
+    }    @Test
+
+    void testCompilableInvokeFunctionWithJavaObjects2()
+            throws ScriptException, NoSuchMethodException
+    {
+        Invocable invocable = (Invocable) engine1;
+        Date arg1 = new Date();
+        Object result = invocable.invokeFunction("eq?", arg1, arg1);
+        assertInstanceOf(Boolean.class, result);
+        assertTrue((Boolean) result);
+    }
+
+    @Test
+    void testCompilableInvokeMethodWithJavaObjects1()
+            throws ScriptException, NoSuchMethodException
+    {
+        Invocable invocable = (Invocable) engine1;
+        Date thiz = new Date(1000L); // 1970-01-01 00:00:01.000
+        Object result = invocable.invokeMethod(thiz,"getYear");
+        assertInstanceOf(Integer.class, result);
+        assertEquals(70, result);
+    }
+
+    @Test
+    void testCompilableInvokeMethodWithJavaObjects2()
+            throws ScriptException, NoSuchMethodException
+    {
+        Invocable invocable = (Invocable) engine1;
+        Date thiz = new Date(1000L); // 1970-01-01 00:00:01.000
+        Object result1 = invocable.invokeMethod(thiz,"setYear", 80);
+        assertNull(result1);
+        Object result2 = invocable.invokeMethod(thiz,"getYear");
+        assertInstanceOf(Integer.class, result2);
+        assertEquals(80, result2);
     }
 }
