@@ -14,14 +14,14 @@
 (define (arg x) (begin (display x) x))
 
 (assert-value-output "arg"
-    5.0
-    "5.0"
-    (arg 5)
+    5.01
+    "5.01"
+    (arg 5.01)
 )
 
 (assert-output "write-my-args"
-    '(MY-ARGS 1.0 2.0 3.0)
-    (write-my-args 1 2 3)
+    '(MY-ARGS 1.01 2.01 3.01)
+    (write-my-args 1.01 2.01 3.01)
 )
 
 (define con2 #f)
@@ -37,19 +37,19 @@
 )
 
 (assert-output "con2 -2"
-    "(MY-ARGS 1.0 2.0 3.0 -2.0 4.0 5.0 6.0)"
+    "(MY-ARGS 1 2 3 -2 4 5 6)"
     (con2 -2)
 )
 
 (assert-output "arg + call/cc"
-    "1.02.03.04.05.06.0(MY-ARGS 1.0 2.0 3.0 #<void> 4.0 5.0 6.0)"
+    "123456(MY-ARGS 1 2 3 #<void> 4 5 6)"
     (write-my-args (arg 1) (arg 2) (arg 3)
         (call-with-current-continuation (lambda (x) (set! con2 x) ) )
         (arg 4) (arg 5) (arg 6) )
 )
 
 (assert-output "continuation with argument"
-    "4.05.06.0(MY-ARGS 1.0 2.0 3.0 -7.0 4.0 5.0 6.0)"
+    "456(MY-ARGS 1 2 3 -7 4 5 6)"
     (con2 -7)
 )
 
@@ -87,7 +87,7 @@
 (define a 12)
 
 (assert "eval in current environment"
-    12.0
+    12
     (in-environment (current-environment) a)
 )
 
@@ -98,7 +98,7 @@
 ;;*** Unbound variable: a
 
 (assert "define in null-env 1"
-    12.0
+    12
     (begin
         (in-environment (null-environment 5) (define a 77) )
         a
@@ -106,7 +106,7 @@
 )
 
 (assert "define in null-env 2"
-    77.0
+    77
     (in-environment (null-environment 5) a)
 )
 
@@ -138,7 +138,7 @@
    3)
 
 (assert-value-output "side effects"
-    6.0
+    6
     " one  two  three  op"
     ((op) (one) (two) (three))
 )

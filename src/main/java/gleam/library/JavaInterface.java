@@ -38,6 +38,7 @@ import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
+import gleam.lang.Int;
 import gleam.lang.JavaObject;
 import gleam.lang.ListIterator;
 import gleam.lang.MutableString;
@@ -203,8 +204,10 @@ public class JavaInterface
             return String.class;
         }
         else if (arg instanceof Real) {
-            double v = ((Real) arg).getDoubleValue();
-            return v % 1 == 0 ? int.class : double.class;
+            return double.class;
+        }
+        else if (arg instanceof Int) {
+            return int.class;
         }
         else {
             throw new GleamException(
@@ -225,11 +228,10 @@ public class JavaInterface
             return arg.toString();
         }
         else if (arg instanceof Real) {
-            double v = ((Real) arg).getDoubleValue();
-            if (v % 1 == 0) {
-                return (int) v;
-            }
-            return v;
+            return ((Real) arg).doubleValue();
+        }
+        else if (arg instanceof Int) {
+            return ((Int) arg).intValue();
         }
         else {
             throw new GleamException(

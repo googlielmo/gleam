@@ -29,28 +29,23 @@ package gleam.lang;
 import java.io.PrintWriter;
 
 /**
- * Scheme double precision numerical object.
+ * Scheme integer numerical object.
  */
-public class Real extends Number implements Entity
+public class Int extends Number implements Entity
 {
 
     private static final long serialVersionUID = 1L;
 
     /** the value */
-    private final double value;
+    private final int value;
 
-    public Real(double n)
-    {
-        value = n;
-    }
-
-    public Real(int n)
+    public Int(int n)
     {
         value = n;
     }
 
     /**
-     * Writes a real
+     * Writes an int
      */
     @Override
     public PrintWriter write(PrintWriter out)
@@ -62,13 +57,13 @@ public class Real extends Number implements Entity
     @Override
     public int intValue()
     {
-        return (int) value;
+        return value;
     }
 
     @Override
     public long longValue()
     {
-        return (long) value;
+        return value;
     }
 
     @Override
@@ -91,29 +86,28 @@ public class Real extends Number implements Entity
 
     /**
      * Returns a hashcode for this Scheme object. The implementation is the same
-     * as per java.lang.Double.
+     * as per java.lang.Integer.
      *
      * @return int
      */
     @Override
     public int hashCode()
     {
-        long v = Double.doubleToLongBits(value);
-        return (int) (v ^ (v >>> 32));
+        return value;
     }
 
     /**
-     * Scheme double comparison. Creation date: (28/10/01 12.45.00)
+     * Scheme int comparison.
      *
      * @param o java.lang.Object
      *
      * @return boolean
      */
     @Override
-    public boolean equals(java.lang.Object o)
+    public boolean equals(Object o)
     {
-        if (o instanceof Real) {
-            return value == ((Real) o).value;
+        if (o instanceof Int) {
+            return value == ((Int) o).value;
         }
         else {
             return false;

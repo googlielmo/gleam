@@ -31,6 +31,7 @@ import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
 import gleam.lang.GleamException;
+import gleam.lang.Int;
 import gleam.lang.List;
 import gleam.lang.ListIterator;
 import gleam.lang.Number;
@@ -82,7 +83,7 @@ public final class Numbers
                     while (it.hasNext()) {
                         result -= getNumberArgument(this, it.next());
                     }
-                    return new Real(result);
+                    return number(result);
                 }
             },
 
@@ -108,7 +109,7 @@ public final class Numbers
                     while (it.hasNext()) {
                         result += getNumberArgument(this, it.next());
                     }
-                    return new Real(result);
+                    return number(result);
                 }
             },
 
@@ -150,7 +151,7 @@ public final class Numbers
                         }
                         result /= next;
                     }
-                    return new Real(result);
+                    return number(result);
                 }
             },
 
@@ -176,7 +177,7 @@ public final class Numbers
                     while (it.hasNext()) {
                         result *= getNumberArgument(this, it.next());
                     }
-                    return new Real(result);
+                    return number(result);
                 }
             },
 
@@ -368,6 +369,14 @@ public final class Numbers
 
     }; // primitives
 
+    private static Number number(double number)
+    {
+        if ((int) number == number) {
+            return new Int((int) number);
+        }
+        return new Real(number);
+    }
+
     /** Can't instantiate this class. */
     private Numbers() {}
 
@@ -376,7 +385,7 @@ public final class Numbers
     {
         double arg;
         if (obj instanceof Number) {
-            arg = ((Number) obj).getDoubleValue();
+            arg = ((Number) obj).doubleValue();
         }
         else {
             throw new GleamException(primitive,

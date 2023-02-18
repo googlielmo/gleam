@@ -164,7 +164,7 @@ public final class Interaction
                     if (!(arg1 instanceof Number)) {
                         throw new GleamException(this, INVALID_ARGUMENT, arg1);
                     }
-                    double v = ((Number) arg1).getDoubleValue();
+                    double v = ((Number) arg1).doubleValue();
                     if (v < Level.ALL.getValue() || v > Level.ERROR.getValue()) {
                         throw new GleamException(this,
                                                  "invalid argument (should be between " + Level.ALL + " and " + Level.ERROR + ")",

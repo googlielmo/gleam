@@ -88,7 +88,7 @@ public class Entities
 
     public static Real real(Number number)
     {
-        return new Real(number.getDoubleValue());
+        return new Real(number.doubleValue());
     }
 
     public static Real real(double dbl)
@@ -96,8 +96,8 @@ public class Entities
         return new Real(dbl);
     }
 
-    public static Real real(int integer)
+    public static Int integer(int integer)
     {
-        return new Real(integer);
+        return new Int(integer);
     }
 }

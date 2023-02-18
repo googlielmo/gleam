@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2020 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -27,7 +27,13 @@
 package gleam.lang;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
+/**
+ * The interface that all Gleam objects implement.
+ * <p>
+ * In Scheme, entities are also referred to as "objects", or "values".
+ */
 public interface Entity extends java.io.Serializable
 {
 
@@ -42,7 +48,11 @@ public interface Entity extends java.io.Serializable
      *
      * @throws GleamException in case of error
      */
-    Entity eval(Environment env, Continuation cont) throws GleamException;
+    default Entity eval(Environment env, Continuation cont) throws GleamException
+    {
+        // default: evaluating an entity yields the same entity
+        return this;
+    }
 
     /**
      * Performs syntax analysis on this entity.
@@ -53,7 +63,11 @@ public interface Entity extends java.io.Serializable
      *
      * @throws GleamException in case of syntax error
      */
-    Entity analyze(Environment env) throws GleamException;
+    default Entity analyze(Environment env) throws GleamException
+    {
+        // default: analyzing an entity yields the same entity
+        return this;
+    }
 
     /**
      * Performs environment optimization on this entity.
@@ -64,7 +78,11 @@ public interface Entity extends java.io.Serializable
      *
      * @throws GleamException in case of error
      */
-    Entity optimize(Environment env) throws GleamException;
+    default Entity optimize(Environment env) throws GleamException
+    {
+        // default: optimizing an entity yields the same entity
+        return this;
+    }
 
     /**
      * Writes this entity in machine-readable form.
@@ -78,7 +96,11 @@ public interface Entity extends java.io.Serializable
      *
      * @param out PrintWriter
      */
-    PrintWriter display(PrintWriter out);
+    default PrintWriter display(PrintWriter out)
+    {
+        // default: use write method
+        return write(out);
+    }
 
     /**
      * Returns a representation of this entity in the same format as a call to
@@ -86,14 +108,10 @@ public interface Entity extends java.io.Serializable
      *
      * @return a string representation of the entity.
      */
-    String toWriteFormat();
-
-    /**
-     * Returns a representation of this entity in the same format as a call to
-     * <code>display<code/> would produce.
-     *
-     * @return a string representation of the entity.
-     */
-    @Override
-    String toString();
+    default String toWriteFormat()
+    {
+        StringWriter sw;
+        write(new PrintWriter(sw = new StringWriter()));
+        return sw.toString();
+    }
 }

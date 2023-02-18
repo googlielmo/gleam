@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -193,10 +193,14 @@ class Reader
 
     private Entity readOthers(String t) throws GleamException, java.io.IOException
     {
-        if (".+-0123456789".indexOf(t.charAt(0)) >= 0 && !t.equals("+") && !t.equals(
-                "-") && !t.equals("...")) {
+        if (".+-0123456789".indexOf(t.charAt(0)) >= 0
+            && !t.equals("+") && !t.equals("-") && !t.equals("...")) {
             try {
-                logReadOthers(t, "number");
+                if (!t.contains(".")) {
+                    logReadOthers(t, "int");
+                    return new Int(Integer.parseInt(t));
+                }
+                logReadOthers(t, "real");
                 return new Real(Double.parseDouble(t));
             }
             catch (NumberFormatException e) {

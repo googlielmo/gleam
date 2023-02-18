@@ -2,7 +2,7 @@
  * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
- * under the terms of version 2 of the GNU General License as
+ * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it would be useful, but
@@ -16,7 +16,7 @@
  * any, provided herein do not apply to combinations of this program with
  * other software, or any other product whatsoever.
  *
- * You should have received a copy of the GNU General License along
+ * You should have received a copy of the GNU General Public License along
  * with this program; if not, write the Free Software Foundation, Inc., 59
  * Temple Place - Suite 330, Boston MA 02111-1307, USA.
  *
@@ -146,8 +146,6 @@ class ReaderTest
         assertTrue(equalPairs(expected, pair));
     }
 
-    // numbers
-
     @Test
     void read_three_element_dotted_list() throws GleamException
     {
@@ -164,17 +162,29 @@ class ReaderTest
         assertTrue(equalPairs(expected, pair));
     }
 
-    // strings
+    // numbers
 
     @Test
-    void read_number() throws GleamException
+    void read_real_number() throws GleamException
     {
-        Entity expected = new Real(1);
-        String expr = "1";
+        Entity expected = new Real(Math.PI);
+        String expr = String.valueOf(Math.PI);
 
         Reader r = getReader(expr);
         assertEquals(expected, r.read());
     }
+
+    @Test
+    void read_int_number() throws GleamException
+    {
+        Entity expected = new Int(Integer.MAX_VALUE);
+        String expr = String.valueOf(Integer.MAX_VALUE);
+
+        Reader r = getReader(expr);
+        assertEquals(expected, r.read());
+    }
+
+    // strings
 
     @Test
     void read_string() throws GleamException
@@ -246,8 +256,6 @@ class ReaderTest
         assertEquals(expected, r.read());
     }
 
-    // utils
-
     @Test
     void read_string_with_escaped_carriage_return() throws GleamException
     {
@@ -257,6 +265,8 @@ class ReaderTest
         Reader r = getReader(expr);
         assertEquals(expected, r.read());
     }
+
+    // utils
 
     private boolean equalPairs(Pair a, Pair b)
     {

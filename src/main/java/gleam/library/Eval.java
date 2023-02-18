@@ -111,7 +111,7 @@ public final class Eval
                     Number version;
                     try {
                         version = (Number) arg1;
-                        if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
+                        if (version.doubleValue() == 4.0 || version.doubleValue() == 5.0) {
                             return Interpreter.getNullEnv();
                         }
                         else {
@@ -148,7 +148,7 @@ public final class Eval
                     Number version;
                     try {
                         version = (Number) arg1;
-                        if (version.getDoubleValue() == 4.0 || version.getDoubleValue() == 5.0) {
+                        if (version.doubleValue() == 4.0 || version.doubleValue() == 5.0) {
                             return Interpreter.getSchemeReportEnv();
                         }
                         else {

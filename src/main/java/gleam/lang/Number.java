@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -29,8 +29,4 @@ package gleam.lang;
 /**
  * The base class for Scheme numerical objects.
  */
-public abstract class Number extends AbstractEntity
-{
-    /** Takes value of number as a double. */
-    public abstract double getDoubleValue();
-}
+public abstract class Number extends java.lang.Number implements Entity {}

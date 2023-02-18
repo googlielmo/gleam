@@ -41,6 +41,7 @@ import javax.script.SimpleScriptContext;
 import java.io.StringWriter;
 import java.util.Date;
 
+import static gleam.lang.Entities.integer;
 import static gleam.lang.Entities.quoted;
 import static gleam.lang.Entities.real;
 import static gleam.lang.Entities.symbol;
@@ -280,8 +281,8 @@ public class SPITest
             throws ScriptException, NoSuchMethodException
     {
         Invocable invocable = (Invocable) engine1;
-        Object result = invocable.invokeFunction("+", 1, 2.0, real(3.0));
-        assertEquals(6.0, result);
+        Object result = invocable.invokeFunction("+", 1, integer(2), real(3.6));
+        assertEquals(6.6, result);
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -29,69 +29,8 @@ package gleam.lang;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-/**
- * The base class for all Gleam objects. Entities are also referred to as
- * "objects" or "values".
- */
 public abstract class AbstractEntity implements Entity
 {
-    /**
-     * Evaluates this entity in the given environment, with the given
-     * continuation.
-     */
-    @Override
-    public Entity eval(Environment env, Continuation cont) throws GleamException
-    {
-        // default: evaluating an entity yields the same entity
-        return this;
-    }
-
-    /**
-     * Performs syntax analysis on this entity.
-     *
-     * @param env the environment
-     */
-    @Override
-    public Entity analyze(Environment env) throws GleamException
-    {
-        // default: analyzing an entity yields the same entity
-        return this;
-    }
-
-    /**
-     * Performs environment optimization on this entity.
-     */
-    @Override
-    public Entity optimize(Environment env) throws GleamException
-    {
-        // default: optimizing an entity yields the same entity
-        return this;
-    }
-
-    /**
-     * Writes this entity in human-readable form.
-     */
-    @Override
-    public PrintWriter display(PrintWriter out)
-    {
-        // default: use write method
-        return write(out);
-    }
-
-    /**
-     * Returns a representation of this entity, in the same format as a call to
-     * `write` would produce.
-     *
-     * @return a string representation of the entity.
-     */
-    @Override
-    public String toWriteFormat()
-    {
-        StringWriter sw;
-        write(new PrintWriter(sw = new StringWriter()));
-        return sw.toString();
-    }
-
     /**
      * Returns a representation of this entity, in the same format as a call to
      * `display` would produce.

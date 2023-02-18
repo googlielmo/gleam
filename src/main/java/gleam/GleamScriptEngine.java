@@ -51,6 +51,7 @@ import static gleam.lang.Entities.bool;
 import static gleam.lang.Entities.car;
 import static gleam.lang.Entities.cdr;
 import static gleam.lang.Entities.cons;
+import static gleam.lang.Entities.integer;
 import static gleam.lang.Entities.list;
 import static gleam.lang.Entities.quoted;
 import static gleam.lang.Entities.real;
@@ -73,8 +74,11 @@ public class GleamScriptEngine implements ScriptEngine, Invocable
             else if (entity instanceof gleam.lang.Boolean) {
                 return ((gleam.lang.Boolean) entity).getBooleanValue();
             }
-            else if (entity instanceof gleam.lang.Number) {
-                return ((gleam.lang.Number) entity).getDoubleValue();
+            else if (entity instanceof gleam.lang.Real) {
+                return ((gleam.lang.Real) entity).doubleValue();
+            }
+            else if (entity instanceof gleam.lang.Int) {
+                return ((gleam.lang.Int) entity).intValue();
             }
             return entity;
         }
@@ -89,7 +93,11 @@ public class GleamScriptEngine implements ScriptEngine, Invocable
                 return bool((Boolean) value);
             }
             else if (value instanceof Number) {
-                return real(((Number) value).doubleValue());
+                Number number = (Number) value;
+                if (number.doubleValue() == number.intValue()) {
+                    return integer(number.intValue());
+                }
+                return real(number.doubleValue());
             }
             return new JavaObject(value);
         }
