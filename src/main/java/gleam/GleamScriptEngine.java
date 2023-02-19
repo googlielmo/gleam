@@ -63,7 +63,7 @@ public class GleamScriptEngine implements ScriptEngine, Invocable
     private static final Converter<Entity, Object>
             entityObjectConverter = new EntityObjectConverter();
 
-    private static final Symbol CALL = Symbol.makeSymbol("call");
+    private static final Symbol CALL = symbol("call");
 
     private final Interpreter interpreter;
 

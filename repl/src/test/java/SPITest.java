@@ -293,8 +293,9 @@ public class SPITest
         Entity arg1 = quoted(symbol("java.util.Date"));
         Object result = invocable.invokeFunction("new", arg1);
         assertInstanceOf(Date.class, result);
-    }    @Test
+    }
 
+    @Test
     void testCompilableInvokeFunctionWithJavaObjects2()
             throws ScriptException, NoSuchMethodException
     {
@@ -311,7 +312,7 @@ public class SPITest
     {
         Invocable invocable = (Invocable) engine1;
         Date thiz = new Date(1000L); // 1970-01-01 00:00:01.000
-        Object result = invocable.invokeMethod(thiz,"getYear");
+        Object result = invocable.invokeMethod(thiz, "getYear");
         assertInstanceOf(Integer.class, result);
         assertEquals(70, result);
     }
@@ -322,9 +323,9 @@ public class SPITest
     {
         Invocable invocable = (Invocable) engine1;
         Date thiz = new Date(1000L); // 1970-01-01 00:00:01.000
-        Object result1 = invocable.invokeMethod(thiz,"setYear", 80);
+        Object result1 = invocable.invokeMethod(thiz, "setYear", 80);
         assertNull(result1);
-        Object result2 = invocable.invokeMethod(thiz,"getYear");
+        Object result2 = invocable.invokeMethod(thiz, "getYear");
         assertInstanceOf(Integer.class, result2);
         assertEquals(80, result2);
     }

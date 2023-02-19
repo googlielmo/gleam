@@ -35,16 +35,43 @@ import java.util.List;
 public class GleamScriptEngineFactory implements ScriptEngineFactory
 {
 
-    public static final List<String> NAMES = Arrays.asList("Gleam",
-                                                           "gleam",
-                                                           "GleamScheme",
-                                                           "GleamSchemeInterpreter",
-                                                           "scheme");
+    public static final List<String> NAMES = listOf("Gleam",
+                                                    "gleam",
+                                                    "GleamScheme",
+                                                    "gleamscheme",
+                                                    "Gleam Scheme",
+                                                    "gleam scheme",
+                                                    "GleamSchemeInterpreter",
+                                                    "gleamschemeinterpreter",
+                                                    "Gleam Scheme Interpreter",
+                                                    "gleam scheme interpreter",
+                                                    "Scheme",
+                                                    "scheme");
+    public static final List<String> EXTENSIONS = listOf("scm",
+                                                         "scheme",
+                                                         "glm",
+                                                         "gleam");
+    public static final List<String> MIME_TYPES = listOf("application/scheme",
+                                                         "application/gleam",
+                                                         "text/scheme",
+                                                         "text/gleam");
+
+    private static List<String> listOf(String... strings)
+    {
+        return Collections.unmodifiableList(Arrays.asList(strings));
+    }
 
     @Override
+    public ScriptEngine getScriptEngine()
+    {
+        return new GleamScriptEngine();
+    }
+
+    @Override
+
     public String getEngineName()
     {
-        return "Gleam Scheme Script Engine";
+        return "Gleam Scheme Interpreter";
     }
 
     @Override
@@ -52,19 +79,19 @@ public class GleamScriptEngineFactory implements ScriptEngineFactory
     {
         String version = gleam.lang.Interpreter.class.getPackage()
                                                      .getImplementationVersion();
-        return version != null ? version : "DEVELOPMENT";
+        return version != null ? version : "1-DEV";
     }
 
     @Override
     public List<String> getExtensions()
     {
-        return Arrays.asList("scm", "glm");
+        return EXTENSIONS;
     }
 
     @Override
     public List<String> getMimeTypes()
     {
-        return Collections.emptyList();
+        return MIME_TYPES;
     }
 
     @Override
@@ -89,6 +116,8 @@ public class GleamScriptEngineFactory implements ScriptEngineFactory
     public Object getParameter(String key)
     {
         switch (key) {
+            case ScriptEngine.NAME:
+                return NAMES.get(0);
             case ScriptEngine.ENGINE:
                 return getEngineName();
             case ScriptEngine.ENGINE_VERSION:
@@ -97,12 +126,11 @@ public class GleamScriptEngineFactory implements ScriptEngineFactory
                 return getLanguageName();
             case ScriptEngine.LANGUAGE_VERSION:
                 return getLanguageVersion();
-            case ScriptEngine.NAME:
-                return NAMES.get(0);
             case "THREADING":
                 return "THREAD-ISOLATED";
+            default:
+                return null;
         }
-        return null;
     }
 
     @Override
@@ -130,11 +158,5 @@ public class GleamScriptEngineFactory implements ScriptEngineFactory
     public String getProgram(String... statements)
     {
         return String.join("\n", statements);
-    }
-
-    @Override
-    public ScriptEngine getScriptEngine()
-    {
-        return new GleamScriptEngine();
     }
 }

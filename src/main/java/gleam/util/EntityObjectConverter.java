@@ -28,8 +28,14 @@ package gleam.util;
 
 import gleam.lang.Entity;
 import gleam.lang.JavaObject;
+import gleam.lang.List;
+import gleam.lang.ListIterator;
 import gleam.lang.MutableString;
 import gleam.lang.Symbol;
+import gleam.lang.Undefined;
+import gleam.lang.Void;
+
+import java.util.ArrayList;
 
 import static gleam.lang.Entities.bool;
 import static gleam.lang.Entities.integer;
@@ -60,7 +66,22 @@ public class EntityObjectConverter implements Converter<Entity, Object>
         else if (entity instanceof gleam.lang.Int) {
             return ((gleam.lang.Int) entity).intValue();
         }
+        else if (entity instanceof List) {
+            return javaList((List) entity);
+        }
+        else if (entity instanceof Void
+                 || entity instanceof Undefined) {
+            return null;
+        }
         return entity;
+    }
+
+    private Object javaList(List list)
+    {
+        java.util.List<Object> javaList = new ArrayList<>();
+        new ListIterator(list, true)
+                .forEachRemaining(e -> javaList.add(convert(e)));
+        return javaList;
     }
 
     @Override
