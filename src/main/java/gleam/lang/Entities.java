@@ -90,7 +90,7 @@ public class Entities
         return p;
     }
 
-    public MutableString string(String string)
+    public static MutableString string(String string)
     {
         return new MutableString(string);
     }

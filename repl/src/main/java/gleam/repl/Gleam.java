@@ -79,6 +79,7 @@ public class Gleam
     public static void main(String[] args)
     {
         new Gleam().repl(args);
+        System.exit(0);
     }
 
     private void repl(String[] args)

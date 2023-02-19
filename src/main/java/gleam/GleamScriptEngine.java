@@ -36,6 +36,7 @@ import gleam.lang.OutputPort;
 import gleam.lang.Pair;
 import gleam.lang.Symbol;
 import gleam.util.Converter;
+import gleam.util.EntityObjectConverter;
 import gleam.util.Logger;
 
 import javax.script.Bindings;
@@ -47,14 +48,11 @@ import javax.script.ScriptException;
 import java.io.Reader;
 import java.util.ArrayList;
 
-import static gleam.lang.Entities.bool;
 import static gleam.lang.Entities.car;
 import static gleam.lang.Entities.cdr;
 import static gleam.lang.Entities.cons;
-import static gleam.lang.Entities.integer;
 import static gleam.lang.Entities.list;
 import static gleam.lang.Entities.quoted;
-import static gleam.lang.Entities.real;
 import static gleam.lang.Entities.symbol;
 import static javax.script.ScriptContext.ENGINE_SCOPE;
 
@@ -63,57 +61,8 @@ public class GleamScriptEngine implements ScriptEngine, Invocable
     private static final Logger logger = Logger.getLogger();
 
     private static final Converter<Entity, Object>
-            entityObjectConverter = new Converter<Entity, Object>()
-    {
-        @Override
-        public Object convert(Entity entity)
-        {
-            if (entity instanceof JavaObject) {
-                return ((JavaObject) entity).getObjectValue();
-            }
-            else if (entity instanceof gleam.lang.Boolean) {
-                return ((gleam.lang.Boolean) entity).getBooleanValue();
-            }
-            else if (entity instanceof gleam.lang.Real) {
-                return ((gleam.lang.Real) entity).doubleValue();
-            }
-            else if (entity instanceof gleam.lang.Int) {
-                return ((gleam.lang.Int) entity).intValue();
-            }
-            return entity;
-        }
+            entityObjectConverter = new EntityObjectConverter();
 
-        @Override
-        public Entity invert(Object value)
-        {
-            if (value instanceof Entity) {
-                return (Entity) value;
-            }
-            else if (value instanceof Boolean) {
-                return bool((Boolean) value);
-            }
-            else if (value instanceof Number) {
-                Number number = (Number) value;
-                if (number.doubleValue() == number.intValue()) {
-                    return integer(number.intValue());
-                }
-                return real(number.doubleValue());
-            }
-            return new JavaObject(value);
-        }
-
-        @Override
-        public Object convertAny(Object value)
-        {
-            return convert((Entity) value);
-        }
-
-        @Override
-        public Entity invertAny(Object value)
-        {
-            return invert(value);
-        }
-    };
     private static final Symbol CALL = Symbol.makeSymbol("call");
 
     private final Interpreter interpreter;

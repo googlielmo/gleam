@@ -91,15 +91,6 @@ public class ArgumentList implements java.io.Serializable
      */
     public List getArguments()
     {
-        return null == listArgs ? pairArgs : j2g(listArgs);
-    }
-
-    private List j2g(java.util.List<Entity> lst)
-    {
-        List p = EmptyList.VALUE;
-        for (int i = lst.size() - 1; i >= 0; --i) {
-            p = new Pair(lst.get(i), p);
-        }
-        return p;
+        return null == listArgs ? pairArgs : list(listArgs);
     }
 }

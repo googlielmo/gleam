@@ -37,9 +37,9 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /*
- * Logger.java
+ * Logger.java (was: Report.java)
  *
- * Based on the older Report.java, created on October 18, 2001, 1:02 AM
+ * Created on October 18, 2001, 1:02 AM
  */
 
 /**

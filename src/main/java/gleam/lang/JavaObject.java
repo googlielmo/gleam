@@ -50,53 +50,61 @@ public class JavaObject extends AbstractEntity
 
     private static final Logger logger = Logger.getLogger();
 
+    private static final JavaObject NULL = new JavaObject();
+
     private final Object value;
 
-    /** Creates a new instance of JavaObject */
-    public JavaObject()
+    private JavaObject()
     {
         value = null;
     }
 
-    public JavaObject(Object object)
+    private JavaObject(Object object)
     {
         value = object;
     }
 
-    public JavaObject(Symbol s) throws GleamException
+    public static JavaObject makeJavaObject(Object object)
     {
-        String className = s.toString();
-        Object object = null;
+        if (object == null) {
+            return NULL;
+        }
+        if (object instanceof JavaObject) {
+            return ((JavaObject) object);
+        }
+        return new JavaObject(object);
+    }
+
+    public static JavaObject makeJavaObjectInstance(Symbol className) throws GleamException
+    {
+        String name = className.toString();
+        Object object;
         try {
-            object = Class.forName(className).getConstructor().newInstance();
+            object = Class.forName(name).getConstructor().newInstance();
         }
         catch (Exception ex) {
             logger.warning(ex);
-            throw new GleamException("new: " + ex.getMessage(), s);
+            throw new GleamException("new: " + ex.getMessage(), className);
         }
-        finally {
-            value = object;
-        }
+        return makeJavaObject(object);
     }
 
-    public JavaObject(Symbol s,
-                      Class<?>[] classes,
-                      Object[] objects) throws GleamException
+    public static JavaObject makeJavaObjectInstance(Symbol className,
+                                                    Class<?>[] classes,
+                                                    Object[] objects) throws GleamException
     {
-        String className = s.toString();
-        Object object = null;
+        String name = className.toString();
+        Object object;
         try {
-            object = Class.forName(className)
+            object = Class.forName(name)
                           .getConstructor(classes)
                           .newInstance(objects);
         }
         catch (Exception ex) {
             logger.warning(ex);
-            throw new GleamException("new: " + ex.getMessage(), s);
+            throw new GleamException("new: " + ex.getMessage(), className);
         }
-        finally {
-            value = object;
-        }
+        return makeJavaObject(object);
     }
 
     @Override
@@ -150,7 +158,7 @@ public class JavaObject extends AbstractEntity
             out.defaultWriteObject();
         }
         else {
-            out.writeObject(new JavaObject());
+            out.writeObject(NULL);
         }
     }
 }

@@ -32,7 +32,6 @@
 
 package gleam.library;
 
-import gleam.lang.AbstractEntity;
 import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
@@ -44,6 +43,7 @@ import gleam.lang.MutableString;
 import gleam.lang.Real;
 import gleam.lang.Symbol;
 import gleam.lang.Void;
+import gleam.util.EntityObjectConverter;
 import gleam.util.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -53,6 +53,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static gleam.lang.Environment.Kind.INTERACTION_ENV;
+import static gleam.lang.JavaObject.makeJavaObject;
+import static gleam.lang.JavaObject.makeJavaObjectInstance;
 
 /**
  * JAVA INTERFACE
@@ -61,8 +63,10 @@ import static gleam.lang.Environment.Kind.INTERACTION_ENV;
  */
 public class JavaInterface
 {
-
     private static final Logger logger = Logger.getLogger();
+    private static final EntityObjectConverter
+            entityObjectConverter = new EntityObjectConverter();
+
     /**
      * This array contains definitions of primitives. It is used by static
      * initializers in gleam.lang.System to populate the initial environments.
@@ -94,14 +98,14 @@ public class JavaInterface
                     }
                     Symbol className = (Symbol) e;
                     if (!it.hasNext()) {
-                        return new JavaObject(className);
+                        return makeJavaObjectInstance(className);
                     }
                     List<Class<?>> argClasses = new ArrayList<>();
                     Collection<Object> argObjects = new ArrayList<>();
                     iterateArguments(it, argClasses, argObjects);
-                    return new JavaObject(className,
-                                          argClasses.toArray(new Class<?>[0]),
-                                          argObjects.toArray());
+                    return makeJavaObjectInstance(className,
+                                                  argClasses.toArray(new Class<?>[0]),
+                                                  argObjects.toArray());
                 }
             },
 
@@ -163,17 +167,45 @@ public class JavaInterface
                     if (arg1 instanceof JavaObject) {
                         JavaObject javaObject = (JavaObject) arg1;
                         if (javaObject.getObjectValue() == null) {
+                            // the null
                             return javaObject;
                         }
                         else {
-                            return new JavaObject(javaObject.getObjectValue()
+                            return makeJavaObject(javaObject.getObjectValue()
                                                             .getClass());
                         }
                     }
-                    return new JavaObject(arg1.getClass());
+                    return makeJavaObject(arg1.getClass());
                 }
-            }
+            },
 
+            /*
+             * object->entity (value-of)
+             */
+            new Primitive("object->entity",
+                          INTERACTION_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns a Gleam Entity for a (Java) Object",
+                          "E.g. (object->entity (new 'java.lang.String \"test\")) => \"test" /* doc strings */)
+            {
+                // TODO
+            },
+
+            /*
+             * object->entity (value-of)
+             */
+            new Primitive("entity->object",
+                          INTERACTION_ENV,
+                          Primitive.IDENTIFIER, /* environment, type */
+                          1,
+                          1, /* min, max no. of arguments */
+                          "Returns a Gleam Entity for a (Java) Object",
+                          "E.g. (object->entity (new 'java.lang.String \"test\")) => \"test" /* doc strings */)
+            {
+                // TODO
+            }
     }; // primitives
 
     /** Can't instantiate this class. */
@@ -186,7 +218,7 @@ public class JavaInterface
         while (it.hasNext()) {
             Entity arg = it.next();
             argClasses.add(getJavaClass(arg));
-            argObjects.add(getJavaObject(arg));
+            argObjects.add(getObjectFromEntity(arg));
         }
     }
 
@@ -202,6 +234,9 @@ public class JavaInterface
         else if (arg instanceof Symbol) {
             return String.class;
         }
+        else if (arg instanceof gleam.lang.Boolean) {
+            return boolean.class;
+        }
         else if (arg instanceof Real) {
             return double.class;
         }
@@ -215,28 +250,20 @@ public class JavaInterface
         }
     }
 
-    private static Object getJavaObject(Entity arg) throws GleamException
+    private static Object getObjectFromEntity(Entity arg) throws GleamException
     {
-        if (arg instanceof JavaObject) {
-            return ((JavaObject) arg).getObjectValue();
-        }
-        else if (arg instanceof MutableString) {
-            return arg.toString();
-        }
-        else if (arg instanceof Symbol) {
-            return arg.toString();
-        }
-        else if (arg instanceof Real) {
-            return ((Real) arg).doubleValue();
-        }
-        else if (arg instanceof Int) {
-            return ((Int) arg).intValue();
-        }
-        else {
+        Object ret = entityObjectConverter.convert(arg);
+        if (ret == arg) {
             throw new GleamException(
                     "cannot obtain the Java Object for a Gleam entity",
                     arg);
         }
+        return ret;
+    }
+
+    private static Entity getEntityFromObject(Object object)
+    {
+        return entityObjectConverter.invert(object);
     }
 
     private static Entity call(JavaObject object,
@@ -257,43 +284,14 @@ public class JavaInterface
             }
             return getEntityFromObject(retVal);
         }
-        catch (SecurityException ex) {
+        catch (SecurityException |
+               IllegalArgumentException |
+               NoSuchMethodException |
+               IllegalAccessException |
+               InvocationTargetException ex) {
             logger.warning(ex);
-            throw new GleamException("call: SecurityException: " + ex.getMessage(),
-                                     methodName, ex);
-        }
-        catch (IllegalArgumentException ex) {
-            logger.warning(ex);
-            throw new GleamException("call: IllegalArgumentException: " + ex.getMessage(),
-                                     methodName, ex);
-        }
-        catch (NoSuchMethodException ex) {
-            logger.warning(ex);
-            throw new GleamException("call: NoSuchMethodException: " + ex.getMessage(),
-                                     methodName, ex);
-        }
-        catch (IllegalAccessException ex) {
-            logger.warning(ex);
-            throw new GleamException("call: IllegalAccessException: " + ex.getMessage(),
-                                     methodName, ex);
-        }
-        catch (InvocationTargetException ex) {
-            logger.warning(ex);
-            throw new GleamException("call: InvocationTargetException: " + ex.getMessage(),
-                                     methodName, ex);
-        }
-    }
-
-    private static Entity getEntityFromObject(Object object)
-    {
-        if (object == null) {
-            return new JavaObject();
-        }
-        else if (object instanceof AbstractEntity) {
-            return (Entity) object;
-        }
-        else {
-            return new JavaObject(object);
+            String msg = "call: " + ex.getClass().getSimpleName() + ex.getMessage();
+            throw new GleamException(msg, methodName, ex);
         }
     }
 }

@@ -46,6 +46,7 @@ import java.util.TreeSet;
 
 import static gleam.lang.Environment.Kind.INTERACTION_ENV;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
+import static gleam.lang.JavaObject.makeJavaObject;
 import static gleam.util.Logger.Level.DEBUG;
 import static gleam.util.Logger.Level.ERROR;
 import static java.lang.String.format;
@@ -236,7 +237,7 @@ public class Interpreter
                             getSchemeReportEnv()
                                     .lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION));
             getSchemeReportEnv().define(Symbol.makeSymbol("null"),
-                                        new JavaObject()); // the Java null value
+                                        makeJavaObject(null));
         }
         catch (GleamException e) {
             // should never happen

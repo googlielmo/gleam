@@ -86,7 +86,7 @@ public class Environment extends AbstractEntity
         }
         if (ctx == null) {
             // should never happen
-            throw new IllegalStateException("missing ExecutionContext");
+            throw new IllegalStateException("internal error: missing ExecutionContext");
         }
         return ctx.getInterpreter();
     }
@@ -101,7 +101,7 @@ public class Environment extends AbstractEntity
         }
         if (ctx == null) {
             // should never happen
-            throw new IllegalStateException("missing ExecutionContext");
+            throw new IllegalStateException("internal error: missing ExecutionContext");
         }
         return ctx;
     }
