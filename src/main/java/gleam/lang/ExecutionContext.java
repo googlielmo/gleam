@@ -41,6 +41,7 @@ public class ExecutionContext
     private OutputPort out;
     private OutputPort err;
     private boolean traceEnabled;
+    private boolean noisy;
 
     public ExecutionContext(Interpreter intp,
                             InputPort in,
@@ -52,6 +53,7 @@ public class ExecutionContext
         this.out = out;
         this.err = err;
         traceEnabled = false;
+        noisy = false;
     }
 
     public Interpreter getInterpreter()
@@ -97,5 +99,15 @@ public class ExecutionContext
     public void setTraceEnabled(boolean traceEnabled)
     {
         this.traceEnabled = traceEnabled;
+    }
+
+    public boolean isNoisy()
+    {
+        return noisy;
+    }
+
+    public void setNoisy(boolean noisy)
+    {
+        this.noisy = noisy;
     }
 }

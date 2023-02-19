@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2023 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -24,49 +24,38 @@
  *
  */
 
-/*
- * EvalAction.java
- *
- * Created on December 11, 2006, 15.30
- */
-
 package gleam.lang;
 
-/**
- * Eval action.
- */
-public class EvalAction extends Action
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class InterpreterTest
 {
-
-    private static final long serialVersionUID = 2L;
-
-    /** Creates a new instance of this action. */
-    public EvalAction(Environment env)
+    @Test
+    void newInterpreter() throws GleamException
     {
-        this(env, null);
+        Interpreter intp = Interpreter.newInterpreter();
+        assertNotNull(intp);
     }
 
-    /** Creates a new instance of this action. */
-    public EvalAction(Environment env, Action next)
+    @Test
+    void eval() throws GleamException
     {
-        super(env, next);
-    }
+        Entity result;
+        Interpreter intp = Interpreter.newInterpreter();
 
-    /**
-     * Invokes this action, causing the evaluation of its argument.
-     *
-     * @param arg  the Entity to evaluate
-     * @param cont the current Continuation
-     *
-     * @return the result of the evaluation
-     *
-     * @throws gleam.lang.GleamException in case of errors
-     */
-    @Override
-    Entity invoke(Entity arg, Continuation cont) throws GleamException
-    {
-        cont.head = next;
-        trace(out -> out.printf("%s\n", arg.toWriteFormat()), env);
-        return arg.eval(env, cont);
+        intp.eval("(define x 1.2345)");
+
+        result = intp.eval("x");
+        assertEquals(1.2345, ((java.lang.Number) result).doubleValue());
+
+        result = intp.eval("(let ((x 3)(y 2)) (* x y))");
+        assertEquals(6, ((java.lang.Number) result).intValue());
+
+        // x is unchanged by let
+        result = intp.eval("x");
+        assertEquals(1.2345, ((java.lang.Number) result).doubleValue());
     }
 }

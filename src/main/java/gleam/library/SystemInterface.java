@@ -29,6 +29,8 @@ package gleam.library;
 import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
+import gleam.lang.Eof;
+import gleam.lang.ExpressionAction;
 import gleam.lang.GleamException;
 import gleam.lang.InputPort;
 import gleam.lang.MutableString;
@@ -80,7 +82,7 @@ public final class SystemInterface
                                                  arg1);
                     }
                     try (InputPort iport = new InputPort(filename.toString())) {
-                        iport.loadForEval(env, cont);
+                        loadForEval(iport, env, cont);
                         return Void.VALUE;
                     }
                     catch (IOException e) {
@@ -93,4 +95,19 @@ public final class SystemInterface
 
     /** Can't instantiate this class. */
     private SystemInterface() {}
+
+    private static void loadForEval(InputPort inputPort,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
+    {
+        // read
+        Entity obj;
+        while ((obj = inputPort.read()) != Eof.VALUE) {
+            // eval
+            cont.begin(
+                    new ExpressionAction(obj.analyze(env).optimize(env),
+                                         env,
+                                         null));
+        }
+    }
 }

@@ -78,10 +78,20 @@ public class Environment extends AbstractEntity
 
     public Interpreter getInterpreter()
     {
-        return readContext().getInterpreter();
+        Environment env = this;
+        ExecutionContext ctx = null;
+        while (ctx == null && env != null) {
+            ctx = env.executionContext;
+            env = env.parent;
+        }
+        if (ctx == null) {
+            // should never happen
+            throw new IllegalStateException("missing ExecutionContext");
+        }
+        return ctx.getInterpreter();
     }
 
-    protected ExecutionContext readContext()
+    public ExecutionContext getExecutionContext()
     {
         Environment env = this;
         ExecutionContext ctx = null;
@@ -91,14 +101,9 @@ public class Environment extends AbstractEntity
         }
         if (ctx == null) {
             // should never happen
-            throw new IllegalStateException("ExecutionContext not found");
+            throw new IllegalStateException("missing ExecutionContext");
         }
         return ctx;
-    }
-
-    public ExecutionContext getExecutionContext()
-    {
-        return readContext();
     }
 
     public void setExecutionContext(ExecutionContext ctx)
@@ -206,7 +211,17 @@ public class Environment extends AbstractEntity
     // DEBUG
     public void dump() throws GleamException
     {
-        OutputPort out = readContext().getOut();
+        Environment env = this;
+        ExecutionContext ctx = null;
+        while (ctx == null && env != null) {
+            ctx = env.executionContext;
+            env = env.parent;
+        }
+        if (ctx == null) {
+            // should never happen
+            throw new IllegalStateException("missing ExecutionContext");
+        }
+        OutputPort out = ctx.getOut();
         if (out == null) {
             throw new GleamException("OutputPort null in Environment");
         }

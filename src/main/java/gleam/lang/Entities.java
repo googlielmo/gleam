@@ -81,6 +81,15 @@ public class Entities
         return p;
     }
 
+    public static List list(Entity... entities) {
+        List p = EmptyList.VALUE;
+
+        for (int i = entities.length - 1; i >= 0; i--) {
+            p = cons(entities[i], p);
+        }
+        return p;
+    }
+
     public MutableString string(String string)
     {
         return new MutableString(string);

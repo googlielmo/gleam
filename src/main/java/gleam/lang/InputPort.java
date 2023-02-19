@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -26,8 +26,6 @@
 
 package gleam.lang;
 
-import gleam.util.Logger;
-
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -35,16 +33,12 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static gleam.util.Logger.Level.DEBUG;
-
 /**
  * Scheme input port.
  */
 public class InputPort extends Port implements Closeable
 {
     private static final long serialVersionUID = 1L;
-
-    private static final Logger logger = Logger.getLogger();
 
     private final String fileName;
 
@@ -122,18 +116,6 @@ public class InputPort extends Port implements Closeable
     {
         out.print("#<input-port>");
         return out;
-    }
-
-    public void loadForEval(Environment env,
-                            Continuation cont) throws GleamException
-    {
-        // read
-        Entity obj;
-        while ((obj = this.read()) != Eof.VALUE) {
-            // eval
-            logger.log(DEBUG, "loadForEval: read object", obj);
-            Interpreter.addForEval(obj, env, cont);
-        }
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2002-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -27,7 +27,7 @@
 /*
  * AssignmentAction.java
  *
- * Created on January 24 2002, 21.14
+ * Created on January 24, 2002, 21.14
  */
 
 package gleam.lang;

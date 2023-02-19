@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2007-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -27,8 +27,7 @@
 /*
  * JavaObject.java
  *
- * Created on 20 jan 2007, 14.34
- *
+ * Created on January 20, 2007, 14.34
  */
 
 package gleam.lang;

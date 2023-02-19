@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2022 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -27,20 +27,22 @@
 /*
  * Action.java
  *
- * Created on January, 19 2002, 12.08
+ * Created on January 19, 2002, 12.08
  */
 
 package gleam.lang;
 
 /**
- * An abstract execution unit. This object represents a single program fragment,
- * which can be invoked during the execution of the program. It is a constituent
- * of continuations, because a full continuation consists of a sequence of
- * invocations of these units. Actions are linked together in a tree-like
- * structure, where an execution goes from leaf to root. In an ordinary program,
- * the tree may degenerate into a list, taking the role of the traditional stack
- * used in many non tail-recursive languages. When continuations are captured
- * and re-used, their actions may end up being arranged as a proper tree.
+ * Represents an abstract unit of execution, which can be invoked during the
+ * program's execution. Execution units are a constituent of continuations, as a
+ * full continuation consists of a sequence of invocations of these units.
+ * Actions are linked together in a tree-like structure, where an execution goes
+ * from leaf to root.
+ * <p>
+ * In a traditional program, the tree may degenerate into a list, taking the
+ * role of the call stack used in many non tail-recursive languages. However,
+ * when continuations are captured and re-used, their actions may end up being
+ * arranged as a proper tree.
  */
 public abstract class Action implements java.io.Serializable
 {
@@ -51,18 +53,18 @@ public abstract class Action implements java.io.Serializable
     Action next;
 
     /**
-     * Invokes this action with an argument and a continuation,  returning a
-     * value, and advancing the continuation to the next action. Subclasses that
-     * implement this abstract method must update the continuation's action with
-     * the next action to execute (e.g.
-     * <CODE>cont.action = next</CODE>), so to go forward in program
-     * execution
+     * Invokes this action with an argument and a continuation, and returns a
+     * value, advancing the continuation to the next action. Subclasses must
+     * implement this method and update the continuation's head to the next
+     * action to execute (e.g., {@code cont.head = next}) to move the program
+     * execution forward. If the method only changes the continuation, and does
+     * not return a value, it should return {@code null}.
      *
      * @param arg  the Entity argument to this step of execution
      * @param cont the current Continuation
      *
-     * @return an Entity, or null to signal that only the continuation has been
-     * changed
+     * @return an Entity, or {@code null} to indicate that only the
+     * continuation has been updated.
      *
      * @throws gleam.lang.GleamException in case of errors
      */

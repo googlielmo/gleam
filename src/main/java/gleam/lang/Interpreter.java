@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2007-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -27,8 +27,7 @@
 /*
  * Interpreter.java
  *
- * Created on 6-jan-2007, 11.05
- *
+ * Created on January 6, 2007, 11.05
  */
 
 package gleam.lang;
@@ -77,28 +76,31 @@ public class Interpreter
     /**
      * the null environment, as defined in r5rs
      */
-    private static final Environment nullEnv = new SystemEnvironment();
+    private static final Environment
+            nullEnv = new SystemEnvironment();
 
     /**
      * the scheme-report environment, as defined in r5rs
      */
-    private static final Environment reportEnv = new SystemEnvironment(nullEnv,
-                                                                       REPORT_ENV);
+    private static final Environment
+            reportEnv = new SystemEnvironment(nullEnv, REPORT_ENV);
 
     /**
      * the interaction environment, as defined in r5rs
      */
-    private static final Environment interactionEnv = new SystemEnvironment(
-            reportEnv,
-            INTERACTION_ENV);
+    private static final Environment
+            interactionEnv = new SystemEnvironment(reportEnv, INTERACTION_ENV);
+
     /**
      * true if bootstrap code already loaded
      */
     private static volatile boolean bootstrapped = false;
+
     /**
      * the program continuation
      */
     private final Continuation cont = new Continuation();
+
     /**
      * wrapper for the shared environment
      */
@@ -116,121 +118,30 @@ public class Interpreter
     private Entity accum = Void.VALUE;
 
     /**
-     * Private constructor
+     * Only used internally by {@link #newInterpreter()}
      */
-    private Interpreter()
-    {
-        initEnvironments();
-    }
+    private Interpreter() {}
 
     /**
-     * Initialize the three initial environments (null, report, interaction).
+     * Creates and bootstraps a new Interpreter.
+     *
+     * @return a Gleam Scheme Interpreter
+     *
+     * @throws GleamException in case of errors
      */
-    private void initEnvironments()
+    public static Interpreter newInterpreter() throws GleamException
     {
         try {
-            /*
-             * import primitives
-             */
-            importPrimitives(gleam.library.Booleans.primitives);
-            importPrimitives(gleam.library.Characters.primitives);
-            importPrimitives(gleam.library.ControlFeatures.primitives);
-            importPrimitives(gleam.library.Equivalence.primitives);
-            importPrimitives(gleam.library.Eval.primitives);
-            importPrimitives(gleam.library.Input.primitives);
-            importPrimitives(gleam.library.Interaction.primitives);
-            importPrimitives(gleam.library.JavaInterface.primitives);
-            importPrimitives(gleam.library.Numbers.primitives);
-            importPrimitives(gleam.library.Output.primitives);
-            importPrimitives(gleam.library.PairsAndLists.primitives);
-            importPrimitives(gleam.library.Ports.primitives);
-            importPrimitives(gleam.library.Strings.primitives);
-            importPrimitives(gleam.library.Symbols.primitives);
-            importPrimitives(gleam.library.Syntax.primitives);
-            importPrimitives(gleam.library.SystemInterface.primitives);
-            importPrimitives(gleam.library.Vectors.primitives);
-
-            /*
-             * define special symbols
-             */
-            getSchemeReportEnv().define(Symbol.ERROBJ, Void.VALUE);
-            getSchemeReportEnv().define(Symbol.CALL_CC,
-                                        getSchemeReportEnv().lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION));
-            getSchemeReportEnv().define(Symbol.makeSymbol("null"),
-                                        new JavaObject()); // the Java null value
+            Interpreter interpreter = new Interpreter();
+            logger.log(Logger.Level.DEBUG,
+                       () -> format("created Interpreter %s",
+                                    interpreter));
+            Interpreter.bootstrap(interpreter);
+            return interpreter;
         }
-        catch (GleamException e) {
-            // should never happen
-            logger.log(ERROR,
-                       () -> format(
-                               "Internal error during environment initialization: %s",
-                               e.getMessage()));
-        }
-    }
-
-    /**
-     * Imports primitives
-     */
-    private void importPrimitives(Primitive[] primitives)
-    {
-        Environment instEnv;
-        for (Primitive primitive : primitives) {
-            switch (primitive.definitionEnv) {
-                case NULL_ENV:
-                    instEnv = getNullEnv();
-                    break;
-
-                case REPORT_ENV:
-                    instEnv = getSchemeReportEnv();
-                    break;
-
-                case INTERACTION_ENV:
-                default:
-                    instEnv = getInteractionEnv();
-            }
-            installPrimitive(instEnv, primitive);
-        }
-    }
-
-    public static Environment getSchemeReportEnv()
-    {
-        return reportEnv;
-    }
-
-    public static Environment getNullEnv()
-    {
-        return nullEnv;
-    }
-
-    public static Environment getInteractionEnv()
-    {
-        return interactionEnv;
-    }
-
-    /**
-     * Installs a primitive in an environment
-     *
-     * @param env       the environment
-     * @param primitive the primitive
-     */
-    private void installPrimitive(Environment env, Primitive primitive)
-    {
-        Symbol name = Symbol.makeSymbol(primitive.getName());
-        Procedure proc = primitive.keyword
-                         ? new SyntaxProcedure(primitive)
-                         : new PrimitiveProcedure(primitive);
-        env.define(name, proc);
-
-        if (primitive.keyword) {
-            kwSet.add(name);
-        }
-
-        if (primitive.comment != null) {
-            helpComment.put(primitive.getName(), primitive.comment);
-        }
-
-        if (primitive.documentation != null) {
-            helpDocumentation.put(primitive.getName(), primitive.documentation);
+        catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 
@@ -259,38 +170,17 @@ public class Interpreter
     }
 
     /**
-     * Creates and bootstraps a new Interpreter.
-     *
-     * @return a Gleam Scheme Interpreter
-     *
-     * @throws GleamException in case of error
-     */
-    public static Interpreter newInterpreter() throws GleamException
-    {
-        try {
-            Interpreter interpreter = new Interpreter();
-            logger.log(Logger.Level.DEBUG,
-                       () -> format("created Interpreter %s",
-                                    interpreter));
-            Interpreter.bootstrap(interpreter);
-            return interpreter;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }
-
-    /**
      * Loads and executes the bootstrap code for the Gleam Scheme Interpreter.
      *
-     * @throws gleam.lang.GleamException on any error
+     * @throws gleam.lang.GleamException in case of errors
      */
-    private static synchronized void bootstrap(Interpreter interpreter) throws GleamException
+    private static synchronized void bootstrap(Interpreter interpreter)
+            throws GleamException
     {
         if (bootstrapped) {
             return;
         }
+        initEnvironments();
         try (InputStream inputStream =
                      Objects.requireNonNull(
                              interpreter.getClass()
@@ -308,6 +198,104 @@ public class Interpreter
             throw new GleamException("Gleam cannot bootstrap", e);
         }
         logger.config("Gleam bootstrapped");
+    }
+
+    /**
+     * Initialize the system environments (null, report, interaction).
+     */
+    private static void initEnvironments()
+    {
+        try {
+            /*
+             * import primitives
+             */
+            importPrimitives(gleam.library.Booleans.primitives);
+            importPrimitives(gleam.library.Characters.primitives);
+            importPrimitives(gleam.library.ControlFeatures.primitives);
+            importPrimitives(gleam.library.Equivalence.primitives);
+            importPrimitives(gleam.library.Eval.primitives);
+            importPrimitives(gleam.library.Input.primitives);
+            importPrimitives(gleam.library.Interaction.primitives);
+            importPrimitives(gleam.library.JavaInterface.primitives);
+            importPrimitives(gleam.library.Numbers.primitives);
+            importPrimitives(gleam.library.Output.primitives);
+            importPrimitives(gleam.library.PairsAndLists.primitives);
+            importPrimitives(gleam.library.Ports.primitives);
+            importPrimitives(gleam.library.Strings.primitives);
+            importPrimitives(gleam.library.Symbols.primitives);
+            importPrimitives(gleam.library.Syntax.primitives);
+            importPrimitives(gleam.library.SystemInterface.primitives);
+            importPrimitives(gleam.library.Vectors.primitives);
+
+            /*
+             * define special symbols
+             */
+            getSchemeReportEnv().define(Symbol.ERROBJ, Void.VALUE);
+            getSchemeReportEnv()
+                    .define(Symbol.CALL_CC,
+                            getSchemeReportEnv()
+                                    .lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION));
+            getSchemeReportEnv().define(Symbol.makeSymbol("null"),
+                                        new JavaObject()); // the Java null value
+        }
+        catch (GleamException e) {
+            // should never happen
+            logger.log(ERROR,
+                       () -> format(
+                               "Internal error during environment initialization: %s",
+                               e.getMessage()));
+        }
+    }
+
+    /**
+     * Imports primitives
+     */
+    private static void importPrimitives(Primitive[] primitives)
+    {
+        Environment instEnv;
+        for (Primitive primitive : primitives) {
+            switch (primitive.definitionEnv) {
+                case NULL_ENV:
+                    instEnv = getNullEnv();
+                    break;
+
+                case REPORT_ENV:
+                    instEnv = getSchemeReportEnv();
+                    break;
+
+                case INTERACTION_ENV:
+                default:
+                    instEnv = getInteractionEnv();
+            }
+            installPrimitive(instEnv, primitive);
+        }
+    }
+
+    /**
+     * Installs a primitive in an environment
+     *
+     * @param env       the environment
+     * @param primitive the primitive
+     */
+    private static void installPrimitive(Environment env, Primitive primitive)
+    {
+        Symbol name = Symbol.makeSymbol(primitive.getName());
+        Procedure proc = primitive.keyword
+                         ? new SyntaxProcedure(primitive)
+                         : new PrimitiveProcedure(primitive);
+        env.define(name, proc);
+
+        if (primitive.keyword) {
+            kwSet.add(name);
+        }
+
+        if (primitive.comment != null) {
+            helpComment.put(primitive.getName(), primitive.comment);
+        }
+
+        if (primitive.documentation != null) {
+            helpDocumentation.put(primitive.getName(), primitive.documentation);
+        }
     }
 
     /**
@@ -336,6 +324,53 @@ public class Interpreter
         }
     }
 
+    public static Environment getNullEnv()
+    {
+        return nullEnv;
+    }
+
+    public static Environment getSchemeReportEnv()
+    {
+        return reportEnv;
+    }
+
+    public static Environment getInteractionEnv()
+    {
+        return interactionEnv;
+    }
+
+    /**
+     * Sets the global shared environment
+     *
+     * @param env the environment to use
+     */
+    public void setGlobalEnv(Environment env)
+    {
+        env.parent = interactionEnv;
+        sharedEnv.parent = env;
+    }
+
+    /**
+     * Gets the current session environment.
+     *
+     * @return the current session environment
+     */
+    public Environment getSessionEnv()
+    {
+        return sessionEnv;
+    }
+
+    /**
+     * Sets the current session environment
+     *
+     * @param env the environment to use
+     */
+    public void setSessionEnv(Environment env)
+    {
+        env.setParent(sharedEnv);
+        this.sessionEnv = env;
+    }
+
     /**
      * Evaluates a Gleam Scheme entity as code in a given environment.
      *
@@ -345,59 +380,22 @@ public class Interpreter
      *
      * @return the value of the expression
      *
-     * @throws gleam.lang.GleamException on any error
+     * @throws gleam.lang.GleamException as soon as an error condition is
+     *                                   raised, the loading / execution
+     *                                   operation will terminate, leaving the
+     *                                   session environment in a possibly
+     *                                   modified state
      */
     public Entity eval(Entity expr, Environment env) throws GleamException
     {
         expr = expr.analyze(env).optimize(env);
         cont.begin(new ExpressionAction(expr, env, null));
         execute();
-        return accum;
-    }
-
-    /**
-     * The main loop of program execution. When this method is called, the first
-     * action in the current continuation is invoked with the current value of
-     * the accumulator register as its argument. When a result is produced, it
-     * is stored in the accumulator. Then the next action in the continuation
-     * chain is extracted, and the loop repeats itself until there are no more
-     * actions to execute.
-     *
-     * @throws gleam.lang.GleamException on any error
-     */
-    private void execute() throws GleamException
-    {
-        Action currentAction = cont.head;
-        Entity tmp;
-        while (currentAction != null) {
-            tmp = currentAction.invoke(accum, cont);
-            if (tmp != null) {
-                accum = tmp;
-            }
-            currentAction = cont.head;
+        ExecutionContext context = env.getExecutionContext();
+        if (context.isNoisy()) {
+            context.getOut().printf("%s\n", accum);
         }
-    }
-
-    public static void addForEval(Entity expr,
-                                  Environment env,
-                                  Continuation cont) throws GleamException
-    {
-        expr = expr.analyze(env).optimize(env);
-        cont.begin(new ExpressionAction(expr, env, null));
-    }
-
-    /**
-     * Determines if a given symbol is a keyword.
-     */
-    static boolean isKeyword(Symbol s)
-    {
-        return kwSet.contains(s);
-    }
-
-    public void setGlobalEnv(Environment env)
-    {
-        env.parent = interactionEnv;
-        sharedEnv.parent = env;
+        return accum;
     }
 
     /**
@@ -408,7 +406,11 @@ public class Interpreter
      *
      * @return the value of the expression
      *
-     * @throws gleam.lang.GleamException on any error
+     * @throws gleam.lang.GleamException as soon as an error condition is
+     *                                   raised, the loading / execution
+     *                                   operation will terminate, leaving the
+     *                                   session environment in a possibly
+     *                                   modified state
      */
     public Entity eval(Entity expr) throws GleamException
     {
@@ -441,7 +443,11 @@ public class Interpreter
      *
      * @return the return value of the program
      *
-     * @throws gleam.lang.GleamException on any error
+     * @throws gleam.lang.GleamException as soon as an error condition is
+     *                                   raised, the loading / execution
+     *                                   operation will terminate, leaving the
+     *                                   session environment in a possibly
+     *                                   modified state
      */
     public Entity eval(java.io.Reader reader) throws GleamException
     {
@@ -450,19 +456,26 @@ public class Interpreter
     }
 
     /**
-     * Gets the current session environment
+     * The main loop of program execution. When this method is called, the first
+     * action in the current continuation is invoked with the current value of
+     * the accumulator register as its argument. When a result is produced, it
+     * is stored in the accumulator. Then the next action in the continuation
+     * chain is extracted, and the loop repeats itself until there are no more
+     * actions to execute.
      *
-     * @return the current session environment
+     * @throws gleam.lang.GleamException in case of errors
      */
-    public Environment getSessionEnv()
+    private void execute() throws GleamException
     {
-        return sessionEnv;
-    }
-
-    public void setSessionEnv(Environment env)
-    {
-        env.setParent(sharedEnv);
-        this.sessionEnv = env;
+        Action currentAction = cont.head;
+        Entity tmp;
+        while (currentAction != null) {
+            tmp = currentAction.invoke(accum, cont);
+            if (tmp != null) {
+                accum = tmp;
+            }
+            currentAction = cont.head;
+        }
     }
 
     /**
@@ -471,5 +484,13 @@ public class Interpreter
     public void clearContinuation()
     {
         this.cont.clear();
+    }
+
+    /**
+     * Checks whether a given symbol is a keyword.
+     */
+    static boolean isKeyword(Symbol s)
+    {
+        return kwSet.contains(s);
     }
 }

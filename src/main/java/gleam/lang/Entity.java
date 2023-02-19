@@ -46,7 +46,7 @@ public interface Entity extends java.io.Serializable
      *
      * @return Entity a result
      *
-     * @throws GleamException in case of error
+     * @throws GleamException in case of errors
      */
     default Entity eval(Environment env, Continuation cont) throws GleamException
     {
@@ -61,7 +61,7 @@ public interface Entity extends java.io.Serializable
      *
      * @return Entity
      *
-     * @throws GleamException in case of syntax error
+     * @throws GleamException in case of syntax errors
      */
     default Entity analyze(Environment env) throws GleamException
     {

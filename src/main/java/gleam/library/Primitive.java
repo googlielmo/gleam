@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2007-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -27,8 +27,7 @@
 /*
  * Primitive.java
  *
- * Created on 5 feb 2007, 19.33
- *
+ * Created on February 5, 2007, 19.33
  */
 
 package gleam.library;
