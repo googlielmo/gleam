@@ -45,6 +45,8 @@ import static gleam.GleamScriptEngine.objectOf;
 
 public class GleamBindings extends Environment implements Bindings
 {
+    public static final String CONTEXT_ATTR_NOISY = ":noisy";
+    public static final String CONTEXT_ATTR_TRACE_ENABLED = ":trace-enabled";
     private final SymbolStringConverter symbolStringConverter = new SymbolStringConverter();
     private final LocationObjectConverter locationObjectConverter = new LocationObjectConverter();
     final transient private BindingsAdapter assocAdapter;
@@ -89,13 +91,58 @@ public class GleamBindings extends Environment implements Bindings
     @Override
     public Object get(Object key)
     {
+
+        if (key instanceof String && ((String) key).startsWith(":")) {
+            return getContextAttribute(((String) key));
+        }
         return assocAdapter.get(key);
     }
 
     @Override
     public Object put(String key, Object value)
     {
+        if (key.startsWith(":")) {
+            return setContextAttribute(key, value);
+        }
         return assocAdapter.put(key, value);
+    }
+
+    private Object setContextAttribute(String key, Object value)
+    {
+        Object ret;
+        switch (key) {
+            case CONTEXT_ATTR_NOISY:
+                ret = getExecutionContext().isNoisy();
+                getExecutionContext().setNoisy((boolean) value);
+                break;
+
+            case CONTEXT_ATTR_TRACE_ENABLED:
+                ret = getExecutionContext().isTraceEnabled();
+                getExecutionContext().setTraceEnabled((boolean) value);
+                break;
+
+            default:
+                throw new IllegalArgumentException(String.format(
+                        "unknown context attribute %s",
+                        key));
+        }
+        return ret;
+    }
+
+    private Object getContextAttribute(String key)
+    {
+        switch (key) {
+            case CONTEXT_ATTR_NOISY:
+                return getExecutionContext().isNoisy();
+
+            case CONTEXT_ATTR_TRACE_ENABLED:
+                return getExecutionContext().isTraceEnabled();
+
+            default:
+                throw new IllegalArgumentException(String.format(
+                        "unknown context attribute %s",
+                        key));
+        }
     }
 
     @Override

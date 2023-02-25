@@ -233,8 +233,8 @@ public class GleamScriptEngine implements ScriptEngine, Invocable
                             .setExecutionContext(executionContext);
         }
         else {
-            throw new IllegalArgumentException(
-                    "ScriptContext type not supported.");
+            throw new IllegalArgumentException(String.format("context type not supported: %s",
+                                                             context.getClass().getTypeName()));
         }
     }
 

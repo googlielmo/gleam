@@ -78,8 +78,7 @@ public class GleamScriptContext implements ScriptContext
         this.reader = executionContext.getIn().getReader();
         this.writer = executionContext.getOut().getPrintWriter();
         this.errorWriter = executionContext.getErr().getPrintWriter();
-        setBindings(GleamScriptContext
-                            .getCachedGleamBindings(bindings), ENGINE_SCOPE);
+        setBindings(GleamScriptContext.getCachedGleamBindings(bindings), ENGINE_SCOPE);
     }
 
     static GleamBindings getCachedGleamBindings(Bindings bindings)
@@ -88,8 +87,7 @@ public class GleamScriptContext implements ScriptContext
             return (GleamBindings) bindings;
         }
 
-        return bindingsCache.computeIfAbsent(bindings,
-                                             GleamScriptContext::wrapBindings);
+        return bindingsCache.computeIfAbsent(bindings, GleamScriptContext::wrapBindings);
     }
 
     private static GleamBindings wrapBindings(Bindings b)
