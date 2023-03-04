@@ -32,8 +32,8 @@ import java.io.StringWriter;
 public abstract class AbstractEntity implements Entity
 {
     /**
-     * Returns a representation of this entity, in the same format as a call to
-     * `display` would produce.
+     * Returns a representation of this entity, in the same format as a call to `display` would
+     * produce.
      *
      * @return a string representation of the entity.
      */

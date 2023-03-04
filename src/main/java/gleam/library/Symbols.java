@@ -50,9 +50,8 @@ public final class Symbols
      */
     private static final AtomicInteger gencount = new AtomicInteger(0);
     /**
-     * This array contains definitions of primitives. It is used by static
-     * initializers in gleam.lang.System to populate the three initial
-     * environments.
+     * This array contains definitions of primitives. It is used by static initializers in
+     * gleam.lang.System to populate the three initial environments.
      */
     public static final Primitive[] primitives = {
 

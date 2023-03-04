@@ -46,8 +46,8 @@ public final class Output
     private static final String CLOSED_OUTPUT_PORT = "closed output port";
     private static final String NOT_AN_OUTPUT_PORT = "not an output port";
     /**
-     * This array contains definitions of primitives. It is used by static
-     * initializers in gleam.lang.System to populate the initial environments.
+     * This array contains definitions of primitives. It is used by static initializers in
+     * gleam.lang.System to populate the initial environments.
      */
     public static final Primitive[] primitives = {
 

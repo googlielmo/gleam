@@ -48,9 +48,8 @@ public final class PairsAndLists
 {
 
     /**
-     * This array contains definitions of primitives. It is used by static
-     * initializers in gleam.lang.System to populate the three initial
-     * environments.
+     * This array contains definitions of primitives. It is used by static initializers in
+     * gleam.lang.System to populate the three initial environments.
      */
     public static final Primitive[] primitives = {
 

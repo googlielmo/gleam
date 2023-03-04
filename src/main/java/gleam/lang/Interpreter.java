@@ -108,8 +108,7 @@ public class Interpreter
     private final Environment sharedEnv = new Environment(interactionEnv);
 
     /**
-     * the session (top-level) environment; typically the environment used by
-     * the application.
+     * the session (top-level) environment; the environment typically used by the application.
      */
     private Environment sessionEnv = new Environment(sharedEnv);
 
@@ -134,9 +133,7 @@ public class Interpreter
     {
         try {
             Interpreter interpreter = new Interpreter();
-            logger.log(Logger.Level.DEBUG,
-                       () -> format("created Interpreter %s",
-                                    interpreter));
+            logger.log(Logger.Level.DEBUG, () -> format("created Interpreter %s", interpreter));
             Interpreter.bootstrap(interpreter);
             return interpreter;
         }
@@ -232,18 +229,16 @@ public class Interpreter
              * define special symbols
              */
             getSchemeReportEnv().define(Symbol.ERROBJ, Void.VALUE);
-            getSchemeReportEnv()
-                    .define(Symbol.CALL_CC,
-                            getSchemeReportEnv()
-                                    .lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION));
-            getSchemeReportEnv().define(Symbol.makeSymbol("null"),
-                                        makeJavaObject(null));
+            getSchemeReportEnv().define(Symbol.makeSymbol("null"), makeJavaObject(null));
+            getSchemeReportEnv().define(Symbol.CALL_CC,
+                                        getSchemeReportEnv()
+                                                .lookup(Symbol.CALL_WITH_CURRENT_CONTINUATION));
         }
         catch (GleamException e) {
             // should never happen
             logger.log(ERROR,
                        () -> format(
-                               "Internal error during environment initialization: %s",
+                               "internal error in environment initialization: %s",
                                e.getMessage()));
         }
     }
@@ -302,15 +297,12 @@ public class Interpreter
     /**
      * Loads and executes a Gleam Scheme program from a stream
      *
-     * @param reader a <CODE>gleam.lang.InputPort</CODE> representing the
-     *               program stream
+     * @param reader a <CODE>gleam.lang.InputPort</CODE> representing the program stream
      * @param env    the environment for program execution
      *
-     * @throws gleam.lang.GleamException as soon as an error condition is
-     *                                   raised, the loading / execution
-     *                                   operation will terminate, leaving the
-     *                                   environment in a possibly modified
-     *                                   state
+     * @throws gleam.lang.GleamException as soon as an error condition is raised, the
+     *                                   loading/execution operation will terminate, leaving the
+     *                                   environment in a possibly modified state
      */
     public void load(InputPort reader, Environment env) throws GleamException
     {
@@ -375,17 +367,15 @@ public class Interpreter
     /**
      * Evaluates a Gleam Scheme entity as code in a given environment.
      *
-     * @param expr the <CODE>gleam.lang.Entity</CODE> corresponding to a Scheme
-     *             expression to evaluate
+     * @param expr the <CODE>gleam.lang.Entity</CODE> corresponding to a Scheme expression to
+     *             evaluate
      * @param env  the environment of evaluation
      *
      * @return the value of the expression
      *
-     * @throws gleam.lang.GleamException as soon as an error condition is
-     *                                   raised, the loading / execution
-     *                                   operation will terminate, leaving the
-     *                                   session environment in a possibly
-     *                                   modified state
+     * @throws gleam.lang.GleamException as soon as an error condition is raised, the
+     *                                   loading/execution operation will terminate, leaving the
+     *                                   session environment in a possibly modified state
      */
     public Entity eval(Entity expr, Environment env) throws GleamException
     {
@@ -402,16 +392,14 @@ public class Interpreter
     /**
      * Evaluates a Gleam Scheme entity in the current session environment.
      *
-     * @param expr the <CODE>gleam.lang.Entity</CODE> corresponding to a Scheme
-     *             expression to evaluate
+     * @param expr the <CODE>gleam.lang.Entity</CODE> corresponding to a Scheme expression to
+     *             evaluate
      *
      * @return the value of the expression
      *
-     * @throws gleam.lang.GleamException as soon as an error condition is
-     *                                   raised, the loading / execution
-     *                                   operation will terminate, leaving the
-     *                                   session environment in a possibly
-     *                                   modified state
+     * @throws gleam.lang.GleamException as soon as an error condition is raised, the
+     *                                   loading/execution operation will terminate, leaving the
+     *                                   session environment in a possibly modified state
      */
     public Entity eval(Entity expr) throws GleamException
     {
@@ -425,11 +413,9 @@ public class Interpreter
      *
      * @return the value of the expression
      *
-     * @throws gleam.lang.GleamException as soon as an error condition is
-     *                                   raised, the loading / execution
-     *                                   operation will terminate, leaving the
-     *                                   session environment in a possibly
-     *                                   modified state
+     * @throws gleam.lang.GleamException as soon as an error condition is raised, the
+     *                                   loading/execution operation will terminate, leaving the
+     *                                   session environment in a possibly modified state
      */
     public Entity eval(String expr) throws GleamException
     {
@@ -439,16 +425,13 @@ public class Interpreter
     /**
      * Evaluates a Gleam Scheme program in the current session environment
      *
-     * @param reader a <CODE>java.io.Reader</CODE> representing the program
-     *               stream
+     * @param reader a <CODE>java.io.Reader</CODE> representing the program stream
      *
      * @return the return value of the program
      *
-     * @throws gleam.lang.GleamException as soon as an error condition is
-     *                                   raised, the loading / execution
-     *                                   operation will terminate, leaving the
-     *                                   session environment in a possibly
-     *                                   modified state
+     * @throws gleam.lang.GleamException as soon as an error condition is raised, the
+     *                                   loading/execution operation will terminate, leaving the
+     *                                   session environment in a possibly modified state
      */
     public Entity eval(java.io.Reader reader) throws GleamException
     {
@@ -457,11 +440,10 @@ public class Interpreter
     }
 
     /**
-     * The main loop of program execution. When this method is called, the first
-     * action in the current continuation is invoked with the current value of
-     * the accumulator register as its argument. When a result is produced, it
-     * is stored in the accumulator. Then the next action in the continuation
-     * chain is extracted, and the loop repeats itself until there are no more
+     * The main loop of program execution. When this method is called, the first action in the
+     * current continuation is invoked with the current value of the accumulator register as its
+     * argument. When a result is produced, it is stored in the accumulator. Then, the next action
+     * in the continuation chain is extracted, and the loop repeats itself until there are no more
      * actions to execute.
      *
      * @throws gleam.lang.GleamException in case of errors

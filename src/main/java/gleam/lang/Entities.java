@@ -81,7 +81,8 @@ public class Entities
         return p;
     }
 
-    public static List list(Entity... entities) {
+    public static List list(Entity... entities)
+    {
         List p = EmptyList.VALUE;
 
         for (int i = entities.length - 1; i >= 0; i--) {

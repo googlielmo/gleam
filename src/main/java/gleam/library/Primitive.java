@@ -39,11 +39,10 @@ import gleam.lang.GleamException;
 import gleam.lang.List;
 
 /**
- * A primitive procedure of the language. Each primitive should extend this
- * class, overriding exactly one of the apply methods to define its behavior.
- * The method to override should be the one corresponding to the maxArgs of the
- * primitive (0..3, or N when more than 3 or VAR_ARGS). Missing arguments will
- * be represented by null values if minArgs is less than maxArgs.
+ * A primitive procedure of the language. Each primitive should extend this class, overriding
+ * exactly one of the apply methods to define its behavior. The method to override should be the one
+ * corresponding to the maxArgs of the primitive (0..3, or N when more than 3 or VAR_ARGS). Missing
+ * arguments will be represented by null values if minArgs is less than maxArgs.
  */
 public abstract class Primitive implements java.io.Serializable
 {
@@ -111,11 +110,10 @@ public abstract class Primitive implements java.io.Serializable
      * @param env  the environment in which to apply the primitive
      * @param cont the current continuation
      *
-     * @return an Entity, or null to signal that only the continuation has been
-     * modified.
+     * @return an Entity, or null to signal that only the continuation has been modified.
      *
-     * @throws gleam.lang.GleamException if any error is signaled during the
-     *                                   execution of this primitive
+     * @throws gleam.lang.GleamException if any error is signaled during the execution of this
+     *                                   primitive
      */
     @SuppressWarnings("unused")
     public Entity apply0(Environment env,
@@ -131,11 +129,10 @@ public abstract class Primitive implements java.io.Serializable
      * @param env  the environment in which to apply the primitive
      * @param cont the current continuation
      *
-     * @return an Entity, or null to signal that only the continuation has been
-     * modified.
+     * @return an Entity, or null to signal that only the continuation has been modified.
      *
-     * @throws gleam.lang.GleamException if any error is signaled during the
-     *                                   execution of this primitive
+     * @throws gleam.lang.GleamException if any error is signaled during the execution of this
+     *                                   primitive
      */
     public Entity apply1(Entity arg1,
                          Environment env,
@@ -148,16 +145,14 @@ public abstract class Primitive implements java.io.Serializable
      * Apply this primitive to at most two arguments.
      *
      * @param arg1 the first argument to this primitive, or null if not present
-     * @param arg2 the second argument to this primitive, or null if not
-     *             present
+     * @param arg2 the second argument to this primitive, or null if not present
      * @param env  the environment in which to apply the primitive
      * @param cont the current continuation
      *
-     * @return an Entity, or null to signal that only the continuation has been
-     * modified.
+     * @return an Entity, or null to signal that only the continuation has been modified.
      *
-     * @throws gleam.lang.GleamException if any error is signaled during the
-     *                                   execution of this primitive
+     * @throws gleam.lang.GleamException if any error is signaled during the execution of this
+     *                                   primitive
      */
     public Entity apply2(Entity arg1,
                          Entity arg2,
@@ -171,17 +166,15 @@ public abstract class Primitive implements java.io.Serializable
      * Apply this primitive to at most three arguments.
      *
      * @param arg1 the first argument to this primitive, or null if not present
-     * @param arg2 the second argument to this primitive, or null if not
-     *             present
+     * @param arg2 the second argument to this primitive, or null if not present
      * @param arg3 the third argument to this primitive, or null if not present
      * @param env  the environment in which to apply the primitive
      * @param cont the current continuation
      *
-     * @return an Entity, or null to signal that only the continuation has been
-     * modified.
+     * @return an Entity, or null to signal that only the continuation has been modified.
      *
-     * @throws gleam.lang.GleamException if any error is signaled during the
-     *                                   execution of this primitive
+     * @throws gleam.lang.GleamException if any error is signaled during the execution of this
+     *                                   primitive
      */
     public Entity apply3(Entity arg1,
                          Entity arg2,
@@ -193,18 +186,16 @@ public abstract class Primitive implements java.io.Serializable
     }
 
     /**
-     * Apply this primitive to a variable number of arguments (but more than
-     * three).
+     * Apply this primitive to a variable number of arguments (but more than three).
      *
      * @param args a Scheme list (a Pair) holding the arguments
      * @param env  the environment in which to apply the primitive
      * @param cont the current continuation
      *
-     * @return an Entity, or null to signal that only the continuation has been
-     * modified.
+     * @return an Entity, or null to signal that only the continuation has been modified.
      *
-     * @throws gleam.lang.GleamException if any error is signaled during the
-     *                                   execution of this primitive
+     * @throws gleam.lang.GleamException if any error is signaled during the execution of this
+     *                                   primitive
      */
     public Entity applyN(List args,
                          Environment env,

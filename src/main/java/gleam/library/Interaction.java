@@ -60,8 +60,8 @@ public final class Interaction
     public static final String INVALID_ARGUMENT = "invalid argument";
     private static final Logger logger = Logger.getLogger();
     /**
-     * This array contains definitions of primitives. It is used by static
-     * initializers in gleam.lang.System to populate the initial environments.
+     * This array contains definitions of primitives. It is used by static initializers in
+     * gleam.lang.System to populate the initial environments.
      */
     public static final Primitive[] primitives = {
 

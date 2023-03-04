@@ -64,12 +64,11 @@ import static gleam.lang.JavaObject.makeJavaObjectInstance;
 public class JavaInterface
 {
     private static final Logger logger = Logger.getLogger();
-    private static final EntityObjectConverter
-            entityObjectConverter = new EntityObjectConverter();
+    private static final EntityObjectConverter entityObjectConverter = new EntityObjectConverter();
 
     /**
-     * This array contains definitions of primitives. It is used by static
-     * initializers in gleam.lang.System to populate the initial environments.
+     * This array contains definitions of primitives. It is used by static initializers in
+     * {@code gleam.lang.System} to populate the initial environments.
      */
     public static final Primitive[] primitives = {
 
@@ -160,19 +159,15 @@ public class JavaInterface
                           "E.g. (class-of (new 'java.lang.String \"test\")) => class java.lang.String" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply1(Entity arg1, Environment env, Continuation cont)
                 {
                     if (arg1 instanceof JavaObject) {
                         JavaObject javaObject = (JavaObject) arg1;
                         if (javaObject.getObjectValue() == null) {
-                            // the null
                             return javaObject;
                         }
                         else {
-                            return makeJavaObject(javaObject.getObjectValue()
-                                                            .getClass());
+                            return makeJavaObject(javaObject.getObjectValue().getClass());
                         }
                     }
                     return makeJavaObject(arg1.getClass());
@@ -244,9 +239,7 @@ public class JavaInterface
             return int.class;
         }
         else {
-            throw new GleamException(
-                    "cannot obtain the Java Class for a Gleam entity",
-                    arg);
+            throw new GleamException("cannot obtain the Java Class for a Gleam entity", arg);
         }
     }
 
@@ -254,9 +247,7 @@ public class JavaInterface
     {
         Object ret = entityObjectConverter.convert(arg);
         if (ret == arg) {
-            throw new GleamException(
-                    "cannot obtain the Java Object for a Gleam entity",
-                    arg);
+            throw new GleamException("cannot obtain the Java Object for a Gleam entity", arg);
         }
         return ret;
     }
@@ -276,8 +267,7 @@ public class JavaInterface
         }
         Class<?> clazz = object.getObjectValue().getClass();
         try {
-            Method method = clazz.getMethod(methodName.toString(),
-                                            parameterTypes);
+            Method method = clazz.getMethod(methodName.toString(), parameterTypes);
             Object retVal = method.invoke(object.getObjectValue(), arguments);
             if (method.getReturnType().isInstance(java.lang.Void.class)) {
                 return Void.VALUE;

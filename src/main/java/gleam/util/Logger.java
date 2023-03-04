@@ -54,8 +54,7 @@ public class Logger
     private static final int JUL_THRESHOLD_CONFIG = 700;
     private static final int JUL_THRESHOLD_FINE = 500;
     private static final
-    java.util.logging.Logger julLogger = java.util.logging.Logger
-            .getLogger("gleam");
+    java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("gleam");
     private static final Logger theLogger = new Logger();
 
     static {
@@ -70,12 +69,16 @@ public class Logger
     }
 
     /**
-     * Level<BR>
-     * <code>
-     * OFF, no output<BR> ERROR, a serious failure<BR> WARNING, a potential
-     * problem<BR> INFO, significant messages<BR> CONFIG, configuration
-     * messages<BR> DEBUG, tracing information<BR> ALL, all messages<BR>
-     * </code>
+     * The logging level
+     * <pre><code>
+     *  OFF     no output
+     *  ERROR   a serious failure
+     *  WARNING a potential problem
+     *  INFO    significant messages
+     *  CONFIG  configuration messages
+     *  DEBUG   tracing information
+     *  ALL     all messages
+     * </code></pre>
      */
     public enum Level
     {
@@ -118,8 +121,7 @@ public class Logger
     }
 
     /**
-     * Sets current level. Message with level lower than this level will be
-     * discarded.
+     * Sets current level. Message with level lower than this level will be discarded.
      *
      * @param level level value
      *
@@ -169,8 +171,7 @@ public class Logger
     }
 
     /**
-     * Sets current level. Message with level lower than this level will be
-     * discarded.
+     * Sets current level. Message with level lower than this level will be discarded.
      *
      * @param level numeric level value
      *
@@ -182,7 +183,15 @@ public class Logger
     }
 
     /**
-     * @return the current level
+     * @return the current level as an int value
+     */
+    public Level getLevel()
+    {
+        return Level.fromValue(getLevelValue());
+    }
+
+    /**
+     * @return the current level as an int value
      */
     public int getLevelValue()
     {
@@ -285,8 +294,6 @@ public class Logger
     {
         julLogger.log(level, String.valueOf(ex.getMessage()), ex);
     }
-
-    ////////////////////////////////////////////////////////////////////////////
 
     /**
      * Logs a message at DEBUG level.

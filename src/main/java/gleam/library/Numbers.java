@@ -48,8 +48,8 @@ public final class Numbers
 {
 
     /**
-     * This array contains definitions of primitives. It is used by static
-     * initializers in gleam.lang.System to populate the initial environments.
+     * This array contains definitions of primitives. It is used by static initializers in
+     * gleam.lang.System to populate the initial environments.
      */
     public static final Primitive[] primitives = {
 
