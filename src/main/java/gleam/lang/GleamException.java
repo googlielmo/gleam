@@ -43,7 +43,8 @@ public class GleamException extends Exception
         this(message, null, null);
     }
 
-    public GleamException(String message, Throwable cause) {
+    public GleamException(String message, Throwable cause)
+    {
         this(message, null, cause);
     }
 

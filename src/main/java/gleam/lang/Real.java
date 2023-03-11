@@ -90,8 +90,8 @@ public class Real extends Number implements Entity
     }
 
     /**
-     * Returns a hashcode for this Scheme object. The implementation is the same
-     * as per java.lang.Double.
+     * Returns a hashcode for this Scheme object. The implementation is the same as per
+     * java.lang.Double.
      *
      * @return int
      */

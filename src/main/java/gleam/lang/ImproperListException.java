@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -27,9 +27,8 @@
 package gleam.lang;
 
 /**
- * Exception thrown by a ListIterator when an improper list is found. Useful to
- * catch if an improper list is not an error condition, in that case #value()
- * will return the last (cdr) object.
+ * Exception thrown by a ListIterator when an improper list is found. Useful to catch if an improper
+ * list is not an error condition, in that case #value() will return the last (cdr) object.
  */
 public class ImproperListException extends GleamException
 {

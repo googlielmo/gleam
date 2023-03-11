@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -35,9 +35,9 @@ package gleam.lang;
 import java.io.PrintWriter;
 
 /**
- * A location object, which gives compiled (constant-time) read/write access to
- * a variable. Locations are used in compiled Scheme code to avoid interpreted
- * (non constant-time) lookup and set operations on variables.
+ * A location object, which gives compiled (constant-time) read/write access to a variable.
+ * Locations are used in compiled Scheme code to avoid interpreted (non constant-time) lookup and
+ * set operations on variables.
  */
 public final class Location extends AbstractEntity
 {

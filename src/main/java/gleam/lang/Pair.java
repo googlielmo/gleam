@@ -35,10 +35,13 @@ import static gleam.util.Logger.Level.INFO;
 import static gleam.util.Logger.Level.WARNING;
 
 /**
- * The Scheme pair, also known as <i>cons</i>. When used as data, the pair is
- * equivalent to a <i>tree</i> data structure. Most often, it is used as a
- * degenerate tree to implement a <i>list</i> data structure. If evaluated as
- * code, the list represents the procedure application.
+ * The Scheme pair, also known as <i>cons</i>.
+ * <p>
+ * When used as data, the pair is equivalent to a
+ * <i>tree</i> data structure. Most often, it is used as a degenerate tree to implement a
+ * <i>list</i> data structure.
+ * <p>
+ * If evaluated as code, the list represents the procedure application.
  */
 public class Pair extends AbstractEntity implements List
 {
@@ -73,18 +76,15 @@ public class Pair extends AbstractEntity implements List
             Entity e = env.lookup((Symbol) operator);
             if (e instanceof SyntaxRewriter) {
                 // call of syntax rewriter, will be followed by evaluation of resulting expression
-                rewriteAndEval((SyntaxRewriter) e,
-                               new ArgumentList(),
-                               env,
-                               cont);
+                rewriteAndEval((SyntaxRewriter) e, new ArgumentList(), env, cont);
+
                 return null;
             }
             else if (e instanceof SyntaxProcedure) {
                 // special procedure call
                 // don't evaluate arguments at all!
-                cont.begin(new ExpressionAction(operator, env))
-                    .andThen(new ProcedureCallAction(new ArgumentList((List) this.getCdr()),
-                                                     env));
+                cont.beginWith(new ExpressionAction(operator, env))
+                    .andThen(new ProcedureCallAction(new ArgumentList((List) this.getCdr()), env));
 
                 return null;
             }
@@ -93,10 +93,8 @@ public class Pair extends AbstractEntity implements List
             Entity e = ((Location) operator).get();
             if (e instanceof SyntaxRewriter) {
                 // call of syntax rewriter, will be followed by evaluation of resulting expression
-                rewriteAndEval((SyntaxRewriter) e,
-                               new ArgumentList(),
-                               env,
-                               cont);
+                rewriteAndEval((SyntaxRewriter) e, new ArgumentList(), env, cont);
+
                 return null;
             }
         }
@@ -110,14 +108,13 @@ public class Pair extends AbstractEntity implements List
         while (it.hasNext()) {
             Entity nextArg = it.next();
             action = action.andThen(new ExpressionAction(nextArg, env))
-                           .andThen(new ObtainArgumentAction(argList,
-                                                             argidx++,
-                                                             env));
+                           .andThen(new ObtainArgumentAction(argList, argidx++, env));
         }
         action = action.andThen(new ExpressionAction(operator, env))
                        .andThen(new ProcedureCallAction(argList, env));
 
         cont.endSequence();
+
         return null;
     }
 
@@ -277,11 +274,11 @@ public class Pair extends AbstractEntity implements List
                                 Continuation cont)
             throws GleamException
     {
-        cont.begin(new ExpressionAction(syntaxRewriter, env))
-            .andThen(new ProcedureCallAction(args, env))
-            .andThen(new EvalAction(env));
         // pass this pair, not evaluated
         args.set(0, this);
+        cont.beginWith(new ExpressionAction(syntaxRewriter, env))
+            .andThen(new ProcedureCallAction(args, env))
+            .andThen(new EvalAction(env));
     }
 
     /**
@@ -290,19 +287,23 @@ public class Pair extends AbstractEntity implements List
     @Override
     public PrintWriter write(PrintWriter out)
     {
-        if (getCar() == Symbol.QUOTE && !(getCdr() instanceof EmptyList) && getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
+        if (getCar() == Symbol.QUOTE && !(getCdr() instanceof EmptyList) &&
+            getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print("'");
             ((Pair) getCdr()).getCar().write(out);
         }
-        else if (getCar() == Symbol.QUASIQUOTE && !(getCdr() instanceof EmptyList) && getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
+        else if (getCar() == Symbol.QUASIQUOTE && !(getCdr() instanceof EmptyList) &&
+                 getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print("`");
             ((Pair) getCdr()).getCar().write(out);
         }
-        else if (getCar() == Symbol.UNQUOTE && !(getCdr() instanceof EmptyList) && getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
+        else if (getCar() == Symbol.UNQUOTE && !(getCdr() instanceof EmptyList) &&
+                 getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print(",");
             ((Pair) getCdr()).getCar().write(out);
         }
-        else if (getCar() == Symbol.UNQUOTE_SPLICING && !(getCdr() instanceof EmptyList) && getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
+        else if (getCar() == Symbol.UNQUOTE_SPLICING && !(getCdr() instanceof EmptyList) &&
+                 getCdr() instanceof Pair && ((Pair) getCdr()).getCdr() instanceof EmptyList) {
             out.print(",@");
             ((Pair) getCdr()).getCar().write(out);
         }

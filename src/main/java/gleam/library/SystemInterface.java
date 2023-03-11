@@ -103,10 +103,8 @@ public final class SystemInterface
         Entity obj;
         while ((obj = inputPort.read()) != Eof.VALUE) {
             // eval
-            cont.begin(
-                    new ExpressionAction(obj.analyze(env).optimize(env),
-                                         env,
-                                         null));
+            cont.beginWith(
+                    new ExpressionAction(obj.analyze(env).optimize(env), env));
         }
     }
 }

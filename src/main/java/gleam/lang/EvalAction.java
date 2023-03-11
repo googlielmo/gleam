@@ -43,13 +43,7 @@ public class EvalAction extends Action
     /** Creates a new instance of this action. */
     public EvalAction(Environment env)
     {
-        this(env, null);
-    }
-
-    /** Creates a new instance of this action. */
-    public EvalAction(Environment env, Action next)
-    {
-        super(env, next);
+        super(env);
     }
 
     /**
@@ -59,14 +53,12 @@ public class EvalAction extends Action
      * @param cont the current Continuation
      *
      * @return the result of the evaluation
-     *
-     * @throws gleam.lang.GleamException in case of errors
      */
     @Override
-    Entity invoke(Entity arg, Continuation cont) throws GleamException
+    Entity invoke(Entity arg, Continuation cont)
     {
-        cont.head = next;
         trace(out -> out.printf("%s\n", arg.toWriteFormat()), env);
-        return arg.eval(env, cont);
+        cont.beginWith(new ExpressionAction(arg, env));
+        return null;
     }
 }

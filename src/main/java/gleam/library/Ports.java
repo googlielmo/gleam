@@ -130,7 +130,8 @@ public final class Ports
                                      Environment env,
                                      Continuation cont)
                 {
-                    return Boolean.makeBoolean(obj instanceof Port && ((Port) obj).getKind() == Port.Kind.TEXTUAL);
+                    return Boolean.makeBoolean(
+                            obj instanceof Port && ((Port) obj).getKind() == Port.Kind.TEXTUAL);
                 }
             },
 
@@ -151,7 +152,8 @@ public final class Ports
                                      Environment env,
                                      Continuation cont)
                 {
-                    return Boolean.makeBoolean(obj instanceof Port && ((Port) obj).getKind() == Port.Kind.BINARY);
+                    return Boolean.makeBoolean(
+                            obj instanceof Port && ((Port) obj).getKind() == Port.Kind.BINARY);
                 }
             },
 

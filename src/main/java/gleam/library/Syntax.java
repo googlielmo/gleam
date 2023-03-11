@@ -91,7 +91,9 @@ public final class Syntax
                           2,
                           Primitive.VAR_ARGS, /* min, max no. of arguments */
                           "Variable or procedure definition, e.g. (define (inc x) (+ x 1))",
-                          "Can be used at top-level to create a new global variable, " + "e.g. (define x 1); or at the beginning of a procedure body " + "to create a new local variable." /* doc strings */)
+                          "Can be used at top-level to create a new global variable, " +
+                          "e.g. (define x 1); or at the beginning of a procedure body " +
+                          "to create a new local variable." /* doc strings */)
             {
                 @Override
                 public Entity applyN(List args,
@@ -116,7 +118,7 @@ public final class Syntax
                             // create binding
                             env.define(s, Undefined.VALUE);
                             // equivalent to set!
-                            cont.begin(new ExpressionAction(value, env))
+                            cont.beginWith(new ExpressionAction(value, env))
                                 .andThen(new AssignmentAction(s, env));
 
                             return null;
@@ -130,7 +132,7 @@ public final class Syntax
                                 // create binding
                                 env.define(s, Undefined.VALUE);
                                 // equivalent to set!
-                                cont.begin(new AssignmentAction(s, env));
+                                cont.beginWith(new AssignmentAction(s, env));
 
                                 return new Closure(params, body, env);
                             }
@@ -207,7 +209,7 @@ public final class Syntax
                         alternate = Void.VALUE;
                     }
 
-                    cont.begin(new ExpressionAction(test, env))
+                    cont.beginWith(new ExpressionAction(test, env))
                         .andThen(new IfAction(consequent, alternate, env));
 
                     return null;
@@ -234,15 +236,13 @@ public final class Syntax
                 {
                     try {
                         Symbol s = (Symbol) arg1;
-                        cont.begin(new ExpressionAction(obj, env, null))
-                            .andThen(new AssignmentAction(s, env, null));
+                        cont.beginWith(new ExpressionAction(obj, env))
+                            .andThen(new AssignmentAction(s, env));
 
                         return null;
                     }
                     catch (ClassCastException e) {
-                        throw new GleamException(this,
-                                                 "argument is not a symbol",
-                                                 arg1);
+                        throw new GleamException(this, "argument is not a symbol", arg1);
                     }
                 }
             },
@@ -316,7 +316,15 @@ public final class Syntax
                           1,
                           1, /* min, max no. of arguments */
                           "Gives its argument almost unevaluated, e.g. (quasiquote x); `x",
-                          "If a comma appears within the argument, the expression following the " + "comma is evaluated (\"unquoted\") and its result is inserted into " + "the structure instead of the comma and the expression. If a comma " + "appears followed immediately by an at-sign (@), then the following " + "expression must evaluate to a list; the opening and closing " + "parentheses of the list are then \"stripped away\" and the elements " + "of the list are inserted in place of the comma at-sign expression " + "sequence. (unquote x) is equivalent to ,x and (unquote-splicing x) " + "is equivalent to ,@x." /* doc strings */)
+                          "If a comma appears within the argument, the expression following the " +
+                          "comma is evaluated (\"unquoted\") and its result is inserted into " +
+                          "the structure instead of the comma and the expression. If a comma " +
+                          "appears followed immediately by an at-sign (@), then the following " +
+                          "expression must evaluate to a list; the opening and closing " +
+                          "parentheses of the list are then \"stripped away\" and the elements " +
+                          "of the list are inserted in place of the comma at-sign expression " +
+                          "sequence. (unquote x) is equivalent to ,x and (unquote-splicing x) " +
+                          "is equivalent to ,@x." /* doc strings */)
             {},
 
             /*

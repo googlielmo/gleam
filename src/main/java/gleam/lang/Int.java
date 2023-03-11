@@ -85,8 +85,8 @@ public class Int extends Number implements Entity
     }
 
     /**
-     * Returns a hashcode for this Scheme object. The implementation is the same
-     * as per java.lang.Integer.
+     * Returns a hashcode for this Scheme object. The implementation is the same as per
+     * java.lang.Integer.
      *
      * @return int
      */

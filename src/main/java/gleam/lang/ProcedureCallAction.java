@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -36,24 +36,14 @@ public class ProcedureCallAction extends Action
     /** Creates a new instance of this action */
     public ProcedureCallAction(ArgumentList arglist, Environment env)
     {
-        this(arglist, env, null);
-    }
-
-    /** Creates a new instance of this action */
-    public ProcedureCallAction(ArgumentList arglist,
-                               Environment env,
-                               Action next)
-    {
-        super(env, next);
+        super(env);
         this.arglist = arglist;
     }
 
     // arg is the function, arglist contains the arguments
     @Override
-    Entity invoke(Entity arg,
-                  Continuation cont) throws gleam.lang.GleamException
+    Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException
     {
-        cont.head = next;
         // apply function to args, return result
         Procedure operator;
         try {

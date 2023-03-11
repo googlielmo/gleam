@@ -36,20 +36,9 @@ public class ObtainArgumentAction extends Action
     private final int argumentIndex;
 
     /** Creates a new instance of this action */
-    public ObtainArgumentAction(ArgumentList arglist,
-                                int argumentIndex,
-                                Environment env)
+    public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Environment env)
     {
-        this(arglist, argumentIndex, env, null);
-    }
-
-    /** Creates a new instance of this action */
-    public ObtainArgumentAction(ArgumentList arglist,
-                                int argumentIndex,
-                                Environment env,
-                                Action next)
-    {
-        super(env, next);
+        super(env);
         this.arglist = arglist;
         this.argumentIndex = argumentIndex;
     }
@@ -58,12 +47,9 @@ public class ObtainArgumentAction extends Action
     Entity invoke(Entity arg, Continuation cont)
             throws GleamException
     {
-        cont.head = next;
         // arg is already evaluated
         arglist.set(argumentIndex, arg);
-        trace(out -> out.printf("[%s] <- %s\n",
-                                argumentIndex,
-                                arg.toWriteFormat()), env);
+        trace(out -> out.printf("[%s] <- %s\n", argumentIndex, arg.toWriteFormat()), env);
         return arg;
     }
 }

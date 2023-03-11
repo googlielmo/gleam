@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -81,11 +81,7 @@ public class PrimitiveProcedure extends Procedure
             case 2:
                 return value.apply2(argArray[0], argArray[1], env, cont);
             default: // 3
-                return value.apply3(argArray[0],
-                                    argArray[1],
-                                    argArray[2],
-                                    env,
-                                    cont);
+                return value.apply3(argArray[0], argArray[1], argArray[2], env, cont);
         }
     }
 

@@ -380,7 +380,7 @@ public class Interpreter
     public Entity eval(Entity expr, Environment env) throws GleamException
     {
         expr = expr.analyze(env).optimize(env);
-        cont.begin(new ExpressionAction(expr, env, null));
+        cont.beginWith(new ExpressionAction(expr, env));
         execute();
         ExecutionContext context = env.getExecutionContext();
         if (context.isNoisy()) {
@@ -453,6 +453,7 @@ public class Interpreter
         Action currentAction = cont.head;
         Entity tmp;
         while (currentAction != null) {
+            cont.head = currentAction.next;
             tmp = currentAction.invoke(accum, cont);
             if (tmp != null) {
                 accum = tmp;

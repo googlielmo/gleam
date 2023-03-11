@@ -42,8 +42,7 @@ public final class System
     private System() {}
 
     /**
-     * Checks if a symbol stands for the name of a special form in a given
-     * environment.
+     * Checks if a symbol stands for the name of a special form in a given environment.
      *
      * @param symbol the Symbol to check
      * @param env    the Environment
@@ -66,8 +65,7 @@ public final class System
     }
 
     /**
-     * Performs syntactic analysis of special forms. Creation date: (02/11/2001
-     * 12.34.35)
+     * Performs syntactic analysis of special forms. Creation date: (02/11/2001 12.34.35)
      */
     public static void analyzeSpecialForm(List form,
                                           Environment env) throws GleamException
@@ -270,8 +268,7 @@ public final class System
     }
 
     /**
-     * Determines if a given object is a variable. An object is a variable iff
-     * it is a symbol.
+     * Determines if a given object is a variable. An object is a variable iff it is a symbol.
      */
     static boolean isVariable(Entity s)
     {
@@ -296,8 +293,8 @@ public final class System
     }
 
     /**
-     * Deep clones an entity. Pairs are cloned as new Pairs, every other value
-     * is unchanged in the clone.
+     * Deep clones an entity. Pairs are cloned as new Pairs, every other value is unchanged in the
+     * clone.
      *
      * @param entity an Entity
      *

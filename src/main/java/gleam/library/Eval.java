@@ -80,13 +80,11 @@ public final class Eval
                             eval_env = (Environment) arg2;
                         }
                         catch (ClassCastException e) {
-                            throw new GleamException(this,
-                                                     "not an environment",
-                                                     arg2);
+                            throw new GleamException(this, "not an environment", arg2);
                         }
                     }
                     arg1 = arg1.analyze(env).optimize(eval_env);
-                    cont.begin(new ExpressionAction(arg1, eval_env, null));
+                    cont.beginWith(new ExpressionAction(arg1, eval_env));
                     return null;
                 }
             },
@@ -101,7 +99,8 @@ public final class Eval
                           1,
                           1, /* min, max no. of arguments */
                           "Returns the null environment",
-                          "A scheme-report version number must be specified, e.g. (null-environment 5). " + "Currently supported versions are 4 and 5" /* doc strings */)
+                          "A scheme-report version number must be specified, e.g. (null-environment 5). " +
+                          "Currently supported versions are 4 and 5" /* doc strings */)
             {
                 @Override
                 public Entity apply1(Entity arg1,
@@ -115,15 +114,11 @@ public final class Eval
                             return Interpreter.getNullEnv();
                         }
                         else {
-                            throw new GleamException(this,
-                                                     "version not supported",
-                                                     version);
+                            throw new GleamException(this, "version not supported", version);
                         }
                     }
                     catch (ClassCastException e) {
-                        throw new GleamException(this,
-                                                 "not a version number",
-                                                 arg1);
+                        throw new GleamException(this, "not a version number", arg1);
                     }
                 }
             },
@@ -138,7 +133,8 @@ public final class Eval
                           1,
                           1, /* min, max no. of arguments */
                           "Returns the scheme-report environment",
-                          "A scheme-report version number must be specified, e.g. (scheme-report-environment 5). " + "Currently supported versions are 4 and 5" /* doc strings */)
+                          "A scheme-report version number must be specified, e.g. (scheme-report-environment 5). " +
+                          "Currently supported versions are 4 and 5" /* doc strings */)
             {
                 @Override
                 public Entity apply1(Entity arg1,
@@ -221,10 +217,10 @@ public final class Eval
                                      Environment env,
                                      Continuation cont)
                 {
-                    cont.begin(new ExpressionAction(argEnv,
-                                                    env))         // 1) evaluate environment expr
-                        .andThen(new ExpressionInEnvironmentAction(argExpr,
-                                                                   env)); // 2) evaluate expr in that env
+                    // 1) evaluate environment expr
+                    // 2) evaluate expr in that env
+                    cont.beginWith(new ExpressionAction(argEnv, env))
+                        .andThen(new ExpressionInEnvironmentAction(argExpr, env));
 
                     return null;
                 }

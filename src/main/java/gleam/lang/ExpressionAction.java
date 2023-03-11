@@ -44,15 +44,9 @@ public class ExpressionAction extends Action
     private final Entity expr;
 
     /** Creates a new instance of this action */
-    public ExpressionAction(Entity value, Environment env)
+    public ExpressionAction(Entity expr, Environment env)
     {
-        this(value, env, null);
-    }
-
-    /** Creates a new instance of this action */
-    public ExpressionAction(Entity expr, Environment env, Action next)
-    {
-        super(env, next);
+        super(env);
         this.expr = expr;
     }
 
@@ -70,7 +64,6 @@ public class ExpressionAction extends Action
     Entity invoke(Entity arg,
                   Continuation cont) throws gleam.lang.GleamException
     {
-        cont.head = next;
         // note: ignore arg
         trace(out -> out.printf("%s\n", expr.toWriteFormat()), env);
         return expr.eval(env, cont);

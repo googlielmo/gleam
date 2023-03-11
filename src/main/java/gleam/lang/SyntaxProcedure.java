@@ -35,10 +35,9 @@ package gleam.lang;
 import java.io.PrintWriter;
 
 /**
- * A special form, or a specialized version of primitive procedure, with
- * different rules for parameter evaluation. It is assumed that procedures of
- * this class may take their arguments without following the standard evaluation
- * rules.
+ * A special form, or a specialized version of primitive procedure, with different rules for
+ * parameter evaluation. It is assumed that procedures of this class may take their arguments
+ * without following the standard evaluation rules.
  */
 public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject
 {

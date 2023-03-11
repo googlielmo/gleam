@@ -82,7 +82,8 @@ public final class ControlFeatures
                           1,
                           1, /* min, max no. of arguments */
                           "Calls a procedure with an escape procedure arg.",
-                          "Also known as call/cc, this operator is both unusual and powerful.\n" + "A simple usage pattern of call/cc is to implement exception handling." /* doc strings */)
+                          "Also known as call/cc, this operator is both unusual and powerful.\n" +
+                          "A simple usage pattern of call/cc is to implement exception handling." /* doc strings */)
             {
                 @Override
                 public Entity apply1(Entity arg1,
@@ -94,7 +95,7 @@ public final class ControlFeatures
                         ArgumentList arglist = new ArgumentList();
                         /* use a copy of cont, as it's going to change */
                         arglist.set(0, new Continuation(cont));
-                        cont.begin(new ProcedureCallAction(arglist, env));
+                        cont.beginWith(new ProcedureCallAction(arglist, env));
                         return arg1;
                     }
                     else {
@@ -130,8 +131,8 @@ public final class ControlFeatures
 
                     if (args instanceof List) {
                         /* create a new procedure call with the given arguments. */
-                        cont.begin(new ProcedureCallAction(new ArgumentList((List) args),
-                                                           env));
+                        cont.beginWith(new ProcedureCallAction(new ArgumentList((List) args),
+                                                               env));
                         return proc;
                     }
 

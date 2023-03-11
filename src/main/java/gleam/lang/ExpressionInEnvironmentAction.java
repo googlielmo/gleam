@@ -46,21 +46,13 @@ public class ExpressionInEnvironmentAction extends Action
     /** Creates a new instance of this action */
     public ExpressionInEnvironmentAction(Entity expr, Environment env)
     {
-        this(expr, env, null);
-    }
-
-    /** Creates a new instance of this action */
-    public ExpressionInEnvironmentAction(Entity expr,
-                                         Environment env,
-                                         Action next)
-    {
-        super(env, next);
+        super(env);
         this.expr = expr;
     }
 
     /**
-     * Invokes this action, causing the evaluation of the expression in the
-     * environment passed as argument.
+     * Invokes this action, causing the evaluation of the expression in the environment passed as
+     * argument.
      *
      * @param newEnv the environment in which to evaluate the expression
      * @param cont   the current Continuation
@@ -73,13 +65,14 @@ public class ExpressionInEnvironmentAction extends Action
     Entity invoke(Entity newEnv,
                   Continuation cont) throws gleam.lang.GleamException
     {
-        cont.head = next;
         if (!(newEnv instanceof Environment)) {
             throw new GleamException("not an environment", newEnv);
         }
         Environment evalEnv = (Environment) newEnv;
         expr = expr.analyze(evalEnv).optimize(evalEnv);
         trace(out -> out.printf("%s\n", expr.toWriteFormat()), env);
-        return expr.eval(evalEnv, cont);
+
+        cont.beginWith(new ExpressionAction(expr, evalEnv));
+        return null;
     }
 }

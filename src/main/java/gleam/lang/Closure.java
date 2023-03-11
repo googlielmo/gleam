@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -67,12 +67,11 @@ public class Closure extends Procedure
         List prev = null;
         boolean dotparam = false;
 
-        /* bind actual arguments to formals (long)
-         */
+        /* bind actual (already evaluated) arguments to formals */
         try {
             // for each passed arg
             while (args != EmptyList.VALUE) {
-                // get next already-evaluated arg
+                // get next arg
                 Entity obj = args.getCar();
 
                 if (!dotparam) {

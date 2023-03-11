@@ -46,19 +46,13 @@ public class AssignmentAction extends Action
     /** Creates a new AssignmentAction. */
     public AssignmentAction(Symbol symbol, Environment env)
     {
-        this(symbol, env, null);
-    }
-
-    /** Creates a new AssignmentAction. */
-    public AssignmentAction(Symbol symbol, Environment env, Action next)
-    {
-        super(env, next);
+        super(env);
         this.symbol = symbol;
     }
 
     /**
-     * Invokes this action, causing an assignment of the argument to the symbol
-     * in the provided environment (with the mutation semantics of
+     * Invokes this action, causing an assignment of the argument to the symbol in the provided
+     * environment (with the mutation semantics of
      * <code>set!</code>)
      *
      * @param arg  the value to assign to the symbol in this action
@@ -71,7 +65,6 @@ public class AssignmentAction extends Action
     @Override
     Entity invoke(Entity arg, Continuation cont) throws GleamException
     {
-        cont.head = next;
         env.getLocation(symbol).set(arg);
         trace(out -> out.printf("%s <- %s\n",
                                 symbol.toWriteFormat(),

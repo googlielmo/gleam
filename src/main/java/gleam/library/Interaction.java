@@ -167,7 +167,8 @@ public final class Interaction
                     double v = ((Number) arg1).doubleValue();
                     if (v < Level.ALL.getValue() || v > Level.ERROR.getValue()) {
                         throw new GleamException(this,
-                                                 "invalid argument (should be between " + Level.ALL + " and " + Level.ERROR + ")",
+                                                 "invalid argument (should be between " +
+                                                 Level.ALL + " and " + Level.ERROR + ")",
                                                  arg1);
                     }
                     Logger.getLogger().setLevel(Level.OFF.getValue() - (int) v);

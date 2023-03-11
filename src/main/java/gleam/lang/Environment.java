@@ -50,8 +50,8 @@ public class Environment extends AbstractEntity
     protected Environment parent;
 
     /**
-     * The ExecutionContext. If <code>null</code>, this environment is assumed
-     * to have the same context of its parent.
+     * The ExecutionContext. If <code>null</code>, this environment is assumed to have the same
+     * context of its parent.
      */
     transient private ExecutionContext executionContext;
 
@@ -74,21 +74,6 @@ public class Environment extends AbstractEntity
     public Environment(ExecutionContext ctx)
     {
         this(null, ctx);
-    }
-
-    public Interpreter getInterpreter()
-    {
-        Environment env = this;
-        ExecutionContext ctx = null;
-        while (ctx == null && env != null) {
-            ctx = env.executionContext;
-            env = env.parent;
-        }
-        if (ctx == null) {
-            // should never happen
-            throw new IllegalStateException("internal error: missing ExecutionContext");
-        }
-        return ctx.getInterpreter();
     }
 
     public ExecutionContext getExecutionContext()
@@ -129,8 +114,8 @@ public class Environment extends AbstractEntity
     }
 
     /**
-     * Looks up a Symbol in the environment by searching this environment and
-     * all enclosing environments, up to the topmost (global) environment.
+     * Looks up a Symbol in the environment by searching this environment and all enclosing
+     * environments, up to the topmost (global) environment.
      *
      * @param s Symbol
      *

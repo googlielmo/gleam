@@ -38,8 +38,7 @@ public interface Entity extends java.io.Serializable
 {
 
     /**
-     * Evaluates this entity in the given environment, with the given
-     * continuation.
+     * Evaluates this entity in the given environment, with the given continuation.
      *
      * @param env  Environment
      * @param cont Continuation

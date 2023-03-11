@@ -46,42 +46,29 @@ public class IfAction extends Action
     /** Creates a new IfAction */
     public IfAction(Entity consequent, Entity alternate, Environment env)
     {
-        this(consequent, alternate, env, null);
-    }
-
-    /** Creates a new IfAction */
-    public IfAction(Entity consequent,
-                    Entity alternate,
-                    Environment env,
-                    Action next)
-    {
-        super(env, next);
+        super(env);
         this.consequent = consequent;
         this.alternate = alternate;
     }
 
     /**
-     * Evaluates the consequent or the alternate, deciding upon the truth value
-     * of the argument. If it is any value except a boolean false, then the
-     * consequent is evaluated, otherwise the alternate is.
+     * Evaluates the consequent or the alternate, deciding upon the truth value of the argument. If
+     * it is any value except a boolean false, then the consequent is evaluated, otherwise the
+     * alternate is.
      *
      * @param arg  the value upon which the decision is taken
      * @param cont the current Continuation
      *
      * @return the result of the evaluation
-     *
-     * @throws gleam.lang.GleamException in case of errors
      */
     @Override
-    Entity invoke(Entity arg,
-                  Continuation cont) throws gleam.lang.GleamException
+    Entity invoke(Entity arg, Continuation cont)
     {
-        cont.head = next;
-        if (arg != Boolean.falseValue) {
-            return consequent.eval(env, cont);
-        }
-        else {
-            return alternate.eval(env, cont);
-        }
+        cont.beginWith(
+                new ExpressionAction(
+                        arg != Boolean.falseValue ? consequent : alternate,
+                        env));
+
+        return null;
     }
 }
