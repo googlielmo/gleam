@@ -52,8 +52,7 @@ public class AssignmentAction extends Action
 
     /**
      * Invokes this action, causing an assignment of the argument to the symbol in the provided
-     * environment (with the mutation semantics of
-     * <code>set!</code>)
+     * environment (with the mutation semantics of <code>set!</code>)
      *
      * @param arg  the value to assign to the symbol in this action
      * @param cont the current Continuation

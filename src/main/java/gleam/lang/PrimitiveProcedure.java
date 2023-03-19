@@ -49,29 +49,40 @@ public class PrimitiveProcedure extends Procedure
         this.value = primitive;
     }
 
+    /**
+     * Applies this primitive procedure to a list of arguments.
+     * <p>
+     * It is an error to invoke a primitive procedure with too few or too many arguments.
+     *
+     * @param args  the list of arguments
+     * @param env  the environment in which to execute the primitive
+     * @param cont the continuation
+     *
+     * @throws GleamException in case of errors
+     */
     @Override
-    public Entity apply(List arg,
+    public Entity apply(List args,
                         Environment env,
                         Continuation cont) throws GleamException
     {
         if (value.maxArgs < 0 || value.maxArgs > 3) {
             if (value.minArgs >= 0 || value.maxArgs >= 0) {
-                checkNumArgs(arg);
+                checkNumArgs(args);
             }
-            return value.applyN(arg, env, cont);
+            return value.applyN(args, env, cont);
         }
         // ok, 0 <= maxArgs <= 3 : special rules
         Entity[] argArray = new Entity[]{null, null, null};
         int countedArgs = 0;
-        ListIterator it = new ListIterator(arg);
+        ListIterator it = new ListIterator(args);
         while (it.hasNext()) {
             argArray[countedArgs++] = it.next();
             if (countedArgs > value.maxArgs) {
-                throw new GleamException(value, "too many arguments", arg);
+                throw new GleamException(value, "too many arguments", args);
             }
         }
         if (countedArgs < value.minArgs) {
-            throw new GleamException(value, "too few arguments", arg);
+            throw new GleamException(value, "too few arguments", args);
         }
         switch (value.maxArgs) {
             case 0:

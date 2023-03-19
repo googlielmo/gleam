@@ -26,6 +26,9 @@
 
 package gleam.lang;
 
+/**
+ * The car/cdr interface. A Gleam list can be either the empty list or a proper pair.
+ */
 public interface List extends Entity, Iterable<Entity>
 {
     Entity getCar() throws GleamException;

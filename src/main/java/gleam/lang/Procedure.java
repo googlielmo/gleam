@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -31,6 +31,15 @@ package gleam.lang;
  */
 public abstract class Procedure extends AbstractEntity
 {
+    /**
+     * Applies this procedure to a list of arguments.
+     *
+     * @param args the list of arguments
+     * @param env  the environment in which to execute the procedure
+     * @param cont the continuation
+     *
+     * @throws GleamException in case of errors
+     */
     public abstract Entity apply(List args,
                                  Environment env,
                                  Continuation cont) throws GleamException;

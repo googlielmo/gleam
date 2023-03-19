@@ -27,19 +27,16 @@
 package gleam.lang;
 
 /**
- * Exception thrown by a ListIterator when an improper list is found. Useful to catch if an improper
- * list is not an error condition, in that case #value() will return the last (cdr) object.
+ * Exception thrown by a ListIterator when an improper list is found.
+ * <p>
+ * Useful to catch if an improper list is not an error condition, in that case #value() will return
+ * the last (cdr) object.
  */
 public class ImproperListException extends GleamException
 {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * ImproperListException constructor.
-     *
-     * @param value an Entity
-     */
     public ImproperListException(Entity value)
     {
         super("improper list argument not allowed", value);

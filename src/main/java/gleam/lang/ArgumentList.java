@@ -71,7 +71,7 @@ public class ArgumentList implements java.io.Serializable
     }
 
     /**
-     * Ensure argument list has at least <code>size</code> elements. Grow the list with Undefined
+     * Ensure argument list has at least {@code size} elements. Grow the list with {@code Undefined}
      * values if necessary.
      *
      * @param listArgs the argument list

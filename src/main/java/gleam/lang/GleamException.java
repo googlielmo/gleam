@@ -29,7 +29,7 @@ package gleam.lang;
 import gleam.library.Primitive;
 
 /**
- * The base class for Gleam error objects.
+ * The base class for Gleam errors.
  */
 public class GleamException extends Exception
 {

@@ -30,6 +30,8 @@ import gleam.util.Logger;
 
 import java.io.PrintWriter;
 
+import static gleam.lang.Entities.cons;
+
 /**
  * Syntax rewriter. Holds a rewriting function of one argument.
  * <p>
@@ -57,7 +59,7 @@ public final class SyntaxRewriter extends Closure implements SyntaxObject
         out.write("#<syntax-rewriter");
         if (logger.getLevelValue() < Logger.Level.INFO.getValue()) {
             out.write(" ");
-            new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
+            cons(Symbol.LAMBDA, cons(param, body)).write(out);
         }
         out.write(">");
         return out;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -116,10 +116,8 @@ public class GleamScriptEngine implements ScriptEngine, Invocable
         ExecutionContext executionContext =
                 new ExecutionContext(this.interpreter,
                                      new InputPort(context.getReader()),
-                                     new OutputPort(context.getWriter(),
-                                                    false),
-                                     new OutputPort(context.getErrorWriter(),
-                                                    false));
+                                     new OutputPort(context.getWriter(), false),
+                                     new OutputPort(context.getErrorWriter(), false));
         return new GleamScriptContext(executionContext,
                                       context.getBindings(ENGINE_SCOPE));
     }
@@ -229,8 +227,7 @@ public class GleamScriptEngine implements ScriptEngine, Invocable
             GleamScriptContext gleamScriptContext = (GleamScriptContext) context;
             this.context = gleamScriptContext;
             ExecutionContext executionContext = gleamScriptContext.getExecutionContext();
-            this.interpreter.getSessionEnv()
-                            .setExecutionContext(executionContext);
+            this.interpreter.getSessionEnv().setExecutionContext(executionContext);
         }
         else {
             throw new IllegalArgumentException(String.format("context type not supported: %s",

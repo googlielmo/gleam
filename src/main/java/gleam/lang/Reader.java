@@ -30,6 +30,7 @@ import gleam.util.Logger;
 
 import java.io.StreamTokenizer;
 
+import static gleam.lang.Entities.cons;
 import static gleam.util.Logger.Level.DEBUG;
 
 /**
@@ -43,9 +44,9 @@ class Reader
     protected final StreamTokenizer tkzr;
 
     /**
-     * Creates a new reader from an input stream.
+     * Creates a new reader from a character input stream.
      *
-     * @param r java.io.Reader
+     * @param r java.io.Reader a character input stream
      */
     @SuppressWarnings("all") // for Unicode escape sequences
     public Reader(java.io.Reader r)
@@ -74,7 +75,8 @@ class Reader
     }
 
     /**
-     * Converts external into internal representation.
+     * Reads an entity from the stream. Converts the external representation of an entity into its
+     * internal representation.
      */
     public Entity read() throws GleamException
     {
@@ -91,7 +93,7 @@ class Reader
         }
     }
 
-    void logReadOthers(String token, String type)
+    private void logReadOthers(String token, String type)
     {
         logger.log(DEBUG,
                    () -> String.format("readOthers: interpreting '%s' as a %s",
@@ -144,7 +146,7 @@ class Reader
                     ins.setCar(readObject());
                 }
                 else {
-                    Pair nextcons = new Pair(readObject(), EmptyList.VALUE);
+                    Pair nextcons = cons(readObject());
                     ins.setCdr(nextcons);
                     ins = nextcons;
                 }
@@ -172,17 +174,15 @@ class Reader
         }
         switch (t) {
             case "(":
-                Pair l = new Pair(EmptyList.VALUE, EmptyList.VALUE);
+                Pair l = cons(EmptyList.VALUE, EmptyList.VALUE);
                 return readList(l);
             case "'": { // quote
                 Entity quotedobj = readObject();
-                return new Pair(Symbol.QUOTE,
-                                new Pair(quotedobj, EmptyList.VALUE));
+                return cons(Symbol.QUOTE, cons(quotedobj));
             }
             case "`": { // semiquote
                 Entity quotedobj = readObject();
-                return new Pair(Symbol.QUASIQUOTE,
-                                new Pair(quotedobj, EmptyList.VALUE));
+                return cons(Symbol.QUASIQUOTE, cons(quotedobj));
             }
             case ")":  // extra parens
                 throw new GleamException("read: unexpected \")\"");
@@ -209,13 +209,11 @@ class Reader
         }
         else if (t.startsWith(",@")) {
             Entity unquotedobj = readObject(t.substring(2));
-            return new Pair(Symbol.UNQUOTE_SPLICING,
-                            new Pair(unquotedobj, EmptyList.VALUE));
+            return cons(Symbol.UNQUOTE_SPLICING, cons(unquotedobj));
         }
         else if (t.startsWith(",")) {
             Entity unquotedobj = readObject(t.substring(1));
-            return new Pair(Symbol.UNQUOTE,
-                            new Pair(unquotedobj, EmptyList.VALUE));
+            return cons(Symbol.UNQUOTE, cons(unquotedobj));
         }
         else if (t.startsWith("\"")) {
             // it is a string

@@ -33,8 +33,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Scheme symbol factory.
+ * A Scheme symbol. A symbol is <i>interned</i> by default, i.e. all occurrences of the same symbol
+ * in the program text is guaranteed to refer to the same object in memory.
  */
+@SuppressWarnings("unused")
 public final class Symbol extends AbstractEntity
 {
 
@@ -82,6 +84,25 @@ public final class Symbol extends AbstractEntity
      */
     final boolean interned;
 
+    private Symbol(String value)
+    {
+        this(value, true);
+    }
+
+    private Symbol(String value, boolean interned)
+    {
+        this.value = value;
+        this.interned = interned;
+    }
+
+    /**
+     * Factory method to create and intern a symbol.
+     */
+    public static synchronized Symbol makeSymbol(String s)
+    {
+        return symtable.computeIfAbsent(s, Symbol::new);
+    }
+
     /**
      * Factory method to create an uninterned symbol.
      */
@@ -121,15 +142,6 @@ public final class Symbol extends AbstractEntity
     }
 
     /**
-     * Obtains the string representation of this symbol
-     */
-    @Override
-    public String toString()
-    {
-        return value;
-    }
-
-    /**
      * Writes this symbol
      */
     @Override
@@ -137,6 +149,15 @@ public final class Symbol extends AbstractEntity
     {
         out.write(value);
         return out;
+    }
+
+    /**
+     * Obtains the string representation of this symbol.
+     */
+    @Override
+    public String toString()
+    {
+        return value;
     }
 
     /**
@@ -152,24 +173,5 @@ public final class Symbol extends AbstractEntity
         else {
             return this;
         }
-    }
-
-    /**
-     * Factory method to create and intern a symbol.
-     */
-    public static synchronized Symbol makeSymbol(String s)
-    {
-        return symtable.computeIfAbsent(s, Symbol::new);
-    }
-
-    private Symbol(String value)
-    {
-        this(value, true);
-    }
-
-    private Symbol(String value, boolean interned)
-    {
-        this.value = value;
-        this.interned = interned;
     }
 }

@@ -30,7 +30,6 @@ package gleam.lang;
  * The execution context. It holds I/O ports and other context.
  * <p>
  * A default context is accessible in all environments, but can be overridden.
- * <p>
  *
  * @see SystemEnvironment#SystemEnvironment()
  */

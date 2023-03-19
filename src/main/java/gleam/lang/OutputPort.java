@@ -69,7 +69,7 @@ public class OutputPort extends Port implements Closeable
     }
 
     /**
-     * creates an output port to a file
+     * creates an output port to a file.
      */
     public OutputPort(String fileName) throws java.io.IOException
     {
@@ -91,7 +91,7 @@ public class OutputPort extends Port implements Closeable
     }
 
     /**
-     * closes this port
+     * closes this port.
      */
     @Override
     public void close()
@@ -103,7 +103,7 @@ public class OutputPort extends Port implements Closeable
     }
 
     /**
-     * tests whether port is open
+     * tests whether port is open.
      */
     @Override
     public boolean isOpen()
@@ -112,7 +112,7 @@ public class OutputPort extends Port implements Closeable
     }
 
     /**
-     * which kind of port
+     * which kind of port.
      */
     @Override
     public Kind getKind()
@@ -121,7 +121,7 @@ public class OutputPort extends Port implements Closeable
     }
 
     /**
-     * @return whether this is the system Console
+     * @return whether this is the system Console.
      */
     public boolean isConsole()
     {

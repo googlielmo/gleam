@@ -30,10 +30,11 @@ import gleam.util.Logger;
 
 import java.io.PrintWriter;
 
+import static gleam.lang.Entities.cons;
 import static gleam.util.Logger.Level.WARNING;
 
 /**
- * Scheme closure, a procedure with a definition environment.
+ * Scheme closure. A procedure with a definition environment.
  */
 public class Closure extends Procedure
 {
@@ -80,9 +81,7 @@ public class Closure extends Procedure
                                                  this);
                     }
                     else if (currparam instanceof Pair) {
-                        // regular case: get param symbol
-                        // and bind it to argument in
-                        // local env
+                        // regular case: get param symbol and bind it to argument in local env
                         Entity p = ((Pair) currparam).getCar();
                         if (p instanceof Symbol) {
                             localenv.define((Symbol) p, obj);
@@ -90,28 +89,24 @@ public class Closure extends Procedure
                         else {
                             logger.log(WARNING, "apply: param is not a symbol");
                         }
-                        // next param, please
+                        // get next param
                         currparam = ((Pair) currparam).getCdr();
                     }
                     else if (currparam instanceof Symbol) {
-                        // var args case:
-                        // we have a "." notation parameter,
-                        // so we accumulate this and next
-                        // parameters in a cons bound to
-                        // this param in local env
-                        prev = new Pair(obj, EmptyList.VALUE);
+                        // varargs case:
+                        // we have a "." notation parameter, so we accumulate this and the next
+                        // parameters in a list bound to this param in local env
+                        prev = cons(obj);
                         localenv.define((Symbol) currparam, prev);
                         dotparam = true;
                     }
                     else {
-                        throw new GleamException(
-                                "apply: invalid formal parameter",
-                                currparam);
+                        throw new GleamException("apply: invalid formal parameter", currparam);
                     }
                 }
                 else {
                     // accumulate argument
-                    prev.setCdr(new Pair(obj, EmptyList.VALUE));
+                    prev.setCdr(cons(obj));
                     prev = (List) prev.getCdr();
                 }
                 // next argument, please
@@ -146,7 +141,7 @@ public class Closure extends Procedure
         out.write("#<procedure");
         if (logger.getLevelValue() < Logger.Level.INFO.getValue()) {
             out.write(" ");
-            new Pair(Symbol.LAMBDA, new Pair(param, body)).write(out);
+            cons(Symbol.LAMBDA, cons(param, body)).write(out);
         }
         out.write(">");
         return out;
@@ -155,7 +150,7 @@ public class Closure extends Procedure
     /**
      * Gets the maximum arity for this closure.
      *
-     * @return the max number of arguments, or -1 in case of var args
+     * @return the max number of arguments, or -1 in case of varargs
      *
      * @throws GleamException in case of errors
      */

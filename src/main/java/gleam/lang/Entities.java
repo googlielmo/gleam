@@ -45,6 +45,11 @@ public class Entities
         return list.getCdr();
     }
 
+    public static Pair cons(Entity entity1)
+    {
+        return new Pair(entity1, EmptyList.VALUE);
+    }
+
     public static Pair cons(Entity entity1, Entity entity2)
     {
         return new Pair(entity1, entity2);

@@ -26,6 +26,11 @@
 
 package gleam.lang;
 
+/**
+ * Obtain argument action.
+ * <p>
+ * When evaluated sets the n-th element in a given argument list.
+ */
 public class ObtainArgumentAction extends Action
 {
 
@@ -35,7 +40,6 @@ public class ObtainArgumentAction extends Action
 
     private final int argumentIndex;
 
-    /** Creates a new instance of this action */
     public ObtainArgumentAction(ArgumentList arglist, int argumentIndex, Environment env)
     {
         super(env);

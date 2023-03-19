@@ -35,7 +35,7 @@ import static gleam.util.Logger.Level.INFO;
 import static gleam.util.Logger.Level.WARNING;
 
 /**
- * The Scheme pair, also known as <i>cons</i>.
+ * The Scheme pair, also known as a <i>cons</i> cell, or simply a <i>cons</i>.
  * <p>
  * When used as data, the pair is equivalent to a
  * <i>tree</i> data structure. Most often, it is used as a degenerate tree to implement a
@@ -103,7 +103,7 @@ public class Pair extends AbstractEntity implements List
         ArgumentList argList = new ArgumentList();
         Action action = cont.beginSequence();
 
-        // evaluate each argument
+        // evaluate each argument in turn
         int argidx = 0;
         while (it.hasNext()) {
             Entity nextArg = it.next();
@@ -125,10 +125,8 @@ public class Pair extends AbstractEntity implements List
     public Entity analyze(Environment env) throws GleamException
     {
         if (!analyzed) {
-            if (getCar() instanceof Symbol
-                && System.isSpecialForm((Symbol) getCar(), env)) {
-                /* we have a special form, so let's
-                 * perform syntax analysis
+            if (getCar() instanceof Symbol && System.isSpecialForm((Symbol) getCar(), env)) {
+                /*  special form syntax analysis
                  * -- may change car, cdr
                  */
                 System.analyzeSpecialForm(this, env);
@@ -136,17 +134,15 @@ public class Pair extends AbstractEntity implements List
                 return this;
             }
 
-            /* we have a procedure application
+            /* we have a procedure application:
              * first car, then cdr
              */
             setCar(getCar().analyze(env));
 
-            /* now process rest of the list (i.e. the form arguments)
+            /* now process the rest of the list (i.e. the form arguments)
              *
-             * we can't simply do: cdr = cdr.analyze()
-             * but we must traverse the cdr list ourselves at this
-             * level; otherwise (f1 f2 f3) would be analyzed as
-             * (f1 (f2 (f3)), which is wrong.
+             * we can't do: cdr = cdr.analyze() but we must traverse the cdr list ourselves at this
+             * level; otherwise (f1 f2 f3) would be analyzed as (f1 (f2 (f3)), which is wrong.
              */
             Entity rest = getCdr();
             List restParent = this;
@@ -159,13 +155,11 @@ public class Pair extends AbstractEntity implements List
                     rest = restAsPair.getCdr();
                 }
                 else {
-                    /* this is an improper list
-                     * (not necessarily an error: think lambda)
+                    /* this is an improper list (not necessarily an error: e.g., in lambda)
                      *
-                     * analyze cdr in place
+                     *  analyze cdr in place
                      */
-                    logger.log(INFO,
-                               "dotted pair in analyze... check for correctness");
+                    logger.log(INFO, "dotted pair in analyze... check for correctness");
                     restParent.setCdr(rest.analyze(env));
                     break;
                 }
@@ -206,20 +200,19 @@ public class Pair extends AbstractEntity implements List
     public Entity optimize(Environment env) throws GleamException
     {
         /* first check for special forms */
-        if (getCar() instanceof Symbol
-            && System.isSpecialForm((Symbol) getCar(), env)) {
+        if (getCar() instanceof Symbol && System.isSpecialForm((Symbol) getCar(), env)) {
             return this;
         }
 
         /* if the operator is a syntax rewriter, we must not optimize */
-        if ((getCar() instanceof SyntaxRewriter) || (getCar() instanceof Symbol && env.lookup(
-                (Symbol) getCar()) instanceof SyntaxRewriter)) {
+        if ((getCar() instanceof SyntaxRewriter) ||
+            (getCar() instanceof Symbol &&
+             env.lookup((Symbol) getCar()) instanceof SyntaxRewriter)) {
             return this;
         }
 
-        /* if the operator is itself an application, then it could
-         * potentially result in a syntax rewriter, so no optimization
-         * can be performed at this stage
+        /* if the operator is itself an application, then it could potentially result in a
+         * syntax rewriter, so no optimization can be performed at this stage
          */
         if (getCar() instanceof Pair) {
             return this;
@@ -235,13 +228,11 @@ public class Pair extends AbstractEntity implements List
          */
         retVal.setCar(retVal.getCar().optimize(env));
 
-        /* we can't simply do: retVal.cdr = retVal.cdr.optimize(env)
-         * but we must traverse the cdr list ourselves at this level,
-         * otherwise (f1 f2 f3) would be optimized as (f1 (f2 (f3)),
+        /* we can't do: retVal.cdr = retVal.cdr.optimize(env) but we must traverse the cdr list
+         * ourselves at this level, otherwise (f1 f2 f3) would be optimized as (f1 (f2 (f3)),
          * which is wrong.
          *
-         * this also means that we must allocate new pairs for tail
-         * here.
+         * this also means that we must allocate new pairs here.
          */
         Entity rest = retVal.getCdr();
         List restParent = retVal;
@@ -256,11 +247,8 @@ public class Pair extends AbstractEntity implements List
                 rest = restAsList.getCdr();
             }
             else {
-                /* this is an improper list
-                 * (not necessarily an error: e.g., lambda)
-                 */
-                logger.log(INFO,
-                           "dotted pair in optimize... check for correctness");
+                /* this is an improper list (not necessarily an error: e.g., in lambda) */
+                logger.log(INFO, "dotted pair in optimize... check for correctness");
                 restParent.setCdr(rest.optimize(env));
                 break;
             }

@@ -199,7 +199,9 @@ public class GleamBindings extends Environment implements Bindings
         @Override
         public Symbol invert(String value)
         {
-            Objects.requireNonNull(value); // FIXME check "" as well?
+            if (value.equals("")) { // implicit null check for value
+                throw new IllegalArgumentException("value");
+            }
             return Symbol.makeSymbol(value);
         }
 

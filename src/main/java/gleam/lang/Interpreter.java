@@ -144,7 +144,7 @@ public class Interpreter
     }
 
     /**
-     * Gets the comment string for a procedure
+     * Gets the comment string for a procedure.
      */
     public static String getHelpComment(String name)
     {
@@ -152,7 +152,7 @@ public class Interpreter
     }
 
     /**
-     * Gets the comment string for a procedure
+     * Gets the comment string for a procedure.
      */
     public static String getHelpDocumentation(String name)
     {
@@ -160,7 +160,7 @@ public class Interpreter
     }
 
     /**
-     * Gets the set of help-enabled procedures
+     * Gets the set of help-enabled procedures.
      */
     public static Set<String> getHelpNames()
     {

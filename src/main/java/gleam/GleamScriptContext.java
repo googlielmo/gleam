@@ -45,10 +45,8 @@ import java.util.WeakHashMap;
 
 public class GleamScriptContext implements ScriptContext
 {
-    private static final List<Integer>
-            SCOPES = Arrays.asList(ENGINE_SCOPE, GLOBAL_SCOPE);
-    private static final Map<Bindings, GleamBindings>
-            bindingsCache = new WeakHashMap<>();
+    private static final List<Integer> SCOPES = Arrays.asList(ENGINE_SCOPE, GLOBAL_SCOPE);
+    private static final Map<Bindings, GleamBindings> bindingsCache = new WeakHashMap<>();
     protected ExecutionContext executionContext;
     protected Writer writer;
     protected Writer errorWriter;

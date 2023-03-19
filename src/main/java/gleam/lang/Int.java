@@ -45,7 +45,7 @@ public class Int extends Number implements Entity
     }
 
     /**
-     * Writes an int
+     * Writes an int.
      */
     @Override
     public PrintWriter write(PrintWriter out)
@@ -109,8 +109,6 @@ public class Int extends Number implements Entity
         if (o instanceof Int) {
             return value == ((Int) o).value;
         }
-        else {
-            return false;
-        }
+        return false;
     }
 }

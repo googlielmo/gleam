@@ -26,6 +26,11 @@
 
 package gleam.lang;
 
+/**
+ * Procedure call action.
+ * <p>
+ * Wraps an argument list and an environment
+ */
 public class ProcedureCallAction extends Action
 {
 
@@ -33,28 +38,33 @@ public class ProcedureCallAction extends Action
 
     private final ArgumentList arglist;
 
-    /** Creates a new instance of this action */
     public ProcedureCallAction(ArgumentList arglist, Environment env)
     {
         super(env);
         this.arglist = arglist;
     }
 
-    // arg is the function, arglist contains the arguments
+    /**
+     * Calls a given procedure, an <i>operator</i>, with the argument list and in the environment
+     * specified when this action was created.
+     *
+     * @param arg  the operator to call
+     * @param cont the current continuation
+     *
+     * @throws gleam.lang.GleamException in cse of errors
+     */
     @Override
     Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException
     {
         // apply function to args, return result
-        Procedure operator;
+        Procedure procedure;
         try {
-            operator = (Procedure) arg;
+            procedure = (Procedure) arg;
         }
         catch (ClassCastException ex) {
-            throw new GleamException(
-                    "procedure call: operator is not a procedure",
-                    arg);
+            throw new GleamException("procedure call: operator is not a procedure", arg);
         }
         trace(out -> out.printf("%s\n", arg.toWriteFormat()), env);
-        return operator.apply(arglist.getArguments(), env, cont);
+        return procedure.apply(arglist.getArguments(), env, cont);
     }
 }

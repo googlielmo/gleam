@@ -33,7 +33,7 @@
 package gleam.lang;
 
 /**
- * If (conditional expression)
+ * If (conditional expression) action.
  */
 public class IfAction extends Action
 {
@@ -43,7 +43,6 @@ public class IfAction extends Action
     /** consequent, alternate parts of the if command */
     protected final Entity consequent, alternate;
 
-    /** Creates a new IfAction */
     public IfAction(Entity consequent, Entity alternate, Environment env)
     {
         super(env);
@@ -52,9 +51,10 @@ public class IfAction extends Action
     }
 
     /**
-     * Evaluates the consequent or the alternate, deciding upon the truth value of the argument. If
-     * it is any value except a boolean false, then the consequent is evaluated, otherwise the
-     * alternate is.
+     * Evaluates the consequent or the alternate, deciding upon the truth value of the argument.
+     * <p>
+     * If it is any value except a boolean <code>false</code>, then the consequent is evaluated;
+     * otherwise the alternate is.
      *
      * @param arg  the value upon which the decision is taken
      * @param cont the current Continuation

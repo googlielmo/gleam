@@ -54,7 +54,9 @@ public final class Location extends AbstractEntity
         this.value = value;
     }
 
-    /** Location evaluates to its content value */
+    /**
+     * Location evaluates to its content value.
+     */
     @Override
     public Entity eval(Environment env, Continuation cont)
     {
@@ -62,7 +64,7 @@ public final class Location extends AbstractEntity
     }
 
     /**
-     * Sets current referred object
+     * Sets current referred object.
      */
     public void set(Entity obj)
     {
@@ -70,7 +72,7 @@ public final class Location extends AbstractEntity
     }
 
     /**
-     * Gets current referred object
+     * Gets current referred object.
      */
     public Entity get()
     {
@@ -78,7 +80,7 @@ public final class Location extends AbstractEntity
     }
 
     /**
-     * Writes this location
+     * Writes this location.
      */
     @Override
     public PrintWriter write(PrintWriter out)

@@ -37,7 +37,7 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /*
- * Logger.java (was: Report.java)
+ * Gleam logger.
  *
  * Created on October 18, 2001, 1:02 AM
  */
@@ -107,9 +107,7 @@ public class Logger
         }
     }
 
-    /**
-     * Can't instantiate this class
-     */
+    /** Can't instantiate this class. */
     private Logger() {}
 
     /**

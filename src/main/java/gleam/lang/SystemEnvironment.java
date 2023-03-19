@@ -42,8 +42,8 @@ public final class SystemEnvironment extends Environment
     /**
      * Constructor for the null environment.
      * <p>
-     * It creates the default {@link ExecutionContext} binding global I/O ports to system standard
-     * I/O
+     * It creates the default {@link ExecutionContext} binding the global I/O ports to the system's
+     * standard I/O
      */
     SystemEnvironment()
     {
@@ -64,7 +64,7 @@ public final class SystemEnvironment extends Environment
     }
 
     /**
-     * Writes this environment
+     * Writes this environment.
      */
     @Override
     public PrintWriter write(PrintWriter out)
@@ -73,7 +73,7 @@ public final class SystemEnvironment extends Environment
         return out;
     }
 
-    /** avoids to serialize data of system environments */
+    /** Does not serialize data of system environments. */
     private Object writeReplace()
     {
         return new SystemEnvironment(null, kind);

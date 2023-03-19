@@ -193,7 +193,11 @@ public class Environment extends AbstractEntity
         return out;
     }
 
-    // DEBUG
+    /**
+     * Dumps the contents of the environments to the current output port for debugging.
+     *
+     * @throws GleamException in case of errors
+     */
     public void dump() throws GleamException
     {
         Environment env = this;

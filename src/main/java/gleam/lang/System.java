@@ -32,7 +32,9 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- * Scheme runtime support. Creation date: 03/11/2001
+ * Scheme runtime support.
+ * <p>
+ * Creation date: 03/11/2001
  */
 public final class System
 {
@@ -65,7 +67,9 @@ public final class System
     }
 
     /**
-     * Performs syntactic analysis of special forms. Creation date: (02/11/2001 12.34.35)
+     * Performs syntactic analysis of special forms.
+     * <p>
+     * Creation date: (02/11/2001 12.34.35)
      */
     public static void analyzeSpecialForm(List form,
                                           Environment env) throws GleamException

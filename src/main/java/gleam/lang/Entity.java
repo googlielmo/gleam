@@ -32,7 +32,7 @@ import java.io.StringWriter;
 /**
  * The interface that all Gleam objects implement.
  * <p>
- * In Scheme, entities are also referred to as "objects", or "values".
+ * Entities are also sometimes referred to as "objects", or "values".
  */
 public interface Entity extends java.io.Serializable
 {
@@ -102,8 +102,8 @@ public interface Entity extends java.io.Serializable
     }
 
     /**
-     * Returns a representation of this entity in the same format as a call to
-     * <code>write<code/> would produce.
+     * Returns a representation of this entity in the same format as a call to <code>write<code/>
+     * would produce.
      *
      * @return a string representation of the entity.
      */

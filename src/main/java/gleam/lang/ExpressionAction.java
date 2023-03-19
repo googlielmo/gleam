@@ -43,7 +43,6 @@ public class ExpressionAction extends Action
     /** the expression to evaluate */
     private final Entity expr;
 
-    /** Creates a new instance of this action */
     public ExpressionAction(Entity expr, Environment env)
     {
         super(env);
@@ -51,7 +50,7 @@ public class ExpressionAction extends Action
     }
 
     /**
-     * Invokes this action, causing the evaluation of the expression
+     * Invokes this action, causing the evaluation of the expression.
      *
      * @param arg  is ignored
      * @param cont the current Continuation

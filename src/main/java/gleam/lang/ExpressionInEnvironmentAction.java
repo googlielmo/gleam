@@ -43,7 +43,6 @@ public class ExpressionInEnvironmentAction extends Action
     /** the expression to evaluate */
     private Entity expr;
 
-    /** Creates a new instance of this action */
     public ExpressionInEnvironmentAction(Entity expr, Environment env)
     {
         super(env);

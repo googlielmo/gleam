@@ -40,9 +40,9 @@ import java.util.Iterator;
 import static gleam.util.Logger.Level.DEBUG;
 
 /**
- * This class represents the distinct type of the Scheme empty list. There is only one instance of
- * this class, i.e. the empty list itself '(). EmptyList is a specialization of Pair uniquely for
- * efficiency reasons in procedure evaluation.
+ * This class represents the distinct type of the Scheme empty list.
+ * <p>
+ * There is only one instance of this class, i.e. the empty list itself, <code>'()</code>.
  */
 public final class EmptyList extends AbstractEntity implements List
 {
@@ -115,7 +115,7 @@ public final class EmptyList extends AbstractEntity implements List
      */
     private Object readResolve()
     {
-        logger.log(DEBUG, "readResolve() called! (EmptyList)"); //DEBUG
+        logger.log(DEBUG, "readResolve() called! (EmptyList)");
         return VALUE;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -27,19 +27,20 @@
 package gleam.lang;
 
 /**
- * Abstract Port object.
+ * Abstract I/O port object.
  */
+@SuppressWarnings("unused")
 public abstract class Port extends AbstractEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** close the port */
+    /** close the port. */
     public abstract void close();
 
-    /** checks if port is open */
+    /** checks if port is open. */
     public abstract boolean isOpen();
 
-    /** which kind of port */
+    /** which kind of port. */
     public abstract Kind getKind();
 
     public enum Kind

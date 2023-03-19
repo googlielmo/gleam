@@ -69,7 +69,7 @@ public class ListIterator implements Iterator<Entity>
     }
 
     /**
-     * Retrieves next object from the list.
+     * Retrieves the next object from the list.
      *
      * @return the next Entity in the list
      *

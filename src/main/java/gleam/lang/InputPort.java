@@ -73,7 +73,7 @@ public class InputPort extends Port implements Closeable
     }
 
     /**
-     * Close this InputPort
+     * Close this InputPort.
      */
     @Override
     public void close()
@@ -94,7 +94,7 @@ public class InputPort extends Port implements Closeable
 
     /**
      * @return <code>true</code> if this InputPort is open,
-     * <code>false</code> otherwise
+     * <code>false</code> otherwise.
      */
     @Override
     public boolean isOpen()
@@ -109,7 +109,7 @@ public class InputPort extends Port implements Closeable
     }
 
     /**
-     * Writes a port
+     * Writes a port.
      */
     @Override
     public PrintWriter write(PrintWriter out)
@@ -119,7 +119,7 @@ public class InputPort extends Port implements Closeable
     }
 
     /**
-     * reads (parses) an object
+     * reads (parses) an object.
      */
     public Entity read() throws GleamException
     {

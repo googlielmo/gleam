@@ -188,8 +188,7 @@ public class Continuation extends Procedure
                 return args.getCar();
             }
             else {
-                throw new GleamException("continuation: too many arguments",
-                                         args);
+                throw new GleamException("continuation: too many arguments", args);
             }
         }
         else {
