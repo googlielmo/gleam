@@ -98,8 +98,7 @@ public class Real extends Number implements Entity
     @Override
     public int hashCode()
     {
-        long v = Double.doubleToLongBits(value);
-        return (int) (v ^ (v >>> 32));
+        return Double.hashCode(value);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2001-2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -73,5 +73,23 @@ public final class Character extends AbstractEntity
         out.print(value);
         return out;
     }
-}
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Character character = (Character) o;
+        return value == character.value;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return java.lang.Character.hashCode(value);
+    }
+}

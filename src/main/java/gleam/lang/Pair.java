@@ -103,13 +103,14 @@ public class Pair extends AbstractEntity implements List
         ArgumentList argList = new ArgumentList();
         Action action = cont.beginSequence();
 
-        // evaluate each argument in turn
+        // first evaluate each argument in turn
         int argidx = 0;
         while (it.hasNext()) {
             Entity nextArg = it.next();
             action = action.andThen(new ExpressionAction(nextArg, env))
                            .andThen(new ObtainArgumentAction(argList, argidx++, env));
         }
+        // finally evaluate the operator and call it with the evaluated arguments
         action = action.andThen(new ExpressionAction(operator, env))
                        .andThen(new ProcedureCallAction(argList, env));
 
