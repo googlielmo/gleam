@@ -35,6 +35,7 @@ import gleam.lang.OutputPort;
 import gleam.lang.Port;
 
 import static gleam.lang.Environment.Kind.REPORT_ENV;
+import static gleam.library.Primitive.IDENTIFIER;
 
 /**
  * PORTS
@@ -56,7 +57,7 @@ public final class Ports
              */
             new Primitive("port?",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           1,
                           1, /* min, max no. of arguments */
                           "Returns true if argument is a port, false otherwise",
@@ -77,7 +78,7 @@ public final class Ports
              */
             new Primitive("input-port?",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           1,
                           1, /* min, max no. of arguments */
                           "Returns true if argument is an input port, false otherwise",
@@ -98,7 +99,7 @@ public final class Ports
              */
             new Primitive("output-port?",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           1,
                           1, /* min, max no. of arguments */
                           "Returns true if argument is an output port, false otherwise",
@@ -119,7 +120,7 @@ public final class Ports
              */
             new Primitive("textual-port?",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           1,
                           1, /* min, max no. of arguments */
                           "Returns true if argument is a textual port, false otherwise",
@@ -141,7 +142,7 @@ public final class Ports
              */
             new Primitive("binary-port?",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           1,
                           1, /* min, max no. of arguments */
                           "Returns true if argument is a binary port, false otherwise",
@@ -163,7 +164,7 @@ public final class Ports
              */
             new Primitive("current-input-port",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           0,
                           0, /* min, max no. of arguments */
                           "Returns the current input port",
@@ -182,7 +183,7 @@ public final class Ports
              */
             new Primitive("current-output-port",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           0,
                           0, /* min, max no. of arguments */
                           "Returns the current output port",

@@ -42,9 +42,9 @@ public class InputPort extends Port implements Closeable
 
     private final String fileName;
 
-    private java.io.Reader reader;
+    private java.io.BufferedReader reader;
 
-    private transient Reader gleamReader;
+    private transient Parser gleamParser;
 
     public InputPort(String name) throws java.io.IOException
     {
@@ -59,17 +59,19 @@ public class InputPort extends Port implements Closeable
 
     private void openFile(String name) throws IOException
     {
-        reader =
-                new BufferedReader(new java.io.InputStreamReader(
+        reader = new BufferedReader(
+                new java.io.InputStreamReader(
                         Files.newInputStream(Paths.get(name))));
-        gleamReader = new Reader(reader);
+        gleamParser = new Parser(reader);
     }
 
     public InputPort(java.io.Reader reader)
     {
         this.fileName = null;
-        this.reader = reader;
-        this.gleamReader = new Reader(reader);
+        this.reader = reader instanceof BufferedReader
+                      ? ((BufferedReader) reader)
+                      : new BufferedReader(reader);
+        this.gleamParser = new Parser(this.reader);
     }
 
     /**
@@ -79,7 +81,7 @@ public class InputPort extends Port implements Closeable
     public void close()
     {
         if (isOpen()) {
-            gleamReader = null;
+            gleamParser = null;
         }
         if (reader != null) {
             try {
@@ -99,7 +101,7 @@ public class InputPort extends Port implements Closeable
     @Override
     public boolean isOpen()
     {
-        return null != gleamReader;
+        return null != gleamParser;
     }
 
     @Override
@@ -123,17 +125,55 @@ public class InputPort extends Port implements Closeable
      */
     public Entity read() throws GleamException
     {
-        if (isOpen()) {
-            Entity retVal = gleamReader.read();
-            if (retVal == null) {
-                return Eof.VALUE;
-            }
-            else {
-                return retVal;
-            }
+        checkOpen();
+        Entity retVal = gleamParser.read();
+        if (retVal == null) {
+            return Eof.VALUE;
         }
         else {
-            throw new GleamException("InputPort not open");
+            return retVal;
+        }
+    }
+
+    public Entity readChar() throws GleamException
+    {
+        checkOpen();
+        try {
+            int c = reader.read();
+            return getCharOrEof(c);
+        }
+        catch (IOException e) {
+            throw new GleamException("read-char: I/O Error " + e.getMessage());
+        }
+    }
+
+    public Entity peekChar() throws GleamException
+    {
+        checkOpen();
+        try {
+            gleamParser.read();
+            reader.mark(1024);
+            int c = reader.read();
+            reader.reset();
+            return getCharOrEof(c);
+        }
+        catch (IOException e) {
+            throw new GleamException("peek-char: I/O Error " + e.getMessage());
+        }
+    }
+
+    private static Entity getCharOrEof(int c)
+    {
+        if (c == -1) {
+            return Eof.VALUE;
+        }
+        return new Character((char) c);
+    }
+
+    private void checkOpen() throws GleamException
+    {
+        if (!isOpen()) {
+            throw new GleamException("closed input port");
         }
     }
 
@@ -149,7 +189,7 @@ public class InputPort extends Port implements Closeable
             openFile(fileName);
         }
         else {
-            gleamReader = null;
+            gleamParser = null;
         }
     }
 }

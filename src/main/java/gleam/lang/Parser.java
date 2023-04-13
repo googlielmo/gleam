@@ -34,9 +34,11 @@ import static gleam.lang.Entities.cons;
 import static gleam.util.Logger.Level.DEBUG;
 
 /**
- * Scheme reader (lexical analyzer & parser). Implemented as recursive descent.
+ * Gleam lexical analyzer & parser. Implemented as recursive descent.
+ * <p>
+ * Implements the Scheme <code>read</code> procedure.
  */
-class Reader
+class Parser
 {
 
     private static final Logger logger = Logger.getLogger();
@@ -49,7 +51,7 @@ class Reader
      * @param r java.io.Reader a character input stream
      */
     @SuppressWarnings("all") // for Unicode escape sequences
-    public Reader(java.io.Reader r)
+    public Parser(java.io.Reader r)
     {
         tkzr = new StreamTokenizer(r);
         tkzr.resetSyntax();
@@ -62,8 +64,7 @@ class Reader
         tkzr.wordChars('A', 'Z'); // A-Z
         tkzr.wordChars('a', 'z'); // a-z
         tkzr.wordChars('0', '9'); // 0-9
-        tkzr.wordChars('\u00A1',
-                       '\u00FF'); // Unicode latin-1 supplement, symbols and letters
+        tkzr.wordChars('\u00A1', '\u00FF'); // Unicode latin-1 supplement, symbols and letters
         tkzr.wordChars('*', '.'); // '*', '+', ',', '-', '.'
         tkzr.wordChars('!', '!'); // '!'
         tkzr.wordChars('#', '#'); // '#' Gleam extension
@@ -93,12 +94,9 @@ class Reader
         }
     }
 
-    private void logReadOthers(String token, String type)
+    private void log(String token, String type)
     {
-        logger.log(DEBUG,
-                   () -> String.format("readOthers: interpreting '%s' as a %s",
-                                       token,
-                                       type));
+        logger.log(DEBUG, () -> String.format("read: interpreting '%s' as a %s", token, type));
     }
 
     private Entity readList(Pair l) throws GleamException, java.io.IOException
@@ -197,10 +195,10 @@ class Reader
             && !t.equals("+") && !t.equals("-") && !t.equals("...")) {
             try {
                 if (!t.contains(".")) {
-                    logReadOthers(t, "int");
+                    log(t, "int");
                     return new Int(Integer.parseInt(t));
                 }
-                logReadOthers(t, "real");
+                log(t, "real");
                 return new Real(Double.parseDouble(t));
             }
             catch (NumberFormatException e) {
@@ -217,7 +215,7 @@ class Reader
         }
         else if (t.startsWith("\"")) {
             // it is a string
-            logReadOthers(t, "string");
+            log(t, "string");
             return new MutableString(t.substring(1));
         }
         else if (t.equalsIgnoreCase("#f")) {
@@ -244,7 +242,7 @@ class Reader
         }
         else {
             // it is a symbol
-            logReadOthers(t, "symbol");
+            log(t, "symbol");
             return Symbol.makeSymbol(t);
         }
     }

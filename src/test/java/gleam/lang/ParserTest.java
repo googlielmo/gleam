@@ -36,7 +36,7 @@ import java.io.StringReader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ReaderTest
+class ParserTest
 {
 
     private static final Logger logger = Logger.getLogger();
@@ -55,13 +55,13 @@ class ReaderTest
         Entity expected = EmptyList.VALUE;
         String expr = "()";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         assertEquals(expected, r.read());
     }
 
-    private Reader getReader(String expr)
+    private Parser getParser(String expr)
     {
-        return new Reader(new StringReader(expr));
+        return new Parser(new StringReader(expr));
     }
 
     @Test
@@ -71,7 +71,7 @@ class ReaderTest
         Pair expected = new Pair(a, EmptyList.VALUE);
         String expr = "(a)";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         Entity actual = r.read();
         assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
@@ -86,7 +86,7 @@ class ReaderTest
         Pair expected = new Pair(a, new Pair(b, EmptyList.VALUE));
         String expr = "(a b)";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         Entity actual = r.read();
         assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
@@ -102,7 +102,7 @@ class ReaderTest
         Pair expected = new Pair(a, new Pair(b, new Pair(c, EmptyList.VALUE)));
         String expr = "(a b c)";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         Entity actual = r.read();
         assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
@@ -124,7 +124,7 @@ class ReaderTest
                                                             EmptyList.VALUE))));
         String expr = "(a b c (d))";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         Entity actual = r.read();
         assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
@@ -139,7 +139,7 @@ class ReaderTest
         Pair expected = new Pair(a, b);
         String expr = "(a . b)";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         Entity actual = r.read();
         assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
@@ -155,7 +155,7 @@ class ReaderTest
         Pair expected = new Pair(a, new Pair(b, c));
         String expr = "(a b . c)";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         Entity actual = r.read();
         assertTrue(actual instanceof Pair);
         Pair pair = (Pair) actual;
@@ -170,7 +170,7 @@ class ReaderTest
         Entity expected = new Real(Math.PI);
         String expr = String.valueOf(Math.PI);
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         assertEquals(expected, r.read());
     }
 
@@ -180,7 +180,7 @@ class ReaderTest
         Entity expected = new Int(Integer.MAX_VALUE);
         String expr = String.valueOf(Integer.MAX_VALUE);
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         assertEquals(expected, r.read());
     }
 
@@ -192,7 +192,7 @@ class ReaderTest
         Entity expected = new MutableString("hello");
         String expr = "\"hello";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         assertEquals(expected, r.read());
     }
 
@@ -202,7 +202,7 @@ class ReaderTest
         Entity expected = new MutableString("\"hello");
         String expr = "\"\\\"hello";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         assertEquals(expected, r.read());
     }
 
@@ -212,7 +212,7 @@ class ReaderTest
         Entity expected = new MutableString("\\");
         String expr = "\"\\\\";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         assertEquals(expected, r.read());
     }
 
@@ -222,7 +222,7 @@ class ReaderTest
         Entity expected = new MutableString("\n");
         String expr = "\"\\n";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         assertEquals(expected, r.read());
     }
 
@@ -232,7 +232,7 @@ class ReaderTest
         Entity expected = new MutableString("\t");
         String expr = "\"\\t";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         assertEquals(expected, r.read());
     }
 
@@ -242,7 +242,7 @@ class ReaderTest
         Entity expected = new MutableString("\b");
         String expr = "\"\\b";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         assertEquals(expected, r.read());
     }
 
@@ -252,7 +252,7 @@ class ReaderTest
         Entity expected = new MutableString("\f");
         String expr = "\"\\f";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         assertEquals(expected, r.read());
     }
 
@@ -262,7 +262,7 @@ class ReaderTest
         Entity expected = new MutableString("\r");
         String expr = "\"\\r";
 
-        Reader r = getReader(expr);
+        Parser r = getParser(expr);
         assertEquals(expected, r.read());
     }
 
