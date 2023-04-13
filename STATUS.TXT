@@ -38,6 +38,8 @@ let
 let*
 apply
 map
+case
+do
 
 memq
 memv
@@ -82,6 +84,8 @@ current-output-port
 input-port?
 output-port?
 load                                ;; optional procedure
+read-char
+peek-char
 
 caar
 cadr
@@ -94,9 +98,7 @@ cddddr
 TODO:
 -----
 
-case
 letrec
-do
 delay
 
 let-syntax
@@ -227,8 +229,6 @@ open-output-file
 close-input-port
 close-output-port
 
-read-char
-peek-char
 char-ready?
 write-char
 transcript-on                       ;; optional procedure

@@ -35,6 +35,7 @@ import gleam.lang.GleamException;
 import gleam.lang.InputPort;
 
 import static gleam.lang.Environment.Kind.REPORT_ENV;
+import static gleam.library.Primitive.IDENTIFIER;
 
 /**
  * INPUT
@@ -56,7 +57,7 @@ public final class Input
              */
             new Primitive("eof-object?",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           1,
                           1, /* min, max no. of arguments */
                           "Returns true if argument is the EOF object, false otherwise",
@@ -77,7 +78,7 @@ public final class Input
              */
             new Primitive("read",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           0,
                           1, /* min, max no. of arguments */
                           "Reads an object from the current or specified input port",
@@ -88,32 +89,74 @@ public final class Input
                                      Environment env,
                                      Continuation cont) throws GleamException
                 {
-                    try {
-                        InputPort iport;
-                        if (arg1 != null) {
-                            iport = (InputPort) arg1;
-                        }
-                        else {
-                            iport = env.getExecutionContext().getIn();
-                        }
-                        if (iport.isOpen()) {
-                            return iport.read();
-                        }
-                        else {
-                            throw new GleamException(this,
-                                                     "closed input port",
-                                                     arg1);
-                        }
-                    }
-                    catch (ClassCastException e) {
-                        throw new GleamException(this,
-                                                 "not an input port",
-                                                 arg1);
-                    }
+                    InputPort iport = getInputPort(this, arg1, env);
+                    return iport.read();
+                }
+            },
+
+            /*
+             * read-char
+             * Reads a character from the current input port
+             */
+            new Primitive("read-char",
+                          REPORT_ENV, /* environment */
+                          IDENTIFIER, /* type */
+                          0, /* min no. of arguments */
+                          1, /* max no. of arguments */
+                          "Returns the next character available from the input port", /* comment */
+                          null /* docs */)
+            {
+                @Override
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
+                {
+                    InputPort iport = getInputPort(this, arg1, env);
+                    return iport.readChar();
+                }
+            },
+
+            /*
+             * peek-char
+             * Reads a character from the current input port
+             */
+            new Primitive("peek-char",
+                          REPORT_ENV, /* environment */
+                          IDENTIFIER, /* type */
+                          0, /* min no. of arguments */
+                          1, /* max no. of arguments */
+                          "Returns the next character available from the input port, without " +
+                          "advancing the current character", /* comment */
+                          null /* docs */)
+            {
+                @Override
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
+                {
+                    InputPort iport = getInputPort(this, arg1, env);
+                    return iport.peekChar();
                 }
             }
 
     }; // primitives
+
+    private static InputPort getInputPort(Primitive primitive,
+                                          Entity arg1,
+                                          Environment env) throws GleamException
+    {
+        InputPort iport;
+        if (arg1 == null) {
+            iport = env.getExecutionContext().getIn();
+        }
+        else {
+            if (!(arg1 instanceof InputPort)) {
+                throw new GleamException(primitive, "not an input port", arg1);
+            }
+            iport = (InputPort) arg1;
+        }
+        return iport;
+    }
 
     /** Can't instantiate this class. */
     private Input() {}

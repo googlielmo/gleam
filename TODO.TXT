@@ -23,8 +23,6 @@ Rework serialization for I/O ports (use append write for output files, etc.)
 
 A rewriting system for patterns (...)
 
-Test fully: tail-call optimizations
-
 rewriter? type function
 
 Macros for do and other syntax
@@ -90,8 +88,6 @@ Explicit first-class environments, with primitives:
     environment? [done]
     defined?
     ...
-
-Use Java 5 generics where possible
 
 Implement as many primitives as possible in Scheme
     list
