@@ -135,12 +135,15 @@ public class OutputPort extends Port implements Closeable
      */
     public OutputPort write(Entity obj) throws GleamException
     {
-        if (isOpen()) {
-            obj.write(out);
-        }
-        else {
-            throw new GleamException("OutputPort not open");
-        }
+        checkOpen();
+        obj.write(out);
+        return this;
+    }
+
+    public OutputPort writeChar(Character c) throws GleamException
+    {
+        checkOpen();
+        out.print(c.value);
         return this;
     }
 
@@ -149,14 +152,10 @@ public class OutputPort extends Port implements Closeable
      *
      * @return this {@link OutputPort}
      */
-    public OutputPort display(Entity obj)
+    public OutputPort display(Entity obj) throws GleamException
     {
-        if (obj == EmptyList.VALUE) {
-            out.print("()");
-        }
-        else {
-            obj.display(out);
-        }
+        checkOpen();
+        obj.display(out);
         return this;
     }
 
@@ -165,8 +164,9 @@ public class OutputPort extends Port implements Closeable
      *
      * @return this {@link OutputPort}
      */
-    public OutputPort newline()
+    public OutputPort newline() throws GleamException
     {
+        checkOpen();
         out.println();
         flush();
         return this;
@@ -175,23 +175,13 @@ public class OutputPort extends Port implements Closeable
     /**
      * Flushes buffers.
      */
-    public void flush()
+    public void flush() throws GleamException
     {
+        checkOpen();
         out.flush();
         if (isConsole) {
             java.lang.System.console().flush();
         }
-    }
-
-    /**
-     * String printing method, useful for primitives.
-     *
-     * @return this {@link OutputPort}
-     */
-    public OutputPort print(String s)
-    {
-        out.print(s);
-        return this;
     }
 
     /**
@@ -207,7 +197,18 @@ public class OutputPort extends Port implements Closeable
     }
 
     /**
-     * Outputs a printf-style formatted string.
+     * String printing method; useful for primitives.
+     *
+     * @return this {@link OutputPort}
+     */
+    public OutputPort print(String s)
+    {
+        out.print(s);
+        return this;
+    }
+
+    /**
+     * Outputs a printf-style formatted string; useful for primitives.
      *
      * @param format the format String
      * @param args   argument list
@@ -222,12 +223,13 @@ public class OutputPort extends Port implements Closeable
         return this;
     }
 
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException
+    private void checkOpen() throws GleamException
     {
-        out.defaultWriteObject();
+        if (!isOpen()) {
+            throw new GleamException("OutputPort not open");
+        }
     }
 
-    // serialization
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
@@ -237,5 +239,10 @@ public class OutputPort extends Port implements Closeable
         else {
             out = null;
         }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException
+    {
+        out.defaultWriteObject();
     }
 }

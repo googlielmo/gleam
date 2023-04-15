@@ -44,6 +44,7 @@ import static gleam.library.Primitive.IDENTIFIER;
  */
 public final class Input
 {
+    private static final String NOT_AN_INPUT_PORT = "not an input port";
 
     /**
      * This array contains definitions of primitives. It is used by static initializers in
@@ -137,23 +138,70 @@ public final class Input
                     InputPort iport = getInputPort(this, arg1, env);
                     return iport.peekChar();
                 }
+            },
+
+            /*
+             * char-ready?
+             * Returns #t if a character is ready on the input port
+             */
+            new Primitive("char-ready?",
+                          REPORT_ENV, /* environment */
+                          IDENTIFIER, /* type */
+                          0, /* min no. of arguments */
+                          1, /* max no. of arguments */
+                          "Returns #t if a character is ready on the input port and returns #f " +
+                          "otherwise", /* comment */
+                          null /* docs */)
+            {
+                @Override
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
+                {
+                    InputPort iport = getInputPort(this, arg1, env);
+                    return iport.isCharReady();
+                }
+            },
+
+            /*
+             * open-input-file
+             *
+             */
+            new Primitive("open-input-file",
+                          REPORT_ENV, /* environment */
+                          IDENTIFIER, /* type */
+                          0, /* min no. of arguments */
+                          1, /* max no. of arguments */
+                          "Takes a string naming an existing file and returns an input port " +
+                          "capable of delivering characters from the file.", /* comment */
+                          null /* docs */)
+            {
+                @Override
+                public Entity apply1(Entity arg1,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
+                {
+                    return SystemInterface.openFile(this, arg1);
+                }
             }
 
     }; // primitives
 
     private static InputPort getInputPort(Primitive primitive,
-                                          Entity arg1,
+                                          Entity arg,
                                           Environment env) throws GleamException
     {
         InputPort iport;
-        if (arg1 == null) {
+        if (arg == null) {
             iport = env.getExecutionContext().getIn();
         }
         else {
-            if (!(arg1 instanceof InputPort)) {
-                throw new GleamException(primitive, "not an input port", arg1);
+            if (arg instanceof InputPort) {
+                iport = (InputPort) arg;
             }
-            iport = (InputPort) arg1;
+            else {
+                throw new GleamException(primitive, NOT_AN_INPUT_PORT, arg);
+            }
         }
         return iport;
     }

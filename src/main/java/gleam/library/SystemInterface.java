@@ -69,22 +69,10 @@ public final class SystemInterface
                                      Environment env,
                                      Continuation cont) throws GleamException
                 {
-                    MutableString filename;
-                    try {
-                        filename = (MutableString) arg1;
+                    try (InputPort inputPort = openFile(this, arg1)) {
+                        env.getExecutionContext().getInterpreter().load(inputPort, env);
                     }
-                    catch (ClassCastException e) {
-                        throw new GleamException(this,
-                                                 "argument is not a string",
-                                                 arg1);
-                    }
-                    try (InputPort iport = new InputPort(filename.toString())) {
-                        env.getExecutionContext().getInterpreter().load(iport, env);
-                        return Void.VALUE;
-                    }
-                    catch (IOException e) {
-                        throw new GleamException(this, "file not found", arg1);
-                    }
+                    return Void.VALUE;
                 }
             }
 
@@ -93,4 +81,17 @@ public final class SystemInterface
     /** Can't instantiate this class. */
     private SystemInterface() {}
 
+    public static InputPort openFile(Primitive primitive, Entity arg) throws GleamException
+    {
+        if (arg instanceof MutableString) {
+            MutableString filename = (MutableString) arg;
+            try {
+                return new InputPort(filename.toString());
+            }
+            catch (IOException e) {
+                throw new GleamException(primitive, "I/O error " + e.getMessage(), arg);
+            }
+        }
+        throw new GleamException(primitive, "argument is not a string", arg);
+    }
 }

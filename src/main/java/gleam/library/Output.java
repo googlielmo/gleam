@@ -26,6 +26,7 @@
 
 package gleam.library;
 
+import gleam.lang.Character;
 import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
@@ -34,6 +35,7 @@ import gleam.lang.OutputPort;
 import gleam.lang.Void;
 
 import static gleam.lang.Environment.Kind.REPORT_ENV;
+import static gleam.library.Primitive.IDENTIFIER;
 
 /**
  * OUTPUT
@@ -42,9 +44,9 @@ import static gleam.lang.Environment.Kind.REPORT_ENV;
  */
 public final class Output
 {
-
     private static final String CLOSED_OUTPUT_PORT = "closed output port";
     private static final String NOT_AN_OUTPUT_PORT = "not an output port";
+    private static final String NOT_A_CHARACTER = "not a character";
     /**
      * This array contains definitions of primitives. It is used by static initializers in
      * gleam.lang.System to populate the initial environments.
@@ -57,7 +59,7 @@ public final class Output
              */
             new Primitive("display",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           1,
                           2, /* min, max no. of arguments */
                           "Writes an object in human-readable form, e.g. (display \"hello\")",
@@ -103,7 +105,7 @@ public final class Output
              */
             new Primitive("write",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           1,
                           2, /* min, max no. of arguments */
                           "Writes an object in machine-readable form, e.g. (write \"hello\")",
@@ -116,7 +118,7 @@ public final class Output
                                      Continuation cont) throws GleamException
                 {
                     // get output port, if present
-                    OutputPort oport = getOutputPort(this, env, arg2);
+                    OutputPort oport = getOutputPort(this, arg2, env);
 
                     // print object
                     if (oport.isOpen()) {
@@ -124,9 +126,7 @@ public final class Output
                         return Void.VALUE;
                     }
                     else {
-                        throw new GleamException(this,
-                                                 CLOSED_OUTPUT_PORT,
-                                                 oport);
+                        throw new GleamException(this, CLOSED_OUTPUT_PORT, oport);
                     }
                 }
             },
@@ -137,7 +137,7 @@ public final class Output
              */
             new Primitive("newline",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           0,
                           1, /* min, max no. of arguments */
                           "Writes an end of line to the current or specified output port",
@@ -148,17 +148,43 @@ public final class Output
                                      Environment env,
                                      Continuation cont) throws GleamException
                 {
-                    OutputPort oport = getOutputPort(this, env, arg1);
+                    OutputPort oport = getOutputPort(this, arg1, env);
 
                     if (oport.isOpen()) {
                         oport.newline();
                         return Void.VALUE;
                     }
                     else {
-                        throw new GleamException(this,
-                                                 CLOSED_OUTPUT_PORT,
-                                                 oport);
+                        throw new GleamException(this, CLOSED_OUTPUT_PORT, oport);
                     }
+                }
+            },
+
+            /*
+             * write-char
+             * Writes the character char (not an external representation of the character) to the
+             * given port
+             */
+            new Primitive("write-char",
+                          REPORT_ENV, /* environment */
+                          IDENTIFIER, /* type */
+                          1, /* min no. of arguments */
+                          2, /* max no. of arguments */
+                          "Writes a character to the current or specified port", /* comment */
+                          null /* docs */)
+            {
+                @Override
+                public Entity apply2(Entity arg1,
+                                     Entity arg2,
+                                     Environment env,
+                                     Continuation cont) throws GleamException
+                {
+                    OutputPort oport = getOutputPort(this, arg2, env);
+                    if (!(arg1 instanceof Character)) {
+                        throw new GleamException(this, NOT_A_CHARACTER, arg1);
+                    }
+                    oport.writeChar((Character) arg1);
+                    return Void.VALUE;
                 }
             },
 
@@ -168,7 +194,7 @@ public final class Output
              */
             new Primitive("flush",
                           REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
+                          IDENTIFIER, /* environment, type */
                           0,
                           1, /* min, max no. of arguments */
                           "Flushes the current or specified output port",
@@ -179,16 +205,14 @@ public final class Output
                                      Environment env,
                                      Continuation cont) throws GleamException
                 {
-                    OutputPort oport = getOutputPort(this, env, arg1);
+                    OutputPort oport = getOutputPort(this, arg1, env);
 
                     if (oport.isOpen()) {
                         oport.flush();
                         return Void.VALUE;
                     }
                     else {
-                        throw new GleamException(this,
-                                                 CLOSED_OUTPUT_PORT,
-                                                 oport);
+                        throw new GleamException(this, CLOSED_OUTPUT_PORT, oport);
                     }
                 }
             }
@@ -199,20 +223,20 @@ public final class Output
     private Output() {}
 
     private static OutputPort getOutputPort(Primitive primitive,
-                                            Environment env,
-                                            Entity entity) throws GleamException
+                                            Entity arg,
+                                            Environment env) throws GleamException
     {
         OutputPort oport;
-        if (entity != null) {
-            if (entity instanceof OutputPort) {
-                oport = (OutputPort) entity;
-            }
-            else {
-                throw new GleamException(primitive, NOT_AN_OUTPUT_PORT, entity);
-            }
+        if (arg == null) {
+            oport = env.getExecutionContext().getOut();
         }
         else {
-            oport = env.getExecutionContext().getOut();
+            if (arg instanceof OutputPort) {
+                oport = (OutputPort) arg;
+            }
+            else {
+                throw new GleamException(primitive, NOT_AN_OUTPUT_PORT, arg);
+            }
         }
         return oport;
     }

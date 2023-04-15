@@ -111,17 +111,11 @@ public class InputPort extends Port implements Closeable
     }
 
     /**
-     * Writes a port.
-     */
-    @Override
-    public PrintWriter write(PrintWriter out)
-    {
-        out.print("#<input-port>");
-        return out;
-    }
-
-    /**
-     * reads (parses) an object.
+     * Implements {@code read}. Parses an object.
+     *
+     * @return Returns the next {@link Entity} parsable from this input port
+     *
+     * @throws GleamException in case of errors
      */
     public Entity read() throws GleamException
     {
@@ -135,6 +129,44 @@ public class InputPort extends Port implements Closeable
         }
     }
 
+    /**
+     * Writes this port in machine-readable form.
+     *
+     * @param out PrintWriter
+     */
+    @Override
+    public PrintWriter write(PrintWriter out)
+    {
+        out.print("#<input-port>");
+        return out;
+    }
+
+    /**
+     * Implements {@code char-ready?}.
+     *
+     * @return <code>true</code> if a character is ready on this input port,
+     * <code>false</code> otherwise
+     *
+     * @throws GleamException in case of errors
+     */
+    public Entity isCharReady() throws GleamException
+    {
+        checkOpen();
+        try {
+            return Boolean.makeBoolean(reader.ready());
+        }
+        catch (IOException e) {
+            throw new GleamException("char-ready?: I/O Error " + e.getMessage());
+        }
+    }
+
+    /**
+     * Implements {@code read-char}.
+     *
+     * @return Returns the next character available from this input port
+     *
+     * @throws GleamException in case of errors
+     */
     public Entity readChar() throws GleamException
     {
         checkOpen();
@@ -147,6 +179,14 @@ public class InputPort extends Port implements Closeable
         }
     }
 
+    /**
+     * Implements {@code read-char}.
+     *
+     * @return Returns the next character available from this input port, without advancing the
+     * current character
+     *
+     * @throws GleamException in case of errors
+     */
     public Entity peekChar() throws GleamException
     {
         checkOpen();

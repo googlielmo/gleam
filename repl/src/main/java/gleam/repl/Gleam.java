@@ -140,7 +140,7 @@ public class Gleam
     {
         if (console) {
             w.printf("Welcome to Gleam, release %s\n", release);
-            w.print("(c) 2001-2022 Guglielmo Nigri <guglielmonigri@yahoo.it>.\n");
+            w.print("(c) 2001-2023 Guglielmo Nigri <guglielmonigri@yahoo.it>.\n");
             w.print("Gleam comes with ABSOLUTELY NO WARRANTY.  This is free software, and you are\n");
             w.print("welcome to redistribute it under certain conditions; see LICENSE.TXT.\n");
             w.print("\nType !h for help, !q to quit.\n");
@@ -151,8 +151,12 @@ public class Gleam
     private void prompt(OutputPort w, String prompt)
     {
         if (console) {
-            w.print(prompt);
-            w.flush();
+            try {
+                w.print(prompt);
+                w.flush();
+            }
+            catch (GleamException ignored) {
+            }
         }
     }
 

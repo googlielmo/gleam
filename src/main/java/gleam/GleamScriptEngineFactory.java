@@ -77,9 +77,8 @@ public class GleamScriptEngineFactory implements ScriptEngineFactory
     @Override
     public String getEngineVersion()
     {
-        String version = gleam.lang.Interpreter.class.getPackage()
-                                                     .getImplementationVersion();
-        return version != null ? version : "1-DEV";
+        String version = gleam.lang.Interpreter.class.getPackage().getImplementationVersion();
+        return version != null ? version : "1.x-dev";
     }
 
     @Override
