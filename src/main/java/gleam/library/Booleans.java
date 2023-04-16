@@ -60,9 +60,9 @@ public final class Booleans
                           "E.g. (boolean? #f) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1 instanceof Boolean);
                 }
@@ -81,9 +81,9 @@ public final class Booleans
                           "E.g. (not #f) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1.equals(Boolean.falseValue));
                 }

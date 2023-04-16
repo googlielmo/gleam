@@ -37,16 +37,16 @@ import java.util.Iterator;
 public class PrimitiveProcedure extends Procedure
 {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
-    protected final Primitive value;
+    protected final Primitive primitive;
 
     /**
      * PrimitiveProcedure
      */
     public PrimitiveProcedure(gleam.library.Primitive primitive)
     {
-        this.value = primitive;
+        this.primitive = primitive;
     }
 
     /**
@@ -54,7 +54,7 @@ public class PrimitiveProcedure extends Procedure
      * <p>
      * It is an error to invoke a primitive procedure with too few or too many arguments.
      *
-     * @param args  the list of arguments
+     * @param args the list of arguments
      * @param env  the environment in which to execute the primitive
      * @param cont the continuation
      *
@@ -65,34 +65,35 @@ public class PrimitiveProcedure extends Procedure
                         Environment env,
                         Continuation cont) throws GleamException
     {
-        if (value.maxArgs < 0 || value.maxArgs > 3) {
-            if (value.minArgs >= 0 || value.maxArgs >= 0) {
+        // case of maxArgs >= 3 or varargs
+        if (primitive.maxArgs < 0 || primitive.maxArgs > 3) {
+            if (primitive.minArgs >= 0 || primitive.maxArgs >= 0) {
                 checkNumArgs(args);
             }
-            return value.applyN(args, env, cont);
+            return primitive.procN.apply(args, env, cont);
         }
-        // ok, 0 <= maxArgs <= 3 : special rules
+        // 0 <= maxArgs <= 3 : special rules
         Entity[] argArray = new Entity[]{null, null, null};
         int countedArgs = 0;
         ListIterator it = new ListIterator(args);
         while (it.hasNext()) {
             argArray[countedArgs++] = it.next();
-            if (countedArgs > value.maxArgs) {
-                throw new GleamException(value, "too many arguments", args);
+            if (countedArgs > primitive.maxArgs) {
+                throw new GleamException(primitive, "too many arguments", args);
             }
         }
-        if (countedArgs < value.minArgs) {
-            throw new GleamException(value, "too few arguments", args);
+        if (countedArgs < primitive.minArgs) {
+            throw new GleamException(primitive, "too few arguments", args);
         }
-        switch (value.maxArgs) {
+        switch (primitive.maxArgs) {
             case 0:
-                return value.apply0(env, cont);
+                return primitive.proc0.apply(env, cont);
             case 1:
-                return value.apply1(argArray[0], env, cont);
+                return primitive.proc1.apply(argArray[0], env, cont);
             case 2:
-                return value.apply2(argArray[0], argArray[1], env, cont);
+                return primitive.proc2.apply(argArray[0], argArray[1], env, cont);
             default: // 3
-                return value.apply3(argArray[0], argArray[1], argArray[2], env, cont);
+                return primitive.proc3.apply(argArray[0], argArray[1], argArray[2], env, cont);
         }
     }
 
@@ -100,16 +101,16 @@ public class PrimitiveProcedure extends Procedure
     {
         Iterator<Entity> it = new ListIterator(args);
         int i;
-        for (i = 0; i < value.minArgs; ++i) {
+        for (i = 0; i < primitive.minArgs; ++i) {
             if (!it.hasNext()) {
-                throw new GleamException(value, "too few arguments", args);
+                throw new GleamException(primitive, "too few arguments", args);
             }
             it.next();
         }
-        if (value.maxArgs > 0) {
+        if (primitive.maxArgs > 0) {
             while (it.hasNext()) {
-                if (++i > value.maxArgs) {
-                    throw new GleamException(value, "too many arguments", args);
+                if (++i > primitive.maxArgs) {
+                    throw new GleamException(primitive, "too many arguments", args);
                 }
             }
         }
@@ -118,7 +119,7 @@ public class PrimitiveProcedure extends Procedure
     @Override
     public PrintWriter write(PrintWriter out)
     {
-        out.write("#<primitive-procedure " + value.toString() + ">");
+        out.write("#<primitive-procedure " + primitive.toString() + ">");
         return out;
     }
 }

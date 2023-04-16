@@ -66,10 +66,10 @@ public final class Eval
                           "E.g. (eval '(+ 1 2) (interaction-environment)) => 3" /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity arg1,
-                                     Entity arg2,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Entity arg2,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     Environment eval_env;
                     if (arg2 == null) {
@@ -103,9 +103,9 @@ public final class Eval
                           "Currently supported versions are 4 and 5" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     Number version;
                     try {
@@ -137,9 +137,9 @@ public final class Eval
                           "Currently supported versions are 4 and 5" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     Number version;
                     try {
@@ -174,7 +174,7 @@ public final class Eval
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply0(Environment env, Continuation cont)
+                public Entity apply(Environment env, Continuation cont)
                 {
                     return Interpreter.getInteractionEnv();
                 }
@@ -193,7 +193,7 @@ public final class Eval
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply0(Environment env, Continuation cont)
+                public Entity apply(Environment env, Continuation cont)
                 {
                     return env;
                 }
@@ -212,10 +212,10 @@ public final class Eval
                           "E.g. (in-environment (scheme-report-environment 5) (+ 1 2)) => 3" /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity argEnv,
-                                     Entity argExpr,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity argEnv,
+                                    Entity argExpr,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     // 1) evaluate environment expr
                     // 2) evaluate expr in that env
@@ -239,7 +239,7 @@ public final class Eval
                           "E.g. (in-environment (make-environment) (begin (define a 7) a)) => 7" /* doc strings */)
             {
                 @Override
-                public Entity apply0(Environment env, Continuation cont)
+                public Entity apply(Environment env, Continuation cont)
                 {
                     return new Environment(env);
                 }
@@ -258,9 +258,9 @@ public final class Eval
                           "E.g. (environment? (scheme-report-environment 5)) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity arg,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(arg instanceof Environment);
                 }

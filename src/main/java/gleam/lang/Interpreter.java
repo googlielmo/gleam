@@ -284,13 +284,17 @@ public class Interpreter
         if (primitive.keyword) {
             kwSet.add(name);
         }
+        installDocumentation(primitive.getName(), primitive.comment, primitive.documentation);
+    }
 
-        if (primitive.comment != null) {
-            helpComment.put(primitive.getName(), primitive.comment);
+    static void installDocumentation(String name, String comment, String documentation)
+    {
+        if (comment != null) {
+            helpComment.put(name, comment);
         }
 
-        if (primitive.documentation != null) {
-            helpDocumentation.put(primitive.getName(), primitive.documentation);
+        if (documentation != null) {
+            helpDocumentation.put(name, documentation);
         }
     }
 

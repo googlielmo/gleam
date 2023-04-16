@@ -65,9 +65,9 @@ public final class ControlFeatures
                           "E.g. (procedure? cons) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1 instanceof Procedure);
                 }
@@ -86,9 +86,9 @@ public final class ControlFeatures
                           "A simple usage pattern of call/cc is to implement exception handling." /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     if (arg1 instanceof Procedure) {
                         /* create a new procedure call with the continuation argument. */
@@ -118,10 +118,10 @@ public final class ControlFeatures
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity proc,
-                                     Entity args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity proc,
+                                    Entity args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     if (!(proc instanceof Procedure)) {
                         throw new GleamException(this,

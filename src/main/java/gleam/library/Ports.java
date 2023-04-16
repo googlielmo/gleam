@@ -30,6 +30,7 @@ import gleam.lang.Boolean;
 import gleam.lang.Continuation;
 import gleam.lang.Entity;
 import gleam.lang.Environment;
+import gleam.lang.GleamException;
 import gleam.lang.InputPort;
 import gleam.lang.OutputPort;
 import gleam.lang.Port;
@@ -64,9 +65,9 @@ public final class Ports
                           "E.g. (port? (current-input-port)) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity obj,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof Port);
                 }
@@ -85,9 +86,9 @@ public final class Ports
                           "E.g. (input-port? (current-input-port)) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity obj,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof InputPort);
                 }
@@ -106,9 +107,9 @@ public final class Ports
                           "E.g. (output-port? (current-input-port)) => #f" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity obj,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof OutputPort);
                 }
@@ -127,9 +128,9 @@ public final class Ports
                           "E.g. (textual-port? (current-input-port)) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity obj,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(
                             obj instanceof Port && ((Port) obj).getKind() == Port.Kind.TEXTUAL);
@@ -149,9 +150,9 @@ public final class Ports
                           "E.g. (binary-port? (current-input-port)) => #f" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity obj,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(
                             obj instanceof Port && ((Port) obj).getKind() == Port.Kind.BINARY);
@@ -171,7 +172,7 @@ public final class Ports
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply0(Environment env, Continuation cont)
+                public Entity apply(Environment env, Continuation cont)
                 {
                     return env.getExecutionContext().getIn();
                 }
@@ -190,14 +191,34 @@ public final class Ports
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply0(Environment env, Continuation cont)
+                public Entity apply(Environment env, Continuation cont)
                 {
                     return env.getExecutionContext().getOut();
                 }
-            }
+            },
+
+            /*
+             * open-input-file
+             * Takes a string naming an existing file and returns an input port capable of
+             * delivering characters from the file
+             */
+            new Primitive("open-input-file",
+                          REPORT_ENV, /* environment */
+                          IDENTIFIER, /* type */
+                          0, /* min no. of arguments */
+                          1, /* max no. of arguments */
+                          "Takes a string naming an existing file and returns an input port " +
+                          "capable of delivering characters from the file.", /* comment */
+                          null /* docs */,
+                          (Proc1) Ports::openInputFile)
 
     }; // primitives
 
     /** Can't instantiate this class. */
     private Ports() {}
+
+    public static InputPort openInputFile(Entity arg1, Environment env, Continuation cont) throws GleamException
+    {
+        return SystemInterface.openFile("open-input-file", arg1);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2023 Guglielmo Nigri.  All Rights Reserved.
+ * Copyright (c) 2023 Guglielmo Nigri.  All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -24,38 +24,19 @@
  *
  */
 
-/*
- * SyntaxProcedure.java
- *
- * Created on January 16, 2002, 19.42
- */
+package gleam.library;
 
-package gleam.lang;
+import gleam.lang.Continuation;
+import gleam.lang.Entity;
+import gleam.lang.Environment;
+import gleam.lang.GleamException;
 
-import java.io.PrintWriter;
-
-/**
- * A special form, or a specialized version of primitive procedure, with different rules for
- * parameter evaluation. It is assumed that procedures of this class may take their arguments
- * without following the standard evaluation rules.
- */
-public class SyntaxProcedure extends PrimitiveProcedure implements SyntaxObject
+@FunctionalInterface
+public interface Proc3
 {
-
-    private static final long serialVersionUID = 2L;
-
-    /**
-     * SyntaxProcedure
-     */
-    public SyntaxProcedure(gleam.library.Primitive p)
-    {
-        super(p);
-    }
-
-    @Override
-    public PrintWriter write(PrintWriter out)
-    {
-        out.write("#<syntax-procedure " + primitive.getName() + ">");
-        return out;
-    }
+    Entity apply(Entity arg1,
+                 Entity arg2,
+                 Entity arg3,
+                 Environment env,
+                 Continuation cont) throws GleamException;
 }

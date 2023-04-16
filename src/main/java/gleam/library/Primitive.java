@@ -44,44 +44,56 @@ import gleam.lang.List;
  * corresponding to the maxArgs of the primitive (0..3, or N when more than 3 or VAR_ARGS). Missing
  * arguments will be represented by null values if minArgs is less than maxArgs.
  */
-public abstract class Primitive implements java.io.Serializable
+public class Primitive implements Proc0, Proc1, Proc2, Proc3, ProcN,
+                                  java.io.Serializable
 {
     /** binding for a language keyword */
     public static final boolean KEYWORD = true;
+
     /** binding for an identifier */
     public static final boolean IDENTIFIER = false;
+
     /** constant to signal a variable (unlimited) number of arguments */
     public static final int VAR_ARGS = -1;
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     /** definition environment */
     public final Environment.Kind definitionEnv;
     /** true if this primitive defines a syntax keyword, false otherwise */
     public final boolean keyword;
 
-    // documentation fields
     /** minimum no. of arguments */
     public final int minArgs;
     /** maximum no. of arguments, or VAR_ARGS for a variable number */
     public final int maxArgs;
 
-    // constant values for keyword field
     /** a short note about this primitive */
     public final transient String comment;
+
     /** an optional longer documentation note */
     public final transient String documentation;
 
-    // constant values for maxArgs field
     /** primitive name, as used in programs, e.g. "car" */
     private final String name;
 
-    Primitive(String name,
-              Environment.Kind definitionEnv,
-              boolean keyword,
-              int minArgs,
-              int maxArgs,
-              String comment,
-              String documentation)
+    public final Proc0 proc0;
+    public final Proc1 proc1;
+    public final Proc2 proc2;
+    public final Proc3 proc3;
+    public final ProcN procN;
+
+    private Primitive(String name,
+                      Environment.Kind definitionEnv,
+                      boolean keyword,
+                      int minArgs,
+                      int maxArgs,
+                      String comment,
+                      String documentation,
+                      Proc0 proc0,
+                      Proc1 proc1,
+                      Proc2 proc2,
+                      Proc3 proc3,
+                      ProcN procN)
     {
         this.name = name;
         this.definitionEnv = definitionEnv;
@@ -101,7 +113,148 @@ public abstract class Primitive implements java.io.Serializable
         else {
             this.documentation = this.comment;
         }
+        this.proc0 = proc0 == null ? this : proc0;
+        this.proc1 = proc1 == null ? this : proc1;
+        this.proc2 = proc2 == null ? this : proc2;
+        this.proc3 = proc3 == null ? this : proc3;
+        this.procN = procN == null ? this : procN;
+    }
 
+    /**
+     * Creates a primitive that provides one of the apply methods by subclassing.
+     *
+     * @param name          procedure name
+     * @param definitionEnv definition Environment
+     * @param keyword       keyword?
+     * @param minArgs       minimum no. of arguments
+     * @param maxArgs       maximum no. of arguments, or -1 for varargs
+     * @param comment       short procedure description
+     * @param documentation full procedure documentation
+     */
+    Primitive(String name,
+              Environment.Kind definitionEnv,
+              boolean keyword,
+              int minArgs,
+              int maxArgs,
+              String comment,
+              String documentation)
+    {
+        this(name,
+             definitionEnv,
+             keyword,
+             minArgs,
+             maxArgs,
+             comment,
+             documentation,
+             null,
+             null,
+             null,
+             null,
+             null);
+    }
+
+    Primitive(String name,
+              Environment.Kind definitionEnv,
+              boolean keyword,
+              int minArgs,
+              int maxArgs,
+              String comment,
+              String documentation,
+              Proc0 proc0)
+    {
+        this(name,
+             definitionEnv,
+             keyword,
+             minArgs,
+             maxArgs,
+             comment,
+             documentation,
+             proc0,
+             null,
+             null,
+             null,
+             null);
+    }
+
+    Primitive(String name,
+              Environment.Kind definitionEnv,
+              boolean keyword,
+              int minArgs,
+              int maxArgs,
+              String comment,
+              String documentation,
+              Proc1 proc1)
+    {
+        this(name,
+             definitionEnv,
+             keyword,
+             minArgs,
+             maxArgs,
+             comment,
+             documentation,
+             null,
+             proc1,
+             null,
+             null,
+             null);
+    }
+
+    Primitive(String name,
+              Environment.Kind definitionEnv,
+              boolean keyword,
+              int minArgs,
+              int maxArgs,
+              String comment,
+              String documentation,
+              Proc2 proc2)
+    {
+        this(name,
+             definitionEnv,
+             keyword,
+             minArgs,
+             maxArgs,
+             comment,
+             documentation,
+             null,
+             null,
+             proc2,
+             null,
+             null);
+    }
+
+    Primitive(String name,
+              Environment.Kind definitionEnv,
+              boolean keyword,
+              int minArgs,
+              int maxArgs,
+              String comment,
+              String documentation,
+              Proc3 proc3)
+    {
+        this(name,
+             definitionEnv,
+             keyword,
+             minArgs,
+             maxArgs,
+             comment,
+             documentation,
+             null,
+             null,
+             null,
+             proc3,
+             null);
+    }
+
+    Primitive(String name,
+              Environment.Kind definitionEnv,
+              boolean keyword,
+              int minArgs,
+              int maxArgs,
+              String comment,
+              String documentation,
+              ProcN procN)
+    {
+        this(name, definitionEnv, keyword, minArgs, maxArgs, comment, documentation, null, null, null, null, procN);
     }
 
     /**
@@ -115,9 +268,8 @@ public abstract class Primitive implements java.io.Serializable
      * @throws gleam.lang.GleamException if any error is signaled during the execution of this
      *                                   primitive
      */
-    @SuppressWarnings("unused")
-    public Entity apply0(Environment env,
-                         Continuation cont) throws GleamException
+    public Entity apply(Environment env,
+                        Continuation cont) throws GleamException
     {
         throw new GleamException(this, "apply0 not implemented", null);
     }
@@ -134,9 +286,9 @@ public abstract class Primitive implements java.io.Serializable
      * @throws gleam.lang.GleamException if any error is signaled during the execution of this
      *                                   primitive
      */
-    public Entity apply1(Entity arg1,
-                         Environment env,
-                         Continuation cont) throws GleamException
+    public Entity apply(Entity arg1,
+                        Environment env,
+                        Continuation cont) throws GleamException
     {
         throw new GleamException(this, "apply1 not implemented", null);
     }
@@ -154,10 +306,10 @@ public abstract class Primitive implements java.io.Serializable
      * @throws gleam.lang.GleamException if any error is signaled during the execution of this
      *                                   primitive
      */
-    public Entity apply2(Entity arg1,
-                         Entity arg2,
-                         Environment env,
-                         Continuation cont) throws GleamException
+    public Entity apply(Entity arg1,
+                        Entity arg2,
+                        Environment env,
+                        Continuation cont) throws GleamException
     {
         throw new GleamException(this, "apply2 not implemented", null);
     }
@@ -176,11 +328,11 @@ public abstract class Primitive implements java.io.Serializable
      * @throws gleam.lang.GleamException if any error is signaled during the execution of this
      *                                   primitive
      */
-    public Entity apply3(Entity arg1,
-                         Entity arg2,
-                         Entity arg3,
-                         Environment env,
-                         Continuation cont) throws GleamException
+    public Entity apply(Entity arg1,
+                        Entity arg2,
+                        Entity arg3,
+                        Environment env,
+                        Continuation cont) throws GleamException
     {
         throw new GleamException(this, "apply3 not implemented", null);
     }
@@ -197,9 +349,9 @@ public abstract class Primitive implements java.io.Serializable
      * @throws gleam.lang.GleamException if any error is signaled during the execution of this
      *                                   primitive
      */
-    public Entity applyN(List args,
-                         Environment env,
-                         Continuation cont) throws GleamException
+    public Entity apply(List args,
+                        Environment env,
+                        Continuation cont) throws GleamException
     {
         throw new GleamException(this, "applyN not implemented", null);
     }
@@ -223,15 +375,13 @@ public abstract class Primitive implements java.io.Serializable
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(name);
-        sb.append(":");
-        sb.append(minArgs);
+        sb.append(name).append(":").append(minArgs);
         if (minArgs != maxArgs) {
+            sb.append("..");
             if (maxArgs < 0) {
-                sb.append("..*");
+                sb.append("*");
             }
             else {
-                sb.append("..");
                 sb.append(maxArgs);
             }
         }

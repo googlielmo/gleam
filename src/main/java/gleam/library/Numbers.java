@@ -66,9 +66,9 @@ public final class Numbers
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     double result = 0.0;
                     ListIterator it = new ListIterator(args);
@@ -100,9 +100,9 @@ public final class Numbers
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     double result = 0.0;
                     ListIterator it = new ListIterator(args);
@@ -126,9 +126,9 @@ public final class Numbers
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     double result = 1.0;
                     ListIterator it = new ListIterator(args);
@@ -168,9 +168,9 @@ public final class Numbers
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     double result = 1.0;
                     ListIterator it = new ListIterator(args);
@@ -194,9 +194,9 @@ public final class Numbers
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     boolean retVal = true;
                     double prev, curr;
@@ -227,9 +227,9 @@ public final class Numbers
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     boolean retVal = true;
                     double prev, curr;
@@ -260,9 +260,9 @@ public final class Numbers
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     boolean retVal = true;
                     double prev, curr;
@@ -293,9 +293,9 @@ public final class Numbers
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     boolean retVal = true;
                     double prev, curr;
@@ -326,9 +326,9 @@ public final class Numbers
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     boolean retVal = true;
                     double prev, curr;
@@ -359,9 +359,9 @@ public final class Numbers
                           "E.g. (number? 3) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1 instanceof Number);
                 }

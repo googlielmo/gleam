@@ -65,9 +65,9 @@ public final class Input
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1 instanceof Eof);
                 }
@@ -86,9 +86,9 @@ public final class Input
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     InputPort iport = getInputPort(this, arg1, env);
                     return iport.read();
@@ -108,9 +108,9 @@ public final class Input
                           null /* docs */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     InputPort iport = getInputPort(this, arg1, env);
                     return iport.readChar();
@@ -131,9 +131,9 @@ public final class Input
                           null /* docs */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     InputPort iport = getInputPort(this, arg1, env);
                     return iport.peekChar();
@@ -154,34 +154,12 @@ public final class Input
                           null /* docs */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     InputPort iport = getInputPort(this, arg1, env);
                     return iport.isCharReady();
-                }
-            },
-
-            /*
-             * open-input-file
-             *
-             */
-            new Primitive("open-input-file",
-                          REPORT_ENV, /* environment */
-                          IDENTIFIER, /* type */
-                          0, /* min no. of arguments */
-                          1, /* max no. of arguments */
-                          "Takes a string naming an existing file and returns an input port " +
-                          "capable of delivering characters from the file.", /* comment */
-                          null /* docs */)
-            {
-                @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
-                {
-                    return SystemInterface.openFile(this, arg1);
                 }
             }
 

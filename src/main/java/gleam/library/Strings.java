@@ -61,9 +61,9 @@ public final class Strings
                           "E.g. (string? \"hello\") => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity obj,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof MutableString);
                 }

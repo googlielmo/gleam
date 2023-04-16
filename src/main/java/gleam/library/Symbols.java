@@ -68,9 +68,9 @@ public final class Symbols
                           "E.g. (symbol? 'sym) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1 instanceof Symbol);
                 }
@@ -89,7 +89,7 @@ public final class Symbols
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply0(Environment env, Continuation cont)
+                public Entity apply(Environment env, Continuation cont)
                 {
                     return Symbol.makeUninternedSymbol("__S" + (gencount.getAndIncrement()));
                 }

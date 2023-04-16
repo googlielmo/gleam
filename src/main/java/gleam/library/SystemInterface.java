@@ -56,32 +56,30 @@ public final class SystemInterface
              * load
              * Loads and executes an external source file
              */
-            new Primitive("load",
-                          REPORT_ENV,
-                          Primitive.IDENTIFIER, /* environment, type */
-                          1,
-                          1, /* min, max no. of arguments */
-                          "Loads and executes a source file",
-                          null /* doc strings */)
-            {
-                @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
-                {
-                    try (InputPort inputPort = openFile(this, arg1)) {
-                        env.getExecutionContext().getInterpreter().load(inputPort, env);
-                    }
-                    return Void.VALUE;
-                }
-            }
+            new Primitive(
+                    "load",
+                    REPORT_ENV,
+                    Primitive.IDENTIFIER, /* environment, type */
+                    1,
+                    1, /* min, max no. of arguments */
+                    "Loads and executes a source file",
+                    null /* doc strings */,
+                    (Proc1) SystemInterface::load)
 
     }; // primitives
 
     /** Can't instantiate this class. */
     private SystemInterface() {}
 
-    public static InputPort openFile(Primitive primitive, Entity arg) throws GleamException
+    public static Void load(Entity arg1, Environment env, Continuation cont) throws GleamException
+    {
+        try (InputPort inputPort = openFile("load", arg1)) {
+            env.getExecutionContext().getInterpreter().load(inputPort, env);
+        }
+        return Void.VALUE;
+    }
+
+    static InputPort openFile(String primitive, Entity arg) throws GleamException
     {
         if (arg instanceof MutableString) {
             MutableString filename = (MutableString) arg;
@@ -89,9 +87,9 @@ public final class SystemInterface
                 return new InputPort(filename.toString());
             }
             catch (IOException e) {
-                throw new GleamException(primitive, "I/O error " + e.getMessage(), arg);
+                throw new GleamException(primitive + ": I/O error " + e.getMessage(), arg);
             }
         }
-        throw new GleamException(primitive, "argument is not a string", arg);
+        throw new GleamException(primitive + ": argument is not a string", arg);
     }
 }

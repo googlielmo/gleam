@@ -61,10 +61,10 @@ public final class Equivalence
                           "E.g. (eq? 'a 'a) => #t, but (eq? (list 'a) (list 'a)) => #f" /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity arg1,
-                                     Entity arg2,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity arg1,
+                                    Entity arg2,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     // Java object are a special case, since we want to compare the
                     // underlying objects to preserve common Java semantics
@@ -90,10 +90,10 @@ public final class Equivalence
                           "E.g. (eqv? 10 10) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity arg1,
-                                     Entity arg2,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity arg1,
+                                    Entity arg2,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(arg1.equals(arg2));
                 }

@@ -80,9 +80,9 @@ public final class Interaction
                 private static final int HELP_COLUMN_WIDTH = 19;
 
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     OutputPort cout = env.getExecutionContext().getOut();
                     if (arg1 != null) {
@@ -157,9 +157,9 @@ public final class Interaction
                           "E.g. (set-verbosity! 2)" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     if (!(arg1 instanceof Number)) {
                         throw new GleamException(this, INVALID_ARGUMENT, arg1);
@@ -189,7 +189,7 @@ public final class Interaction
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply0(Environment env, Continuation cont)
+                public Entity apply(Environment env, Continuation cont)
                 {
                     return new Real(Level.OFF.getValue() - logger.getLevelValue());
                 }
@@ -208,9 +208,9 @@ public final class Interaction
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     if (arg1 instanceof MutableString) {
                         try (FileOutputStream fos = new java.io.FileOutputStream(
@@ -251,9 +251,9 @@ public final class Interaction
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     if (arg1 instanceof MutableString) {
                         try (FileInputStream fis = new FileInputStream(arg1.toString());

@@ -73,9 +73,9 @@ public final class Syntax
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return arg1;
                 }
@@ -96,9 +96,9 @@ public final class Syntax
                           "to create a new local variable." /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     try {
                         ListIterator it = new ListIterator(args);
@@ -169,9 +169,9 @@ public final class Syntax
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     try {
                         Entity lambdaParams = args.getCar();
@@ -199,11 +199,11 @@ public final class Syntax
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply3(Entity test,
-                                     Entity consequent,
-                                     Entity alternate,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity test,
+                                    Entity consequent,
+                                    Entity alternate,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     if (alternate == null) {
                         alternate = Void.VALUE;
@@ -229,10 +229,10 @@ public final class Syntax
                           "The variable must be already bound, e.g. with define" /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity arg1,
-                                     Entity obj,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Entity obj,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     try {
                         Symbol s = (Symbol) arg1;
@@ -261,9 +261,9 @@ public final class Syntax
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     // equivalent to the body of a procedure with no arguments
                     cont.addCommandSequence(args, env);
@@ -423,9 +423,9 @@ public final class Syntax
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity obj,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     // evaluate argument: must be a function of exactly one argument
                     // obj = obj.eval(env, cont);

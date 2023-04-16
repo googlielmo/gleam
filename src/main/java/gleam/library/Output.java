@@ -66,10 +66,10 @@ public final class Output
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity obj,
-                                     Entity obj2,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity obj,
+                                    Entity obj2,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     OutputPort out;
 
@@ -112,10 +112,10 @@ public final class Output
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity arg1,
-                                     Entity arg2,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Entity arg2,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     // get output port, if present
                     OutputPort oport = getOutputPort(this, arg2, env);
@@ -144,9 +144,9 @@ public final class Output
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     OutputPort oport = getOutputPort(this, arg1, env);
 
@@ -174,10 +174,10 @@ public final class Output
                           null /* docs */)
             {
                 @Override
-                public Entity apply2(Entity arg1,
-                                     Entity arg2,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Entity arg2,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     OutputPort oport = getOutputPort(this, arg2, env);
                     if (!(arg1 instanceof Character)) {
@@ -201,9 +201,9 @@ public final class Output
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     OutputPort oport = getOutputPort(this, arg1, env);
 

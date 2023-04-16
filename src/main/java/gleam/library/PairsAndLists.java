@@ -66,9 +66,9 @@ public final class PairsAndLists
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     try {
                         return ((List) arg1).getCar();
@@ -92,9 +92,9 @@ public final class PairsAndLists
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity arg1,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     try {
                         return ((List) arg1).getCdr();
@@ -118,10 +118,10 @@ public final class PairsAndLists
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity first,
-                                     Entity second,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity first,
+                                    Entity second,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return new Pair(first, second);
                 }
@@ -140,9 +140,9 @@ public final class PairsAndLists
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(List args,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(List args,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     // TODO: investigate: could we simply return list?
                     ListIterator it = new ListIterator(args);
@@ -173,9 +173,9 @@ public final class PairsAndLists
                           "E.g. (pair? (cons 1 2)) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity obj,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof Pair);
                 }
@@ -194,9 +194,9 @@ public final class PairsAndLists
                           "E.g. (null? '()) => #t" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity obj,
-                                     Environment env,
-                                     Continuation cont)
+                public Entity apply(Entity obj,
+                                    Environment env,
+                                    Continuation cont)
                 {
                     return Boolean.makeBoolean(obj instanceof EmptyList);
                 }
@@ -215,10 +215,10 @@ public final class PairsAndLists
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity first,
-                                     Entity second,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity first,
+                                    Entity second,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     if (!(first instanceof Pair)) {
                         throw new GleamException(this,
@@ -244,10 +244,10 @@ public final class PairsAndLists
                           null /* doc strings */)
             {
                 @Override
-                public Entity apply2(Entity first,
-                                     Entity second,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(Entity first,
+                                    Entity second,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     if (!(first instanceof Pair)) {
                         throw new GleamException(this,

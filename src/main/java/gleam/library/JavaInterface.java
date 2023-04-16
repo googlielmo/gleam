@@ -84,9 +84,9 @@ public class JavaInterface
                           null /* doc strings */)
             {
                 @Override
-                public Entity applyN(gleam.lang.List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(gleam.lang.List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     ListIterator it = new ListIterator(args);
                     Entity e = it.next();
@@ -120,9 +120,9 @@ public class JavaInterface
                           "E.g. (call 'length (new 'java.lang.String \"test\")) => 4" /* doc strings */)
             {
                 @Override
-                public Entity applyN(gleam.lang.List args,
-                                     Environment env,
-                                     Continuation cont) throws GleamException
+                public Entity apply(gleam.lang.List args,
+                                    Environment env,
+                                    Continuation cont) throws GleamException
                 {
                     ListIterator it = new ListIterator(args);
                     Entity methodName = it.next();
@@ -159,7 +159,7 @@ public class JavaInterface
                           "E.g. (class-of (new 'java.lang.String \"test\")) => class java.lang.String" /* doc strings */)
             {
                 @Override
-                public Entity apply1(Entity arg1, Environment env, Continuation cont)
+                public Entity apply(Entity arg1, Environment env, Continuation cont)
                 {
                     if (arg1 instanceof JavaObject) {
                         JavaObject javaObject = (JavaObject) arg1;
