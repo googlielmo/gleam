@@ -90,19 +90,14 @@ public final class ControlFeatures
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    if (arg1 instanceof Procedure) {
-                        /* create a new procedure call with the continuation argument. */
-                        ArgumentList arglist = new ArgumentList();
-                        /* use a copy of cont, as it's going to change */
-                        arglist.set(0, new Continuation(cont));
-                        cont.beginWith(new ProcedureCallAction(arglist, env));
-                        return arg1;
-                    }
-                    else {
-                        throw new GleamException(
-                                "call-with-current-continuation: wrong argument type, should be a procedure",
-                                arg1);
-                    }
+                    Arguments.requireProcedure("call-with-current-continuation: invalid argument",
+                                               arg1);
+                    /* create a new procedure call with the continuation argument. */
+                    ArgumentList arglist = new ArgumentList();
+                    /* use a copy of cont, as it's going to change */
+                    arglist.set(0, new Continuation(cont));
+                    cont.beginWith(new ProcedureCallAction(arglist, env));
+                    return arg1;
                 }
             },
 
@@ -123,22 +118,11 @@ public final class ControlFeatures
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    if (!(proc instanceof Procedure)) {
-                        throw new GleamException(this,
-                                                 "wrong argument type, should be a procedure",
-                                                 proc);
-                    }
-
-                    if (args instanceof List) {
-                        /* create a new procedure call with the given arguments. */
-                        cont.beginWith(new ProcedureCallAction(new ArgumentList((List) args),
-                                                               env));
-                        return proc;
-                    }
-
-                    throw new GleamException(this,
-                                             "wrong argument type, should be a list",
-                                             args);
+                    Arguments.requireProcedure("apply", proc);
+                    List argList = Arguments.requireList("apply: invalid arguments", args);
+                    /* create a new procedure call with the given arguments. */
+                    cont.beginWith(new ProcedureCallAction(new ArgumentList(argList), env));
+                    return proc;
                 }
             }
 

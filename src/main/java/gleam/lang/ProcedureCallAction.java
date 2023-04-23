@@ -26,6 +26,8 @@
 
 package gleam.lang;
 
+import static gleam.library.Arguments.requireProcedure;
+
 /**
  * Procedure call action.
  * <p>
@@ -57,13 +59,7 @@ public class ProcedureCallAction extends Action
     Entity invoke(Entity arg, Continuation cont) throws gleam.lang.GleamException
     {
         // apply function to args, return result
-        Procedure procedure;
-        try {
-            procedure = (Procedure) arg;
-        }
-        catch (ClassCastException ex) {
-            throw new GleamException("procedure call: operator is not a procedure", arg);
-        }
+        Procedure procedure = requireProcedure("procedure call", arg);
         trace(out -> out.printf("%s\n", arg.toWriteFormat()), env);
         return procedure.apply(arglist.getArguments(), env, cont);
     }

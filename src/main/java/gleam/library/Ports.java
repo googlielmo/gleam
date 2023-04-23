@@ -217,7 +217,9 @@ public final class Ports
     /** Can't instantiate this class. */
     private Ports() {}
 
-    public static InputPort openInputFile(Entity arg1, Environment env, Continuation cont) throws GleamException
+    public static InputPort openInputFile(Entity arg1,
+                                          Environment env,
+                                          Continuation cont) throws GleamException
     {
         return SystemInterface.openFile("open-input-file", arg1);
     }

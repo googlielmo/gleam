@@ -38,6 +38,8 @@ import gleam.lang.Number;
 
 import static gleam.lang.Environment.Kind.INTERACTION_ENV;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
+import static gleam.library.Arguments.requireEnvironment;
+import static gleam.library.Arguments.requireNumber;
 
 /**
  * EVAL
@@ -71,18 +73,9 @@ public final class Eval
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    Environment eval_env;
-                    if (arg2 == null) {
-                        eval_env = env;
-                    }
-                    else {
-                        try {
-                            eval_env = (Environment) arg2;
-                        }
-                        catch (ClassCastException e) {
-                            throw new GleamException(this, "not an environment", arg2);
-                        }
-                    }
+                    Environment eval_env = arg2 == null
+                                           ? env
+                                           : requireEnvironment("eval", arg2);
                     arg1 = arg1.analyze(env).optimize(eval_env);
                     cont.beginWith(new ExpressionAction(arg1, eval_env));
                     return null;
@@ -108,17 +101,12 @@ public final class Eval
                                     Continuation cont) throws GleamException
                 {
                     Number version;
-                    try {
-                        version = (Number) arg1;
-                        if (version.doubleValue() == 4.0 || version.doubleValue() == 5.0) {
-                            return Interpreter.getNullEnv();
-                        }
-                        else {
-                            throw new GleamException(this, "version not supported", version);
-                        }
+                    version = requireNumber("null-environment", arg1);
+                    if (version.doubleValue() == 4.0 || version.doubleValue() == 5.0) {
+                        return Interpreter.getNullEnv();
                     }
-                    catch (ClassCastException e) {
-                        throw new GleamException(this, "not a version number", arg1);
+                    else {
+                        throw new GleamException(this, "version not supported", version);
                     }
                 }
             },
@@ -142,21 +130,12 @@ public final class Eval
                                     Continuation cont) throws GleamException
                 {
                     Number version;
-                    try {
-                        version = (Number) arg1;
-                        if (version.doubleValue() == 4.0 || version.doubleValue() == 5.0) {
-                            return Interpreter.getSchemeReportEnv();
-                        }
-                        else {
-                            throw new GleamException(this,
-                                                     "version not supported",
-                                                     version);
-                        }
+                    version = requireNumber("scheme-report-environment", arg1);
+                    if (version.doubleValue() == 4.0 || version.doubleValue() == 5.0) {
+                        return Interpreter.getSchemeReportEnv();
                     }
-                    catch (ClassCastException e) {
-                        throw new GleamException(this,
-                                                 "not a version number",
-                                                 arg1);
+                    else {
+                        throw new GleamException(this, "version not supported", version);
                     }
                 }
             },

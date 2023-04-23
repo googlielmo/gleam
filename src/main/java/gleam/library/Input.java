@@ -44,8 +44,6 @@ import static gleam.library.Primitive.IDENTIFIER;
  */
 public final class Input
 {
-    private static final String NOT_AN_INPUT_PORT = "not an input port";
-
     /**
      * This array contains definitions of primitives. It is used by static initializers in
      * gleam.lang.System to populate the three initial environments.
@@ -174,12 +172,7 @@ public final class Input
             iport = env.getExecutionContext().getIn();
         }
         else {
-            if (arg instanceof InputPort) {
-                iport = (InputPort) arg;
-            }
-            else {
-                throw new GleamException(primitive, NOT_AN_INPUT_PORT, arg);
-            }
+            iport = Arguments.requireInputPort(primitive.getName(), arg);
         }
         return iport;
     }

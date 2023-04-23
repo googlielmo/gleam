@@ -37,6 +37,7 @@ import gleam.lang.Void;
 import java.io.IOException;
 
 import static gleam.lang.Environment.Kind.REPORT_ENV;
+import static gleam.library.Arguments.requireMutableString;
 
 /**
  * SYSTEM INTERFACE
@@ -81,15 +82,12 @@ public final class SystemInterface
 
     static InputPort openFile(String primitive, Entity arg) throws GleamException
     {
-        if (arg instanceof MutableString) {
-            MutableString filename = (MutableString) arg;
-            try {
-                return new InputPort(filename.toString());
-            }
-            catch (IOException e) {
-                throw new GleamException(primitive + ": I/O error " + e.getMessage(), arg);
-            }
+        MutableString fileName = requireMutableString(primitive, arg);
+        try {
+            return new InputPort(fileName.toString());
         }
-        throw new GleamException(primitive + ": argument is not a string", arg);
+        catch (IOException e) {
+            throw new GleamException(primitive + ": I/O error " + e.getMessage(), fileName);
+        }
     }
 }

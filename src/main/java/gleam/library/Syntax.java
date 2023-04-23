@@ -45,6 +45,8 @@ import gleam.lang.Void;
 import static gleam.lang.Environment.Kind.INTERACTION_ENV;
 import static gleam.lang.Environment.Kind.NULL_ENV;
 import static gleam.lang.Environment.Kind.REPORT_ENV;
+import static gleam.library.Arguments.requirePair;
+import static gleam.library.Arguments.requireSymbol;
 
 /**
  * SYNTAX
@@ -100,59 +102,41 @@ public final class Syntax
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    try {
-                        ListIterator it = new ListIterator(args);
-                        Entity target = it.next();
-                        Entity value = it.next();
-                        /* see if it is a variable definition
-                         * or a disguised lambda
-                         * note that target is NOT evaluated
-                         */
-                        if (target instanceof Symbol) {
-                            if (it.hasNext()) {
-                                throw new GleamException(this,
-                                                         "too many arguments",
-                                                         args);
-                            }
-                            Symbol s = (Symbol) target;
-                            // create binding
-                            env.define(s, Undefined.VALUE);
-                            // equivalent to set!
-                            cont.beginWith(new ExpressionAction(value, env))
-                                .andThen(new AssignmentAction(s, env));
+                    ListIterator it = new ListIterator(args);
+                    Entity target = it.next();
+                    Entity value = it.next();
 
-                            return null;
+                    /* see if it is a variable definition
+                     * or a disguised lambda;
+                     * note that target is NOT evaluated
+                     */
+                    if (target instanceof Symbol) {
+                        if (it.hasNext()) {
+                            throw new GleamException(this, "too many arguments", args);
                         }
-                        else if (target instanceof Pair) {
-                            Entity rtarget = ((List) target).getCar();
-                            Entity params = ((List) target).getCdr();
-                            Pair body = new Pair(value, it.rest());
-                            if (rtarget instanceof Symbol) {
-                                Symbol s = (Symbol) rtarget;
-                                // create binding
-                                env.define(s, Undefined.VALUE);
-                                // equivalent to set!
-                                cont.beginWith(new AssignmentAction(s, env));
+                        Symbol s = (Symbol) target;
+                        // create binding
+                        env.define(s, Undefined.VALUE);
+                        // equivalent to set!
+                        cont.beginWith(new ExpressionAction(value, env))
+                            .andThen(new AssignmentAction(s, env));
 
-                                return new Closure(params, body, env);
-                            }
-                            else {
-                                throw new GleamException(this,
-                                                         "invalid procedure name",
-                                                         rtarget);
-                            }
-                        }
-                        else {
-                            throw new GleamException(this,
-                                                     "invalid form",
-                                                     args);
-                        }
+                        return null;
                     }
-                    catch (ClassCastException e) {
-                        throw new GleamException(this,
-                                                 "invalid arguments",
-                                                 args);
+                    else if (target instanceof Pair) {
+                        List list = (List) target;
+                        Entity rtarget = list.getCar();
+                        Entity params = list.getCdr();
+                        Pair body = new Pair(value, it.rest());
+                        Symbol s = requireSymbol("define: invalid procedure name", rtarget);
+                        // create binding
+                        env.define(s, Undefined.VALUE);
+                        // equivalent to set!
+                        cont.beginWith(new AssignmentAction(s, env));
+
+                        return new Closure(params, body, env);
                     }
+                    throw new GleamException(this, "invalid form", args);
                 }
             },
 
@@ -173,16 +157,10 @@ public final class Syntax
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    try {
-                        Entity lambdaParams = args.getCar();
-                        Pair lambdaBody = (Pair) args.getCdr();
-                        return new Closure(lambdaParams, lambdaBody, env);
-                    }
-                    catch (ClassCastException e) {
-                        throw new GleamException(this,
-                                                 "invalid procedure definition",
-                                                 args);
-                    }
+                    Entity lambdaParams = args.getCar();
+                    Pair lambdaBody = requirePair("lambda: invalid procedure definition",
+                                                  args.getCdr());
+                    return new Closure(lambdaParams, lambdaBody, env);
                 }
             },
 
@@ -234,16 +212,11 @@ public final class Syntax
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    try {
-                        Symbol s = (Symbol) arg1;
-                        cont.beginWith(new ExpressionAction(obj, env))
-                            .andThen(new AssignmentAction(s, env));
+                    Symbol s = requireSymbol("set!", arg1);
+                    cont.beginWith(new ExpressionAction(obj, env))
+                        .andThen(new AssignmentAction(s, env));
 
-                        return null;
-                    }
-                    catch (ClassCastException e) {
-                        throw new GleamException(this, "argument is not a symbol", arg1);
-                    }
+                    return null;
                 }
             },
 
@@ -429,20 +402,13 @@ public final class Syntax
                 {
                     // evaluate argument: must be a function of exactly one argument
                     // obj = obj.eval(env, cont);
-                    if (!(obj instanceof Closure)) {
-                        throw new GleamException(this,
-                                                 "argument must be a function taking one argument",
-                                                 obj);
-                    }
-                    else {
-                        Closure closure = (Closure) obj;
-                        if (closure.getMaxArity() != 1) {
-                            throw new GleamException(this,
-                                                     "argument must be a function taking one argument",
-                                                     obj);
-                        }
+                    Closure closure = Arguments.requireClosure(this.getName(), obj);
+                    if (closure.getMaxArity() == 1) {
                         return new SyntaxRewriter(closure);
                     }
+                    throw new GleamException(this,
+                                             "argument must be a function taking one argument",
+                                             obj);
                 }
             },
 

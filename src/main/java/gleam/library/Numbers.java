@@ -377,21 +377,12 @@ public final class Numbers
         return new Real(number);
     }
 
-    /** Can't instantiate this class. */
-    private Numbers() {}
-
     private static double getNumberArgument(Primitive primitive,
                                             Entity obj) throws GleamException
     {
-        double arg;
-        if (obj instanceof Number) {
-            arg = ((Number) obj).doubleValue();
-        }
-        else {
-            throw new GleamException(primitive,
-                                     "argument is not a number",
-                                     obj);
-        }
-        return arg;
+        return Arguments.requireNumber(primitive.getName(), obj).doubleValue();
     }
+
+    /** Can't instantiate this class. */
+    private Numbers() {}
 }

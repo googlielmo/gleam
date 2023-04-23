@@ -223,16 +223,15 @@ public class GleamScriptEngine implements ScriptEngine, Invocable
     @Override
     public void setContext(ScriptContext context)
     {
-        if (context instanceof GleamScriptContext) {
-            GleamScriptContext gleamScriptContext = (GleamScriptContext) context;
-            this.context = gleamScriptContext;
-            ExecutionContext executionContext = gleamScriptContext.getExecutionContext();
-            this.interpreter.getSessionEnv().setExecutionContext(executionContext);
-        }
-        else {
+        if (!(context instanceof GleamScriptContext)) {
             throw new IllegalArgumentException(String.format("context type not supported: %s",
                                                              context.getClass().getTypeName()));
         }
+
+        GleamScriptContext gleamScriptContext = (GleamScriptContext) context;
+        this.context = gleamScriptContext;
+        ExecutionContext executionContext = gleamScriptContext.getExecutionContext();
+        this.interpreter.getSessionEnv().setExecutionContext(executionContext);
     }
 
     @Override

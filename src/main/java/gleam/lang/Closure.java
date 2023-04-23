@@ -31,7 +31,8 @@ import gleam.util.Logger;
 import java.io.PrintWriter;
 
 import static gleam.lang.Entities.cons;
-import static gleam.util.Logger.Level.WARNING;
+import static gleam.library.Arguments.requireList;
+import static gleam.library.Arguments.requireSymbol;
 
 /**
  * Scheme closure. A procedure with a definition environment.
@@ -63,58 +64,46 @@ public class Closure extends Procedure
                         Environment env,
                         Continuation cont) throws GleamException
     {
+        List actuals = args;
         Environment localenv = new Environment(definitionEnv);
         Entity currparam = param;
         List prev = null;
         boolean dotparam = false;
 
-        /* bind actual (already evaluated) arguments to formals */
-        try {
-            // for each passed arg
-            while (args != EmptyList.VALUE) {
-                // get next arg
-                Entity obj = args.getCar();
+        // bind actual (already evaluated) arguments to formals
+        while (actuals != EmptyList.VALUE) {
+            // get next actual
+            Entity obj = actuals.getCar();
 
-                if (!dotparam) {
-                    if (currparam == EmptyList.VALUE) {
-                        throw new GleamException("apply: too many arguments",
-                                                 this);
-                    }
-                    else if (currparam instanceof Pair) {
-                        // regular case: get param symbol and bind it to argument in local env
-                        Entity p = ((Pair) currparam).getCar();
-                        if (p instanceof Symbol) {
-                            localenv.define((Symbol) p, obj);
-                        }
-                        else {
-                            logger.log(WARNING, "apply: param is not a symbol");
-                        }
-                        // get next param
-                        currparam = ((Pair) currparam).getCdr();
-                    }
-                    else if (currparam instanceof Symbol) {
-                        // varargs case:
-                        // we have a "." notation parameter, so we accumulate this and the next
-                        // parameters in a list bound to this param in local env
-                        prev = cons(obj);
-                        localenv.define((Symbol) currparam, prev);
-                        dotparam = true;
-                    }
-                    else {
-                        throw new GleamException("apply: invalid formal parameter", currparam);
-                    }
+            if (dotparam) {
+                // accumulate argument
+                prev.setCdr(cons(obj));
+                prev = (List) prev.getCdr();
+            }
+            else {
+                if (currparam == EmptyList.VALUE) {
+                    throw new GleamException("apply: too many arguments", args);
+                }
+                else if (currparam instanceof Pair) {
+                    // regular case: get param symbol and bind it to argument in local env
+                    Pair currpair = (Pair) currparam;
+                    Symbol symbol = requireSymbol("apply: invalid formal", currpair.getCar());
+                    localenv.define(symbol, obj);
+                    // get next param
+                    currparam = currpair.getCdr();
                 }
                 else {
-                    // accumulate argument
-                    prev.setCdr(cons(obj));
-                    prev = (List) prev.getCdr();
+                    // varargs case:
+                    // we have a "." notation parameter, so we accumulate this and the next
+                    // parameters in a list bound to this param in the local env
+                    Symbol symbol = requireSymbol("apply: invalid formal", currparam);
+                    prev = cons(obj);
+                    localenv.define(symbol, prev);
+                    dotparam = true;
                 }
-                // next argument, please
-                args = (List) args.getCdr();
             }
-        }
-        catch (ClassCastException e) {
-            throw new GleamException("apply: improper list", currparam);
+            // shift actuals left
+            actuals = requireList("apply", actuals.getCdr());
         }
 
         if (currparam instanceof Symbol && !dotparam) {
@@ -123,11 +112,10 @@ public class Closure extends Procedure
             localenv.define((Symbol) currparam, EmptyList.VALUE);
         }
         else if (currparam != EmptyList.VALUE && !dotparam) {
-            throw new GleamException("apply: too few arguments", this);
+            throw new GleamException("apply: too few arguments", args);
         }
 
-        // we have bound params, let's eval body
-        // by adding to the continuation
+        // we have bound params, let's eval body by adding it to the continuation
         cont.addCommandSequence(body, localenv);
         return null;
     }

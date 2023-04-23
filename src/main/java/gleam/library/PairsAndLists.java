@@ -38,6 +38,8 @@ import gleam.lang.Pair;
 import gleam.lang.Void;
 
 import static gleam.lang.Environment.Kind.REPORT_ENV;
+import static gleam.library.Arguments.requireList;
+import static gleam.library.Arguments.requirePair;
 
 /**
  * PAIRS AND LISTS
@@ -70,12 +72,7 @@ public final class PairsAndLists
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    try {
-                        return ((List) arg1).getCar();
-                    }
-                    catch (ClassCastException e) {
-                        throw new GleamException("car: invalid argument", arg1);
-                    }
+                    return requireList("car", arg1).getCar();
                 }
             },
 
@@ -96,12 +93,7 @@ public final class PairsAndLists
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    try {
-                        return ((List) arg1).getCdr();
-                    }
-                    catch (ClassCastException e) {
-                        throw new GleamException("cdr: invalid argument", arg1);
-                    }
+                    return requireList("cdr", arg1).getCdr();
                 }
             },
 
@@ -144,7 +136,7 @@ public final class PairsAndLists
                                     Environment env,
                                     Continuation cont)
                 {
-                    // TODO: investigate: could we simply return list?
+                    // TODO: could we simply return list?
                     ListIterator it = new ListIterator(args);
                     if (!it.hasNext()) {
                         return EmptyList.VALUE;
@@ -220,13 +212,7 @@ public final class PairsAndLists
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    if (!(first instanceof Pair)) {
-                        throw new GleamException(this,
-                                                 "invalid argument",
-                                                 first);
-                    }
-
-                    ((Pair) first).setCar(second);
+                    requirePair("set-car!", first).setCar(second);
                     return Void.VALUE;
                 }
             },
@@ -249,13 +235,7 @@ public final class PairsAndLists
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    if (!(first instanceof Pair)) {
-                        throw new GleamException(this,
-                                                 "invalid argument",
-                                                 first);
-                    }
-
-                    ((Pair) first).setCdr(second);
+                    requirePair("set-cdr!", first).setCdr(second);
                     return Void.VALUE;
                 }
             }

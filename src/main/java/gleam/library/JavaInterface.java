@@ -91,9 +91,7 @@ public class JavaInterface
                     ListIterator it = new ListIterator(args);
                     Entity e = it.next();
                     if (!(e instanceof Symbol)) {
-                        throw new GleamException(this,
-                                                 "wrong argument type, should be a symbol",
-                                                 e);
+                        throw new GleamException(this, "wrong argument type, should be a symbol", e);
                     }
                     Symbol className = (Symbol) e;
                     if (!it.hasNext()) {
@@ -102,9 +100,7 @@ public class JavaInterface
                     List<Class<?>> argClasses = new ArrayList<>();
                     Collection<Object> argObjects = new ArrayList<>();
                     iterateArguments(it, argClasses, argObjects);
-                    return makeJavaObjectInstance(className,
-                                                  argClasses.toArray(new Class<?>[0]),
-                                                  argObjects.toArray());
+                    return makeJavaObjectInstance(className, argClasses.toArray(new Class<?>[0]), argObjects.toArray());
                 }
             },
 
@@ -127,15 +123,11 @@ public class JavaInterface
                     ListIterator it = new ListIterator(args);
                     Entity methodName = it.next();
                     if (!(methodName instanceof Symbol)) {
-                        throw new GleamException(this,
-                                                 "wrong argument type, should be a symbol",
-                                                 methodName);
+                        throw new GleamException(this, "wrong argument type, should be a symbol", methodName);
                     }
                     Entity object = it.next();
                     if (!(object instanceof JavaObject)) {
-                        throw new GleamException(this,
-                                                 "wrong argument type, should be a Java object",
-                                                 object);
+                        throw new GleamException(this, "wrong argument type, should be a Java object", object);
                     }
                     List<Class<?>> argClasses = new ArrayList<>();
                     Collection<Object> argObjects = new ArrayList<>();
@@ -238,9 +230,7 @@ public class JavaInterface
         else if (arg instanceof Int) {
             return int.class;
         }
-        else {
-            throw new GleamException("cannot obtain the Java Class for a Gleam entity", arg);
-        }
+        throw new GleamException("cannot obtain the Java Class for a Gleam entity", arg);
     }
 
     private static Object getObjectFromEntity(Entity arg) throws GleamException

@@ -32,6 +32,8 @@
 
 package gleam.lang;
 
+import static gleam.library.Arguments.requireEnvironment;
+
 /**
  * An Action that evaluates an expression in an arbitrary environment.
  */
@@ -64,10 +66,7 @@ public class ExpressionInEnvironmentAction extends Action
     Entity invoke(Entity newEnv,
                   Continuation cont) throws gleam.lang.GleamException
     {
-        if (!(newEnv instanceof Environment)) {
-            throw new GleamException("not an environment", newEnv);
-        }
-        Environment evalEnv = (Environment) newEnv;
+        Environment evalEnv = requireEnvironment("eval", newEnv);
         expr = expr.analyze(evalEnv).optimize(evalEnv);
         trace(out -> out.printf("%s\n", expr.toWriteFormat()), env);
 

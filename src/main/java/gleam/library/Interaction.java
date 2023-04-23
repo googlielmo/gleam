@@ -32,10 +32,8 @@ import gleam.lang.Environment;
 import gleam.lang.GleamException;
 import gleam.lang.Interpreter;
 import gleam.lang.MutableString;
-import gleam.lang.Number;
 import gleam.lang.OutputPort;
 import gleam.lang.Real;
-import gleam.lang.Symbol;
 import gleam.lang.Void;
 import gleam.util.Logger;
 import gleam.util.Logger.Level;
@@ -48,6 +46,10 @@ import java.io.ObjectOutput;
 import java.util.Set;
 
 import static gleam.lang.Environment.Kind.INTERACTION_ENV;
+import static gleam.library.Arguments.requireEnvironment;
+import static gleam.library.Arguments.requireMutableString;
+import static gleam.library.Arguments.requireNumber;
+import static gleam.library.Arguments.requireSymbol;
 
 /**
  * INTERACTION (GLEAM-SPECIFIC)
@@ -88,20 +90,14 @@ public final class Interaction
                     if (arg1 != null) {
                         // we have an explicit argument,
                         // so print full documentation
-                        if (!(arg1 instanceof Symbol)) {
-                            throw new GleamException(this,
-                                                     INVALID_ARGUMENT,
-                                                     arg1);
-                        }
-
-                        String pname = arg1.toString();
+                        String pname = requireSymbol("help", arg1).toString();
                         String doc = Interpreter.getHelpDocumentation(pname);
                         if (doc != null) {
                             cout.print(doc);
                         }
                         else {
                             cout.print("No documentation available for ");
-                            cout.print(arg1.toString());
+                            cout.print(pname);
                             cout.print(". Try (help).");
                         }
                         cout.newline();
@@ -161,10 +157,7 @@ public final class Interaction
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    if (!(arg1 instanceof Number)) {
-                        throw new GleamException(this, INVALID_ARGUMENT, arg1);
-                    }
-                    double v = ((Number) arg1).doubleValue();
+                    double v = requireNumber("set-verbosity!", arg1).doubleValue();
                     if (v < Level.ALL.getValue() || v > Level.ERROR.getValue()) {
                         throw new GleamException(this,
                                                  "invalid argument (should be between " +
@@ -212,29 +205,22 @@ public final class Interaction
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    if (arg1 instanceof MutableString) {
-                        try (FileOutputStream fos = new java.io.FileOutputStream(
-                                arg1.toString());
-                             ObjectOutput output = new java.io.ObjectOutputStream(
-                                     fos)) {
-                            output.writeObject(env.getExecutionContext()
-                                                  .getInterpreter()
-                                                  .getSessionEnv());
-                            return Void.VALUE;
-                        }
-                        catch (java.io.FileNotFoundException e) {
-                            throw new GleamException(this,
-                                                     "file not found",
-                                                     arg1);
-                        }
-                        catch (java.io.IOException e) {
-                            Logger.getLogger().warning(e);
-                            throw new GleamException(this, "I/O warning", arg1);
-                        }
+                    MutableString fileName = requireMutableString("save-session", arg1);
+                    try (FileOutputStream fos = new java.io.FileOutputStream(fileName.toString());
+                         ObjectOutput output = new java.io.ObjectOutputStream(fos)) {
+                        output.writeObject(env.getExecutionContext()
+                                              .getInterpreter()
+                                              .getSessionEnv());
+                        return Void.VALUE;
                     }
-                    else {
-                        throw new GleamException(this, INVALID_ARGUMENT, arg1);
+                    catch (java.io.FileNotFoundException e) {
+                        throw new GleamException(this, "file not found", fileName);
                     }
+                    catch (java.io.IOException e) {
+                        Logger.getLogger().severe(e);
+                        throw new GleamException(this, "I/O error", fileName);
+                    }
+
                 }
             },
 
@@ -255,39 +241,29 @@ public final class Interaction
                                     Environment env,
                                     Continuation cont) throws GleamException
                 {
-                    if (arg1 instanceof MutableString) {
-                        try (FileInputStream fis = new FileInputStream(arg1.toString());
-                             ObjectInput input = new ObjectInputStream(fis)) {
-                            Environment newEnv = (Environment) input.readObject();
-
-                            env.getExecutionContext().getInterpreter().setSessionEnv(newEnv);
-                            return Void.VALUE;
-                        }
-                        catch (java.io.FileNotFoundException e) {
-                            logger.warning(e);
-                            throw new GleamException(this,
-                                                     "file not found",
-                                                     arg1);
-                        }
-                        catch (java.io.IOException e) {
-                            logger.warning(e);
-                            throw new GleamException(this, "I/O warning", arg1);
-                        }
-                        catch (ClassNotFoundException e) {
-                            logger.warning(e);
-                            throw new GleamException(this,
-                                                     "class not found",
-                                                     arg1);
-                        }
-                        catch (ClassCastException e) {
-                            logger.warning(e);
-                            throw new GleamException(this,
-                                                     "invalid class",
-                                                     arg1);
-                        }
+                    MutableString arg = requireMutableString("load-session", arg1);
+                    try (FileInputStream fis = new FileInputStream(arg.toString());
+                         ObjectInput input = new ObjectInputStream(fis)) {
+                        Environment newEnv = requireEnvironment("load-session",
+                                                                (Entity) input.readObject());
+                        env.getExecutionContext().getInterpreter().setSessionEnv(newEnv);
+                        return Void.VALUE;
                     }
-                    else {
-                        throw new GleamException(this, INVALID_ARGUMENT, arg1);
+                    catch (java.io.FileNotFoundException e) {
+                        logger.severe(e);
+                        throw new GleamException(this, "file not found", arg);
+                    }
+                    catch (java.io.IOException e) {
+                        logger.severe(e);
+                        throw new GleamException(this, "I/O error", arg);
+                    }
+                    catch (ClassNotFoundException e) {
+                        logger.severe(e);
+                        throw new GleamException(this, "class not found in input file", arg);
+                    }
+                    catch (ClassCastException e) {
+                        logger.severe(e);
+                        throw new GleamException(this, "invalid class in input file", arg);
                     }
                 }
             }
